@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英语学习手册 · 发音·语法·词句·谐音</title>
+<style>
+:root{--green:#58cc02;--green-d:#46a302;--blue:#1cb0f6;--orange:#ff9600;--red:#ff4b4b;--bg:#f7f9fc;--card:#fff;--text:#3c3c3c;--title:#2b2b2b;--dim:#777;--faint:#afafaf;--line:#e8eaed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',Arial,sans-serif;min-height:100vh}
+#nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);display:flex;gap:0;overflow-x:auto;padding:0 8px}
+.nav-btn{flex-shrink:0;padding:14px 16px;font-size:13px;color:var(--dim);background:none;border:none;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;font-family:inherit}
+.nav-btn.active{color:var(--green);border-bottom-color:var(--green);font-weight:600}
+.section{display:none;padding:72px 0 60px}
+.section.active{display:block}
+.container{max-width:900px;margin:0 auto;padding:0 16px}
+.hero{text-align:center;padding:44px 16px 28px;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(88,204,2,.12),transparent 70%)}
+.hero-label{font-size:12px;letter-spacing:5px;color:var(--green);text-transform:uppercase;margin-bottom:12px}
+.hero h1{font-size:clamp(26px,5vw,40px);font-weight:700;color:var(--title);margin-bottom:10px}
+.hero p{font-size:14px;color:var(--dim);line-height:1.6}
+.sec-title{display:flex;align-items:center;gap:10px;margin:26px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line);position:relative}
+.sec-title::before{content:'';position:absolute;left:0;bottom:-1px;width:48px;height:3px;background:var(--green);border-radius:2px}
+.sec-title .ic{font-size:20px}.sec-title .tx{font-size:16px;color:var(--title);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 3px 12px rgba(0,0,0,.05);cursor:pointer;transition:.15s}
+.card:active{transform:scale(.98)}
+.card.flip{border-color:var(--green);box-shadow:0 3px 16px rgba(88,204,2,.18)}
+.card .en{font-size:17px;color:var(--green-d);font-weight:600;margin-bottom:5px}
+.card .zh{font-size:14px;color:var(--text)}
+.card .py{display:none;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);align-items:center;gap:8px}
+.card.flip .py{display:flex}
+.py .lbl{font-size:11px;color:var(--faint)}.py .val{font-size:13px;color:var(--green-d);background:rgba(88,204,2,.1);padding:2px 12px;border-radius:20px}
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
+.feat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 16px;text-align:center;box-shadow:0 3px 14px rgba(0,0,0,.05);cursor:pointer}
+.feat .fi{font-size:32px;margin-bottom:8px}.feat .fn{color:var(--green-d);font-weight:600;margin-bottom:4px}.feat .fd{font-size:12px;color:var(--dim)}
+.tip{background:var(--card);border-left:4px solid var(--green);border:1px solid var(--line);border-left-width:4px;border-radius:0 14px 14px 0;padding:14px 16px;margin-bottom:12px}
+.tip h4{font-size:14px;color:var(--green-d);margin-bottom:6px}.tip p{font-size:13px;color:var(--dim);line-height:1.7}
+table{width:100%;border-collapse:collapse;margin-bottom:16px;background:var(--card);border-radius:12px;overflow:hidden}
+th{text-align:left;padding:10px 12px;font-size:12px;letter-spacing:1px;color:var(--green-d);border-bottom:2px solid var(--line);background:rgba(88,204,2,.05)}
+td{padding:9px 12px;border-bottom:1px solid var(--line);font-size:13px}
+.b{color:var(--title);font-weight:600}
+.search{width:100%;max-width:440px;margin:16px auto;display:block;padding:12px 20px;border-radius:30px;border:1px solid rgba(88,204,2,.4);background:rgba(88,204,2,.05);font-size:14px;outline:none}
+.cat-tabs{display:flex;gap:8px;overflow-x:auto;padding:8px 0}
+.cat-tab{flex-shrink:0;padding:7px 16px;border-radius:20px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer;font-size:13px;white-space:nowrap}
+.cat-tab.active{border-color:var(--green);background:rgba(88,204,2,.12);color:var(--green-d);font-weight:600}
+.num-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.num{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.num .n{font-size:26px;font-weight:700;color:var(--green)}.num .e{font-size:14px;color:var(--text);font-weight:600}.num .p{font-size:12px;color:var(--dim)}
+.quiz-box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;text-align:center;max-width:520px;margin:0 auto;box-shadow:0 4px 18px rgba(0,0,0,.06)}
+.q{font-size:26px;color:var(--green-d);font-weight:700;margin-bottom:6px}
+.qh{font-size:13px;color:var(--dim);margin-bottom:20px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.opt{padding:12px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px;font-family:inherit}
+.opt.ok{border-color:var(--green);background:rgba(88,204,2,.15);color:var(--green-d)}
+.opt.no{border-color:var(--red);background:rgba(255,75,75,.12);color:var(--red)}
+.btn{display:inline-block;padding:11px 28px;border-radius:24px;border:none;background:var(--green);color:#fff;font-weight:600;border-bottom:4px solid var(--green-d);cursor:pointer;font-family:inherit;font-size:14px}
+.btn:active{transform:translateY(3px);border-bottom-width:1px}
+.score{font-size:13px;color:var(--dim);margin-bottom:12px}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <button class="nav-btn active" onclick="show('home',this)">🏠 首页</button>
+  <button class="nav-btn" onclick="show('pron',this)">🔤 发音</button>
+  <button class="nav-btn" onclick="show('num',this)">🔢 数字</button>
+  <button class="nav-btn" onclick="show('gram',this)">📐 语法</button>
+  <button class="nav-btn" onclick="show('words',this)">💬 词句</button>
+  <button class="nav-btn" onclick="show('quiz',this)">🎯 测验</button>
+</nav>
+
+<div id="home" class="section active">
+  <div class="hero"><div class="hero-label">English · 英语学习</div><h1>英语学习手册</h1><p>发音 · 数字 · 语法 · 词句大全 · 中文谐音 · 互动测验</p></div>
+  <div class="container">
+    <div class="feat-grid">
+      <div class="feat" onclick="show('pron',navAt(1))"><div class="fi">🔤</div><div class="fn">发音规律</div><div class="fd">字母·音标·拼读</div></div>
+      <div class="feat" onclick="show('num',navAt(2))"><div class="fi">🔢</div><div class="fn">数字</div><div class="fd">0–100万·序数</div></div>
+      <div class="feat" onclick="show('gram',navAt(3))"><div class="fi">📐</div><div class="fn">语法速记</div><div class="fd">be动词·时态·词序</div></div>
+      <div class="feat" onclick="show('words',navAt(4))"><div class="fi">💬</div><div class="fn">词句大全</div><div class="fd">分类·含谐音</div></div>
+    </div>
+    <div class="sec-title"><span class="ic">⚡</span><span class="tx">中国人学英语 · 方法与规律</span></div>
+    <div class="tip"><h4>① 先攻发音与音标</h4><p>英语<span class="b">不完全表音</span>，掌握 48 个国际音标(IPA)和常见拼读规则(如 -tion=/ʃən/、a_e=/eɪ/)，看到生词也能拼读。谐音只是入门拐杖。</p></div>
+    <div class="tip"><h4>② 死磕高频词</h4><p>约 <span class="b">1000 高频词覆盖日常 80%</span>。先把最常用的名词/动词/形容词吃透，再扩展。</p></div>
+    <div class="tip"><h4>③ 抓句型框架</h4><p>主谓宾固定语序。记牢 be 动词、一般现在/过去/将来时 + 万能句型(I want to… / Can I… / How much…)，半数日常句即可拼出。</p></div>
+    <div class="tip"><h4>④ 场景化 + 每天开口</h4><p>按场景成块学，影子跟读(Shadowing)模仿语音语调，<span class="b">开口比默记有效得多</span>。</p></div>
+    <div class="tip"><h4>⑤ 间隔重复 + 磨耳朵</h4><p>用本手册测验按遗忘曲线复习，每天听英文慢速新闻/儿歌/播客，先熟语流再求听懂。</p></div>
+  </div>
+</div>
+
+<div id="pron" class="section"><div class="container">
+  <div class="sec-title" style="margin-top:8px"><span class="ic">🔡</span><span class="tx">字母 & 发音</span></div>
+  <table><tr><th>字母</th><th>名称谐音</th><th>常见音</th></tr>
+  <tr><td class="b">A a</td><td>诶</td><td>/æ/ 苹apple·/eɪ/ 名cake</td></tr>
+  <tr><td class="b">E e</td><td>伊</td><td>/e/ bed·/iː/ he</td></tr>
+  <tr><td class="b">I i</td><td>艾</td><td>/ɪ/ sit·/aɪ/ five</td></tr>
+  <tr><td class="b">O o</td><td>欧</td><td>/ɒ/ hot·/əʊ/ go</td></tr>
+  <tr><td class="b">U u</td><td>优</td><td>/ʌ/ cup·/juː/ use</td></tr>
+  <tr><td class="b">G g</td><td>吉</td><td>/g/ go·/dʒ/ age</td></tr>
+  <tr><td class="b">C c</td><td>西</td><td>/k/ cat·/s/ city</td></tr>
+  </table>
+  <div class="sec-title"><span class="ic">🔗</span><span class="tx">常见拼读规则</span></div>
+  <table><tr><th>组合</th><th>发音</th><th>例词</th></tr>
+  <tr><td class="b">sh</td><td>/ʃ/ 什</td><td>she 西, fish 飞什</td></tr>
+  <tr><td class="b">ch</td><td>/tʃ/ 七</td><td>chair 切尔</td></tr>
+  <tr><td class="b">th</td><td>/θ/·/ð/ 咬舌</td><td>think, this</td></tr>
+  <tr><td class="b">-tion</td><td>/ʃən/ 申</td><td>nation 内申</td></tr>
+  <tr><td class="b">a_e</td><td>/eɪ/ 诶</td><td>name 内姆, cake 凯克</td></tr>
+  <tr><td class="b">ee/ea</td><td>/iː/ 伊</td><td>see 西, tea 提</td></tr>
+  <tr><td class="b">oo</td><td>/uː/ 乌</td><td>food 福德, moon 木恩</td></tr>
+  <tr><td class="b">ng</td><td>/ŋ/ 嗯</td><td>sing 星, long 龙</td></tr>
+  </table>
+  <div class="tip"><h4>重音提示</h4><p>英语多音节词有<span class="b">重读音节</span>，词典里用 ˈ 标注。名词常重读第一音节(ˈtable)，动词常重读后音节(deˈcide)。</p></div>
+</div></div>
+
+<div id="num" class="section"><div class="container">
+  <div class="sec-title" style="margin-top:8px"><span class="ic">0️⃣</span><span class="tx">基础数字 0–20</span></div>
+  <div class="num-grid" id="numGrid"></div>
+  <div class="sec-title"><span class="ic">📐</span><span class="tx">数字规律</span></div>
+  <div class="tip"><h4>整十 (20–90)</h4><p>twenty 30 thirty 40 forty 50 fifty 60 sixty 70 seventy 80 eighty 90 ninety。<span class="b">十几 13–19 用 -teen</span>(thirteen…nineteen)，<span class="b">整十用 -ty</span>。</p></div>
+  <div class="tip"><h4>合成数</h4><p>21 = twenty-one(连字符)，105 = one hundred and five，1,234 = one thousand two hundred and thirty-four。</p></div>
+  <div class="tip"><h4>大数</h4><p>hundred 百 · thousand 千 · million 百万 · billion 十亿。注意英语<span class="b">千分位逗号</span>分组。</p></div>
+  <div class="sec-title"><span class="ic">🥇</span><span class="tx">序数词</span></div>
+  <div class="tip"><p>first 第一 · second 第二 · third 第三 · 之后多加 -th：fourth, fifth, sixth…；缩写 1st 2nd 3rd 4th。</p></div>
+</div></div>
+
+<div id="gram" class="section"><div class="container">
+  <div class="sec-title" style="margin-top:8px"><span class="ic">🔤</span><span class="tx">be 动词</span></div>
+  <div class="tip"><p><span class="b">I am</span>(我是) · <span class="b">You/We/They are</span> · <span class="b">He/She/It is</span>。缩写：I'm, you're, he's, isn't, aren't。</p></div>
+  <div class="sec-title"><span class="ic">⏰</span><span class="tx">三大基本时态</span></div>
+  <table><tr><th>时态</th><th>结构</th><th>例</th></tr>
+  <tr><td class="b">一般现在</td><td>动词原形(第三人称+s)</td><td>I work / She works</td></tr>
+  <tr><td class="b">一般过去</td><td>动词+ed(或不规则)</td><td>I worked / I went</td></tr>
+  <tr><td class="b">一般将来</td><td>will + 原形</td><td>I will go</td></tr>
+  <tr><td class="b">现在进行</td><td>be + 动词ing</td><td>I am working</td></tr>
+  <tr><td class="b">现在完成</td><td>have/has + 过去分词</td><td>I have done</td></tr></table>
+  <div class="sec-title"><span class="ic">⚡</span><span class="tx">万能句型</span></div>
+  <div class="tip"><p>
+  I want (to)… 我想要…<br>I would like… 我想要(礼貌)<br>Can I…? 我可以…吗？<br>Could you…? 你能…吗？<br>How much is…? …多少钱？<br>Where is…? …在哪？<br>What time…? 几点…？<br>I'm looking for… 我在找…</p></div>
+  <div class="sec-title"><span class="ic">📌</span><span class="tx">词序与冠词</span></div>
+  <div class="tip"><p>基本语序 <span class="b">主语+谓语+宾语</span>(SVO)。可数名词单数前加 a/an(元音前用 an)，特指用 the。</p></div>
+</div></div>
+
+<div id="words" class="section"><div class="container">
+  <input class="search" id="q" placeholder="🔍 搜索英文、中文或谐音…" oninput="render()">
+  <div class="cat-tabs" id="cats"></div>
+  <div id="list"></div>
+</div></div>
+
+<div id="quiz" class="section"><div class="container">
+  <div class="grid" id="quizHome" style="grid-template-columns:1fr 1fr;max-width:520px;margin:8px auto">
+    <div class="feat" onclick="startQuiz('en')"><div class="fi">💬</div><div class="fn">词汇测验</div><div class="fd">看中文→选英文</div></div>
+    <div class="feat" onclick="startQuiz('zh')"><div class="fi">🔄</div><div class="fn">反向测验</div><div class="fd">看英文→选中文</div></div>
+  </div>
+  <div id="quizArea" style="margin-top:20px"></div>
+</div></div>
+
+<script>
+function show(id,btn){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo(0,0)}
+function navAt(i){const b=document.querySelectorAll('.nav-btn')[i];document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');return b}
+
+const nums=[['0','zero','贼罗'],['1','one','万'],['2','two','吐'],['3','three','斯瑞'],['4','four','佛'],['5','five','法艾五'],['6','six','西克斯'],['7','seven','赛文'],['8','eight','诶特'],['9','nine','耐因'],['10','ten','坦'],['11','eleven','伊莱文'],['12','twelve','特威尔五'],['13','thirteen','色挺'],['14','fourteen','佛挺'],['15','fifteen','费夫挺'],['16','sixteen','西克斯挺'],['17','seventeen','赛文挺'],['18','eighteen','诶挺'],['19','nineteen','耐因挺'],['20','twenty','特万提']];
+document.getElementById('numGrid').innerHTML=nums.map(n=>`<div class="num"><div class="n">${n[0]}</div><div class="e">${n[1]}</div><div class="p">${n[2]}</div></div>`).join('');
+
+const DATA=[
+{cat:'问候寒暄',icon:'👋',items:[['Hello!','你好！','哈喽'],['Hi!','嗨！','嗨'],['Good morning!','早上好！','古德 morning'],['Good afternoon!','下午好！','古德 阿夫特怒恩'],['Good evening!','晚上好！','古德 伊夫宁'],['Good night!','晚安！','古德 耐特'],['Goodbye!','再见！','古德拜'],['Bye!','拜！','拜'],['See you!','回头见！','西 优'],['See you tomorrow!','明天见！','西 优 特马罗'],['How are you?','你好吗？','好 阿 优'],["I'm fine, thank you.",'我很好，谢谢。','艾姆 法因 三克 优'],['Nice to meet you!','很高兴见到你！','耐斯 图 米特 优'],['Long time no see!','好久不见！','龙 太姆 诺 西'],['Take care!','保重！','坦克 凯尔']]},
+{cat:'礼貌用语',icon:'🙏',items:[['Thank you.','谢谢。','三克 优'],['Thanks a lot.','非常感谢。','三克斯 阿 拉特'],["You're welcome.",'不客气。','优阿 唯尔康姆'],['Please.','请。','普利斯'],['Sorry.','对不起。','骚瑞'],['Excuse me.','打扰一下。','伊克斯Q斯 米'],["It's OK.",'没关系。','伊次 欧凯'],['No problem.','没问题。','诺 普拉布勒姆'],['Of course.','当然。','奥夫 寇斯'],['My pleasure.','我的荣幸。','买 普莱热']]},
+{cat:'基础回应',icon:'✅',items:[['Yes.','是的。','耶斯'],['No.','不。','诺'],['OK.','好的。','欧凯'],['Sure.','当然。','秀尔'],['Maybe.','也许。','梅比'],['Right.','对。','软特'],['Wrong.','错。','弄'],["I don't know.",'我不知道。','艾 当特 诺'],['I think so.','我想是的。','艾 think 搜'],['Really?','真的吗？','瑞利']]},
+{cat:'家庭称呼',icon:'👨‍👩‍👧',items:[['family','家庭','法么里'],['father / dad','爸爸','法泽 / 戴德'],['mother / mom','妈妈','马泽 / 妈姆'],['son','儿子','桑'],['daughter','女儿','多特'],['brother','兄弟','布拉泽'],['sister','姐妹','西斯特'],['grandfather','祖父','格软法泽'],['grandmother','祖母','格软马泽'],['baby','宝宝','贝比'],['friend','朋友','弗兰德'],['child','孩子','差义德']]},
+{cat:'身体部位',icon:'🧑',items:[['head','头','黑德'],['hair','头发','嗨尔'],['eye','眼睛','艾'],['ear','耳朵','伊尔'],['nose','鼻子','诺斯'],['mouth','嘴','毛斯'],['hand','手','韩德'],['arm','手臂','阿姆'],['leg','腿','莱格'],['foot','脚','福特'],['face','脸','费斯']]},
+{cat:'食物饮料',icon:'🍎',items:[['water','水','沃特'],['tea','茶','提'],['coffee','咖啡','考费'],['milk','牛奶','米尔克'],['juice','果汁','朱斯'],['bread','面包','布莱德'],['rice','米饭','软斯'],['egg','鸡蛋','埃格'],['meat','肉','米特'],['fish','鱼','飞什'],['apple','苹果','阿坡'],['banana','香蕉','巴娜娜'],['chicken','鸡肉','奇肯'],['noodles','面条','怒朵斯'],['breakfast','早餐','布莱克法斯特'],['lunch','午餐','兰奇'],['dinner','晚餐','丁呢']]},
+{cat:'颜色',icon:'🎨',items:[['red','红','瑞德'],['orange','橙','奥润吉'],['yellow','黄','耶罗'],['green','绿','格林'],['blue','蓝','布鲁'],['purple','紫','破破'],['pink','粉','平克'],['black','黑','布莱克'],['white','白','怀特'],['brown','棕','布朗'],['gray','灰','格瑞']]},
+{cat:'动物',icon:'🦁',items:[['dog','狗','道格'],['cat','猫','凯特'],['bird','鸟','伯德'],['fish','鱼','飞什'],['horse','马','后斯'],['cow','牛','考'],['pig','猪','匹格'],['sheep','羊','希普'],['rabbit','兔','软比特'],['lion','狮子','拉昂'],['tiger','老虎','泰格'],['monkey','猴子','忙ki'],['elephant','大象','埃勒方特']]},
+{cat:'时间天气',icon:'🕐',items:[['today','今天','土day'],['tomorrow','明天','特马罗'],['yesterday','昨天','耶斯特day'],['now','现在','闹'],['morning','早晨','morning'],['week','周','维克'],['month','月','忙斯'],['year','年','伊尔'],['sunny','晴的','三尼'],['rainy','下雨的','瑞尼'],['cloudy','多云的','考迪'],['hot','热的','哈特'],['cold','冷的','寇德']]},
+{cat:'常用动词',icon:'🏃',items:[['go','去','购'],['come','来','卡姆'],['eat','吃','伊特'],['drink','喝','准克'],['see','看见','西'],['look','看','路克'],['hear','听见','嗨尔'],['speak','说','斯批克'],['know','知道','诺'],['like','喜欢','赖克'],['love','爱','拉夫'],['want','想要','望特'],['need','需要','尼德'],['have','有','哈夫'],['make','做','梅克'],['do','做','度'],['work','工作','沃克'],['buy','买','拜'],['help','帮助','黑尔普'],['learn','学习','勒恩']]},
+{cat:'常用形容词',icon:'🔤',items:[['good','好的','古德'],['bad','坏的','拜德'],['big','大的','比格'],['small','小的','斯莫尔'],['new','新的','纽'],['old','旧的/老的','欧德'],['happy','开心的','哈批'],['sad','伤心的','赛德'],['easy','容易的','伊日'],['hard','难的/硬的','哈德'],['fast','快的','法斯特'],['slow','慢的','斯罗'],['beautiful','美丽的','缤忒佛'],['expensive','贵的','伊克斯潘西夫'],['cheap','便宜的','奇普']]},
+{cat:'实用短语',icon:'💡',items:[["What's your name?",'你叫什么名字？','沃次 优尔 内姆'],['My name is…','我叫…','买 内姆 伊兹'],['Where are you from?','你从哪来？','维尔 阿 优 弗拉姆'],['I am from China.','我来自中国。','艾 am 弗拉姆 China'],["I don't understand.",'我不明白。','艾 当特 安德斯坦德'],['Can you help me?','你能帮我吗？','坎 优 黑尔普 米'],['How much is this?','这个多少钱？','好 马奇 伊兹 滴斯'],['Where is the toilet?','洗手间在哪？','维尔 伊兹 泽 toilet'],['I would like a coffee.','我想要一杯咖啡。','艾 屋德 赖克 阿 考费'],['Speak slowly, please.','请说慢一点。','斯批克 斯罗利 普利斯'],['What does it mean?','这是什么意思？','沃特 达兹 伊特 民'],['How do you say… in English?','…用英语怎么说？','好 度 优 say … in English']]}
+];
+
+let activeCat='全部';
+function buildCats(){const c=document.getElementById('cats');let h='<div class="cat-tab active" onclick="setCat(\'全部\',this)">全部</div>';DATA.forEach(d=>h+=`<div class="cat-tab" onclick="setCat('${d.cat}',this)">${d.icon} ${d.cat}</div>`);c.innerHTML=h}
+function setCat(c,el){activeCat=c;document.querySelectorAll('.cat-tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');render()}
+function render(){const q=document.getElementById('q').value.toLowerCase();const el=document.getElementById('list');let html='';
+ DATA.forEach((d,di)=>{if(activeCat!=='全部'&&d.cat!==activeCat)return;
+  const items=d.items.filter(it=>!q||it[0].toLowerCase().includes(q)||it[1].includes(q)||it[2].includes(q));
+  if(!items.length)return;
+  html+=`<div class="sec-title"><span class="ic">${d.icon}</span><span class="tx">${d.cat}</span><span style="margin-left:auto;font-size:12px;color:var(--faint)">${items.length}</span></div><div class="grid">`;
+  items.forEach(it=>{const id=di+'-'+it[0];html+=`<div class="card" onclick="this.classList.toggle('flip')"><div class="en">${it[0]}</div><div class="zh">${it[1]}</div><div class="py"><span class="lbl">谐音</span><span class="val">${it[2]}</span></div></div>`});
+  html+='</div>';
+ });
+ el.innerHTML=html||'<p style="text-align:center;color:var(--faint);padding:40px">没有匹配结果</p>'}
+
+const ALL=DATA.flatMap(d=>d.items);
+let mq={s:0,t:0,mode:'en'};
+function startQuiz(m){mq={s:0,t:0,mode:m};document.getElementById('quizHome').style.display='none';nextQ()}
+function nextQ(){const cur=ALL[Math.floor(Math.random()*ALL.length)];const wrong=[];while(wrong.length<3){const w=ALL[Math.floor(Math.random()*ALL.length)];if(w[0]!==cur[0]&&!wrong.includes(w))wrong.push(w)}
+ const opts=[cur,...wrong].sort(()=>Math.random()-.5);const pct=mq.t?Math.round(mq.s/mq.t*100):0;
+ const qtext=mq.mode==='en'?cur[1]:cur[0];const qhint=mq.mode==='en'?'选择正确的英文':'选择正确的中文';
+ const ohtml=opts.map(o=>{const lab=mq.mode==='en'?o[0]:o[1];return `<button class="opt" onclick="chk(this,'${o[0]==cur[0]}')">${lab}</button>`}).join('');
+ document.getElementById('quizArea').innerHTML=`<div class="quiz-box"><div class="score">得分 ${mq.s}/${mq.t}（${pct}%）</div><div class="q" style="font-size:${mq.mode==='en'?22:18}px">${qtext}</div><div class="qh">${qhint}</div><div class="opts">${ohtml}</div><button class="btn" onclick="exitQuiz()">退出</button></div>`}
+function chk(b,ok){document.querySelectorAll('.opt').forEach(x=>x.disabled=true);mq.t++;if(ok==='true'){b.classList.add('ok');mq.s++}else{b.classList.add('no');document.querySelectorAll('.opt').forEach(x=>{})}setTimeout(nextQ,900)}
+function exitQuiz(){document.getElementById('quizHome').style.display='grid';document.getElementById('quizArea').innerHTML=''}
+
+buildCats();render();
+</script>
+</body>
+</html>
