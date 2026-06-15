@@ -229,6 +229,11 @@ to{opacity:1}}
         <div style="font-size:15px;color:var(--gold);margin-bottom:6px">词句大全</div>
         <div style="font-size:12px;color:var(--text-dim)">94分类·含谐音</div>
       </div>
+      <div class="card" onclick="showSection('reading')" style="text-align:center;padding:24px 16px">
+        <div style="font-size:32px;margin-bottom:10px">📖</div>
+        <div style="font-size:15px;color:var(--gold);margin-bottom:6px">阅读短文</div>
+        <div style="font-size:12px;color:var(--text-dim)">分级·中德对照·朗读</div>
+      </div>
       <div class="card" onclick="showSection('quiz')" style="text-align:center;padding:24px 16px">
         <div style="font-size:32px;margin-bottom:10px">🎯</div>
         <div style="font-size:15px;color:var(--gold);margin-bottom:6px">练习测验</div>
@@ -573,6 +578,15 @@ to{opacity:1}}
         <div style="color:var(--gold);margin-bottom:4px">反向测验</div>
         <div style="font-size:12px;color:var(--text-dim)">看德语→选中文</div>
       </div>
+    </div>
+    <div style="font-size:12px;color:var(--text-faint);margin-bottom:4px">出题范围（词汇 / 反向测验）：</div>
+    <div class="level-tabs" id="quizLevelTabs">
+      <button class="level-tab active" onclick="setQuizLevel('all',this)">📚 全部</button>
+      <button class="level-tab" onclick="setQuizLevel('0',this)">🌱 零基础</button>
+      <button class="level-tab" onclick="setQuizLevel('a1',this)">⭐ A1</button>
+      <button class="level-tab" onclick="setQuizLevel('a2',this)">⭐⭐ A2</button>
+      <button class="level-tab" onclick="setQuizLevel('b1',this)">🔥 B1</button>
+      <button class="level-tab" onclick="setQuizLevel('b2',this)">💎 B2</button>
     </div>
     <div id="mainQuizArea"></div>
   </div>
@@ -1021,13 +1035,26 @@ function stopAutoPlay(){
 // ══════════════════════════════════════
 // MAIN QUIZ
 // ══════════════════════════════════════
-let mq={score:0,total:0,mode:'',current:null};
+let mq={score:0,total:0,mode:'',current:null,roundLen:10};
+let quizLevel='all';
 function startQuiz(mode){
-  mq={score:0,total:0,mode:mode,current:null};
+  mq={score:0,total:0,mode:mode,current:null,roundLen:10};
   nextQ();
 }
+function setQuizLevel(k,btn){
+  quizLevel=k;
+  document.querySelectorAll('#quizLevelTabs .level-tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(mq.mode)startQuiz(mq.mode); // 用新范围重开当前测验
+}
 function getAllPhrases(){
-  return categories.flatMap((c,ci)=>c.phrases.map((p,pi)=>({...p,id:`${ci}-${pi}`})));
+  const src=quizLevel==='all'?categories:categories.filter(c=>c.level===quizLevel);
+  return src.flatMap((c,ci)=>c.phrases.map((p,pi)=>({...p,id:`${ci}-${pi}`})));
+}
+function quizHeader(){
+  const prog=Math.round(mq.total/mq.roundLen*100);
+  return `<div class="quiz-score">第 ${Math.min(mq.total+1,mq.roundLen)} / ${mq.roundLen} 题 · 得分 ${mq.score}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>`;
 }
 function nextQ(){
   if(mq.mode==='num'){ nextNumMainQ(); return; }
@@ -1043,16 +1070,14 @@ function nextQ(){
   let qHtml='',optsHtml='';
   if(mq.mode==='phrase'){
     qHtml=`<div class="quiz-q" style="font-size:20px">${mq.current.zh}</div><div class="quiz-hint">请选择正确的德语翻译</div>`;
-    optsHtml=opts.map(o=>`<button class="quiz-opt" onclick="checkQ(this,'${escQ(o.de)}','${escQ(mq.current.de)}')">${o.de}</button>`).join('');
+    optsHtml=opts.map(o=>`<button class="quiz-opt" lang="de" onclick="checkQ(this,'${escQ(o.de)}','${escQ(mq.current.de)}')">${o.de}</button>`).join('');
   } else {
-    qHtml=`<div class="quiz-q" style="font-size:18px;font-style:italic">${mq.current.de}</div><div class="quiz-hint">请选择正确的中文翻译</div>`;
+    qHtml=`<div class="quiz-q" style="font-size:18px;font-style:italic" lang="de">${mq.current.de} <button class="speak-btn" type="button" title="朗读" aria-label="朗读" style="font-style:normal;vertical-align:middle" onclick="speakDE(mq.current.de,this)">🔊</button></div><div class="quiz-hint">请选择正确的中文翻译</div>`;
     optsHtml=opts.map(o=>`<button class="quiz-opt" onclick="checkQ(this,'${escQ(o.zh)}','${escQ(mq.current.zh)}')">${o.zh}</button>`).join('');
   }
-  const pct=mq.total>0?Math.round(mq.score/mq.total*100):0;
   document.getElementById('mainQuizArea').innerHTML=`
     <div class="quiz-box">
-      <div class="quiz-score">得分：${mq.score} / ${mq.total} （${pct}%）</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      ${quizHeader()}
       ${qHtml}
       <div class="quiz-opts">${optsHtml}</div>
       <button class="btn" onclick="startQuiz('${mq.mode}')" style="font-size:12px">重新开始</button>
@@ -1071,7 +1096,24 @@ function checkQ(btn,selected,correct){
       if(b.textContent.trim()===cor)b.classList.add('correct');
     });
   }
-  setTimeout(nextQ,1200);
+  if(mq.current&&mq.current.de){try{speakDE(mq.current.de);}catch(e){}} // 答完听德语发音
+  const done=mq.total>=mq.roundLen;
+  setTimeout(done?showQuizResult:nextQ,1500);
+}
+function showQuizResult(){
+  const pct=mq.total?Math.round(mq.score/mq.total*100):0;
+  const cls=pct>=80?'good':(pct>=50?'ok':'bad');
+  const emoji=pct>=80?'🎉':(pct>=50?'👍':'💪');
+  const msg=pct>=80?'太棒了，掌握得很好！':(pct>=50?'不错，继续加油！':'多练几遍会更熟练！');
+  document.getElementById('mainQuizArea').innerHTML=`
+    <div class="quiz-box">
+      <div class="result-box ${cls}">
+        <div style="font-size:42px;line-height:1">${emoji}</div>
+        <div style="font-size:24px;color:var(--gold);font-weight:700;margin:10px 0">${mq.score} / ${mq.total} <span style="font-size:16px">（${pct}%）</span></div>
+        <div style="font-size:13px;color:var(--text-dim)">${msg}</div>
+      </div>
+      <button class="btn" onclick="startQuiz('${mq.mode}')" style="margin-top:16px">🔁 再来一组</button>
+    </div>`;
 }
 // 练习测验·数字题（看数字→选德语）
 function nextNumMainQ(){
@@ -1083,13 +1125,11 @@ function nextNumMainQ(){
     if(w.n!==mq.current.n&&!wrong.find(x=>x.n===w.n))wrong.push(w);
   }
   const opts=[mq.current,...wrong].sort(()=>Math.random()-.5);
-  const pct=mq.total>0?Math.round(mq.score/mq.total*100):0;
   const qHtml=`<div class="quiz-q">${mq.current.n}</div><div class="quiz-hint">这个数字的德语怎么说？</div>`;
   const optsHtml=opts.map(o=>`<button class="quiz-opt" lang="de" onclick="checkQ(this,'${escQ(o.de)}','${escQ(mq.current.de)}')">${o.de}</button>`).join('');
   document.getElementById('mainQuizArea').innerHTML=`
     <div class="quiz-box">
-      <div class="quiz-score">得分：${mq.score} / ${mq.total} （${pct}%）</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      ${quizHeader()}
       ${qHtml}
       <div class="quiz-opts">${optsHtml}</div>
       <button class="btn" onclick="startQuiz('num')" style="font-size:12px">重新开始</button>
