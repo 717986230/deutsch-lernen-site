@@ -55,6 +55,9 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .card-de-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .speak-btn{flex-shrink:0;width:30px;height:30px;border:none;border-radius:50%;background:rgba(88,204,2,.14);color:#46a302;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0}
 .speak-btn:active{transform:scale(.88)}
+.loop-all-btn{border:none;border-radius:20px;background:rgba(88,204,2,.14);color:#46a302;font-size:15px;font-weight:600;cursor:pointer;padding:8px 22px;white-space:nowrap;font-family:inherit;line-height:1.2}
+.loop-all-btn:active{transform:scale(.96)}
+.loop-all-btn.speaking{background:#58cc02;color:#fff}
 .speak-btn.speaking{background:#58cc02;color:#fff;animation:pulse .7s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(88,204,2,.4)}50%{box-shadow:0 0 0 6px rgba(88,204,2,0)}}
 .card.speaking-now{border-color:#58cc02;background:rgba(88,204,2,.08);box-shadow:0 0 0 2px rgba(88,204,2,.45),0 4px 16px rgba(88,204,2,.2)}
@@ -571,7 +574,7 @@ to{opacity:1}}
     <div class="hero-label" style="text-align:center;padding-top:20px">Lesen</div>
     <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 4px;color:var(--text)">分级阅读短文</h2>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → B1 循序渐进 · 中德对照 · 🔊 朗读（慢速）</p>
-    <div style="text-align:center;margin:8px 0"><button id="loopAllBtn" class="speak-btn" type="button" style="font-size:15px;padding:6px 18px;border-radius:20px" onclick="toggleLoopAll()">🔊 循环朗读全部</button></div>
+    <div style="text-align:center;margin:8px 0"><button id="loopAllBtn" class="loop-all-btn" type="button" onclick="toggleLoopAll()">🔊 循环朗读全部</button></div>
     <div class="level-tabs" id="readLevelTabs"></div>
     <div id="readList"></div>
   </div>
