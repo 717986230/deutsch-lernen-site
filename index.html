@@ -2225,8 +2225,13 @@ var _readResume=null; // 暂停/离开时记住的循环位置（仅内存，不
 function speakPara(btn,text){stopReading();speakDE(text,btn);}
 function togglePauseRead(){
   if(!_rq)return;
-  if(_rq.paused){_rq.paused=false;_syncReadBtns();_playNext();}      // 继续
-  else{_rq.paused=true;speechSynthesis.cancel();_syncReadBtns();}    // 暂停（保留位置）
+  if(_rq.paused){                                                    // 继续
+    _rq.paused=false;_syncReadBtns();
+    if(speechSynthesis.paused)speechSynthesis.resume();              // 原地接着读
+    else _playNext();                                                // 兜底(iOS等)：重读本句
+  }else{                                                             // 暂停（原地停，保留位置）
+    _rq.paused=true;speechSynthesis.pause();_syncReadBtns();
+  }
 }
 function toggleLoopAll(){
   if(_rq&&_rq.mode==='loop'){togglePauseRead();return;}
