@@ -940,6 +940,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="hero-label" style="text-align:center;padding-top:20px">Serie</div>
     <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 4px;color:var(--text)">留学连载 · 跟着故事学德语</h2>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">原创连续剧 · 中德对照 · 🔊 慢速朗读 · 点词查义</p>
+    <button id="seriesLoopBtn" class="fab-read" type="button" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value);document.getElementById('seriesRateV').textContent=this.value" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
     <div class="sec-title"><span class="sec-title-icon">🎬</span><span class="sec-title-text">原创连载 · 留学生活</span><span class="sec-title-count" id="seriesCount"></span></div>
     <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">每集独立成篇 · 按集顺序、剧情连贯 · 点小喇叭听某句 · ▶ 朗读整集 · 💡 <b style="color:#46a302">点句中德语词</b>可听发音并加入生词本</p>
@@ -2297,12 +2298,13 @@ function stopReading(){
 
 // ══════════════ 留学连载：独立板块（原创系列 + 视频资源）══════════════
 // 自带朗读引擎，与上方阅读引擎隔离（DOM 前缀 srp_/scard_/srab_，队列 _sq）
-var _sq=null; // {i,j} 当前播放的集/句
+var _sq=null; // {i,j,mode:'one'|'loop',paused} 当前播放的集/句
+var _seriesResume=null; // 暂停/离开时记住的循环位置（仅内存）
 function renderSeries(){
   const el=document.getElementById('seriesList'); if(!el)return;
   const cnt=document.getElementById('seriesCount'); if(cnt)cnt.textContent='共 '+SERIES.length+' 集';
   el.innerHTML=SERIES.map((r,i)=>{
-    const body=r.paras.map((p,j)=>`<div class="read-para" id="srp_${i}_${j}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakDE('${p[0].replace(/\\/g,"\\\\").replace(/'/g,"\\'")}',this)">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div></div></div></div>`).join('');
+    const body=r.paras.map((p,j)=>`<div class="read-para" id="srp_${i}_${j}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakSeriesPara(this,'${p[0].replace(/\\/g,"\\\\").replace(/'/g,"\\'")}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div></div></div></div>`).join('');
     return `<div class="card" id="scard_${i}" style="cursor:default;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
         <span style="font-size:17px;font-weight:600;color:#46a302" lang="de">${r.title}</span>
@@ -2312,27 +2314,49 @@ function renderSeries(){
       </div>${body}</div>`;
   }).join('');
 }
+function speakSeriesPara(btn,text){stopSeries();speakDE(text,btn);}
 function _clearSeriesHL(){document.querySelectorAll('#seriesList .read-para.rp-on').forEach(e=>e.classList.remove('rp-on'));}
 function _syncSeriesBtns(){
+  const lb=document.getElementById('seriesLoopBtn');
+  if(lb){const on=_sq&&_sq.mode==='loop';lb.classList.toggle('speaking',!!(on&&!_sq.paused));lb.textContent=!on?'🔊 全部朗读':(_sq.paused?'▶ 继续':'⏸ 暂停');}
   document.querySelectorAll('#seriesList .read-art-btn').forEach(b=>{b.classList.remove('speaking');b.textContent='▶ 朗读';});
-  if(_sq){const ab=document.getElementById('srab_'+_sq.i);if(ab){ab.classList.add('speaking');ab.textContent='⏸ 停止';}}
+  if(_sq&&_sq.mode==='one'){const ab=document.getElementById('srab_'+_sq.i);if(ab){ab.classList.toggle('speaking',!_sq.paused);ab.textContent=_sq.paused?'▶ 继续':'⏸ 暂停';}}
 }
-function stopSeries(){_sq=null;speechSynthesis.cancel();_clearSeriesHL();_syncSeriesBtns();}
+function stopSeries(){
+  if(_sq&&_sq.mode==='loop')_seriesResume={i:_sq.i,j:_sq.j};         // 离开/停止时记住循环位置
+  _sq=null;speechSynthesis.cancel();_clearSeriesHL();_syncSeriesBtns();
+}
+function toggleSeriesPause(){
+  if(!_sq)return;
+  if(_sq.paused){_sq.paused=false;_syncSeriesBtns();if(speechSynthesis.paused)speechSynthesis.resume();else _playSeriesNext();}
+  else{_sq.paused=true;speechSynthesis.pause();_syncSeriesBtns();}
+}
+function toggleSeriesLoop(){
+  if(_sq&&_sq.mode==='loop'){toggleSeriesPause();return;}
+  stopSeries();
+  if(!SERIES.length)return;
+  const st=_seriesResume||{i:0,j:0};_seriesResume=null;             // 从上次暂停处继续
+  _sq={i:st.i,j:st.j,mode:'loop',paused:false};_syncSeriesBtns();_playSeriesNext();
+}
 function toggleEpisode(btn,i){
-  if(_sq&&_sq.i===i){stopSeries();return;}
-  stopSeries();_sq={i:i,j:0};_syncSeriesBtns();_playSeriesNext();
+  if(_sq&&_sq.mode==='one'&&_sq.i===i){toggleSeriesPause();return;}
+  stopSeries();_sq={i:i,j:0,mode:'one',paused:false};_syncSeriesBtns();_playSeriesNext();
 }
 function _playSeriesNext(){
-  const q=_sq;if(!q)return;
+  const q=_sq;if(!q||q.paused)return;
+  if(q.i>=SERIES.length){if(q.mode==='loop'){q.i=0;q.j=0;}else{stopSeries();return;}}
   const r=SERIES[q.i];_clearSeriesHL();
-  if(q.j>=r.paras.length){stopSeries();return;}
+  if(q.j>=r.paras.length){
+    if(q.mode==='one'){stopSeries();return;}
+    q.i++;q.j=0;return _playSeriesNext();
+  }
   const el=document.getElementById('srp_'+q.i+'_'+q.j);
   if(el){el.classList.add('rp-on');el.scrollIntoView({behavior:'smooth',block:'center'});}
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(r.paras[q.j][0]);
   u.lang='de-DE';if(_deVoice)u.voice=_deVoice;u.rate=_spk.rate;u.pitch=1;
-  u.onend=()=>{if(!_sq)return;q.j++;_playSeriesNext();};
-  u.onerror=()=>{if(!_sq)return;q.j++;_playSeriesNext();};
+  u.onend=()=>{if(!_sq||_sq.paused)return;q.j++;_playSeriesNext();};
+  u.onerror=()=>{if(!_sq||_sq.paused)return;q.j++;_playSeriesNext();};
   speechSynthesis.speak(u);
 }
 // 视频资源：仅标题 + 原创简介 + 官方/平台跳转链接（不复制其内容）
