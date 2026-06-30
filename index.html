@@ -941,7 +941,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 4px;color:var(--text)">留学连载 · 跟着故事学德语</h2>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">原创连续剧 · 中德对照 · 🔊 慢速朗读 · 点词查义</p>
     <button id="seriesLoopBtn" class="fab-read" type="button" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
-    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value);document.getElementById('seriesRateV').textContent=this.value" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
+    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
     <div class="sec-title"><span class="sec-title-icon">🎬</span><span class="sec-title-text">原创连载 · 留学生活</span><span class="sec-title-count" id="seriesCount"></span></div>
     <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">每集独立成篇 · 按集顺序、剧情连贯 · 点小喇叭听某句 · ▶ 朗读整集 · 💡 <b style="color:#46a302">点句中德语词</b>可听发音并加入生词本</p>
     <div id="seriesList"></div>
@@ -1740,8 +1740,8 @@ try{Object.assign(_spk,JSON.parse(localStorage.getItem('spkCfg')||'{}'));}catch(
 function spkSet(k,v){_spk[k]=v;try{localStorage.setItem('spkCfg',JSON.stringify(_spk));}catch(e){}}
 function setSpkRate(v){ // 语速：词句区/阅读区共享，改一处两边同步
   v=+v; spkSet('rate',v);
-  ['spkRate','readRate'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=v;});
-  ['spkRateV','readRateV'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=v;});
+  ['spkRate','readRate','seriesRate'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=v;});
+  ['spkRateV','readRateV','seriesRateV'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=v;});
 }
 function spkInitPanel(){
   const r=document.getElementById('spkRate');if(r){r.value=_spk.rate;document.getElementById('spkRateV').textContent=_spk.rate;}
@@ -2202,6 +2202,8 @@ function buildDeWordMap(){
 function wrapWords(text){
   return text.split(/(\s+)/).map(t=>/\S/.test(t)?`<span class="rd-word" onclick="readWordClick(event,this)">${t}</span>`:t).join('');
 }
+// 转义用于内联 onclick 的字符串：先转义 JS 单引号字符串，再 HTML 实体化（句中含 " 时不会截断属性）
+function escSpk(s){return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
 function readWordClick(e,el){
   e.stopPropagation();
   if(!_deWordMap)buildDeWordMap();
@@ -2229,7 +2231,7 @@ function renderReadings(){
   if(cnt)cnt.textContent='共 '+list.length+' 篇短文';
   const el=document.getElementById('readList');
   el.innerHTML=list.map((r,ri)=>{
-    const body=r.paras.map((p,pi)=>`<div class="read-para" id="rp_${ri}_${pi}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakPara(this,'${p[0].replace(/\\/g,"\\\\").replace(/'/g,"\\'")}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div></div></div></div>`).join('');
+    const body=r.paras.map((p,pi)=>`<div class="read-para" id="rp_${ri}_${pi}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div></div></div></div>`).join('');
     return `<div class="card" id="rcard_${ri}" style="cursor:default;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
         <span style="font-size:17px;font-weight:600;color:#46a302" lang="de">${r.title}</span>
@@ -2304,7 +2306,7 @@ function renderSeries(){
   const el=document.getElementById('seriesList'); if(!el)return;
   const cnt=document.getElementById('seriesCount'); if(cnt)cnt.textContent='共 '+SERIES.length+' 集';
   el.innerHTML=SERIES.map((r,i)=>{
-    const body=r.paras.map((p,j)=>`<div class="read-para" id="srp_${i}_${j}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakSeriesPara(this,'${p[0].replace(/\\/g,"\\\\").replace(/'/g,"\\'")}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div></div></div></div>`).join('');
+    const body=r.paras.map((p,j)=>`<div class="read-para" id="srp_${i}_${j}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakSeriesPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div></div></div></div>`).join('');
     return `<div class="card" id="scard_${i}" style="cursor:default;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
         <span style="font-size:17px;font-weight:600;color:#46a302" lang="de">${r.title}</span>
