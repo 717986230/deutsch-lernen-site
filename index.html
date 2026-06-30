@@ -2250,9 +2250,9 @@ function renderReadings(){
 }
 // ── 统一阅读朗读引擎：单句 / 单篇 / 循环全部（支持暂停/继续，记住位置；刷新即重置）──
 var _rq=null; // {ri,pi,mode:'loop'|'one',paused}
-var _readResume=null; // 循环朗读位置（持久化到 localStorage，刷新后可继续）
 function _saveResume(key,val){try{if(val)localStorage.setItem(key,JSON.stringify(val));else localStorage.removeItem(key);}catch(e){}}
-try{_readResume=JSON.parse(localStorage.getItem('readResume')||'null');}catch(e){}
+function _loadResume(key){try{return JSON.parse(localStorage.getItem(key)||'null');}catch(e){return null;}}
+var _readResume=_loadResume('readResume'); // 循环朗读位置（持久化到 localStorage，刷新后可继续）
 function speakPara(btn,text){stopReading();speakDE(text,btn);}
 function togglePauseRead(){
   if(!_rq)return;
@@ -2310,8 +2310,7 @@ function stopReading(){
 // ══════════════ 留学连载：独立板块（原创系列 + 视频资源）══════════════
 // 自带朗读引擎，与上方阅读引擎隔离（DOM 前缀 srp_/scard_/srab_，队列 _sq）
 var _sq=null; // {i,j,mode:'one'|'loop',paused} 当前播放的集/句
-var _seriesResume=null; // 循环朗读位置（持久化到 localStorage，刷新后可继续）
-try{_seriesResume=JSON.parse(localStorage.getItem('seriesResume')||'null');}catch(e){}
+var _seriesResume=_loadResume('seriesResume'); // 循环朗读位置（持久化到 localStorage，刷新后可继续）
 let seriesActive='all';
 function _getSeriesList(){return SERIES.filter(r=>seriesActive==='all'||r.level===seriesActive);}
 function buildSeriesTabs(){
