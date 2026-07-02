@@ -16,6 +16,12 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="德语学习手册 · 发音·语法·3720词句">
 <meta name="twitter:description" content="3720 条德语常用词句，覆盖 A1–B2，含发音规律、语法速记与德语朗读。单文件、离线可用。">
+<!-- PWA：可添加到主屏 -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="德语手册">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2358cc02'/%3E%3Ctext x='50' y='70' font-size='54' font-family='Georgia,serif' font-weight='700' text-anchor='middle' fill='white'%3EDE%3C/text%3E%3C/svg%3E">
 <style>
 :root {
   --gold: #58cc02;
@@ -41,6 +47,13 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 /* 键盘可访问性：仅键盘聚焦时显示清晰焦点环，不影响鼠标点击 */
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
 .nav-btn:focus-visible{outline-offset:-2px}
+/* 跳到主内容：键盘/读屏用户按 Tab 时出现 */
+.skip-link{position:fixed;top:-60px;left:8px;z-index:500;background:#58cc02;color:#fff;padding:10px 16px;border-radius:0 0 10px 10px;font-size:14px;text-decoration:none;transition:top .2s}
+.skip-link:focus{top:0}
+/* 尊重系统「减少动态效果」偏好 */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
 /* SECTIONS */
 .section{display:none;padding:70px 0 40px}
 .section.active{display:block}
@@ -232,6 +245,7 @@ body:not(.lang-en) .en-only-block{display:none}
 </style>
 </head>
 <body>
+<a href="#nav" class="skip-link">跳到导航</a>
 
 <!-- 语言切换：德 / 英 -->
 <div class="lang-switch">
@@ -240,7 +254,7 @@ body:not(.lang-en) .en-only-block{display:none}
 </div>
 
 <!-- NAV -->
-<nav id="nav">
+<nav id="nav" aria-label="主导航">
   <button class="nav-btn active" onclick="showSection('home')">🏠 首页</button>
   <button class="nav-btn nav-de-only" onclick="showSection('pronunciation')">🔤 发音规律</button>
   <button class="nav-btn nav-de-only" onclick="showSection('numbers')">🔢 数字规律</button>
@@ -1358,10 +1372,10 @@ function showSection(id){
   if(typeof stopReading==='function')stopReading();
   if(typeof stopSeries==='function')stopSeries();
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current');});
   document.getElementById(id).classList.add('active');
   const btns=document.querySelectorAll('.nav-btn');
-  btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+id+"'"))b.classList.add('active')});
+  btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+id+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
   if(id==='srs'&&typeof renderSrs==='function')renderSrs();
   if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}     // 懒渲染：首次打开才渲染长列表
   if(id==='series'&&!_rendered.series){renderSeries();renderSeriesLinks();_rendered.series=true;}
