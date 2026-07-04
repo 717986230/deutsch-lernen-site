@@ -62,6 +62,11 @@ const DECODER =
   'if(![].flatMap){Array.prototype.flatMap=function(f,t){return this.reduce(function(a,v,i,arr){var r=f.call(t,v,i,arr);return a.concat(Array.isArray(r)?r:[r]);},[]);};}' +
   'if(!Object.values){Object.values=function(o){return Object.keys(o).map(function(k){return o[k];});};}' +
   'if(!Object.assign){Object.assign=function(t){for(var i=1;i<arguments.length;i++){var s=arguments[i];if(s)for(var k in s)if(Object.prototype.hasOwnProperty.call(s,k))t[k]=s[k];}return t;};}' +
+  // 语音合成兜底：微信 X5 等无 Web Speech API 的内核里，speechSynthesis 全局根本不存在，
+  // 裸引用会抛 ReferenceError（点标签→showSection→stopReading→speechSynthesis.cancel 即崩）。
+  // 缺失时装一个 no-op 桩，全站正常可用，仅朗读静默降级。
+  'if(typeof speechSynthesis==="undefined"){try{window.speechSynthesis={speaking:false,paused:false,pending:false,cancel:function(){},pause:function(){},resume:function(){},speak:function(){},getVoices:function(){return[];},onvoiceschanged:null,addEventListener:function(){},removeEventListener:function(){}};}catch(e){}}' +
+  'if(typeof SpeechSynthesisUtterance==="undefined"){try{window.SpeechSynthesisUtterance=function(t){this.text=t;this.lang="";this.rate=1;this.pitch=1;this.volume=1;this.voice=null;this.onend=null;this.onerror=null;};}catch(e){}}' +
   '\n';
 
 async function build() {
