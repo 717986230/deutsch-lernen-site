@@ -1610,7 +1610,7 @@ function filterPhrases(){
     if(activeCat!=='all'&&cat.name!==activeCat)return;
     cat.phrases.forEach((p,pi)=>{
       if(!q||p.de.toLowerCase().includes(q)||p.zh.includes(q)||p.py.includes(q)){
-        results.push({...p,cat:cat.name,icon:cat.icon,id:`${ci}-${pi}`});
+        results.push(Object.assign({},p,{cat:cat.name,icon:cat.icon,id:`${ci}-${pi}`}));
       }
     });
   });
@@ -1922,7 +1922,7 @@ function setQuizLevel(k,btn){
 }
 function getAllPhrases(){
   const src=quizLevel==='all'?categories:categories.filter(c=>c.level===quizLevel);
-  return src.flatMap((c,ci)=>c.phrases.map((p,pi)=>({...p,id:`${ci}-${pi}`})));
+  return src.flatMap((c,ci)=>c.phrases.map((p,pi)=>Object.assign({},p,{id:`${ci}-${pi}`})));
 }
 function quizHeader(){
   const prog=Math.round(mq.total/mq.roundLen*100);
@@ -2456,7 +2456,7 @@ function renderSeriesLinks(){
 // 说明：设备 TTS(speechSynthesis) 无法在切到其他 App 的真后台继续，也无法驱动锁屏/灵动岛；
 // 这里在朗读期间阻止息屏/锁屏，让「放着听」不中断。心跳每秒检测是否在朗读来自动开/关。
 let _wl=null;
-async function _wakeOn(){try{if('wakeLock'in navigator&&!_wl&&document.visibilityState==='visible'){_wl=await navigator.wakeLock.request('screen');_wl.addEventListener('release',()=>{_wl=null;});}}catch(e){}}
+function _wakeOn(){try{if('wakeLock'in navigator&&!_wl&&document.visibilityState==='visible'){navigator.wakeLock.request('screen').then(function(w){_wl=w;w.addEventListener('release',function(){_wl=null;});}).catch(function(){});}}catch(e){}}
 function _wakeOff(){try{if(_wl){_wl.release();_wl=null;}}catch(e){_wl=null;}}
 setInterval(()=>{try{if(typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking)_wakeOn();else _wakeOff();}catch(e){}},1000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking)_wakeOn();});

@@ -61,6 +61,7 @@ const DECODER =
   'try{return new TextDecoder().decode(a);}catch(e){return _u8(a);}}' +
   'if(![].flatMap){Array.prototype.flatMap=function(f,t){return this.reduce(function(a,v,i,arr){var r=f.call(t,v,i,arr);return a.concat(Array.isArray(r)?r:[r]);},[]);};}' +
   'if(!Object.values){Object.values=function(o){return Object.keys(o).map(function(k){return o[k];});};}' +
+  'if(!Object.assign){Object.assign=function(t){for(var i=1;i<arguments.length;i++){var s=arguments[i];if(s)for(var k in s)if(Object.prototype.hasOwnProperty.call(s,k))t[k]=s[k];}return t;};}' +
   '\n';
 
 async function build() {
