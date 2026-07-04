@@ -944,7 +944,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
     <button id="loopAllBtn" class="fab-read" type="button" aria-label="循环朗读全部短文" onclick="toggleLoopAll()">🔊 循环朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="readRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
-    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px">逐句朗读并高亮 · 读完自动循环 · 点小喇叭听某句 · 💡 <b style="color:#46a302">点句中德语词</b>可听发音并加入生词本</p>
+    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px">逐句朗读并高亮 · 读完自动循环 · 点小喇叭听某句 · 🔆 朗读时屏幕保持常亮 · 💡 <b style="color:#46a302">点句中德语词</b>可听发音并加入生词本</p>
     <div class="level-tabs" id="readLevelTabs"></div>
     <div id="readCount" style="font-size:12px;color:var(--gold-dim);margin:4px 0 10px"></div>
     <div id="readList"></div>
@@ -960,7 +960,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <button id="seriesLoopBtn" class="fab-read" type="button" aria-label="循环朗读全部连载" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
     <div class="sec-title"><span class="sec-title-icon">🎬</span><span class="sec-title-text">原创连载 · 留学生活</span><span class="sec-title-count" id="seriesCount"></span></div>
-    <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">每集独立成篇 · 按集顺序、剧情连贯 · 点小喇叭听某句 · ▶ 朗读整集 · 💡 <b style="color:#46a302">点句中德语词</b>可听发音并加入生词本</p>
+    <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">每集独立成篇 · 按集顺序、剧情连贯 · 点小喇叭听某句 · ▶ 朗读整集 · 🔆 朗读时屏幕保持常亮 · 💡 <b style="color:#46a302">点句中德语词</b>可听发音并加入生词本</p>
     <div class="level-tabs" id="seriesLevelTabs"></div>
     <div id="seriesList"></div>
     <div class="sec-title" style="margin-top:32px"><span class="sec-title-icon">📺</span><span class="sec-title-text">正版视频资源 · 看原版</span></div>
@@ -2413,6 +2413,15 @@ function renderSeriesLinks(){
     <div style="font-size:13px;color:var(--blue);font-weight:600">↗ 去观看</div>
   </a>`).join('');
 }
+
+// ── 朗读时保持屏幕常亮（Screen Wake Lock）：缓解「息屏即停」──
+// 说明：设备 TTS(speechSynthesis) 无法在切到其他 App 的真后台继续，也无法驱动锁屏/灵动岛；
+// 这里在朗读期间阻止息屏/锁屏，让「放着听」不中断。心跳每秒检测是否在朗读来自动开/关。
+let _wl=null;
+async function _wakeOn(){try{if('wakeLock'in navigator&&!_wl&&document.visibilityState==='visible'){_wl=await navigator.wakeLock.request('screen');_wl.addEventListener('release',()=>{_wl=null;});}}catch(e){}}
+function _wakeOff(){try{if(_wl){_wl.release();_wl=null;}}catch(e){_wl=null;}}
+setInterval(()=>{try{if(typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking)_wakeOn();else _wakeOff();}catch(e){}},1000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking)_wakeOn();});
 
 // INIT
 initPhrases();
