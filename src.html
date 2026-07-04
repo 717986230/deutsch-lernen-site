@@ -23,24 +23,11 @@
 <meta name="apple-mobile-web-app-title" content="德语手册">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2358cc02'/%3E%3Ctext x='50' y='70' font-size='54' font-family='Georgia,serif' font-weight='700' text-anchor='middle' fill='white'%3EDE%3C/text%3E%3C/svg%3E">
 <style>
-:root {
-  --gold: #58cc02;
-  --gold-dim: #58cc0266;
-  --gold-faint: #58cc0222;
-  --bg: #f7f9fc;
-  --bg2: #ffffff;
-  --bg3: #ffffff;
-  --text: #3c3c3c;
-  --text-dim: #777777;
-  --text-faint: #afafaf;
-  --red: #ff4b4b;
-  --green: #58cc02;
-  --blue: #1cb0f6;
-}
+:root{--gold:#58cc02;--gold-dim:#58cc0266;--gold-faint:#58cc0222;--bg:#f6f8fb;--bg2:#ffffff;--bg3:#ffffff;--surface:#ffffff;--surface-2:#ffffff;--nav-bg:rgba(255,255,255,.9);--border:rgba(0,0,0,.08);--shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);--text:#33383d;--text-dim:#63696f;--text-faint:#8b9198;--red:#ff4b4b;--green:#58cc02;--blue:#1cb0f6;}:root[data-theme="dark"]{--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#767d84;--gold-faint:#58cc0230;--gold-dim:#58cc0288;}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#767d84;--gold-faint:#58cc0230;--gold-dim:#58cc0288;}}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-height:100vh;overflow-x:hidden}
 /* NAV */
-#nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--gold-faint);display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;padding:0 8px}
+#nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--gold-faint);display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;padding:0 8px}
 .nav-btn{flex-shrink:0;padding:14px 16px;font-size:12px;letter-spacing:1px;color:var(--text-dim);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;font-family:inherit}
 .nav-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
 .nav-btn:hover{color:var(--text)}
@@ -64,7 +51,7 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .hero h1{font-size:clamp(24px,5vw,42px);font-weight:400;letter-spacing:2px;color:var(--text);margin-bottom:8px}
 .hero p{font-size:14px;color:var(--text-dim);line-height:1.6}
 /* CARDS */
-.card{background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:16px;margin-bottom:10px;transition:all .2s;cursor:pointer}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;transition:all .2s,box-shadow .2s;cursor:pointer;box-shadow:var(--shadow)}
 .card:hover{background:rgba(88,204,2,.06);border-color:var(--gold-dim)}
 .card.flipped{background:rgba(88,204,2,.1);border-color:var(--gold-dim)}
 .card-de{font-size:16px;color:var(--text);font-style:italic}
@@ -92,13 +79,13 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(88,204,2,.4)}50%{box-shadow:0 0 0 6px rgba(88,204,2,0)}}
 .card.speaking-now{border-color:#58cc02;background:rgba(88,204,2,.08);box-shadow:0 0 0 2px rgba(88,204,2,.45),0 4px 16px rgba(88,204,2,.2)}
 .btn.playing{background:#ff4b4b;border-bottom-color:#c13a3a}
-.spk-panel{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:#fff;border:1px solid var(--line,#e8eaed);border-radius:12px;padding:8px 14px;margin:0 0 10px;font-size:13px;color:#777}
+.spk-panel{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--surface-2);border:1px solid var(--line,var(--border));border-radius:12px;padding:8px 14px;margin:0 0 10px;font-size:13px;color:var(--text-dim)}
 .spk-panel label{display:flex;align-items:center;gap:6px;white-space:nowrap}
 .spk-panel input[type=range]{width:110px;accent-color:#58cc02}
 .spk-panel input[type=checkbox]{accent-color:#58cc02;width:15px;height:15px}
-.spk-panel select{border:1px solid #e8eaed;border-radius:8px;padding:2px 6px;color:#46a302;font-family:inherit}
+.spk-panel select{border:1px solid var(--border);border-radius:8px;padding:2px 6px;background:var(--surface-2);color:#46a302;font-family:inherit}
 #spkRateV{color:#46a302;font-weight:600;min-width:32px}
-.card-zh{font-size:14px;color:#777777;margin-bottom:0}
+.card-zh{font-size:14px;color:var(--text-dim);margin-bottom:0}
 .card-py{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--gold-faint)}
 .card.flipped .card-py{display:block}
 /* 拼读拆解 */
@@ -117,7 +104,7 @@ to{opacity:1}}
 /* GRID */
 .phrase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 /* 长版块快速跳转条 */
-.subnav{position:sticky;top:47px;z-index:150;display:flex;gap:6px;overflow-x:auto;background:rgba(247,249,252,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 16px;margin:0 -16px 8px;scrollbar-width:none;border-bottom:1px solid var(--gold-faint)}
+.subnav{position:sticky;top:47px;z-index:150;display:flex;gap:6px;overflow-x:auto;background:var(--nav-bg);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 16px;margin:0 -16px 8px;scrollbar-width:none;border-bottom:1px solid var(--gold-faint)}
 .subnav::-webkit-scrollbar{display:none}
 .subnav-chip{flex-shrink:0;padding:5px 12px;border-radius:14px;background:rgba(88,204,2,.1);color:#46a302;font-size:12px;white-space:nowrap;cursor:pointer;border:1px solid var(--gold-faint);font-family:inherit}
 .subnav-chip:active{background:rgba(88,204,2,.25)}
@@ -133,13 +120,13 @@ to{opacity:1}}
 .search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);opacity:.4;font-size:16px}
 /* CAT TABS */
 .cat-tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 0 8px;scrollbar-width:none}
-.cat-tab{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--gold-faint);background:transparent;color:#777777;cursor:pointer;font-size:12px;font-family:inherit;white-space:nowrap;transition:all .2s}
+.cat-tab{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--gold-faint);background:transparent;color:var(--text-dim);cursor:pointer;font-size:12px;font-family:inherit;white-space:nowrap;transition:all .2s}
 .cat-tab.active{border-color:var(--gold);background:rgba(88,204,2,.15);color:var(--gold)}
 /* LEVEL SYSTEM */
 .level-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;margin-bottom:4px;-webkit-overflow-scrolling:touch}
-.level-tab{flex-shrink:0;padding:8px 16px;border-radius:22px;border:1px solid var(--gold-faint);background:transparent;color:#777777;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;white-space:nowrap;transition:all .2s}
+.level-tab{flex-shrink:0;padding:8px 16px;border-radius:22px;border:1px solid var(--gold-faint);background:transparent;color:var(--text-dim);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;white-space:nowrap;transition:all .2s}
 .level-tab.active{border-color:var(--gold);background:rgba(88,204,2,.18);color:var(--gold)}
-.level-info{display:none;border-left:3px solid var(--gold);background:rgba(0,0,0,.03);padding:10px 14px;border-radius:0 8px 8px 0;margin:0 0 14px;font-size:13px;line-height:1.6;color:var(--text-dim)}
+.level-info{display:none;border-left:3px solid var(--gold);background:var(--surface);padding:10px 14px;border-radius:0 8px 8px 0;margin:0 0 14px;font-size:13px;line-height:1.6;color:var(--text-dim)}
 .level-badge{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;vertical-align:middle}
 .lb-0{background:rgba(88,204,2,.18);color:#58cc02}
 .lb-a1{background:rgba(28,176,246,.18);color:#1cb0f6}
@@ -149,7 +136,7 @@ to{opacity:1}}
 .lb-c1{background:rgba(168,85,247,.18);color:#a855f7}
 .lb-c2{background:rgba(99,102,241,.2);color:#6366f1}
 /* LEVEL CARDS on home */
-.level-card{position:relative;overflow:hidden;cursor:pointer;border-radius:14px;padding:18px 18px 16px;border:1px solid var(--gold-faint);background:linear-gradient(135deg,rgba(0,0,0,.04),rgba(0,0,0,.01));transition:all .25s}
+.level-card{position:relative;overflow:hidden;cursor:pointer;border-radius:14px;padding:18px 18px 16px;border:1px solid var(--gold-faint);background:var(--surface);transition:all .25s}
 .level-card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .level-card .lc-stage{font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:6px}
 .level-card .lc-title{font-size:17px;color:var(--text);margin-bottom:8px;font-weight:600}
@@ -157,7 +144,7 @@ to{opacity:1}}
 .level-card .lc-arrow{position:absolute;right:16px;bottom:14px;font-size:18px;color:var(--gold);opacity:.6}
 /* NUMBER SECTION */
 .num-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:20px}
-.num-card{background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s}
+.num-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s}
 .num-card:hover{border-color:var(--gold-dim);background:rgba(88,204,2,.07)}
 .num-card.active{border-color:var(--gold);background:rgba(88,204,2,.15)}
 .num-big{font-size:28px;font-weight:700;color:var(--gold);margin-bottom:4px}
@@ -172,11 +159,11 @@ to{opacity:1}}
 .rule-zh{font-size:13px;color:var(--text-dim);width:40px}
 .rule-py{font-size:12px;color:#58cc0288;flex:1;min-width:80px}
 /* QUIZ */
-.quiz-box{background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:28px;text-align:center;max-width:520px;margin:0 auto}
+.quiz-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center;max-width:520px;margin:0 auto}
 .quiz-q{font-size:32px;color:var(--gold);font-weight:700;margin-bottom:8px}
 .quiz-hint{font-size:13px;color:var(--text-dim);margin-bottom:24px}
 .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.quiz-opt{padding:12px;border-radius:10px;border:1px solid rgba(0,0,0,.1);background:transparent;color:var(--text);font-size:15px;cursor:pointer;font-family:inherit;transition:all .2s}
+.quiz-opt{padding:12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:15px;cursor:pointer;font-family:inherit;transition:all .2s}
 .quiz-opt:hover{border-color:var(--gold-dim);background:rgba(88,204,2,.08)}
 .quiz-opt.correct{border-color:var(--green);background:rgba(88,204,2,.15);color:var(--green)}
 .quiz-opt.wrong{border-color:var(--red);background:rgba(255,75,75,.12);color:var(--red)}
@@ -186,27 +173,27 @@ to{opacity:1}}
 /* PRONUNCIATION */
 .pron-table{width:100%;border-collapse:collapse;margin-bottom:20px}
 .pron-table th{text-align:left;padding:8px 12px;font-size:11px;letter-spacing:2px;color:var(--gold);border-bottom:1px solid var(--gold-faint);font-weight:400}
-.pron-table td{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.04);font-size:13px;vertical-align:top}
+.pron-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
 .pron-table tr:hover td{background:rgba(88,204,2,.04)}
 .pron-letter{font-size:16px;color:var(--text);font-style:italic;font-weight:600}
 .pron-sound{color:var(--gold)}
 .pron-example{color:var(--text-dim)}
-.pron-zh{color:#777777}
+.pron-zh{color:var(--text-dim)}
 /* ALPHABET */
 .letter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px;margin-bottom:20px}
-.letter-card{background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:12px;text-align:center}
+.letter-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
 .letter-card.special{background:rgba(88,204,2,.08);border-color:var(--gold-faint)}
 .lc-letter{font-size:22px;font-weight:700;color:var(--gold)}
 .lc-name{font-size:13px;color:var(--text);margin:4px 0}
 .lc-sound{font-size:11px;color:var(--text-dim);line-height:1.5}
 .letter-card .speak-btn{margin-top:8px}
 /* TIPS */
-.tip-card{background:rgba(0,0,0,.03);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:12px}
+.tip-card{background:var(--surface);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:12px}
 .tip-title{font-size:13px;color:var(--gold);margin-bottom:6px;letter-spacing:.5px}
 .tip-body{font-size:13px;color:var(--text-dim);line-height:1.7}
 .tip-body b{color:var(--text)}
 /* PROGRESS */
-.progress-bar{height:4px;background:rgba(0,0,0,.08);border-radius:2px;margin:16px 0}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;margin:16px 0}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#7ed957);border-radius:2px;transition:width .4s}
 /* BADGE */
 .badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;background:rgba(88,204,2,.12);color:var(--gold);margin-left:8px;vertical-align:middle}
@@ -221,10 +208,11 @@ to{opacity:1}}
 .result-box.ok{background:rgba(88,204,2,.1);border:1px solid var(--gold-faint)}
 .result-box.bad{background:rgba(255,75,75,.1);border:1px solid rgba(255,75,75,.3)}
 /* 语言切换 */
-.lang-switch{position:fixed;top:9px;right:12px;z-index:260;display:flex;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--gold-faint);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.lang-switch{position:fixed;top:9px;right:12px;z-index:260;display:flex;background:var(--nav-bg);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--gold-faint);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .lang-btn{border:none;background:transparent;color:var(--text-dim);font-size:12px;padding:5px 11px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
 .lang-btn.active{background:#58cc02;color:#fff}
-#nav{padding-right:150px}
+.theme-toggle{border-left:1px solid var(--gold-faint)}
+#nav{padding-right:190px}
 body.lang-en .nav-de-only{display:none}
 body:not(.lang-en) .nav-en-only{display:none}
 body.lang-en .de-only-block{display:none}
@@ -234,15 +222,16 @@ body:not(.lang-en) .en-only-block{display:none}
 .star-btn{flex-shrink:0;width:28px;height:28px;border:none;border-radius:50%;background:transparent;color:var(--text-faint);font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:all .15s}
 .star-btn:hover{background:rgba(255,193,7,.16)}
 .star-btn.on{color:#ffb300}
-.srs-stat{display:inline-block;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:10px 16px;margin:4px;text-align:center;min-width:78px}
+.srs-stat{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;margin:4px;text-align:center;min-width:78px}
 .srs-stat b{display:block;font-size:22px;color:var(--gold);font-weight:700}
 .srs-stat span{font-size:11px;color:var(--text-dim)}
-.srs-rate-btn{flex:1;padding:12px 6px;border-radius:10px;border:1px solid rgba(0,0,0,.1);background:transparent;font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s}
-.srs-rate-btn:hover{background:rgba(0,0,0,.03)}
+.srs-rate-btn{flex:1;padding:12px 6px;border-radius:10px;border:1px solid var(--border);background:transparent;font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s}
+.srs-rate-btn:hover{background:var(--surface)}
 .srs-rate-btn.forgot{border-color:rgba(255,75,75,.4);color:#ff4b4b}
 .srs-rate-btn.fuzzy{border-color:rgba(255,160,0,.5);color:#e08600}
 .srs-rate-btn.known{border-color:rgba(88,204,2,.5);color:#46a302}
 </style>
+<script>(function(){try{var t=localStorage.getItem("theme");var d=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);document.documentElement.setAttribute("data-theme",d?"dark":"light");}catch(e){}})();</script>
 </head>
 <body>
 <a href="#nav" class="skip-link">跳到导航</a>
@@ -251,6 +240,7 @@ body:not(.lang-en) .en-only-block{display:none}
 <div class="lang-switch">
   <button class="lang-btn active" data-lang="de" onclick="setLang('de')">🇩🇪 德语</button>
   <button class="lang-btn" data-lang="en" onclick="setLang('en')">🇬🇧 英语</button>
+  <button class="lang-btn theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="切换深色/浅色模式" title="深色/浅色">🌙</button>
 </div>
 
 <!-- NAV -->
@@ -618,12 +608,12 @@ body:not(.lang-en) .en-only-block{display:none}
       <h3>规则动词：machen（做）</h3>
       <table style="width:100%;font-size:13px">
         <tr><th style="text-align:left;color:var(--gold-dim);padding:4px 0;border-bottom:1px solid var(--gold-faint)">人称</th><th style="text-align:left;color:var(--gold-dim);padding:4px 8px;border-bottom:1px solid var(--gold-faint)">变位</th><th style="text-align:left;color:var(--gold-dim);padding:4px 0;border-bottom:1px solid var(--gold-faint)">中文</th><th style="text-align:left;color:var(--gold-dim);padding:4px 8px;border-bottom:1px solid var(--gold-faint)">词尾</th></tr>
-        <tr><td style="padding:6px 0">ich</td><td style="padding:6px 8px;color:#777777">mach<b style="color:var(--gold)">e</b></td><td style="padding:6px 0;color:var(--text-dim)">我做</td><td style="padding:6px 8px;color:var(--gold)">-e</td></tr>
-        <tr><td style="padding:6px 0">du</td><td style="padding:6px 8px;color:#777777">mach<b style="color:var(--gold)">st</b></td><td style="padding:6px 0;color:var(--text-dim)">你做</td><td style="padding:6px 8px;color:var(--gold)">-st</td></tr>
-        <tr><td style="padding:6px 0">er/sie/es</td><td style="padding:6px 8px;color:#777777">mach<b style="color:var(--gold)">t</b></td><td style="padding:6px 0;color:var(--text-dim)">他/她/它做</td><td style="padding:6px 8px;color:var(--gold)">-t</td></tr>
-        <tr><td style="padding:6px 0">wir</td><td style="padding:6px 8px;color:#777777">mach<b style="color:var(--gold)">en</b></td><td style="padding:6px 0;color:var(--text-dim)">我们做</td><td style="padding:6px 8px;color:var(--gold)">-en</td></tr>
-        <tr><td style="padding:6px 0">ihr</td><td style="padding:6px 8px;color:#777777">mach<b style="color:var(--gold)">t</b></td><td style="padding:6px 0;color:var(--text-dim)">你们做</td><td style="padding:6px 8px;color:var(--gold)">-t</td></tr>
-        <tr><td style="padding:6px 0">Sie/sie</td><td style="padding:6px 8px;color:#777777">mach<b style="color:var(--gold)">en</b></td><td style="padding:6px 0;color:var(--text-dim)">您/他们做</td><td style="padding:6px 8px;color:var(--gold)">-en</td></tr>
+        <tr><td style="padding:6px 0">ich</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">e</b></td><td style="padding:6px 0;color:var(--text-dim)">我做</td><td style="padding:6px 8px;color:var(--gold)">-e</td></tr>
+        <tr><td style="padding:6px 0">du</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">st</b></td><td style="padding:6px 0;color:var(--text-dim)">你做</td><td style="padding:6px 8px;color:var(--gold)">-st</td></tr>
+        <tr><td style="padding:6px 0">er/sie/es</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">t</b></td><td style="padding:6px 0;color:var(--text-dim)">他/她/它做</td><td style="padding:6px 8px;color:var(--gold)">-t</td></tr>
+        <tr><td style="padding:6px 0">wir</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">en</b></td><td style="padding:6px 0;color:var(--text-dim)">我们做</td><td style="padding:6px 8px;color:var(--gold)">-en</td></tr>
+        <tr><td style="padding:6px 0">ihr</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">t</b></td><td style="padding:6px 0;color:var(--text-dim)">你们做</td><td style="padding:6px 8px;color:var(--gold)">-t</td></tr>
+        <tr><td style="padding:6px 0">Sie/sie</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">en</b></td><td style="padding:6px 0;color:var(--text-dim)">您/他们做</td><td style="padding:6px 8px;color:var(--gold)">-en</td></tr>
       </table>
     </div>
 
@@ -632,11 +622,11 @@ body:not(.lang-en) .en-only-block{display:none}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
         <div>
           <div style="font-size:12px;color:var(--gold-dim);margin-bottom:8px;letter-spacing:1px">SEIN（是）</div>
-          <div style="font-size:13px;line-height:2;color:#777777">ich <b style="color:var(--gold)">bin</b>（我是）<br>du <b style="color:var(--gold)">bist</b>（你是）<br>er/sie/es <b style="color:var(--gold)">ist</b>（他是）<br>wir <b style="color:var(--gold)">sind</b>（我们是）<br>ihr <b style="color:var(--gold)">seid</b>（你们是）<br>sie/Sie <b style="color:var(--gold)">sind</b>（他们是）</div>
+          <div style="font-size:13px;line-height:2;color:var(--text-dim)">ich <b style="color:var(--gold)">bin</b>（我是）<br>du <b style="color:var(--gold)">bist</b>（你是）<br>er/sie/es <b style="color:var(--gold)">ist</b>（他是）<br>wir <b style="color:var(--gold)">sind</b>（我们是）<br>ihr <b style="color:var(--gold)">seid</b>（你们是）<br>sie/Sie <b style="color:var(--gold)">sind</b>（他们是）</div>
         </div>
         <div>
           <div style="font-size:12px;color:var(--gold-dim);margin-bottom:8px;letter-spacing:1px">HABEN（有）</div>
-          <div style="font-size:13px;line-height:2;color:#777777">ich <b style="color:var(--gold)">habe</b>（我有）<br>du <b style="color:var(--gold)">hast</b>（你有）<br>er/sie/es <b style="color:var(--gold)">hat</b>（他有）<br>wir <b style="color:var(--gold)">haben</b>（我们有）<br>ihr <b style="color:var(--gold)">habt</b>（你们有）<br>sie/Sie <b style="color:var(--gold)">haben</b>（他们有）</div>
+          <div style="font-size:13px;line-height:2;color:var(--text-dim)">ich <b style="color:var(--gold)">habe</b>（我有）<br>du <b style="color:var(--gold)">hast</b>（你有）<br>er/sie/es <b style="color:var(--gold)">hat</b>（他有）<br>wir <b style="color:var(--gold)">haben</b>（我们有）<br>ihr <b style="color:var(--gold)">habt</b>（你们有）<br>sie/Sie <b style="color:var(--gold)">haben</b>（他们有）</div>
         </div>
       </div>
     </div>
@@ -654,7 +644,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="sec-title"><span class="sec-title-icon">⚡</span><span class="sec-title-text">常用句型模板</span></div>
     <div class="rule-box">
       <h3>万能句型</h3>
-      <div style="font-size:13px;line-height:2.2;color:#777777">
+      <div style="font-size:13px;line-height:2.2;color:var(--text-dim)">
         <div>Ich <b style="color:var(--gold)">möchte</b> + 名词/动词原形 → 我想要……</div>
         <div>Ich <b style="color:var(--gold)">bin</b> + 形容词/职业 → 我是……</div>
         <div>Ich <b style="color:var(--gold)">habe</b> + 名词（四格） → 我有……</div>
@@ -669,7 +659,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">完成时 Perfekt（最常用的过去）</span></div>
     <div class="rule-box">
       <h3>haben / sein + 过去分词（句尾）</h3>
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div>Ich <b style="color:var(--gold)">habe</b> Deutsch <b style="color:var(--gold)">gelernt</b>.（我学了德语）</div>
         <div>Ich <b style="color:var(--gold)">bin</b> nach Berlin <b style="color:var(--gold)">gefahren</b>.（我去了柏林）</div>
         <div style="color:var(--text-dim);margin-top:4px">规律：<b>位移/状态变化用 sein</b>(gehen/kommen/fahren/werden)，<b>其余多用 haben</b>。过去分词常是 <b>ge-…-t</b>(规则) 或 <b>ge-…-en</b>(不规则)，永远<b>甩到句尾</b>。</div>
@@ -681,7 +671,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">🔚</span><span class="sec-title-text">从句语序：动词到句尾</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div>主句：Ich bleibe zu Hause.（我待在家）</div>
         <div>加 <b style="color:var(--gold)">weil/dass/wenn/ob</b> → 动词去句尾：</div>
         <div>…, <b>weil</b> ich krank <b style="color:var(--gold)">bin</b>.（因为我病了）</div>
@@ -693,7 +683,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="sec-title"><span class="sec-title-icon">🎨</span><span class="sec-title-text">形容词词尾（德语难点）</span></div>
     <div class="rule-box">
       <h3>定冠词后（der/die/das）第一格</h3>
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div>der gut<b style="color:var(--gold)">e</b> Mann（好男人）· die gut<b style="color:var(--gold)">e</b> Frau · das gut<b style="color:var(--gold)">e</b> Kind</div>
         <div>不定冠词后：ein gut<b style="color:#ff4b4b">er</b> Mann · eine gut<b style="color:#ff4b4b">e</b> Frau · ein gut<b style="color:#ff4b4b">es</b> Kind</div>
         <div style="color:var(--text-dim);margin-top:4px">先记最常用：<b>der/die/das + 形容词-e</b>；<b>ein + 形容词 跟冠词"借"词尾</b>(-er/-e/-es)。这是德语最磨人的点，<b>先够用、用多了自然顺</b>。</div>
@@ -703,19 +693,19 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="sec-title"><span class="sec-title-icon">🧭</span><span class="sec-title-text">介词支配格（德语难点）</span></div>
     <div class="rule-box">
       <h3 style="color:#ff7a4d">静三动四（Wechselpräp，9 个）</h3>
-      <div style="font-size:13px;line-height:1.9;color:#777"><b lang="de">in · an · auf · über · unter · vor · hinter · neben · zwischen</b><br>表<b>静止位置</b>(在哪 wo?)→<b style="color:#ff4b4b">第三格</b>；表<b>移动方向</b>(去哪 wohin?)→<b style="color:#58cc02">第四格</b>。<br>例：Das Buch ist auf <b style="color:#ff4b4b">dem</b> Tisch（静/三）· Ich lege es auf <b style="color:#58cc02">den</b> Tisch（动/四）</div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">in · an · auf · über · unter · vor · hinter · neben · zwischen</b><br>表<b>静止位置</b>(在哪 wo?)→<b style="color:#ff4b4b">第三格</b>；表<b>移动方向</b>(去哪 wohin?)→<b style="color:#58cc02">第四格</b>。<br>例：Das Buch ist auf <b style="color:#ff4b4b">dem</b> Tisch（静/三）· Ich lege es auf <b style="color:#58cc02">den</b> Tisch（动/四）</div>
     </div>
     <div class="rule-box">
       <h3 style="color:#ff4b4b">只支配第三格 Dativ</h3>
-      <div style="font-size:13px;line-height:1.9;color:#777"><b lang="de">aus</b>(从里) · <b lang="de">außer</b>(除外) · <b lang="de">bei</b>(在…处) · <b lang="de">mit</b>(和/用) · <b lang="de">nach</b>(向/之后) · <b lang="de">seit</b>(自从) · <b lang="de">von</b>(从/属于) · <b lang="de">zu</b>(向) · <b lang="de">gegenüber</b>(对面)<br><span style="color:var(--text-dim)">口诀：aus bei mit nach seit von zu</span></div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">aus</b>(从里) · <b lang="de">außer</b>(除外) · <b lang="de">bei</b>(在…处) · <b lang="de">mit</b>(和/用) · <b lang="de">nach</b>(向/之后) · <b lang="de">seit</b>(自从) · <b lang="de">von</b>(从/属于) · <b lang="de">zu</b>(向) · <b lang="de">gegenüber</b>(对面)<br><span style="color:var(--text-dim)">口诀：aus bei mit nach seit von zu</span></div>
     </div>
     <div class="rule-box">
       <h3 style="color:#58cc02">只支配第四格 Akkusativ</h3>
-      <div style="font-size:13px;line-height:1.9;color:#777"><b lang="de">durch</b>(穿过) · <b lang="de">für</b>(为了) · <b lang="de">gegen</b>(反对) · <b lang="de">ohne</b>(没有) · <b lang="de">um</b>(围绕/在…时) · <b lang="de">bis</b>(到) · <b lang="de">entlang</b>(沿着) · <b lang="de">wider</b>(违反)<br><span style="color:var(--text-dim)">口诀：durch für gegen ohne um</span></div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">durch</b>(穿过) · <b lang="de">für</b>(为了) · <b lang="de">gegen</b>(反对) · <b lang="de">ohne</b>(没有) · <b lang="de">um</b>(围绕/在…时) · <b lang="de">bis</b>(到) · <b lang="de">entlang</b>(沿着) · <b lang="de">wider</b>(违反)<br><span style="color:var(--text-dim)">口诀：durch für gegen ohne um</span></div>
     </div>
     <div class="rule-box">
       <h3 style="color:#1cb0f6">支配第二格 Genitiv</h3>
-      <div style="font-size:13px;line-height:1.9;color:#777"><b lang="de">während</b>(期间) · <b lang="de">wegen</b>(由于) · <b lang="de">trotz</b>(尽管) · <b lang="de">(an)statt</b>(代替) · <b lang="de">innerhalb</b>(之内) · <b lang="de">außerhalb</b>(之外) · <b lang="de">infolge</b>(由于) · <b lang="de">mithilfe</b>(借助) · <b lang="de">ungeachtet</b>(不顾)</div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">während</b>(期间) · <b lang="de">wegen</b>(由于) · <b lang="de">trotz</b>(尽管) · <b lang="de">(an)statt</b>(代替) · <b lang="de">innerhalb</b>(之内) · <b lang="de">außerhalb</b>(之外) · <b lang="de">infolge</b>(由于) · <b lang="de">mithilfe</b>(借助) · <b lang="de">ungeachtet</b>(不顾)</div>
     </div>
 
     <div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">名词性别后缀规律</span></div>
@@ -740,7 +730,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">👤</span><span class="sec-title-text">人称代词（主/宾/与格）</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2;color:#777" lang="de">
+      <div style="font-size:13px;line-height:2;color:var(--text-dim)" lang="de">
         <div><b style="color:var(--gold)">主格(N)</b>：ich · du · er/sie/es · wir · ihr · sie/Sie</div>
         <div><b style="color:var(--gold)">第四格(A)</b>：mich · dich · ihn/sie/es · uns · euch · sie/Sie</div>
         <div><b style="color:var(--gold)">第三格(D)</b>：mir · dir · ihm/ihr/ihm · uns · euch · ihnen/Ihnen</div>
@@ -767,7 +757,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">德语 11 种基本句型</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2;color:#777">
+      <div style="font-size:13px;line-height:2;color:var(--text-dim)">
         <div>① 主+谓(不及物)　② 主+谓+第四格宾语　③ 主+谓+第三格宾语</div>
         <div>④ 主+谓(不及物)+介词短语　⑤ 主+谓+表语　⑥ 主+谓+状语</div>
         <div>⑦ 主+谓+第三格宾语+第四格宾语（给某人某物）</div>
@@ -820,7 +810,7 @@ body:not(.lang-en) .en-only-block{display:none}
     </table>
 
     <div class="sec-title"><span class="sec-title-icon">🔎</span><span class="sec-title-text">名词性别辨别方法（带例子）</span></div>
-    <div class="rule-box"><div style="font-size:13px;line-height:1.9;color:#777">
+    <div class="rule-box"><div style="font-size:13px;line-height:1.9;color:var(--text-dim)">
       <div><b style="color:#58cc02">Ge- 开头</b>表"一类总称" → 100% 中性：das Gebäude(建筑)、das Gemüse(蔬菜)、das Geschenk(礼物)、das Gespräch(谈话)</div>
       <div><b style="color:#58cc02">-um 结尾</b>多中性：das Studium、das Museum、das Zentrum、das Datum、das Visum</div>
       <div><b style="color:#ff4b4b">-schaft</b> 100% 阴(似英语 -ship)：die Wissenschaft、die Freundschaft、die Gewerkschaft</div>
@@ -838,7 +828,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 4px;color:var(--text)">日常对话 + 词汇大全</h2>
     <p id="phrasesSub" style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">99个分类 · 3720个词句 · 点击卡片看谐音 · 🔊 点喇叭听地道德语发音</p>
     <div style="text-align:center;margin:6px 0 2px"><span onclick="document.getElementById('voiceGuide').style.display=document.getElementById('voiceGuide').style.display==='none'?'block':'none'" style="font-size:12px;color:#58cc02;cursor:pointer;border:1px solid rgba(88,204,2,.3);border-radius:20px;padding:3px 12px;display:inline-block">🎧 发音不地道？点这里装系统语音包</span></div>
-    <div id="voiceGuide" style="display:none;background:#fff;border:1px solid var(--line,#e8eaed);border-radius:14px;padding:14px 16px;margin:8px 0;font-size:13px;line-height:1.8;color:#555">
+    <div id="voiceGuide" style="display:none;background:#fff;border:1px solid var(--line,var(--border));border-radius:14px;padding:14px 16px;margin:8px 0;font-size:13px;line-height:1.8;color:#555">
       <div style="font-weight:600;color:#2b2b2b;margin-bottom:6px">为什么要装语音包？</div>
       朗读用的是<b>系统自带的神经语音引擎</b>（完全离线）。装上原生德语/中文语音后，发音从"机器味"变成接近真人。一次性设置，永久生效。
       <div style="font-weight:600;color:#46a302;margin:12px 0 4px">🍎 iPhone / iPad</div>
@@ -1048,7 +1038,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">🔑</span><span class="sec-title-text">be 动词：am / is / are</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div>I <b style="color:var(--gold)">am</b>（我是）· You/We/They <b style="color:var(--gold)">are</b>（你/我们/他们是）</div>
         <div>He/She/It <b style="color:var(--gold)">is</b>（他/她/它是）</div>
         <div style="color:var(--text-dim);margin-top:6px">口诀：<b>我 am，你/复数 are，单数他/她/它 is。</b></div>
@@ -1060,7 +1050,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">➕</span><span class="sec-title-text">名词复数</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2;color:#777">
+      <div style="font-size:13px;line-height:2;color:var(--text-dim)">
         <div>一般 <b>+s</b>：book→book<b style="color:var(--gold)">s</b></div>
         <div>s/x/ch/sh 结尾 <b>+es</b>：box→box<b style="color:var(--gold)">es</b></div>
         <div>辅音+y → <b>去y加ies</b>：city→cit<b style="color:var(--gold)">ies</b></div>
@@ -1080,7 +1070,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">⏳</span><span class="sec-title-text">三大基本时态</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div><b style="color:#1cb0f6">现在</b>：I <b>work</b>. / He <b>works</b>.（习惯、事实）</div>
         <div><b style="color:var(--gold)">过去</b>：I <b>worked</b>.（规则+ed；不规则 go→went, see→saw）</div>
         <div><b style="color:#ff7a4d">将来</b>：I <b>will work</b>. / I'm <b>going to</b> work.</div>
@@ -1090,7 +1080,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">⚡</span><span class="sec-title-text">英语五种基本句型</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.2;color:#777">
+      <div style="font-size:13px;line-height:2.2;color:var(--text-dim)">
         <div>① <b>主+谓</b>(SV)：<b style="color:#1cb0f6">I</b> <b style="color:var(--gold)">run</b>.（我跑）</div>
         <div>② <b>主+谓+宾</b>(SVO)：<b style="color:#1cb0f6">I</b> <b style="color:var(--gold)">eat</b> <b style="color:#ff7a4d">an apple</b>.（我吃苹果）</div>
         <div>③ <b>主+系+表</b>(SVP)：<b style="color:#1cb0f6">She</b> <b style="color:var(--gold)">is</b> <b style="color:#ff7a4d">happy</b>.（她很开心）</div>
@@ -1103,7 +1093,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="sec-title"><span class="sec-title-icon">🔗</span><span class="sec-title-text">主系表：系动词 + 表语</span></div>
     <div class="rule-box">
       <h3>主语 + 系动词 + 表语（形容词/名词）</h3>
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div><b>be 动词</b>：He <b style="color:var(--gold)">is</b> a teacher. · They <b style="color:var(--gold)">are</b> tired.</div>
         <div><b>感官系动词 + 形容词</b>：look(看起来)/feel(感觉)/sound(听起来)/taste(尝)/smell(闻) → It <b style="color:var(--gold)">looks</b> good. · I <b style="color:var(--gold)">feel</b> cold.</div>
         <div><b>变化系动词</b>：become/get/turn(变得) → He <b style="color:var(--gold)">became</b> rich. · It's <b style="color:var(--gold)">getting</b> dark.</div>
@@ -1113,7 +1103,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">❓</span><span class="sec-title-text">疑问句：助动词/be 提到句首</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div>一般疑问：<b style="color:var(--gold)">Do</b> you like tea? · <b style="color:var(--gold)">Does</b> he work? · <b style="color:var(--gold)">Are</b> you OK?</div>
         <div>特殊疑问：<b>疑问词 + 助动词 + 主语</b> → <b style="color:var(--gold)">What do</b> you want? · <b style="color:var(--gold)">Where is</b> the toilet?</div>
         <div>情态动词直接提前：<b style="color:var(--gold)">Can</b> you help me? · <b style="color:var(--gold)">Will</b> you come?</div>
@@ -1122,7 +1112,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">🚫</span><span class="sec-title-text">否定句：加 not / don't</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div>实义动词：用 <b style="color:var(--gold)">don't / doesn't</b> + 原形 → I <b>don't</b> know. · He <b>doesn't</b> like it.</div>
         <div>be 动词 / 情态：直接加 not → I'm <b>not</b> ready. · You <b>can't</b> go.</div>
         <div style="color:var(--text-dim)">⚠️ 一个句子只否定一次：别说 don't have no…（双重否定）。</div>
@@ -1131,7 +1121,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">🔼</span><span class="sec-title-text">比较级 / 最高级</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div>短词 <b>+er / +est</b>：tall → tall<b style="color:var(--gold)">er</b> → the tall<b style="color:var(--gold)">est</b></div>
         <div>长词 <b>more / most</b>：important → <b style="color:var(--gold)">more</b> important → the <b style="color:var(--gold)">most</b> important</div>
         <div>不规则：good → <b>better</b> → best · bad → <b>worse</b> → worst</div>
@@ -1142,7 +1132,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="sec-title"><span class="sec-title-icon">📍</span><span class="sec-title-text">There be 句型："某处有某物"</span></div>
     <div class="rule-box">
       <h3>There + be + 主语 + 地点/时间</h3>
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div><b style="color:var(--gold)">There is</b> a book <b>on the desk</b>.（桌上有本书）</div>
         <div><b style="color:var(--gold)">There are</b> two cats <b>in the room</b>.（房间里有两只猫）</div>
         <div><b>就近一致</b>：be 跟<b>最近的那个名词</b>单复数 → There is a pen and two books.（紧跟 a pen → is）</div>
@@ -1153,7 +1143,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">📦</span><span class="sec-title-text">常用句型 It / I'd like</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div><b style="color:var(--gold)">It is</b> + 形容词 → 天气/时间/感受 (It is cold. / It is 3 o'clock.)</div>
         <div>I'd like + 名词 → 我想要…… · I want to + 动词 → 我想做……</div>
       </div>
@@ -1168,7 +1158,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">🛡️</span><span class="sec-title-text">情态动词（后接动词原形）</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div><b lang="en">can</b> 能/会 · <b lang="en">could</b> 能(过去/委婉) · <b lang="en">may</b> 可以/可能 · <b lang="en">might</b> 也许</div>
         <div><b lang="en">must</b> 必须 · <b lang="en">should</b> 应该 · <b lang="en">will/would</b> 将/愿意 · <b lang="en">have to</b> 不得不</div>
         <div style="color:var(--text-dim)">特点：<b>不随人称变(无 -s)</b>、<b>后跟动词原形</b>、否定直接加 not(can't/shouldn't)。</div>
@@ -1177,7 +1167,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">🔄</span><span class="sec-title-text">被动语态：be + 过去分词</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div>主动 They <b style="color:var(--gold)">make</b> cars. → 被动 Cars <b style="color:var(--gold)">are made</b> (by them).（强调承受者）</div>
         <div>各时态变 be：is done(现在) · was done(过去) · will be done(将来) · has been done(完成)</div>
         <div style="color:var(--text-dim)">动词永远用<b>过去分词</b>，时态体现在 be 上。</div>
@@ -1186,7 +1176,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">🌱</span><span class="sec-title-text">非谓语动词</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div><b lang="en">to do</b> 不定式 → 目的/将来：I want <b>to go</b>.（想去）</div>
         <div><b lang="en">doing</b> 动名词 → 当名词,作主语/宾语：I like <b>swimming</b>.（喜欢游泳）</div>
         <div><b lang="en">doing</b> 现在分词 → 主动/正在：a <b>running</b> dog（在跑的狗）</div>
@@ -1196,7 +1186,7 @@ body:not(.lang-en) .en-only-block{display:none}
 
     <div class="sec-title"><span class="sec-title-icon">🔗</span><span class="sec-title-text">三大从句</span></div>
     <div class="rule-box">
-      <div style="font-size:13px;line-height:2.1;color:#777">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
         <div><b>名词性从句</b>(that/what/whether)作主/宾/表：I know <b style="color:var(--gold)">that he is right</b>.</div>
         <div><b>定语从句</b>(who/which/that)修饰名词：The man <b style="color:var(--gold)">who helped me</b> is kind.</div>
         <div><b>状语从句</b>(when/because/if/although)修饰全句：<b style="color:var(--gold)">When it rains</b>, I stay home.</div>
@@ -1204,7 +1194,7 @@ body:not(.lang-en) .en-only-block{display:none}
     </div>
 
     <div class="sec-title"><span class="sec-title-icon">🔤</span><span class="sec-title-text">26 个字母</span></div>
-    <div class="rule-box"><div style="font-size:14px;line-height:2;color:#777;letter-spacing:1px" lang="en">A B C D E F G H I J K L M<br>N O P Q R S T U V W X Y Z</div><div style="font-size:12px;color:var(--text-faint);margin-top:4px">5 个元音字母：<b style="color:#1cb0f6">A E I O U</b>，其余为辅音字母（读音见「英语发音」）。</div></div>
+    <div class="rule-box"><div style="font-size:14px;line-height:2;color:var(--text-dim);letter-spacing:1px" lang="en">A B C D E F G H I J K L M<br>N O P Q R S T U V W X Y Z</div><div style="font-size:12px;color:var(--text-faint);margin-top:4px">5 个元音字母：<b style="color:#1cb0f6">A E I O U</b>，其余为辅音字母（读音见「英语发音」）。</div></div>
 
     <div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">10 种词性</span></div>
     <table class="pron-table">
@@ -2423,6 +2413,7 @@ function _wakeOff(){try{if(_wl){_wl.release();_wl=null;}}catch(e){_wl=null;}}
 setInterval(()=>{try{if(typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking)_wakeOn();else _wakeOff();}catch(e){}},1000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking)_wakeOn();});
 
+function applyTheme(t){var r=document.documentElement;if(t==="dark"||t==="light")r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");var dark=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",dark?"#111417":"#58cc02");var b=document.getElementById("themeToggle");if(b)b.textContent=dark?"☀️":"🌙";}function toggleTheme(){var cur=document.documentElement.getAttribute("data-theme");var sys=matchMedia("(prefers-color-scheme:dark)").matches;var eff=cur==="dark"||(cur!=="light"&&sys);var next=eff?"light":"dark";try{localStorage.setItem("theme",next);}catch(e){}applyTheme(next);}(function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}applyTheme(t);})();try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}if(t!=="dark"&&t!=="light")applyTheme(null);});}catch(e){}
 // INIT
 initPhrases();
 buildReadTabs();buildSeriesTabs();   // 标签轻量先建；阅读/连载长列表在首次打开时懒渲染（见 showSection）
@@ -2458,7 +2449,7 @@ setLang(LANG); // 应用初始语言（含 localStorage 记忆）
 /* 浮动「循环朗读」按钮：固定在回到顶部上方 */
 .fab-read{position:fixed;right:16px;bottom:80px;z-index:300;border:none;border-radius:24px;background:#58cc02;color:#fff;font-size:14px;font-weight:600;font-family:inherit;padding:11px 18px;cursor:pointer;box-shadow:0 4px 16px rgba(88,204,2,.4);white-space:nowrap;transition:transform .15s,background .2s}
 .fab-read:active{transform:scale(.94)}
-.fab-read.playing,.fab-read.speaking{background:#fff;color:#777;border:1px solid var(--gold-faint);box-shadow:0 3px 12px rgba(0,0,0,.12)}
+.fab-read.playing,.fab-read.speaking{background:#fff;color:var(--text-dim);border:1px solid var(--gold-faint);box-shadow:0 3px 12px rgba(0,0,0,.12)}
 </style>
 <script>
 (function(){
