@@ -46,11 +46,22 @@ function findArray(html, name) {
   return [stmtStart, semi, html.slice(jsonStart, end)];
 }
 
+// 解码器 + 兼容垫片。全部 ES5（var/for），不依赖 TextDecoder，避免旧版 WebView
+// （如微信 X5 / 老 iOS WKWebView）缺失 API 时首屏脚本整体崩溃、导致全站点击失效。
 const DECODER =
-  'const _XK=String.fromCharCode(' + KEY_CODES.join(',') + ');' +
-  'function _dec(s){const b=atob(s),n=b.length,a=new Uint8Array(n);' +
-  'for(let i=0;i<n;i++)a[i]=b.charCodeAt(i)^_XK.charCodeAt(i%_XK.length);' +
-  'return new TextDecoder().decode(a);}\n';
+  'var _XK=String.fromCharCode(' + KEY_CODES.join(',') + ');' +
+  'function _u8(a){var s="",i=0,n=a.length,c,c2,c3,c4,cp;while(i<n){c=a[i++];' +
+  'if(c<128)s+=String.fromCharCode(c);' +
+  'else if(c<224){c2=a[i++];s+=String.fromCharCode((c&31)<<6|c2&63);}' +
+  'else if(c<240){c2=a[i++];c3=a[i++];s+=String.fromCharCode((c&15)<<12|(c2&63)<<6|c3&63);}' +
+  'else{c2=a[i++];c3=a[i++];c4=a[i++];cp=((c&7)<<18|(c2&63)<<12|(c3&63)<<6|c4&63)-65536;' +
+  's+=String.fromCharCode(55296+(cp>>10),56320+(cp&1023));}}return s;}' +
+  'function _dec(s){var b=atob(s),n=b.length,a=new Uint8Array(n),i;' +
+  'for(i=0;i<n;i++)a[i]=b.charCodeAt(i)^_XK.charCodeAt(i%_XK.length);' +
+  'try{return new TextDecoder().decode(a);}catch(e){return _u8(a);}}' +
+  'if(![].flatMap){Array.prototype.flatMap=function(f,t){return this.reduce(function(a,v,i,arr){var r=f.call(t,v,i,arr);return a.concat(Array.isArray(r)?r:[r]);},[]);};}' +
+  'if(!Object.values){Object.values=function(o){return Object.keys(o).map(function(k){return o[k];});};}' +
+  '\n';
 
 async function build() {
   let html = readFileSync('src.html', 'utf8');
@@ -64,7 +75,8 @@ async function build() {
   html = html.slice(0, catStart) + DECODER + html.slice(catStart);
 
   // 2) 混淆全部内联 <script>（保留全局名，兼容 onclick 等 HTML 内联处理器）
-  const opts = { compress: { toplevel: false, keep_fnames: true }, mangle: { toplevel: false }, format: { comments: false } };
+  // safari10：规避老 WKWebView（iOS 10/11，微信内置浏览器）的 let 循环与 punctuator bug
+  const opts = { compress: { toplevel: false, keep_fnames: true }, mangle: { toplevel: false, safari10: true }, format: { comments: false, safari10: true } };
   const re = /<script>([\s\S]*?)<\/script>/g;
   let out = '', last = 0, m, count = 0;
   while ((m = re.exec(html))) {
