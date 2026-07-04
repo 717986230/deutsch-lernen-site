@@ -218,6 +218,7 @@ body:not(.lang-en) .nav-en-only{display:none}
 body.lang-en .de-only-block{display:none}
 body:not(.lang-en) .en-only-block{display:none}
 /* SRS 生词本 */
+.dash{margin-top:20px}.dash-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.dstat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 4px;text-align:center;box-shadow:var(--shadow);font-family:inherit}button.dstat{cursor:pointer;transition:transform .12s}button.dstat:active{transform:scale(.96)}.dstat b{display:block;font-size:22px;color:var(--gold);font-weight:700;line-height:1.15}.dstat span{font-size:11px;color:var(--text-dim)}.dash-goal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}.dash-goal-top{display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim)}.dash-goal-top b{color:var(--gold);font-size:15px}.dash-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}.dash-actions select{border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:8px;padding:2px 6px;font-family:inherit}
 .srs-badge{display:inline-block;min-width:16px;padding:0 5px;margin-left:4px;border-radius:9px;background:#ff4b4b;color:#fff;font-size:10px;line-height:16px;text-align:center;vertical-align:middle}
 .star-btn{flex-shrink:0;width:28px;height:28px;border:none;border-radius:50%;background:transparent;color:var(--text-faint);font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:all .15s}
 .star-btn:hover{background:rgba(255,193,7,.16)}
@@ -267,6 +268,22 @@ body:not(.lang-en) .en-only-block{display:none}
     <p id="heroSub">发音 · 数字 · 语法 · 3720 词句 · 5阶段进阶 · 互动测验</p>
   </div>
   <div class="container">
+   <div class="dash">
+    <div class="dash-kpis">
+      <button class="dstat" onclick="showSection('srs')" title="去复习"><b id="dashDue">0</b><span>今日待复习</span></button>
+      <span class="dstat"><b id="dashStreak">0</b><span>🔥 连续天数</span></span>
+      <span class="dstat"><b id="dashTotal">0</b><span>生词</span></span>
+      <span class="dstat"><b id="dashMastered">0</b><span>已掌握</span></span>
+    </div>
+    <div class="dash-goal">
+      <div class="dash-goal-top"><span>今日学习目标</span><span><b id="dashToday">0</b> / <span id="dashGoal">20</span> 次</span></div>
+      <div class="progress-bar" style="margin:8px 0"><div class="progress-fill" id="dashGoalFill" style="width:0%"></div></div>
+      <div class="dash-actions">
+        <button class="btn" onclick="showSection('srs')">▶ 开始复习</button>
+        <label style="font-size:12px;color:var(--text-dim)">目标 <select id="goalSel" onchange="setGoal(this.value)"><option>10</option><option selected>20</option><option>30</option><option>50</option></select></label>
+      </div>
+    </div>
+   </div>
    <div class="de-only-block">
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:24px">
       <div class="card" onclick="showSection('pronunciation')" style="text-align:center;padding:24px 16px">
@@ -1367,6 +1384,7 @@ function showSection(id){
   const btns=document.querySelectorAll('.nav-btn');
   btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+id+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
   if(id==='srs'&&typeof renderSrs==='function')renderSrs();
+  if(id==='home'&&typeof updateDashboard==='function')updateDashboard();
   if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}     // 懒渲染：首次打开才渲染长列表
   if(id==='series'&&!_rendered.series){renderSeries();renderSeriesLinks();_rendered.series=true;}
   window.scrollTo(0,0);
@@ -1929,7 +1947,7 @@ function nextQ(){
 function escQ(s){return s.replace(/'/g,"&#39;").replace(/"/g,'&quot;')}
 function checkQ(btn,selected,correct){
   document.querySelectorAll('#mainQuizArea .quiz-opt').forEach(b=>b.disabled=true);
-  mq.total++;
+  mq.total++;try{studyTick();}catch(e){}
   const sel=selected.replace(/&#39;/g,"'").replace(/&quot;/g,'"');
   const cor=correct.replace(/&#39;/g,"'").replace(/&quot;/g,'"');
   if(sel===cor){btn.classList.add('correct');mq.score++;}
@@ -2177,6 +2195,7 @@ function srsRate(grade){
     else{real.box=Math.min(5,real.box+1);real.due=Date.now()+SRS_INTERVALS[real.box]*86400000;}
     srsSave();
   }
+  try{studyTick();}catch(e){}
   s.done++;s.revealed=false;srsShowCard();
 }
 function srsSessionDone(){
@@ -2414,6 +2433,7 @@ setInterval(()=>{try{if(typeof speechSynthesis!=='undefined'&&speechSynthesis.sp
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking)_wakeOn();});
 
 function applyTheme(t){var r=document.documentElement;if(t==="dark"||t==="light")r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");var dark=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",dark?"#111417":"#58cc02");var b=document.getElementById("themeToggle");if(b)b.textContent=dark?"☀️":"🌙";}function toggleTheme(){var cur=document.documentElement.getAttribute("data-theme");var sys=matchMedia("(prefers-color-scheme:dark)").matches;var eff=cur==="dark"||(cur!=="light"&&sys);var next=eff?"light":"dark";try{localStorage.setItem("theme",next);}catch(e){}applyTheme(next);}(function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}applyTheme(t);})();try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}if(t!=="dark"&&t!=="light")applyTheme(null);});}catch(e){}
+function _today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function _yday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function getStudy(){var s;try{s=JSON.parse(localStorage.getItem("study")||"{}");}catch(e){s={};}if(!s.goal)s.goal=20;return s;}function saveStudy(s){try{localStorage.setItem("study",JSON.stringify(s));}catch(e){}}function studyTick(n){var s=getStudy(),t=_today();if(s.d!==t){s.streak=(s.last===_yday())?(s.streak||0)+1:1;s.last=t;s.d=t;s.n=0;}s.n=(s.n||0)+(n||1);saveStudy(s);try{updateDashboard();}catch(e){}}function setGoal(g){var s=getStudy();s.goal=+g||20;saveStudy(s);updateDashboard();}function updateDashboard(){if(typeof srsCounts!=="function")return;var c=srsCounts(),s=getStudy(),t=_today(),n=(s.d===t?s.n:0)||0;function S(i,v){var e=document.getElementById(i);if(e)e.textContent=v;}S("dashDue",c.due);S("dashStreak",s.streak||0);S("dashTotal",c.total);S("dashMastered",c.mastered);S("dashToday",n);S("dashGoal",s.goal);var f=document.getElementById("dashGoalFill");if(f)f.style.width=Math.min(100,Math.round(n/s.goal*100))+"%";var sel=document.getElementById("goalSel");if(sel)sel.value=String(s.goal);}try{updateDashboard();}catch(e){}
 // INIT
 initPhrases();
 buildReadTabs();buildSeriesTabs();   // 标签轻量先建；阅读/连载长列表在首次打开时懒渲染（见 showSection）
