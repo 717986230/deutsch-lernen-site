@@ -226,6 +226,13 @@ body:not(.lang-en) .en-only-block{display:none}
 .home-more[open]>summary::after{content:"▾"}
 .home-more[open]>summary{border-bottom:1px solid var(--border)}
 .home-more-body{padding:6px 16px 14px}
+.gram-group{margin:0 0 12px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.gram-group>summary{cursor:pointer;padding:14px 16px;font-size:14px;font-weight:600;color:var(--text);list-style:none;-webkit-user-select:none;user-select:none}
+.gram-group>summary::-webkit-details-marker{display:none}
+.gram-group>summary::after{content:"▸";float:right;color:var(--gold)}
+.gram-group[open]>summary::after{content:"▾"}
+.gram-group[open]>summary{border-bottom:1px solid var(--border)}
+.gram-body{padding:8px 16px 14px}
 .srs-badge{display:inline-block;min-width:16px;padding:0 5px;margin-left:4px;border-radius:9px;background:#ff4b4b;color:#fff;font-size:10px;line-height:16px;text-align:center;vertical-align:middle}
 .star-btn{flex-shrink:0;width:28px;height:28px;border:none;border-radius:50%;background:transparent;color:var(--text-faint);font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:all .15s}
 .star-btn:hover{background:rgba(255,193,7,.16)}
@@ -605,7 +612,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 14px;color:var(--text)">德语语法速记</h2>
     <div class="subnav" id="grammarSubnav"></div>
 
-    <div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">名词性别（冠词）</span></div>
+    <details class="gram-group" open><summary>① 入门必学 · 冠词性别 / 动词变位 / 四个格 / 基础句型</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">名词性别（冠词）</span></div>
     <div class="rule-box">
       <h3>三种性别 = 三种定冠词</h3>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px">
@@ -686,7 +693,7 @@ body:not(.lang-en) .en-only-block{display:none}
       </div>
     </div>
 
-    <div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">完成时 Perfekt（最常用的过去）</span></div>
+    </div></details><details class="gram-group"><summary>② 完成时 &amp; 句子语序（可分动词 / 从句）</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">完成时 Perfekt（最常用的过去）</span></div>
     <div class="rule-box">
       <h3>haben / sein + 过去分词（句尾）</h3>
       <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
@@ -710,7 +717,7 @@ body:not(.lang-en) .en-only-block{display:none}
       </div>
     </div>
 
-    <div class="sec-title"><span class="sec-title-icon">🎨</span><span class="sec-title-text">形容词词尾（德语难点）</span></div>
+    </div></details><details class="gram-group"><summary>③ 两大难点 · 形容词词尾 / 介词支配格</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🎨</span><span class="sec-title-text">形容词词尾（德语难点）</span></div>
     <div class="rule-box">
       <h3>定冠词后（der/die/das）第一格</h3>
       <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
@@ -747,7 +754,7 @@ body:not(.lang-en) .en-only-block{display:none}
     </table>
     <div class="tip-card"><div class="tip-body"><b>98% 以 -e 结尾的名词是阴性</b>(die Schule/Frage/Reise/Tasche)。例外：少数阳性弱变化(der Kunde/Affe/Löwe/Kollege)、中性(das Ende/Wochenende)。</div></div>
 
-    <div class="sec-title"><span class="sec-title-icon">⏳</span><span class="sec-title-text">时态精讲 · 一句话走遍六时态</span></div>
+    </div></details><details class="gram-group"><summary>④ 时态精讲 · 一句话走遍六时态（推荐先看）</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">⏳</span><span class="sec-title-text">时态精讲 · 一句话走遍六时态</span></div>
     <div class="tip-card"><div class="tip-body">💡 <b>核心观念</b>：时态 = <b>同一件事，在不同时间的说法</b>。下面用同一句「<b>我学德语</b>」走一遍——你会发现<b style="color:#1cb0f6">蓝色的助动词</b>负责表达"时间"，<b style="color:var(--gold)">绿色的主动词</b>才是"做什么"。看懂这一点，时态就通了。</div></div>
     <div class="rule-box" style="line-height:1.5">
       <div style="display:flex;flex-direction:column;gap:12px">
@@ -799,7 +806,7 @@ body:not(.lang-en) .en-only-block{display:none}
       <div style="font-size:12px;color:var(--text-dim);margin-top:6px">这两个既能单独用（我是/我有），又是完成时的<b>助动词</b>——所以务必背熟。练一练可去「🎯 练习测验 → 动词变位」。</div>
     </div>
 
-    <div class="sec-title"><span class="sec-title-icon">👤</span><span class="sec-title-text">人称代词（主/宾/与格）</span></div>
+    </div></details><details class="gram-group"><summary>⑤ 代词 &amp; 11 种基本句型</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">👤</span><span class="sec-title-text">人称代词（主/宾/与格）</span></div>
     <div class="rule-box">
       <div style="font-size:13px;line-height:2;color:var(--text-dim)" lang="de">
         <div><b style="color:var(--gold)">主格(N)</b>：ich · du · er/sie/es · wir · ihr · sie/Sie</div>
@@ -837,7 +844,7 @@ body:not(.lang-en) .en-only-block{display:none}
       </div>
     </div>
 
-    <div class="sec-title"><span class="sec-title-icon">📖</span><span class="sec-title-text">阅读理解高频词 · 赞同/反对/中立</span></div>
+    </div></details><details class="gram-group"><summary>⑥ 阅读高频词（赞同反对 / 情感 / 连词）</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">📖</span><span class="sec-title-text">阅读理解高频词 · 赞同/反对/中立</span></div>
     <table class="pron-table">
       <tr><th>赞同</th><th>反对</th><th>中立</th></tr>
       <tr><td lang="de">hinnehmen 接受</td><td lang="de">kritisieren 批评</td><td lang="de">allgemein 普遍</td></tr>
@@ -889,6 +896,7 @@ body:not(.lang-en) .en-only-block{display:none}
       <div><b style="color:#ff4b4b">98% -e 结尾</b>阴性：die Schule、die Frage、die Reise、die Tasche、die Lunge</div>
       <div style="color:var(--text-dim)">例外：少数 -e 阳性弱变化(der Kunde/Affe/Löwe/Kollege)；中性(das Ende/Wochenende)。拉丁/希腊 -ant/-ist/-oph 等多为阳性弱变化(der Pianist、der Philosoph)。</div>
     </div></div>
+    </div></details>
   </div>
 </div>
 
@@ -2530,7 +2538,7 @@ function buildSubNav(sectionId,navId){
     const lab=t.querySelector('.sec-title-text'); if(!lab)return;
     const chip=document.createElement('button');
     chip.className='subnav-chip'; chip.type='button'; chip.textContent=lab.textContent;
-    chip.onclick=function(){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});};
+    chip.onclick=function(){var el=document.getElementById(id);var d=el.closest&&el.closest('details');if(d)d.open=true;el.scrollIntoView({behavior:'smooth',block:'start'});};
     nav.appendChild(chip);
   });
 }
