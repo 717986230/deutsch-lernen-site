@@ -219,6 +219,13 @@ body.lang-en .de-only-block{display:none}
 body:not(.lang-en) .en-only-block{display:none}
 /* SRS 生词本 */
 .dash{margin-top:20px}.dash-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.dstat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 4px;text-align:center;box-shadow:var(--shadow);font-family:inherit}button.dstat{cursor:pointer;transition:transform .12s}button.dstat:active{transform:scale(.96)}.dstat b{display:block;font-size:22px;color:var(--gold);font-weight:700;line-height:1.15}.dstat span{font-size:11px;color:var(--text-dim)}.dash-goal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}.dash-goal-top{display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim)}.dash-goal-top b{color:var(--gold);font-size:15px}.dash-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}.dash-actions select{border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:8px;padding:2px 6px;font-family:inherit}.dash-levels-wrap{margin-top:12px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow)}.dash-lv-title{font-size:12px;color:var(--text-dim);margin-bottom:8px}.lvrow{display:flex;align-items:center;font-size:12px;color:var(--text-dim);margin:6px 0}.lvlab{width:40px;flex-shrink:0}.lvnum{width:60px;text-align:right;flex-shrink:0;color:var(--text)}
+.home-more{margin-top:20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.home-more>summary{cursor:pointer;padding:14px 16px;font-size:14px;color:var(--text);font-weight:600;list-style:none;-webkit-user-select:none;user-select:none}
+.home-more>summary::-webkit-details-marker{display:none}
+.home-more>summary::after{content:"▸";float:right;color:var(--gold)}
+.home-more[open]>summary::after{content:"▾"}
+.home-more[open]>summary{border-bottom:1px solid var(--border)}
+.home-more-body{padding:6px 16px 14px}
 .srs-badge{display:inline-block;min-width:16px;padding:0 5px;margin-left:4px;border-radius:9px;background:#ff4b4b;color:#fff;font-size:10px;line-height:16px;text-align:center;vertical-align:middle}
 .star-btn{flex-shrink:0;width:28px;height:28px;border:none;border-radius:50%;background:transparent;color:var(--text-faint);font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:all .15s}
 .star-btn:hover{background:rgba(255,193,7,.16)}
@@ -237,7 +244,6 @@ body:not(.lang-en) .en-only-block{display:none}
 </head>
 <body>
 <script>!function(){function e(){var e=document.getElementById("__eb");return e||((e=document.createElement("div")).id="__eb",e.style.cssText="position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;font:12px/1.6 monospace;padding:10px;white-space:pre-wrap;word-break:break-all;max-height:60%;overflow:auto",(document.body||document.documentElement).appendChild(e)),e}window.onerror=function(n,t,o,r){try{e().textContent="⚠️ 脚本出错（请截图发我）\n"+n+"\n@"+(t||"")+" "+o+":"+r}catch(c){}return!1};try{window.addEventListener("unhandledrejection",function(n){try{e().textContent="⚠️ Promise 出错（截图发我）\n"+(n.reason&&(n.reason.message||n.reason)||"unknown")}catch(t){}})}catch(n){}}();</script>
-<div id="__ver" style="position:fixed;bottom:3px;left:50%;transform:translateX(-50%);font-size:9px;color:#9aa;z-index:1;opacity:.6;pointer-events:none">build 0703b</div>
 <a href="#nav" class="skip-link">跳到导航</a>
 
 <!-- 语言切换：德 / 英 -->
@@ -271,25 +277,9 @@ body:not(.lang-en) .en-only-block{display:none}
     <p id="heroSub">发音 · 数字 · 语法 · 3720 词句 · 5阶段进阶 · 互动测验</p>
   </div>
   <div class="container">
-   <div class="dash">
-    <div class="dash-kpis">
-      <button class="dstat" onclick="showSection('srs')" title="去复习"><b id="dashDue">0</b><span>今日待复习</span></button>
-      <span class="dstat"><b id="dashStreak">0</b><span>🔥 连续天数</span></span>
-      <span class="dstat"><b id="dashTotal">0</b><span>生词</span></span>
-      <span class="dstat"><b id="dashMastered">0</b><span>已掌握</span></span>
-    </div>
-    <div class="dash-goal">
-      <div class="dash-goal-top"><span>今日学习目标</span><span><b id="dashToday">0</b> / <span id="dashGoal">20</span> 次</span></div>
-      <div class="progress-bar" style="margin:8px 0"><div class="progress-fill" id="dashGoalFill" style="width:0%"></div></div>
-      <div class="dash-actions">
-        <button class="btn" onclick="showSection('srs')">▶ 开始复习</button>
-        <label style="font-size:12px;color:var(--text-dim)">目标 <select id="goalSel" onchange="setGoal(this.value)"><option>10</option><option selected>20</option><option>30</option><option>50</option></select></label>
-      </div>
-    </div>
-    <div class="dash-levels-wrap"><div class="dash-lv-title">各级别掌握进度 · 在词卡点「✓」标记已学会</div><div id="dashLevels"></div></div>
-   </div>
    <div class="de-only-block">
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:24px">
+    <div class="sec-title" style="margin-top:8px"><span class="sec-title-icon">📚</span><span class="sec-title-text">全部功能</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
       <div class="card" onclick="showSection('pronunciation')" style="text-align:center;padding:24px 16px">
         <div style="font-size:32px;margin-bottom:10px">🔤</div>
         <div style="font-size:15px;color:var(--gold);margin-bottom:6px">发音规律</div>
@@ -366,7 +356,8 @@ body:not(.lang-en) .en-only-block{display:none}
       </div>
     </div>
 
-    <div class="sec-title" style="margin-top:36px"><span class="sec-title-icon">⚡</span><span class="sec-title-text">学习路线建议</span></div>
+    <details class="home-more" style="margin-top:24px"><summary>💡 学习方法 & 秘诀（点开查看）</summary><div class="home-more-body">
+    <div class="sec-title" style="margin-top:8px"><span class="sec-title-icon">⚡</span><span class="sec-title-text">学习路线建议</span></div>
     <div class="tip-card"><div class="tip-title">第一步：掌握发音（1-2天）</div><div class="tip-body">德语发音<b>规则极强</b>，几乎完全按拼写读音。先学26个字母+变音字母（ä ö ü），再学常见组合音（ei/ie/ch/sch/sp/st）。</div></div>
     <div class="tip-card"><div class="tip-title">第二步：记住数字（1天）</div><div class="tip-body">数字有<b>清晰规律</b>：1-12单独记，13-19用"数字+zehn"，20-90用"tens+zig"，21-99是<b>个位+und+十位</b>（倒序！）。</div></div>
     <div class="tip-card"><div class="tip-title">第三步：学语法框架（3-5天）</div><div class="tip-body">德语有<b>三种冠词性别</b>（der/die/das）和四个格。先记"万能公式"，每天练5个句型。</div></div>
@@ -391,6 +382,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="tip-card"><div class="tip-title">⑯ 把手机系统语言切成德语</div><div class="tip-body">制造<b>被动沉浸</b>：每天自然接触几十个高频词(Einstellungen 设置、Senden 发送、Löschen 删除…)。零成本、全天候磨语感。</div></div>
     <div class="tip-card"><div class="tip-title">⑰ 称呼先分清 du / Sie</div><div class="tip-body">朋友家人用 <b>du</b>，陌生人·长辈·正式场合用 <b>Sie</b>(动词跟着变)。<b>用错比语法错更扎眼</b>——这是礼貌问题，优先记牢。</div></div>
     <div class="tip-card"><div class="tip-title">⑱ 别怕开口犯错</div><div class="tip-body">德国人欣赏"敢说"。<b>说错→被纠正→记住，正是进步最快的循环</b>。沉默才是最大的障碍，每天逼自己开口几句。</div></div>
+    </div></details>
    </div><!-- /de-only-block -->
 
    <div class="en-only-block">
