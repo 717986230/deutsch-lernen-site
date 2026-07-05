@@ -233,6 +233,8 @@ body:not(.lang-en) .en-only-block{display:none}
 .gram-group[open]>summary::after{content:"▾"}
 .gram-group[open]>summary{border-bottom:1px solid var(--border)}
 .gram-body{padding:8px 16px 14px}
+.voice-tip{display:flex;align-items:center;gap:12px;margin-top:18px;background:rgba(88,204,2,.09);border:1px solid var(--gold-dim);border-radius:14px;padding:14px 16px;cursor:pointer;font-size:13px;color:var(--text);line-height:1.6;box-shadow:var(--shadow)}
+.voice-tip:active{background:rgba(88,204,2,.16)}
 .srs-badge{display:inline-block;min-width:16px;padding:0 5px;margin-left:4px;border-radius:9px;background:#ff4b4b;color:#fff;font-size:10px;line-height:16px;text-align:center;vertical-align:middle}
 .star-btn{flex-shrink:0;width:28px;height:28px;border:none;border-radius:50%;background:transparent;color:var(--text-faint);font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:all .15s}
 .star-btn:hover{background:rgba(255,193,7,.16)}
@@ -292,6 +294,23 @@ body:not(.lang-en) .en-only-block{display:none}
     <p id="heroSub">发音 · 数字 · 语法 · 3720 词句 · 5阶段进阶 · 互动测验</p>
   </div>
   <div class="container">
+   <div class="voice-tip" onclick="var g=document.getElementById('voiceGuide');g.style.display=g.style.display==='none'?'block':'none'">
+     <span style="font-size:24px;flex-shrink:0">🎧</span>
+     <div><b>发音不够地道？</b> 点这里一次性装好<b>系统语音包</b>，🔊 发音立刻接近真人（离线 · 免费 · 一次设置永久生效）<span style="color:var(--gold);font-weight:700"> ▸</span></div>
+   </div>
+   <div id="voiceGuide" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:10px 0 0;font-size:13px;line-height:1.8;color:var(--text-dim)">
+     <div style="font-weight:600;color:var(--text);margin-bottom:6px">为什么要装语音包？</div>
+     朗读用的是<b>系统自带的神经语音引擎</b>（完全离线）。装上原生德语/中文语音后，发音从"机器味"变成接近真人。一次性设置，永久生效。
+     <div style="font-weight:600;color:#46a302;margin:12px 0 4px">🍎 iPhone / iPad</div>
+     设置 → 辅助功能 → 朗读内容 → 声音 → <b>德语</b>（选 Anna/Petra/Markus）下载；中文选「普通话」。
+     <div style="font-weight:600;color:#46a302;margin:10px 0 4px">💻 Mac</div>
+     系统设置 → 辅助功能 → 朗读内容 → 系统声音 → 管理声音 → 勾选<b>德语 Anna/Petra</b> + <b>中文 婷婷</b> 下载。
+     <div style="font-weight:600;color:#46a302;margin:10px 0 4px">🤖 安卓</div>
+     设置 → 搜索"文字转语音/TTS" → 选 Google 语音引擎 → 安装语音数据 → 下载<b>德语 + 中文</b>。
+     <div style="font-weight:600;color:#46a302;margin:10px 0 4px">🌐 电脑 Chrome / Edge</div>
+     自带在线德语/中文语音（Google/Microsoft），通常无需额外安装，音质已很好。
+     <div style="font-size:12px;color:var(--text-faint);margin-top:10px">装好后回到本页刷新，🔊 会自动选用新语音。</div>
+   </div>
    <div class="de-only-block">
     <div class="sec-title" style="margin-top:8px"><span class="sec-title-icon">📚</span><span class="sec-title-text">全部功能</span></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
@@ -958,20 +977,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="hero-label" style="text-align:center;padding-top:20px">Alltagsdeutsch</div>
     <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 4px;color:var(--text)">日常对话 + 词汇大全</h2>
     <p id="phrasesSub" style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">99个分类 · 3720个词句 · 点击卡片看谐音 · 🔊 点喇叭听地道德语发音</p>
-    <div style="text-align:center;margin:6px 0 2px"><span onclick="document.getElementById('voiceGuide').style.display=document.getElementById('voiceGuide').style.display==='none'?'block':'none'" style="font-size:12px;color:#58cc02;cursor:pointer;border:1px solid rgba(88,204,2,.3);border-radius:20px;padding:3px 12px;display:inline-block">🎧 发音不地道？点这里装系统语音包</span></div>
-    <div id="voiceGuide" style="display:none;background:#fff;border:1px solid var(--line,var(--border));border-radius:14px;padding:14px 16px;margin:8px 0;font-size:13px;line-height:1.8;color:#555">
-      <div style="font-weight:600;color:#2b2b2b;margin-bottom:6px">为什么要装语音包？</div>
-      朗读用的是<b>系统自带的神经语音引擎</b>（完全离线）。装上原生德语/中文语音后，发音从"机器味"变成接近真人。一次性设置，永久生效。
-      <div style="font-weight:600;color:#46a302;margin:12px 0 4px">🍎 iPhone / iPad</div>
-      设置 → 辅助功能 → 朗读内容 → 声音 → <b>德语</b>（选 Anna/Petra/Markus）下载；中文选「普通话」。
-      <div style="font-weight:600;color:#46a302;margin:10px 0 4px">💻 Mac</div>
-      系统设置 → 辅助功能 → 朗读内容 → 系统声音 → 管理声音 → 勾选<b>德语 Anna/Petra</b> + <b>中文 婷婷</b> 下载。
-      <div style="font-weight:600;color:#46a302;margin:10px 0 4px">🤖 安卓</div>
-      设置 → 搜索"文字转语音/TTS" → 选 Google 语音引擎 → 安装语音数据 → 下载<b>德语 + 中文</b>。
-      <div style="font-weight:600;color:#46a302;margin:10px 0 4px">🌐 电脑 Chrome / Edge</div>
-      自带在线德语/中文语音（Google/Microsoft），通常无需额外安装，音质已很好。
-      <div style="font-size:12px;color:#afafaf;margin-top:10px">装好后回到本页刷新，🔊 会自动选用新语音。</div>
-    </div>
+
     <div class="search-wrap">
       <input type="text" id="searchInput" placeholder="搜索德语、中文或谐音..." oninput="filterPhrases()">
       <span class="search-icon">🔍</span>
