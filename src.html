@@ -294,9 +294,9 @@ body:not(.lang-en) .en-only-block{display:none}
     <p id="heroSub">发音 · 数字 · 语法 · 3720 词句 · 5阶段进阶 · 互动测验</p>
   </div>
   <div class="container">
-   <div class="voice-tip" onclick="var g=document.getElementById('voiceGuide');g.style.display=g.style.display==='none'?'block':'none'">
+   <div class="voice-tip" id="voiceTip" onclick="var g=document.getElementById('voiceGuide');g.style.display=g.style.display==='none'?'block':'none'">
      <span style="font-size:24px;flex-shrink:0">🎧</span>
-     <div><b>发音不够地道？</b> 点这里一次性装好<b>系统语音包</b>，🔊 发音立刻接近真人（离线 · 免费 · 一次设置永久生效）<span style="color:var(--gold);font-weight:700"> ▸</span></div>
+     <div><b>发音不够地道？</b> 点这里一次性装好<b>系统语音包</b>（离线 · 免费 · 一次设置永久生效）<span style="color:var(--gold);font-weight:700"> ▸</span><div style="color:var(--text-dim);font-size:12px;margin-top:3px">装完前后<b style="color:#46a302">差别很大</b>——🔊 从"机器腔"变成接近真人的德语发音，跟读才有意义 👍</div></div>
    </div>
    <div id="voiceGuide" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:10px 0 0;font-size:13px;line-height:1.8;color:var(--text-dim)">
      <div style="font-weight:600;color:var(--text);margin-bottom:6px">为什么要装语音包？</div>
@@ -1119,7 +1119,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-top:22px">打赏之外 —— <b>把网站分享给同学</b>，也是莫大的支持 🙌</p>
     <div style="text-align:center;margin-top:8px"><button class="btn" onclick="copyShare(this)">📋 复制网址分享</button></div>
   </div>
-  <button onclick="showSection('home')" aria-label="返回首页" style="position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:300;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:24px;padding:10px 20px;font-size:13px;font-family:inherit;cursor:pointer;box-shadow:var(--shadow);white-space:nowrap">🙅 拒绝打赏，返回首页</button>
+  <button onclick="rejectDonate()" aria-label="返回首页" style="position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:300;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:24px;padding:10px 20px;font-size:13px;font-family:inherit;cursor:pointer;box-shadow:var(--shadow);white-space:nowrap">🙅 下次一定 →</button>
 </div>
 
 <!-- ══════════════ 英语发音 ══════════════ -->
@@ -1949,7 +1949,9 @@ function pickGermanVoice(){
   _zhVoice = vs.find(v=>(v.lang||'').replace('_','-').toLowerCase().startsWith('zh')&&zpref.some(p=>v.name.includes(p)))
            || vs.find(v=>(v.lang||'').replace('_','-').toLowerCase().startsWith('zh'))
            || null;
+  try{updateVoiceTip();}catch(e){}
 }
+function updateVoiceTip(){var el=document.getElementById('voiceTip');if(!el)return;var good=false;try{var vs=(window.speechSynthesis&&speechSynthesis.getVoices)?speechSynthesis.getVoices():[];good=vs.some(function(v){var l=(v.lang||'').toLowerCase();if(l.indexOf('de')!==0)return false;return v.localService||/google|microsoft|anna|petra|markus|helena|yannick/i.test(v.name||'');});}catch(e){}el.style.display=good?'none':'';}
 if('speechSynthesis' in window){ pickGermanVoice(); speechSynthesis.onvoiceschanged=pickGermanVoice; }
 // 目标语言（'de'德语 / 'en'英语），整站切换用
 function tgtLang(){return LANG==='en'?'en-US':'de-DE';}
@@ -2599,6 +2601,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 function applyTheme(t){var r=document.documentElement;if(t==="dark"||t==="light")r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");var dark=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",dark?"#111417":"#58cc02");var b=document.getElementById("themeToggle");if(b)b.textContent=dark?"☀️":"🌙";}function toggleTheme(){var cur=document.documentElement.getAttribute("data-theme");var sys=matchMedia("(prefers-color-scheme:dark)").matches;var eff=cur==="dark"||(cur!=="light"&&sys);var next=eff?"light":"dark";try{localStorage.setItem("theme",next);}catch(e){}applyTheme(next);}(function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}applyTheme(t);})();try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}if(t!=="dark"&&t!=="light")applyTheme(null);});}catch(e){}
 function _today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function _yday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function getStudy(){var s;try{s=JSON.parse(localStorage.getItem("study")||"{}");}catch(e){s={};}if(!s.goal)s.goal=20;return s;}function saveStudy(s){try{localStorage.setItem("study",JSON.stringify(s));}catch(e){}}function studyTick(n){var s=getStudy(),t=_today();if(s.d!==t){s.streak=(s.last===_yday())?(s.streak||0)+1:1;s.last=t;s.d=t;s.n=0;}s.n=(s.n||0)+(n||1);saveStudy(s);try{updateDashboard();}catch(e){}}function setGoal(g){var s=getStudy();s.goal=+g||20;saveStudy(s);updateDashboard();}function getKnown(){try{return JSON.parse(localStorage.getItem("known")||"{}");}catch(e){return {};}}function saveKnown(m){try{localStorage.setItem("known",JSON.stringify(m));}catch(e){}}function knownHas(de){return !!getKnown()[de];}function knownToggle(p,btn){var m=getKnown();if(m[p.de]){delete m[p.de];}else{m[p.de]=1;try{studyTick();}catch(e){}}saveKnown(m);if(btn){var on=!!m[p.de];btn.classList.toggle("on",on);btn.title=on?"已学会（点击取消）":"标记为已学会";}try{updateDashboard();}catch(e){}}function levelProgressHtml(){if(typeof categories==="undefined")return "";var LV=[["0","零基础"],["a1","A1"],["a2","A2"],["b1","B1"],["b2","B2"]];var m=getKnown();return LV.map(function(x){var tot=0,kn=0;categories.forEach(function(c){if(c.level===x[0])c.phrases.forEach(function(p){tot++;if(m[p.de])kn++;});});var pct=tot?Math.round(kn/tot*100):0;return '<div class="lvrow"><span class="lvlab">'+x[1]+'</span><div class="progress-bar" style="flex:1;margin:0 8px"><div class="progress-fill" style="width:'+pct+'%"></div></div><span class="lvnum">'+kn+"/"+tot+"</span></div>";}).join("");}function updateDashboard(){if(typeof srsCounts!=="function")return;var c=srsCounts(),s=getStudy(),t=_today(),n=(s.d===t?s.n:0)||0;function S(i,v){var e=document.getElementById(i);if(e)e.textContent=v;}S("dashDue",c.due);S("dashStreak",s.streak||0);S("dashTotal",c.total);S("dashMastered",c.mastered);S("dashToday",n);S("dashGoal",s.goal);var f=document.getElementById("dashGoalFill");if(f)f.style.width=Math.min(100,Math.round(n/s.goal*100))+"%";var sel=document.getElementById("goalSel");if(sel)sel.value=String(s.goal);var lv=document.getElementById("dashLevels");if(lv)lv.innerHTML=levelProgressHtml();}try{updateDashboard();}catch(e){}
 function copyShare(btn){var u="https://www.uuoo.site/";function ok(){btn.textContent="✓ 已复制，去粘贴分享吧";setTimeout(function(){btn.textContent="📋 复制网址分享";},2500);}try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(ok).catch(function(){prompt("复制这个网址分享：",u);});}else{prompt("复制这个网址分享：",u);}}catch(e){prompt("复制这个网址分享：",u);}}
+function rejectDonate(){var t=document.createElement('div');t.textContent='谢谢你来过 \uD83D\uDE0A';t.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9999;background:rgba(40,40,40,.94);color:#fff;font-size:16px;padding:16px 26px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.35)';document.body.appendChild(t);setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);showSection('home');},1100);}
 // INIT
 initPhrases();
 buildReadTabs();buildSeriesTabs();   // 标签轻量先建；阅读/连载长列表在首次打开时懒渲染（见 showSection）
