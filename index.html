@@ -274,6 +274,7 @@ body:not(.lang-en) .en-only-block{display:none}
   <button class="nav-btn nav-de-only" onclick="showSection('series')">🎬 留学连载</button>
   <button class="nav-btn" onclick="showSection('quiz')">🎯 练习测验</button>
   <button class="nav-btn" onclick="showSection('srs')">📌 生词本<span id="srsNavBadge" class="srs-badge" style="display:none"></span></button>
+  <button class="nav-btn" onclick="showSection('support')">❤️ 支持</button>
 </nav>
 
 <!-- ══════════════ HOME ══════════════ -->
@@ -710,32 +711,38 @@ body:not(.lang-en) .en-only-block{display:none}
       </div>
     </div>
 
-    </div></details><details class="gram-group"><summary>③ 两大难点 · 形容词词尾 / 介词支配格</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🎨</span><span class="sec-title-text">形容词词尾（德语难点）</span></div>
+    </div></details><details class="gram-group"><summary>③ 两大难点 · 形容词词尾 / 介词支配格</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🎨</span><span class="sec-title-text">形容词词尾（先懂逻辑，再记形）</span></div>
+    <div class="tip-card"><div class="tip-title">🔑 只有一种情况要变尾</div><div class="tip-body">形容词<b>放在名词前面（做定语）才加词尾</b>；放在动词后面（做表语）<b>原形不变</b>。</div></div>
+    <div class="rule-box" style="line-height:1.6">
+      <div style="font-size:15px" lang="de">Der Kaffee ist <b style="color:var(--gold)">heiß</b>. <button class="speak-btn" type="button" onclick="speakDE('Der Kaffee ist heiß.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">咖啡是热的（表语·不变）</span></div>
+      <div style="font-size:15px" lang="de">Ich trinke <b style="color:var(--gold)">heißen</b> Kaffee. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke heißen Kaffee.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我喝热咖啡（定语·加尾）</span></div>
+    </div>
     <div class="rule-box">
-      <h3>定冠词后（der/die/das）第一格</h3>
+      <h3>最常用：单数 · 主格</h3>
       <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
-        <div>der gut<b style="color:var(--gold)">e</b> Mann（好男人）· die gut<b style="color:var(--gold)">e</b> Frau · das gut<b style="color:var(--gold)">e</b> Kind</div>
-        <div>不定冠词后：ein gut<b style="color:#ff4b4b">er</b> Mann · eine gut<b style="color:#ff4b4b">e</b> Frau · ein gut<b style="color:#ff4b4b">es</b> Kind</div>
-        <div style="color:var(--text-dim);margin-top:4px">先记最常用：<b>der/die/das + 形容词-e</b>；<b>ein + 形容词 跟冠词"借"词尾</b>(-er/-e/-es)。这是德语最磨人的点，<b>先够用、用多了自然顺</b>。</div>
+        <div>定冠词后统一加 <b style="color:var(--gold)">-e</b>：der gut<b style="color:var(--gold)">e</b> Mann · die gut<b style="color:var(--gold)">e</b> Frau · das gut<b style="color:var(--gold)">e</b> Kind</div>
+        <div>ein 后"补性别"：ein gut<b style="color:#ff4b4b">er</b> Mann · eine gut<b style="color:#ff4b4b">e</b> Frau · ein gut<b style="color:#ff4b4b">es</b> Kind</div>
+        <div style="color:var(--text-dim);margin-top:4px">直觉：<b>der/die/das 已点明性别 → 形容词偷懒用 -e</b>；<b>ein（阳/中看不出性别）→ 形容词补上 -er/-es</b>。这是德语最磨人的点，<b>先够用，用多自然顺</b>。</div>
       </div>
     </div>
 
-    <div class="sec-title"><span class="sec-title-icon">🧭</span><span class="sec-title-text">介词支配格（德语难点）</span></div>
+    <div class="sec-title"><span class="sec-title-icon">🧭</span><span class="sec-title-text">介词支配格（介词自带固定的格）</span></div>
+    <div class="tip-card"><div class="tip-body">🔑 每个介词后面<b>固定跟某一个格</b>——把介词连同"格"一起背。初学先记下面两句<b>口诀</b>就够用；<b>Genitiv 组可先跳过</b>。</div></div>
     <div class="rule-box">
       <h3 style="color:#ff7a4d">静三动四（Wechselpräp，9 个）</h3>
       <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">in · an · auf · über · unter · vor · hinter · neben · zwischen</b><br>表<b>静止位置</b>(在哪 wo?)→<b style="color:#ff4b4b">第三格</b>；表<b>移动方向</b>(去哪 wohin?)→<b style="color:#58cc02">第四格</b>。<br>例：Das Buch ist auf <b style="color:#ff4b4b">dem</b> Tisch（静/三）· Ich lege es auf <b style="color:#58cc02">den</b> Tisch（动/四）</div>
     </div>
     <div class="rule-box">
       <h3 style="color:#ff4b4b">只支配第三格 Dativ</h3>
-      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">aus</b>(从里) · <b lang="de">außer</b>(除外) · <b lang="de">bei</b>(在…处) · <b lang="de">mit</b>(和/用) · <b lang="de">nach</b>(向/之后) · <b lang="de">seit</b>(自从) · <b lang="de">von</b>(从/属于) · <b lang="de">zu</b>(向) · <b lang="de">gegenüber</b>(对面)<br><span style="color:var(--text-dim)">口诀：aus bei mit nach seit von zu</span></div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">aus</b>(从里) · <b lang="de">außer</b>(除外) · <b lang="de">bei</b>(在…处) · <b lang="de">mit</b>(和/用) · <b lang="de">nach</b>(向/之后) · <b lang="de">seit</b>(自从) · <b lang="de">von</b>(从/属于) · <b lang="de">zu</b>(向) · <b lang="de">gegenüber</b>(对面)<br><span style="color:var(--text-dim)">口诀：aus bei mit nach seit von zu</span><br><span lang="de" style="color:var(--text)">Ich fahre <b style="color:#ff4b4b">mit dem</b> Bus.</span> <button class="speak-btn" type="button" onclick="speakDE('Ich fahre mit dem Bus.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="color:var(--text-dim)">我坐公交（mit + 第三格 dem）</span></div>
     </div>
     <div class="rule-box">
       <h3 style="color:#58cc02">只支配第四格 Akkusativ</h3>
-      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">durch</b>(穿过) · <b lang="de">für</b>(为了) · <b lang="de">gegen</b>(反对) · <b lang="de">ohne</b>(没有) · <b lang="de">um</b>(围绕/在…时) · <b lang="de">bis</b>(到) · <b lang="de">entlang</b>(沿着) · <b lang="de">wider</b>(违反)<br><span style="color:var(--text-dim)">口诀：durch für gegen ohne um</span></div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">durch</b>(穿过) · <b lang="de">für</b>(为了) · <b lang="de">gegen</b>(反对) · <b lang="de">ohne</b>(没有) · <b lang="de">um</b>(围绕/在…时) · <b lang="de">bis</b>(到) · <b lang="de">entlang</b>(沿着) · <b lang="de">wider</b>(违反)<br><span style="color:var(--text-dim)">口诀：durch für gegen ohne um</span><br><span lang="de" style="color:var(--text)">Das ist <b style="color:#58cc02">für dich</b>.</span> <button class="speak-btn" type="button" onclick="speakDE('Das ist für dich.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="color:var(--text-dim)">这是给你的（für + 第四格 dich）</span></div>
     </div>
     <div class="rule-box">
       <h3 style="color:#1cb0f6">支配第二格 Genitiv</h3>
-      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">während</b>(期间) · <b lang="de">wegen</b>(由于) · <b lang="de">trotz</b>(尽管) · <b lang="de">(an)statt</b>(代替) · <b lang="de">innerhalb</b>(之内) · <b lang="de">außerhalb</b>(之外) · <b lang="de">infolge</b>(由于) · <b lang="de">mithilfe</b>(借助) · <b lang="de">ungeachtet</b>(不顾)</div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">während</b>(期间) · <b lang="de">wegen</b>(由于) · <b lang="de">trotz</b>(尽管) · <b lang="de">(an)statt</b>(代替) · <b lang="de">innerhalb</b>(之内) · <b lang="de">außerhalb</b>(之外) · <b lang="de">infolge</b>(由于) · <b lang="de">mithilfe</b>(借助) · <b lang="de">ungeachtet</b>(不顾)<br><span style="color:var(--text-dim)">多用于书面/正式，<b>初学可先跳过</b>；口语常用 <b lang="de">von</b> + 第三格 代替。</span></div>
     </div>
 
     <div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">名词性别后缀规律</span></div>
@@ -1075,6 +1082,19 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="sec-title" style="margin-top:32px"><span class="sec-title-icon">📺</span><span class="sec-title-text">正版视频资源 · 看原版</span></div>
     <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">以下为外部官方/平台资源，点击跳转观看<b>正版</b>。本站不复制其视频或字幕内容，仅提供导航链接。</p>
     <div class="phrase-grid" id="seriesLinks"></div>
+  </div>
+</div>
+
+<!-- ══════════════ 支持作者 ══════════════ -->
+<div id="support" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Support</div>
+    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 8px;color:var(--text)">支持作者 · 请杯咖啡 ☕</h2>
+    <p style="text-align:center;font-size:14px;color:var(--text-dim);line-height:1.9;max-width:520px;margin:0 auto">这份手册从词句整理、发音朗读到测验复习，都是<b>业余时间一点点做出来、并持续维护</b>的；域名和时间都是实打实的成本。它<b>一直免费、无广告</b>。<br>如果它在你学德语的路上帮上了忙，欢迎扫码<b>随手打赏一点</b>，让它能继续更新下去 😊<br>一块两块都是心意，谢谢你的支持！</p>
+    <div style="max-width:290px;margin:18px auto 0;background:#fff;border-radius:16px;padding:8px;box-shadow:var(--shadow)">
+      <img src="support-qr.png" alt="微信收款二维码" loading="lazy" style="width:100%;height:auto;display:block;border-radius:12px">
+    </div>
+    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-top:12px">微信扫一扫 · 感谢每一份支持 ❤️</p>
   </div>
 </div>
 
