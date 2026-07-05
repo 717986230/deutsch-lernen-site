@@ -398,6 +398,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="tip-card"><div class="tip-title">⑰ 称呼先分清 du / Sie</div><div class="tip-body">朋友家人用 <b>du</b>，陌生人·长辈·正式场合用 <b>Sie</b>(动词跟着变)。<b>用错比语法错更扎眼</b>——这是礼貌问题，优先记牢。</div></div>
     <div class="tip-card"><div class="tip-title">⑱ 别怕开口犯错</div><div class="tip-body">德国人欣赏"敢说"。<b>说错→被纠正→记住，正是进步最快的循环</b>。沉默才是最大的障碍，每天逼自己开口几句。</div></div>
     </div></details>
+    <div style="text-align:center;margin:22px 0 6px"><button class="btn" onclick="showSection('support')" style="border-color:rgba(255,75,75,.4);color:#ff4b4b;background:rgba(255,75,75,.08)">❤️ 支持作者 · 请我一杯咖啡</button></div>
    </div><!-- /de-only-block -->
 
    <div class="en-only-block">
@@ -677,6 +678,13 @@ body:not(.lang-en) .en-only-block{display:none}
       <tr><td><b style="color:#ff4b4b">第三格</b><br><small style="color:var(--text-dim)">Dativ</small></td><td style="color:var(--text-dim)">间接宾语（给谁）</td><td>dem</td><td>der</td><td>dem</td></tr>
       <tr><td><b style="color:#58cc02">第四格</b><br><small style="color:var(--text-dim)">Akkusativ</small></td><td style="color:var(--text-dim)">直接宾语（做什么）</td><td>den</td><td>die</td><td>das</td></tr>
     </table>
+    <div class="rule-box" style="line-height:1.6">
+      <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px">同一个词「der Mann 男人」走遍四个格，看冠词怎么变：</div>
+      <div style="font-size:15px" lang="de"><b style="color:var(--gold)">Der Mann</b> ist hier. <button class="speak-btn" type="button" onclick="speakDE('Der Mann ist hier.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">这个男人在这里（一格·谁）</span></div>
+      <div style="font-size:15px" lang="de">Ich sehe <b style="color:#58cc02">den Mann</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich sehe den Mann.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我看见这个男人（四格·做什么）</span></div>
+      <div style="font-size:15px" lang="de">Ich gebe <b style="color:#ff4b4b">dem Mann</b> ein Buch. <button class="speak-btn" type="button" onclick="speakDE('Ich gebe dem Mann ein Buch.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我给这个男人一本书（三格·给谁）</span></div>
+      <div style="font-size:15px" lang="de">das Auto <b style="color:#1cb0f6">des Mannes</b> <button class="speak-btn" type="button" onclick="speakDE('das Auto des Mannes',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">这个男人的车（二格·谁的）</span></div>
+    </div>
     <div class="tip-card"><div class="tip-title">快速记忆：只有阳性der变化最多</div><div class="tip-body">阴性/中性/复数：第三格加m，第四格阴中不变。<b>初学先掌握第一格和第四格</b>，日常交流够用了！</div></div>
 
     <div class="sec-title"><span class="sec-title-icon">⚡</span><span class="sec-title-text">常用句型模板</span></div>
@@ -1102,6 +1110,8 @@ body:not(.lang-en) .en-only-block{display:none}
       <img src="support-qr.png" alt="微信收款二维码" loading="lazy" style="width:100%;height:auto;display:block;border-radius:12px">
     </div>
     <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-top:12px">微信扫一扫 · 感谢每一份支持 ❤️</p>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-top:22px">打赏之外 —— <b>把网站分享给同学</b>，也是莫大的支持 🙌</p>
+    <div style="text-align:center;margin-top:8px"><button class="btn" onclick="copyShare(this)">📋 复制网址分享</button></div>
   </div>
 </div>
 
@@ -2581,6 +2591,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 
 function applyTheme(t){var r=document.documentElement;if(t==="dark"||t==="light")r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");var dark=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",dark?"#111417":"#58cc02");var b=document.getElementById("themeToggle");if(b)b.textContent=dark?"☀️":"🌙";}function toggleTheme(){var cur=document.documentElement.getAttribute("data-theme");var sys=matchMedia("(prefers-color-scheme:dark)").matches;var eff=cur==="dark"||(cur!=="light"&&sys);var next=eff?"light":"dark";try{localStorage.setItem("theme",next);}catch(e){}applyTheme(next);}(function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}applyTheme(t);})();try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}if(t!=="dark"&&t!=="light")applyTheme(null);});}catch(e){}
 function _today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function _yday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function getStudy(){var s;try{s=JSON.parse(localStorage.getItem("study")||"{}");}catch(e){s={};}if(!s.goal)s.goal=20;return s;}function saveStudy(s){try{localStorage.setItem("study",JSON.stringify(s));}catch(e){}}function studyTick(n){var s=getStudy(),t=_today();if(s.d!==t){s.streak=(s.last===_yday())?(s.streak||0)+1:1;s.last=t;s.d=t;s.n=0;}s.n=(s.n||0)+(n||1);saveStudy(s);try{updateDashboard();}catch(e){}}function setGoal(g){var s=getStudy();s.goal=+g||20;saveStudy(s);updateDashboard();}function getKnown(){try{return JSON.parse(localStorage.getItem("known")||"{}");}catch(e){return {};}}function saveKnown(m){try{localStorage.setItem("known",JSON.stringify(m));}catch(e){}}function knownHas(de){return !!getKnown()[de];}function knownToggle(p,btn){var m=getKnown();if(m[p.de]){delete m[p.de];}else{m[p.de]=1;try{studyTick();}catch(e){}}saveKnown(m);if(btn){var on=!!m[p.de];btn.classList.toggle("on",on);btn.title=on?"已学会（点击取消）":"标记为已学会";}try{updateDashboard();}catch(e){}}function levelProgressHtml(){if(typeof categories==="undefined")return "";var LV=[["0","零基础"],["a1","A1"],["a2","A2"],["b1","B1"],["b2","B2"]];var m=getKnown();return LV.map(function(x){var tot=0,kn=0;categories.forEach(function(c){if(c.level===x[0])c.phrases.forEach(function(p){tot++;if(m[p.de])kn++;});});var pct=tot?Math.round(kn/tot*100):0;return '<div class="lvrow"><span class="lvlab">'+x[1]+'</span><div class="progress-bar" style="flex:1;margin:0 8px"><div class="progress-fill" style="width:'+pct+'%"></div></div><span class="lvnum">'+kn+"/"+tot+"</span></div>";}).join("");}function updateDashboard(){if(typeof srsCounts!=="function")return;var c=srsCounts(),s=getStudy(),t=_today(),n=(s.d===t?s.n:0)||0;function S(i,v){var e=document.getElementById(i);if(e)e.textContent=v;}S("dashDue",c.due);S("dashStreak",s.streak||0);S("dashTotal",c.total);S("dashMastered",c.mastered);S("dashToday",n);S("dashGoal",s.goal);var f=document.getElementById("dashGoalFill");if(f)f.style.width=Math.min(100,Math.round(n/s.goal*100))+"%";var sel=document.getElementById("goalSel");if(sel)sel.value=String(s.goal);var lv=document.getElementById("dashLevels");if(lv)lv.innerHTML=levelProgressHtml();}try{updateDashboard();}catch(e){}
+function copyShare(btn){var u="https://www.uuoo.site/";function ok(){btn.textContent="✓ 已复制，去粘贴分享吧";setTimeout(function(){btn.textContent="📋 复制网址分享";},2500);}try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(ok).catch(function(){prompt("复制这个网址分享：",u);});}else{prompt("复制这个网址分享：",u);}}catch(e){prompt("复制这个网址分享：",u);}}
 // INIT
 initPhrases();
 buildReadTabs();buildSeriesTabs();   // 标签轻量先建；阅读/连载长列表在首次打开时懒渲染（见 showSection）
