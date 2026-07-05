@@ -833,8 +833,45 @@ body:not(.lang-en) .en-only-block{display:none}
       <tr><td>从哪 <b lang="de">woher</b></td><td>怎样/多 <b lang="de">wie</b></td><td>为什么 <b lang="de">warum</b></td></tr>
     </table>
 
-    <div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">德语 11 种基本句型</span></div>
-    <div class="rule-box">
+    <div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">句子结构 · 一条铁律 + 常用骨架</span></div>
+    <div class="tip-card"><div class="tip-title">🔑 铁律：陈述句里，变位动词永远在「第二位」</div><div class="tip-body">不管句首放的是主语、时间还是地点，<b style="color:var(--gold)">动词都是第二个成分</b>，主语跟着动词走。记住这一条，德语语序就稳了。</div></div>
+    <div class="rule-box" style="line-height:1.5">
+      <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold)">spiele</b> heute Fußball. <button class="speak-btn" type="button" onclick="speakDE('Ich spiele heute Fußball.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:10px">我今天踢球。（主语在第一位，动词第二位）</div>
+      <div style="font-size:15px" lang="de">Heute <b style="color:var(--gold)">spiele</b> ich Fußball. <button class="speak-btn" type="button" onclick="speakDE('Heute spiele ich Fußball.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+      <div style="font-size:13px;color:var(--text-dim)">今天我踢球。（时间提到句首 → <b>动词仍在第二位</b>，主语 ich 退到动词后面）</div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🧱</span><span class="sec-title-text">5 个最常用句子骨架（配例句）</span></div>
+    <div class="rule-box" style="line-height:1.5">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div><div style="font-size:12px;color:var(--text-dim)">① 主 + 谓（不及物）</div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold)">schlafe</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich schlafe.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我睡觉。</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)">② 主 + 谓 + <b style="color:#ff4b4b">第四格</b>宾语（做什么）</div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold)">trinke</b> <b style="color:#ff4b4b">Wasser</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke Wasser.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我喝水。（宾语用<b style="color:#ff4b4b">第四格 Akkusativ</b>）</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)">③ 给<b style="color:#1cb0f6">某人</b>(三格)<b style="color:#ff4b4b">某物</b>(四格)</div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold)">gebe</b> <b style="color:#1cb0f6">dir</b> <b style="color:#ff4b4b">das Buch</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich gebe dir das Buch.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我给你这本书。（人用<b style="color:#1cb0f6">第三格 dir</b>，物用<b style="color:#ff4b4b">第四格 das Buch</b>）</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)">④ 主 + 系动词 + 表语（是／成为）</div>
+          <div style="font-size:15px" lang="de">Er <b style="color:var(--gold)">ist</b> Lehrer. <button class="speak-btn" type="button" onclick="speakDE('Er ist Lehrer.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">他是老师。（sein / werden 后接表语，表语不变格）</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)">⑤ 主 + 谓 + 介词短语（去哪／在哪）</div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold)">fahre</b> nach Berlin. <button class="speak-btn" type="button" onclick="speakDE('Ich fahre nach Berlin.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我去柏林。</div></div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">❓</span><span class="sec-title-text">两种问句</span></div>
+    <div class="rule-box" style="line-height:1.6">
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:2px"><b>W 问句</b>：疑问词 + 动词 + 主语</div>
+      <div style="font-size:15px" lang="de"><b style="color:var(--blue)">Wann</b> <b style="color:var(--gold)">kommst</b> du? <button class="speak-btn" type="button" onclick="speakDE('Wann kommst du?',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">你什么时候来？</span></div>
+      <div style="font-size:13px;color:var(--text-dim);margin:8px 0 2px"><b>是非问句</b>：动词提到句首（回答 ja/nein）</div>
+      <div style="font-size:15px" lang="de"><b style="color:var(--gold)">Kommst</b> du? <button class="speak-btn" type="button" onclick="speakDE('Kommst du?',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">你来吗？</span></div>
+    </div>
+
+    <details class="gram-group" style="margin-top:8px"><summary>📋 全部 11 种句型（术语参考）</summary><div class="gram-body"><div class="rule-box" style="margin-top:8px">
       <div style="font-size:13px;line-height:2;color:var(--text-dim)">
         <div>① 主+谓(不及物)　② 主+谓+第四格宾语　③ 主+谓+第三格宾语</div>
         <div>④ 主+谓(不及物)+介词短语　⑤ 主+谓+表语　⑥ 主+谓+状语</div>
@@ -842,7 +879,7 @@ body:not(.lang-en) .en-only-block{display:none}
         <div>⑧ 主+谓+第四格宾语+介词短语　⑨ 主+谓+第四格宾语+状语</div>
         <div>⑩ 主+谓+第四格宾语+第四格宾语　⑪ 主+谓+介词短语+介词短语</div>
       </div>
-    </div>
+    </div></div></details>
 
     </div></details><details class="gram-group"><summary>⑥ 阅读高频词（赞同反对 / 情感 / 连词）</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">📖</span><span class="sec-title-text">阅读理解高频词 · 赞同/反对/中立</span></div>
     <table class="pron-table">
