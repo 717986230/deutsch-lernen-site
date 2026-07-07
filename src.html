@@ -1508,7 +1508,7 @@ function setLang(lang){
   // 词句版块默认回到「全部」级别，避免英语词少时空白
   activeLevel = (LANG==='en')?'0':activeLevel;
   activeCat='all';
-  if(typeof buildLevelTabs==='function'){buildLevelTabs();buildCatTabs();renderPhrases();showLevelInfo(activeLevel);}
+  if(typeof buildLevelTabs==='function'){buildLevelTabs();buildCatTabs();if(_rendered.phrases)renderPhrases();showLevelInfo(activeLevel);}
   // 英语模式下若停留在德语专属版块，跳到「词句大全」
   const cur=[...document.querySelectorAll('.section')].find(s=>s.classList.contains('active'));
   if(cur&&LANG==='en'&&['pronunciation','numbers','grammar','reading','series'].includes(cur.id))showSection('phrases');
@@ -1551,7 +1551,8 @@ function showSection(id){
   btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+id+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
   if(id==='srs'&&typeof renderSrs==='function')renderSrs();
   if(id==='home'&&typeof updateDashboard==='function')updateDashboard();
-  if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}     // 懒渲染：首次打开才渲染长列表
+  if(id==='phrases'&&!_rendered.phrases){renderPhrases();_rendered.phrases=true;}       // 懒渲染：首次打开才渲染长列表
+  if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}
   if(id==='series'&&!_rendered.series){renderSeries();renderSeriesLinks();_rendered.series=true;}
   window.scrollTo(0,0);
 }
@@ -1745,7 +1746,7 @@ function initPhrases() {
   buildLevelTabs();
   showLevelInfo(activeLevel);
   buildCatTabs();
-  renderPhrases();
+  // 词句长列表在首次打开「词句大全」时才渲染（见 showSection 懒渲染）——首页默认视图无需先渲染 95 张卡
 }
 
 function setCat(cat,btn){
@@ -1804,6 +1805,7 @@ function startChunkedRender(container,items,makeFn){
 }
 function renderPhrases(){
   if(typeof stopAutoPlay==='function')stopAutoPlay();
+  _rendered.phrases=true;   // 任何渲染路径都视为已渲染，避免切回时重复渲染
   const el=document.getElementById('phraseContent');
   const lb={'0':'lb-0','a1':'lb-a1','a2':'lb-a2','b1':'lb-b1','b2':'lb-b2'};
   const items=[];
