@@ -326,6 +326,21 @@ body:not(.lang-en) .en-only-block{display:none}
       <button onclick="goLevel('0')" style="border:none;background:#58cc02;color:#fff;font-size:16px;font-weight:700;padding:14px 30px;border-radius:28px;font-family:inherit;cursor:pointer;box-shadow:0 6px 18px rgba(88,204,2,.35)">🌱 零基础？从第 1 天开始 →</button>
       <div style="font-size:12px;color:var(--text-faint);margin-top:8px">先学打招呼 · 第一天就能开口</div>
     </div>
+    <div class="sec-title" style="margin-top:26px"><span class="sec-title-icon">🧩</span><span class="sec-title-text">拼读器 · 任意德语词，怎么读 + 什么意思</span></div>
+    <div class="rule-box">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="phInput" placeholder="输入德语词，如 Schule、Wasser…" oninput="renderPhTool()" style="flex:1;min-width:180px;padding:11px 14px;border-radius:24px;border:1px solid var(--gold-dim);background:rgba(88,204,2,.06);color:var(--text);font-size:15px;outline:none;font-family:inherit" lang="de">
+        <button class="speak-btn" type="button" title="朗读" aria-label="朗读输入的词" onclick="var v=document.getElementById('phInput').value.trim();if(v)speakDE(v,this)">🔊</button>
+      </div>
+      <div id="phToolOut" style="margin-top:12px"></div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-faint)">试试：
+        <span class="ph-try" onclick="phTry('Schule')">Schule</span>
+        <span class="ph-try" onclick="phTry('Wasser')">Wasser</span>
+        <span class="ph-try" onclick="phTry('danke')">danke</span>
+        <span class="ph-try" onclick="phTry('schön')">schön</span>
+        <span class="ph-try" onclick="phTry('Entschuldigung')">Entschuldigung</span>
+      </div>
+    </div>
     <div class="sec-title" style="margin-top:28px"><span class="sec-title-icon">📚</span><span class="sec-title-text">全部功能</span></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
       <div class="card" onclick="showSection('pronunciation')" style="text-align:center;padding:24px 16px">
@@ -519,22 +534,7 @@ body:not(.lang-en) .en-only-block{display:none}
     </div>
     <div class="gq-box" data-gq="p1"></div>
 
-    <div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">拼读器 · 输入任意德语词，看怎么拼读</span></div>
-    <div class="rule-box">
-      <div style="font-size:13px;color:var(--text-dim);margin-bottom:10px">德语<b style="color:var(--gold)">所见即所读</b>。输入一个德语单词，下面会按字母组合拆开，告诉你每段怎么发音——照着拼，不用背谐音。</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <input type="text" id="phInput" placeholder="如 Schule、Wasser、zwanzig…" oninput="renderPhTool()" style="flex:1;min-width:180px;padding:10px 14px;border-radius:24px;border:1px solid var(--gold-dim);background:rgba(88,204,2,.06);color:var(--text);font-size:15px;outline:none;font-family:inherit" lang="de">
-        <button class="speak-btn" type="button" title="朗读" onclick="var v=document.getElementById('phInput').value.trim();if(v)speakDE(v,this)">🔊</button>
-      </div>
-      <div id="phToolOut" style="margin-top:14px"></div>
-      <div style="margin-top:10px;font-size:12px;color:var(--text-faint)">试试：
-        <span class="ph-try" onclick="phTry('Schule')">Schule</span>
-        <span class="ph-try" onclick="phTry('Wasser')">Wasser</span>
-        <span class="ph-try" onclick="phTry('vierzig')">vierzig</span>
-        <span class="ph-try" onclick="phTry('schön')">schön</span>
-        <span class="ph-try" onclick="phTry('Entschuldigung')">Entschuldigung</span>
-      </div>
-    </div>
+    <div class="tip-card"><div class="tip-title">🧩 拼读器在首页</div><div class="tip-body">想知道任意德语词怎么读？回<b>🏠 首页</b>用「拼读器」：输入单词自动拆解发音、显示中文翻译、点 🔊 即听。</div></div>
 
     <div class="sec-title"><span class="sec-title-icon">🔤</span><span class="sec-title-text">特殊字母（变音 Umlaute）</span></div>
     <table class="pron-table">
@@ -1887,7 +1887,15 @@ function renderPhTool(){
   const v=(document.getElementById('phInput').value||'').trim();
   const out=document.getElementById('phToolOut');if(!out)return;
   if(!v){out.innerHTML='';return;}
-  out.innerHTML=`<div class="ph-row">${phonicsHtml(v,true)}</div><div style="font-size:12px;color:var(--text-faint);margin-top:8px">蓝色=元音(响)，绿色=辅音。把每段连起来念，就是这个词的读音。点上方 🔊 听真人发音对照。</div>`;
+  // 查词库给中文翻译（含去冠词匹配）
+  let zh='';
+  try{
+    if(!_deWordMap)buildDeWordMap();
+    const k=v.toLowerCase(),hit=_deWordMap[k]||_deWordMap[k.replace(/^(der|die|das)\s+/,'')];
+    zh=hit?`<div style="font-size:14px;color:var(--text);margin-top:10px">📖 <b lang="de">${hit.de}</b> — <b style="color:#46a302">${hit.zh}</b>${hit.py?` <span style="font-size:12px;color:var(--text-faint)">谐音：${hit.py}</span>`:''}</div>`
+          :`<div style="font-size:12px;color:var(--text-faint);margin-top:10px">📖 这个词不在本站词库里（3720 词句），翻译暂缺——拼读和 🔊 朗读照常可用。</div>`;
+  }catch(e){}
+  out.innerHTML=`<div class="ph-row">${phonicsHtml(v,true)}</div>`+zh+`<div style="font-size:12px;color:var(--text-faint);margin-top:8px">蓝色=元音(响)，绿色=辅音。把每段连起来念，就是这个词的读音。点 🔊 听真人发音对照。</div>`;
 }
 function phTry(w){const el=document.getElementById('phInput');if(el){el.value=w;renderPhTool();speakDE(w);}}
 function makeCard(p,id){
@@ -2272,6 +2280,8 @@ function buildDeWordMap(){
   DE_CATEGORIES.forEach(c=>c.phrases.forEach(p=>{
     const noun=p.de.replace(/^(der|die|das)\s+/,'');
     if(!/\s/.test(noun)){ const k=noun.toLowerCase(); if(!_deWordMap[k])_deWordMap[k]=p; }
+    const bare=p.de.replace(/[!?.,…؛;:"'()]/g,'').trim();   // 去标点：让 danke 匹配「Danke!」
+    if(bare&&!/\s/.test(bare)){ const k2=bare.toLowerCase(); if(!_deWordMap[k2])_deWordMap[k2]=p; }
     const full=p.de.toLowerCase(); if(!_deWordMap[full])_deWordMap[full]=p;
   }));
 }
