@@ -81,8 +81,8 @@ body.lang-en .flag-strip{display:none}
 .read-para{margin-bottom:10px;padding:6px 8px;border-radius:8px;transition:background .2s}
 .read-para.rp-on{background:rgba(88,204,2,.12)}
 .rd-word{cursor:pointer;border-radius:3px;transition:background .12s}
-.rd-word ruby{ruby-position:over}
-.rd-word rt{font-size:10px;color:var(--text-faint);font-weight:400;user-select:none}
+.rd-word ruby{ruby-position:under;-webkit-ruby-position:under}
+.rd-word rt{font-size:10px;color:var(--text-faint);font-weight:400;user-select:none;text-align:center;ruby-align:center}
 body.no-gloss .rd-word rt{display:none}
 .rd-word:hover{background:rgba(88,204,2,.18)}
 .rd-toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(10px);z-index:400;background:rgba(40,40,40,.92);color:#fff;font-size:13px;padding:9px 16px;border-radius:20px;opacity:0;visibility:hidden;transition:all .2s;max-width:88%;text-align:center}
