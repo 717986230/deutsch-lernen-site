@@ -88,12 +88,7 @@ body.lang-en .flag-strip{display:none}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(88,204,2,.4)}50%{box-shadow:0 0 0 6px rgba(88,204,2,0)}}
 .card.speaking-now{border-color:#58cc02;background:rgba(88,204,2,.08);box-shadow:0 0 0 2px rgba(88,204,2,.45),0 4px 16px rgba(88,204,2,.2)}
 .btn.playing{background:#ff4b4b;border-bottom-color:#c13a3a}
-.spk-fold{margin:0 0 10px}
-.spk-fold>summary{cursor:pointer;display:inline-block;font-size:12px;color:var(--text-dim);padding:4px 12px;border:1px solid var(--border);border-radius:14px;background:var(--surface);list-style:none;-webkit-user-select:none;user-select:none}
-.spk-fold>summary::-webkit-details-marker{display:none}
-.spk-fold[open]>summary{color:#46a302;border-color:var(--gold-dim)}
-.spk-fold:not([open]) .spk-panel{display:none}
-.spk-panel{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--surface-2);border:1px solid var(--line,var(--border));border-radius:12px;padding:8px 14px;margin:8px 0 10px;font-size:13px;color:var(--text-dim)}
+.spk-panel{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--surface-2);border:1px solid var(--line,var(--border));border-radius:12px;padding:8px 14px;margin:0 0 10px;font-size:13px;color:var(--text-dim)}
 .spk-panel label{display:flex;align-items:center;gap:6px;white-space:nowrap}
 .spk-panel input[type=range]{width:110px;accent-color:#58cc02}
 .spk-panel input[type=checkbox]{accent-color:#58cc02;width:15px;height:15px}
@@ -954,14 +949,12 @@ body:not(.lang-en) .en-only-block{display:none}
       <button id="playAllBtn" class="fab-read" onclick="toggleAutoPlay()">▶ 循环朗读</button>
       <span id="playAllInfo" style="font-size:12px;color:var(--text-dim)"></span>
     </div>
-    <details class="spk-fold"><summary>⚙️ 朗读设置</summary>
     <div class="spk-panel">
       <label>语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="spkRate" oninput="setSpkRate(this.value)"> <span id="spkRateV">0.62</span></label>
       <label>遍数 <select id="spkRepeat" onchange="spkSet('repeat',+this.value)"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select></label>
       <label><input type="checkbox" id="spkZh" checked onchange="spkSet('zh',this.checked)"> 读中文</label>
       <label><input type="checkbox" id="spkShuffle" onchange="spkSet('shuffle',this.checked)"> 乱序</label>
     </div>
-    </details>
     <div id="phraseResults" style="font-size:12px;color:var(--gold-dim);margin:8px 0"></div>
     <div id="phraseContent"></div>
   </div>
