@@ -238,6 +238,22 @@ body:not(.lang-en) .en-only-block{display:none}
 .gram-group[open]>summary::after{content:"▾"}
 .gram-group[open]>summary{border-bottom:1px solid var(--border)}
 .gram-body{padding:8px 16px 14px}
+/* 即学即练：语法/发音每组学完立刻练 3 题 */
+.gq-box{margin-top:16px;border:1.5px dashed var(--gold-dim);border-radius:14px;padding:14px 16px;background:rgba(88,204,2,.04)}
+.gq-head{font-size:14px;font-weight:700;color:#46a302;margin-bottom:2px}
+.gq-sub{font-size:12px;color:var(--text-faint);margin-bottom:10px}
+.gq-q{margin:12px 0 6px;font-size:14px;color:var(--text);line-height:1.6}
+.gq-opts{display:flex;flex-wrap:wrap;gap:8px}
+.gq-opt{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 14px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .15s;line-height:1.4}
+.gq-opt:hover{border-color:var(--gold-dim)}
+.gq-opt.ok{background:rgba(88,204,2,.14);border-color:#58cc02;color:#46a302;font-weight:700}
+.gq-opt.bad{background:rgba(255,75,75,.1);border-color:#ff4b4b;color:#ff4b4b}
+.gq-item.done .gq-opt{cursor:default;opacity:.75}
+.gq-item.done .gq-opt.ok,.gq-item.done .gq-opt.bad{opacity:1}
+.gq-why{display:none;margin-top:8px;font-size:13px;color:var(--text-dim);line-height:1.7;background:var(--surface);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:8px 12px}
+.gq-item.done .gq-why{display:block}
+.gq-score{margin-top:14px;font-size:13px;color:var(--text-dim);display:none}
+.gq-score .btn{padding:5px 14px;font-size:12px;margin-left:8px}
 .voice-tip{display:flex;align-items:center;gap:12px;margin-top:18px;background:rgba(88,204,2,.09);border:1px solid var(--gold-dim);border-radius:14px;padding:14px 16px;cursor:pointer;font-size:13px;color:var(--text);line-height:1.6;box-shadow:var(--shadow)}
 .voice-tip:active{background:rgba(88,204,2,.16)}
 .srs-badge{display:inline-block;min-width:16px;padding:0 5px;margin-left:4px;border-radius:9px;background:#ff4b4b;color:#fff;font-size:10px;line-height:16px;text-align:center;vertical-align:middle}
@@ -524,6 +540,7 @@ body:not(.lang-en) .en-only-block{display:none}
         <b>Q</b> → qu发"kv" ✦ Qualität＝克瓦利泰特，不是"kw"
       </div>
     </div>
+    <div class="gq-box" data-gq="p1"></div>
 
     <div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">拼读器 · 输入任意德语词，看怎么拼读</span></div>
     <div class="rule-box">
@@ -730,6 +747,7 @@ body:not(.lang-en) .en-only-block{display:none}
       </div>
     </div>
 
+    <div class="gq-box" data-gq="g1"></div>
     </div></details><details class="gram-group"><summary>② 完成时 &amp; 句子语序（可分动词 / 从句）</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">完成时 Perfekt（最常用的过去）</span></div>
     <div class="rule-box">
       <h3>haben / sein + 过去分词（句尾）</h3>
@@ -754,6 +772,7 @@ body:not(.lang-en) .en-only-block{display:none}
       </div>
     </div>
 
+    <div class="gq-box" data-gq="g2"></div>
     </div></details><details class="gram-group"><summary>③ 两大难点 · 形容词词尾 / 介词支配格</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🎨</span><span class="sec-title-text">形容词词尾（先懂逻辑，再记形）</span></div>
     <div class="tip-card"><div class="tip-title">🔑 只有一种情况要变尾</div><div class="tip-body">形容词<b>放在名词前面（做定语）才加词尾</b>；放在动词后面（做表语）<b>原形不变</b>。</div></div>
     <div class="rule-box" style="line-height:1.6">
@@ -797,6 +816,7 @@ body:not(.lang-en) .en-only-block{display:none}
     </table>
     <div class="tip-card"><div class="tip-body"><b>98% 以 -e 结尾的名词是阴性</b>(die Schule/Frage/Reise/Tasche)。例外：少数阳性弱变化(der Kunde/Affe/Löwe/Kollege)、中性(das Ende/Wochenende)。</div></div>
 
+    <div class="gq-box" data-gq="g3"></div>
     </div></details><details class="gram-group"><summary>④ 时态精讲 · 一句话走遍六时态（推荐先看）</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">⏳</span><span class="sec-title-text">时态精讲 · 一句话走遍六时态</span></div>
     <div class="tip-card"><div class="tip-body">💡 <b>核心观念</b>：时态 = <b>同一件事，在不同时间的说法</b>。下面用同一句「<b>我学德语</b>」走一遍——你会发现<b style="color:#1cb0f6">蓝色的助动词</b>负责表达"时间"，<b style="color:var(--gold)">绿色的主动词</b>才是"做什么"。看懂这一点，时态就通了。</div></div>
     <div class="rule-box" style="line-height:1.5">
@@ -860,6 +880,7 @@ body:not(.lang-en) .en-only-block{display:none}
       <div style="font-size:12px;color:var(--text-faint);margin-top:8px">规则动词自动生成；常见不规则/变音/情态动词已内置。仅现在时。</div>
     </div>
 
+    <div class="gq-box" data-gq="g4"></div>
     </div></details><details class="gram-group"><summary>⑤ 代词 &amp; 11 种基本句型</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">👤</span><span class="sec-title-text">人称代词（主/宾/与格）</span></div>
     <div class="rule-box">
       <div style="font-size:13px;line-height:2;color:var(--text-dim)" lang="de">
@@ -935,6 +956,7 @@ body:not(.lang-en) .en-only-block{display:none}
       </div>
     </div></div></details>
 
+    <div class="gq-box" data-gq="g5"></div>
     </div></details><details class="gram-group"><summary>⑥ 阅读高频词（赞同反对 / 情感 / 连词）</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">📖</span><span class="sec-title-text">阅读理解高频词 · 赞同/反对/中立</span></div>
     <table class="pron-table">
       <tr><th>赞同</th><th>反对</th><th>中立</th></tr>
@@ -987,6 +1009,7 @@ body:not(.lang-en) .en-only-block{display:none}
       <div><b style="color:#ff4b4b">98% -e 结尾</b>阴性：die Schule、die Frage、die Reise、die Tasche、die Lunge</div>
       <div style="color:var(--text-dim)">例外：少数 -e 阳性弱变化(der Kunde/Affe/Löwe/Kollege)；中性(das Ende/Wochenende)。拉丁/希腊 -ant/-ist/-oph 等多为阳性弱变化(der Pianist、der Philosoph)。</div>
     </div></div>
+    <div class="gq-box" data-gq="g6"></div>
     </div></details>
   </div>
 </div>
@@ -1138,6 +1161,10 @@ body:not(.lang-en) .en-only-block{display:none}
     <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-top:12px">微信扫一扫 · 感谢每一份支持 ❤️</p>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-top:22px">打赏之外 —— <b>把网站分享给同学</b>，也是莫大的支持 🙌</p>
     <div style="text-align:center;margin-top:8px"><button class="btn" onclick="copyShare(this)">📋 复制网址分享</button></div>
+    <div style="max-width:420px;margin:26px auto 0;padding:14px 18px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;text-align:center">
+      <div style="font-size:14px;color:var(--text);font-weight:600">💬 联系作者</div>
+      <div style="font-size:13px;color:var(--text-dim);margin-top:6px;line-height:1.8">使用心得、纠错、想加的功能，都欢迎来聊：<br>QQ：<b style="color:#46a302;font-size:15px;letter-spacing:.5px" id="qqNum">717986230</b> <button class="btn" style="padding:3px 12px;font-size:12px;margin-left:6px" onclick="copyQQ(this)">复制</button></div>
+    </div>
     <div style="text-align:center;margin:32px 0 10px"><button onclick="rejectDonate()" aria-label="返回首页" style="border:1px solid var(--border);background:transparent;color:var(--text-faint);border-radius:20px;padding:6px 14px;font-size:12px;font-family:inherit;cursor:pointer">🙅 下次一定 →</button></div>
   </div>
 </div>
@@ -2622,14 +2649,85 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 
 function applyTheme(t){var r=document.documentElement;if(t==="dark"||t==="light")r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");var dark=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",dark?"#111417":"#58cc02");var b=document.getElementById("themeToggle");if(b)b.textContent=dark?"☀️":"🌙";}function toggleTheme(){var cur=document.documentElement.getAttribute("data-theme");var sys=matchMedia("(prefers-color-scheme:dark)").matches;var eff=cur==="dark"||(cur!=="light"&&sys);var next=eff?"light":"dark";try{localStorage.setItem("theme",next);}catch(e){}applyTheme(next);}(function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}applyTheme(t);})();try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}if(t!=="dark"&&t!=="light")applyTheme(null);});}catch(e){}
 function _today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function _yday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function getStudy(){var s;try{s=JSON.parse(localStorage.getItem("study")||"{}");}catch(e){s={};}if(!s.goal)s.goal=20;return s;}function saveStudy(s){try{localStorage.setItem("study",JSON.stringify(s));}catch(e){}}function studyTick(n){var s=getStudy(),t=_today();if(s.d!==t){s.streak=(s.last===_yday())?(s.streak||0)+1:1;s.last=t;s.d=t;s.n=0;}s.n=(s.n||0)+(n||1);saveStudy(s);try{updateDashboard();}catch(e){}}function setGoal(g){var s=getStudy();s.goal=+g||20;saveStudy(s);updateDashboard();}function getKnown(){try{return JSON.parse(localStorage.getItem("known")||"{}");}catch(e){return {};}}function saveKnown(m){try{localStorage.setItem("known",JSON.stringify(m));}catch(e){}}function knownHas(de){return !!getKnown()[de];}function knownToggle(p,btn){var m=getKnown();if(m[p.de]){delete m[p.de];}else{m[p.de]=1;try{studyTick();}catch(e){}}saveKnown(m);if(btn){var on=!!m[p.de];btn.classList.toggle("on",on);btn.title=on?"已学会（点击取消）":"标记为已学会";}try{updateDashboard();}catch(e){}}function levelProgressHtml(){if(typeof categories==="undefined")return "";var LV=[["0","零基础"],["a1","A1"],["a2","A2"],["b1","B1"],["b2","B2"]];var m=getKnown();return LV.map(function(x){var tot=0,kn=0;categories.forEach(function(c){if(c.level===x[0])c.phrases.forEach(function(p){tot++;if(m[p.de])kn++;});});var pct=tot?Math.round(kn/tot*100):0;return '<div class="lvrow"><span class="lvlab">'+x[1]+'</span><div class="progress-bar" style="flex:1;margin:0 8px"><div class="progress-fill" style="width:'+pct+'%"></div></div><span class="lvnum">'+kn+"/"+tot+"</span></div>";}).join("");}function updateDashboard(){if(typeof srsCounts!=="function")return;var c=srsCounts(),s=getStudy(),t=_today(),n=(s.d===t?s.n:0)||0;function S(i,v){var e=document.getElementById(i);if(e)e.textContent=v;}S("dashDue",c.due);S("dashStreak",s.streak||0);S("dashTotal",c.total);S("dashMastered",c.mastered);S("dashToday",n);S("dashGoal",s.goal);var f=document.getElementById("dashGoalFill");if(f)f.style.width=Math.min(100,Math.round(n/s.goal*100))+"%";var sel=document.getElementById("goalSel");if(sel)sel.value=String(s.goal);var lv=document.getElementById("dashLevels");if(lv)lv.innerHTML=levelProgressHtml();}try{updateDashboard();}catch(e){}
+function copyQQ(btn){var q="717986230";function ok(){btn.textContent="✓ 已复制";setTimeout(function(){btn.textContent="复制";},2000);}try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(q).then(ok).catch(function(){prompt("QQ 号：",q);});}else{prompt("QQ 号：",q);}}catch(e){prompt("QQ 号：",q);}}
 function copyShare(btn){var u="https://www.uuoo.site/";function ok(){btn.textContent="✓ 已复制，去粘贴分享吧";setTimeout(function(){btn.textContent="📋 复制网址分享";},2500);}try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(ok).catch(function(){prompt("复制这个网址分享：",u);});}else{prompt("复制这个网址分享：",u);}}catch(e){prompt("复制这个网址分享：",u);}}
 function rejectDonate(){var t=document.createElement('div');t.textContent='谢谢你来过 \uD83D\uDE0A';t.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9999;background:rgba(40,40,40,.94);color:#fff;font-size:16px;padding:16px 26px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.35)';document.body.appendChild(t);setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);showSection('home');},1100);}
 var VERB_IRR={sein:["bin","bist","ist","sind","seid","sind"],haben:["habe","hast","hat","haben","habt","haben"],werden:["werde","wirst","wird","werden","werdet","werden"],wissen:["weiß","weißt","weiß","wissen","wisst","wissen"],essen:["esse","isst","isst","essen","esst","essen"],geben:["gebe","gibst","gibt","geben","gebt","geben"],nehmen:["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"],sprechen:["spreche","sprichst","spricht","sprechen","sprecht","sprechen"],sehen:["sehe","siehst","sieht","sehen","seht","sehen"],lesen:["lese","liest","liest","lesen","lest","lesen"],helfen:["helfe","hilfst","hilft","helfen","helft","helfen"],treffen:["treffe","triffst","trifft","treffen","trefft","treffen"],fahren:["fahre","fährst","fährt","fahren","fahrt","fahren"],schlafen:["schlafe","schläfst","schläft","schlafen","schlaft","schlafen"],laufen:["laufe","läufst","läuft","laufen","lauft","laufen"],tragen:["trage","trägst","trägt","tragen","tragt","tragen"],fallen:["falle","fällst","fällt","fallen","fallt","fallen"],halten:["halte","hältst","hält","halten","haltet","halten"],waschen:["wasche","wäschst","wäscht","waschen","wascht","waschen"],mögen:["mag","magst","mag","mögen","mögt","mögen"],"können":["kann","kannst","kann","können","könnt","können"],"müssen":["muss","musst","muss","müssen","müsst","müssen"],wollen:["will","willst","will","wollen","wollt","wollen"],sollen:["soll","sollst","soll","sollen","sollt","sollen"],"dürfen":["darf","darfst","darf","dürfen","dürft","dürfen"]};
 function conjVerb(v){v=(v||"").trim().toLowerCase().replace(/\s+/g,"");if(!v)return null;if(VERB_IRR[v])return{forms:VERB_IRR[v],reg:false};var stem=v.replace(/en$/,"");if(stem===v)stem=v.replace(/n$/,"");if(!stem)return null;var sE=/[sßxz]$/.test(stem);var needE=/[td]$/.test(stem)||/[^aeiourlh][mn]$/.test(stem);var du=sE?stem+"t":(needE?stem+"est":stem+"st");var er=needE?stem+"et":stem+"t";var ihr=needE?stem+"et":stem+"t";return{forms:[stem+"e",du,er,v,ihr,v],reg:true};}
 function conjEx(v){var i=document.getElementById("conjIn");if(i)i.value=v;runConj();}
 function runConj(){var i=document.getElementById("conjIn"),o=document.getElementById("conjOut");if(!i||!o)return;var v=i.value.trim().toLowerCase();var r=conjVerb(v);if(!r){o.innerHTML=v?"<div style=\"font-size:13px;color:var(--text-dim)\">请输入动词原形（一般以 -en 结尾）</div>":"";return;}var pron=["ich","du","er/sie/es","wir","ihr","sie/Sie"];var rows=r.forms.map(function(f,k){return "<tr><td>"+pron[k]+"</td><td lang=\"de\"><b style=\"color:#46a302\">"+f+"</b> <button class=\"speak-btn\" type=\"button\" style=\"width:22px;height:22px;font-size:11px\" onclick=\"speakDE('"+pron[k].split("/")[0]+" "+f+"',this)\">🔊</button></td></tr>";}).join("");o.innerHTML="<div style=\"font-size:12px;color:var(--text-dim);margin:2px 0 4px\">"+(r.reg?"规则变位":"不规则/变音（已内置）")+" · 现在时</div><table class=\"pron-table\"><tr><th>人称</th><th lang=\"de\">"+v+"</th></tr>"+rows+"</table>";}
+// 即学即练：语法/发音每组 3 题，学完立刻主动回忆一次
+var GQ_DATA={
+p1:[
+ {q:'Wasser（水）的 W 读哪个音？',o:['英语 w「窝」','v「瓦」','f「夫」'],a:1,w:'德语 W 一律发 v 音：Wasser＝瓦瑟。而字母 V 大多发 f 音（Vater＝法特尔）。'},
+ {q:'ja（是的）怎么读？',o:['贾','雅','夏'],a:1,w:'J 发 y 音：ja＝雅。德语里没有汉语「鸡」那个 j 音。'},
+ {q:'zu（去 / 太）的 z 读什么？',o:['兹 z','楚 ts','苏 s'],a:1,w:'Z 永远读 ts（近似「茨 / 楚」的声母）：zu＝楚，Zeit＝采特。'}],
+g1:[
+ {q:'「学校 Schule」前面用哪个冠词？___ Schule',o:['der','die','das'],a:1,w:'以 -e 结尾的名词 98% 是阴性 → die Schule。记住这条能猜对一大片。'},
+ {q:'du trink___ Wasser（你喝水），空里填什么？',o:['-e','-st','-t'],a:1,w:'du 永远配 -st：du trinkst。词尾口诀：-e / -st / -t / -en / -t / -en。'},
+ {q:'Ich sehe ___ Mann.（我看见这个男人）',o:['der','dem','den'],a:2,w:'「看见谁」是直接宾语 → 第四格，der 变 den。初学最要紧的就这一个变化。'}],
+g2:[
+ {q:'口语里说「我学了德语」，最自然的是？',o:['Ich lernte Deutsch.','Ich habe Deutsch gelernt.','Ich werde Deutsch lernen.'],a:1,w:'口语说过去用完成时 Perfekt：habe + gelernt（分词甩句尾）。lernte 是书面 / 讲故事用的。'},
+ {q:'Ich ___ nach Berlin gefahren.（我去了柏林）',o:['habe','bin','ist'],a:1,w:'位移动词（fahren / gehen / kommen）完成时用 sein → ich bin … gefahren。'},
+ {q:'「因为我病了」正确的语序是？',o:['…, weil ich bin krank.','…, weil ich krank bin.','…, weil bin ich krank.'],a:1,w:'weil / dass / wenn 一出现，变位动词站最后 → weil ich krank bin。'}],
+g3:[
+ {q:'Ich trinke ___ Kaffee.（我喝热咖啡）',o:['heiß','heiße','heißen'],a:2,w:'形容词放名词前要加词尾；喝「什么」是四格、Kaffee 是阳性 → heißen。放动词后面则不变：Der Kaffee ist heiß.'},
+ {q:'Das Buch ist auf ___ Tisch.（书在桌上）',o:['den','dem','der'],a:1,w:'静三动四：ist 表静止位置 → 第三格 dem。若是「把它放到桌上」lege … auf den Tisch 才用四格。'},
+ {q:'Das ist für ___.（这是给你的）',o:['du','dir','dich'],a:2,w:'für 永远支配第四格 → dich。口诀：durch für gegen ohne um。'}],
+g4:[
+ {q:'er / sie / es（他 / 她 / 它）配哪个动词词尾？',o:['-st','-t','-en'],a:1,w:'er/sie/es 配 -t：er lernt，sie macht。'},
+ {q:'du ___ müde.（你累了，用 sein）',o:['bin','bist','ist'],a:1,w:'sein 不规则：ich bin，du bist，er ist——必背，它还是完成时助动词。'},
+ {q:'arbeiten（工作）→ du arbeit___？',o:['-st','-est','-et'],a:1,w:'词干以 t / d 结尾要插个 e 好发音 → du arbeitest（试试上面的变位器）。'}],
+g5:[
+ {q:'「今天我踢球」正确语序是？',o:['Heute ich spiele Fußball.','Heute spiele ich Fußball.','Heute Fußball ich spiele.'],a:1,w:'铁律：陈述句动词永远第二位。Heute 占了第一位，动词 spiele 紧跟，主语 ich 退到后面。'},
+ {q:'Ich gebe ___ das Buch.（我给你这本书）',o:['du','dich','dir'],a:2,w:'给「谁」用第三格 → dir；给的「东西」用第四格 → das Buch。'},
+ {q:'「你来吗？」怎么问？',o:['Du kommst?','Kommst du?','Kommen du?'],a:1,w:'是非问句把变位动词提到句首：Kommst du? 回答 ja / nein。'}],
+g6:[
+ {q:'zustimmen 是什么意思？',o:['反对','赞成','怀疑'],a:1,w:'zustimmen＝赞成、同意；名词 die Zustimmung。「反对」常见 widersprechen / kritisieren。'},
+ {q:'die Freiheit（自由）为什么是 die？',o:['以 F 开头','-heit 结尾 100% 阴性','抽象名词都是 die'],a:1,w:'-heit / -keit / -ung / -schaft 结尾 100% 阴性——看词尾就能定冠词。'},
+ {q:'deshalb 是什么意思？',o:['但是','所以','否则'],a:1,w:'deshalb / deswegen＝所以、因此。「但是」＝aber / doch，「否则」＝ansonsten。'}]
+};
+function _up(el,cls){while(el&&!(el.classList&&el.classList.contains(cls)))el=el.parentNode;return el;}
+function renderGramQuizzes(){
+  document.querySelectorAll('[data-gq]').forEach(function(box){
+    var qs=GQ_DATA[box.getAttribute('data-gq')];if(!qs)return;
+    var h='<div class="gq-head">✏️ 即学即练</div><div class="gq-sub">学完马上测一测——答错也没关系，看一眼解释就懂了</div>';
+    qs.forEach(function(q,qi){
+      h+='<div class="gq-item"><div class="gq-q">'+(qi+1)+'. '+q.q+'</div><div class="gq-opts">'
+        +q.o.map(function(o,oi){return '<button type="button" class="gq-opt" onclick="gqPick(this,'+q.a+','+oi+')">'+o+'</button>';}).join('')
+        +'</div><div class="gq-why">💡 '+q.w+'</div></div>';
+    });
+    box.innerHTML=h+'<div class="gq-score"></div>';
+  });
+}
+function gqPick(btn,a,oi){
+  var item=_up(btn,'gq-item');if(!item||item.classList.contains('done'))return;
+  item.classList.add('done');
+  var opts=item.querySelectorAll('.gq-opt');
+  opts[a].classList.add('ok');
+  if(oi!==a)btn.classList.add('bad');
+  item.setAttribute('data-right',oi===a?'1':'0');
+  try{studyTick(1);}catch(e){}   // 计入首页「今日目标」
+  var box=_up(item,'gq-box');
+  if(box.querySelectorAll('.gq-item.done').length===box.querySelectorAll('.gq-item').length){
+    var n=box.querySelectorAll('.gq-item').length,r=box.querySelectorAll('.gq-item[data-right="1"]').length;
+    var sc=box.querySelector('.gq-score');
+    sc.style.display='block';
+    sc.innerHTML=(r===n?'🎉 全对！这组你已经掌握了':'✅ 答对 '+r+'/'+n+' · 错的看上面绿色解释，马上就懂')
+      +'<button class="btn" type="button" onclick="gqReset(this)">🔄 再练一遍</button>';
+  }
+}
+function gqReset(btn){
+  var box=_up(btn,'gq-box');
+  box.querySelectorAll('.gq-item').forEach(function(it){
+    it.classList.remove('done');it.removeAttribute('data-right');
+    it.querySelectorAll('.gq-opt').forEach(function(o){o.classList.remove('ok','bad');});
+  });
+  var sc=box.querySelector('.gq-score');sc.style.display='none';sc.innerHTML='';
+}
 // INIT
 initPhrases();
+renderGramQuizzes();
 buildReadTabs();buildSeriesTabs();   // 标签轻量先建；阅读/连载长列表在首次打开时懒渲染（见 showSection）
 srsUpdateBadge();
 // 长版块快速跳转条
