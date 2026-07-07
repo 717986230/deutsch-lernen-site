@@ -28,14 +28,14 @@
 <meta name="apple-mobile-web-app-title" content="德语手册">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2358cc02'/%3E%3Ctext x='50' y='70' font-size='54' font-family='Georgia,serif' font-weight='700' text-anchor='middle' fill='white'%3EDE%3C/text%3E%3C/svg%3E">
 <style>
-:root{--gold:#58cc02;--gold-dim:#58cc0266;--gold-faint:#58cc0222;--bg:#f6f8fb;--bg2:#ffffff;--bg3:#ffffff;--surface:#ffffff;--surface-2:#ffffff;--nav-bg:rgba(255,255,255,.9);--border:rgba(0,0,0,.08);--shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);--text:#33383d;--text-dim:#63696f;--text-faint:#8b9198;--red:#ff4b4b;--green:#58cc02;--blue:#1cb0f6;}:root[data-theme="dark"]{--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#767d84;--gold-faint:#58cc0230;--gold-dim:#58cc0288;}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#767d84;--gold-faint:#58cc0230;--gold-dim:#58cc0288;}}
+:root{--gold:#58cc02;--gold-dim:#58cc0266;--gold-faint:#58cc0222;--bg:#f4f8f2;--bg2:#ffffff;--bg3:#ffffff;--surface:#ffffff;--surface-2:#ffffff;--nav-bg:rgba(255,255,255,.9);--border:rgba(0,0,0,.08);--shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);--text:#33383d;--text-dim:#63696f;--text-faint:#8b9198;--red:#ff4b4b;--green:#58cc02;--blue:#1cb0f6;--stripe:rgba(0,0,0,.02);}:root[data-theme="dark"]{--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#767d84;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#767d84;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);}}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-height:100vh;overflow-x:hidden}
 /* NAV */
 #nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--gold-faint);display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;padding:0 8px}
-.nav-btn{flex-shrink:0;padding:14px 16px;font-size:12px;letter-spacing:1px;color:var(--text-dim);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;font-family:inherit}
-.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
-.nav-btn:hover{color:var(--text)}
+.nav-btn{flex-shrink:0;padding:9px 14px;margin:6px 2px;font-size:12px;letter-spacing:1px;color:var(--text-dim);background:none;border:none;border-radius:18px;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit}
+.nav-btn.active{color:#fff;background:var(--gold);font-weight:700}
+.nav-btn:not(.active):hover{color:var(--text);background:rgba(88,204,2,.1)}
 /* 键盘可访问性：仅键盘聚焦时显示清晰焦点环，不影响鼠标点击 */
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
 .nav-btn:focus-visible{outline-offset:-2px}
@@ -51,13 +51,21 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .section.active{display:block}
 .container{max-width:900px;margin:0 auto;padding:0 16px}
 /* HERO */
-.hero{text-align:center;padding:40px 16px 32px;background:linear-gradient(180deg,rgba(88,204,2,.08) 0%,transparent 100%)}
+.hero{text-align:center;padding:40px 16px 30px;background:linear-gradient(180deg,rgba(88,204,2,.12) 0%,transparent 100%)}
+.flag-strip{width:56px;height:6px;margin:12px auto 10px;border-radius:3px;overflow:hidden;display:flex;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.flag-strip i{flex:1}.flag-strip i:nth-child(1){background:#2b2b2b}.flag-strip i:nth-child(2){background:#dd0000}.flag-strip i:nth-child(3){background:#ffce00}
+body.lang-en .flag-strip{display:none}
+.page-title{text-align:center;font-weight:700;font-size:24px;margin:8px 0 14px;color:var(--text);letter-spacing:1px}
+.path-strip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;margin:2px 0 18px;font-size:12px;color:var(--text-dim)}
+.path-step{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:6px 12px;box-shadow:var(--shadow)}
+.path-step b{width:18px;height:18px;border-radius:50%;background:var(--gold);color:#fff;font-size:11px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.path-arrow{color:var(--text-faint)}
 .hero-label{font-size:11px;letter-spacing:6px;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
 .hero h1{font-size:clamp(24px,5vw,42px);font-weight:400;letter-spacing:2px;color:var(--text);margin-bottom:8px}
 .hero p{font-size:14px;color:var(--text-dim);line-height:1.6}
 /* CARDS */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;transition:all .2s,box-shadow .2s;cursor:pointer;box-shadow:var(--shadow)}
-.card:hover{background:rgba(88,204,2,.06);border-color:var(--gold-dim)}
+.card:hover{background:rgba(88,204,2,.06);border-color:var(--gold-dim);transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
 .card.flipped{background:rgba(88,204,2,.1);border-color:var(--gold-dim)}
 .card-de{font-size:16px;color:var(--text);font-style:italic}
 .card-de-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
@@ -114,10 +122,10 @@ to{opacity:1}}
 .subnav-chip{flex-shrink:0;padding:5px 12px;border-radius:14px;background:rgba(88,204,2,.1);color:#46a302;font-size:12px;white-space:nowrap;cursor:pointer;border:1px solid var(--gold-faint);font-family:inherit}
 .subnav-chip:active{background:rgba(88,204,2,.25)}
 /* SECTION TITLE */
-.sec-title{display:flex;align-items:center;gap:10px;margin:28px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--gold-faint);scroll-margin-top:100px}
-.sec-title-icon{font-size:20px}
-.sec-title-text{font-size:15px;color:var(--gold);letter-spacing:1px}
-.sec-title-count{font-size:11px;color:var(--gold-dim);margin-left:auto}
+.sec-title{display:flex;align-items:center;gap:10px;margin:30px 0 14px;scroll-margin-top:100px}
+.sec-title-icon{font-size:16px;width:34px;height:34px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(88,204,2,.12);border:1px solid var(--gold-faint);border-radius:10px}
+.sec-title-text{font-size:15px;font-weight:700;color:var(--text);letter-spacing:.5px}
+.sec-title-count{font-size:11px;color:var(--text-faint);margin-left:auto}
 /* SEARCH */
 .search-wrap{position:relative;max-width:440px;margin:20px auto}
 .search-wrap input{width:100%;padding:12px 44px 12px 18px;border-radius:30px;border:1px solid var(--gold-dim);background:rgba(88,204,2,.06);color:var(--text);font-size:14px;outline:none;font-family:inherit}
@@ -126,11 +134,11 @@ to{opacity:1}}
 /* CAT TABS */
 .cat-tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 0 8px;scrollbar-width:none}
 .cat-tab{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--gold-faint);background:transparent;color:var(--text-dim);cursor:pointer;font-size:12px;font-family:inherit;white-space:nowrap;transition:all .2s}
-.cat-tab.active{border-color:var(--gold);background:rgba(88,204,2,.15);color:var(--gold)}
+.cat-tab.active{border-color:var(--gold);background:var(--gold);color:#fff;font-weight:700}
 /* LEVEL SYSTEM */
 .level-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;margin-bottom:4px;-webkit-overflow-scrolling:touch}
 .level-tab{flex-shrink:0;padding:8px 16px;border-radius:22px;border:1px solid var(--gold-faint);background:transparent;color:var(--text-dim);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;white-space:nowrap;transition:all .2s}
-.level-tab.active{border-color:var(--gold);background:rgba(88,204,2,.18);color:var(--gold)}
+.level-tab.active{border-color:var(--gold);background:var(--gold);color:#fff;font-weight:700}
 .level-info{display:none;border-left:3px solid var(--gold);background:var(--surface);padding:10px 14px;border-radius:0 8px 8px 0;margin:0 0 14px;font-size:13px;line-height:1.6;color:var(--text-dim)}
 .level-badge{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;vertical-align:middle}
 .lb-0{background:rgba(88,204,2,.18);color:#58cc02}
@@ -156,7 +164,7 @@ to{opacity:1}}
 .num-de{font-size:14px;color:var(--text);font-style:italic;margin-bottom:3px}
 .num-py{font-size:12px;color:var(--text-dim)}
 /* RULES BOX */
-.rule-box{background:rgba(88,204,2,.05);border:1px solid var(--gold-faint);border-radius:12px;padding:20px;margin-bottom:16px}
+.rule-box{background:rgba(88,204,2,.05);border:1px solid var(--gold-faint);border-radius:14px;padding:20px;margin-bottom:16px}
 .rule-box h3{font-size:14px;color:var(--gold);margin-bottom:12px;letter-spacing:1px}
 .rule-row{display:flex;gap:12px;margin-bottom:8px;align-items:baseline;flex-wrap:wrap}
 .rule-num{font-size:22px;font-weight:700;color:var(--gold);width:48px;flex-shrink:0}
@@ -176,10 +184,12 @@ to{opacity:1}}
 .btn{padding:10px 24px;border-radius:24px;border:1px solid var(--gold-dim);background:rgba(88,204,2,.12);color:var(--gold);font-size:13px;cursor:pointer;font-family:inherit;letter-spacing:.5px;transition:all .2s}
 .btn:hover{background:rgba(88,204,2,.22)}
 /* PRONUNCIATION */
-.pron-table{width:100%;border-collapse:collapse;margin-bottom:20px}
-.pron-table th{text-align:left;padding:8px 12px;font-size:11px;letter-spacing:2px;color:var(--gold);border-bottom:1px solid var(--gold-faint);font-weight:400}
+.pron-table{width:100%;border-collapse:separate;border-spacing:0;margin-bottom:20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.pron-table th{text-align:left;padding:10px 12px;font-size:12px;letter-spacing:1px;color:#46a302;background:rgba(88,204,2,.08);border-bottom:1px solid var(--gold-faint);font-weight:700}
 .pron-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
-.pron-table tr:hover td{background:rgba(88,204,2,.04)}
+.pron-table tr:nth-child(even) td{background:var(--stripe)}
+.pron-table tr:last-child td{border-bottom:none}
+.pron-table tr:hover td{background:rgba(88,204,2,.05)}
 .pron-letter{font-size:16px;color:var(--text);font-style:italic;font-weight:600}
 .pron-sound{color:var(--gold)}
 .pron-example{color:var(--text-dim)}
@@ -193,7 +203,7 @@ to{opacity:1}}
 .lc-sound{font-size:11px;color:var(--text-dim);line-height:1.5}
 .letter-card .speak-btn{margin-top:8px}
 /* TIPS */
-.tip-card{background:var(--surface);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:12px}
+.tip-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
 .tip-title{font-size:13px;color:var(--gold);margin-bottom:6px;letter-spacing:.5px}
 .tip-body{font-size:13px;color:var(--text-dim);line-height:1.7}
 .tip-body b{color:var(--text)}
@@ -305,6 +315,7 @@ body:not(.lang-en) .en-only-block{display:none}
   <div class="hero">
     <div class="hero-label" id="heroLabel">Deutsche Sprache · 德语学习</div>
     <h1 id="heroTitle">德语学习手册</h1>
+    <div class="flag-strip" aria-hidden="true"><i></i><i></i><i></i></div>
     <p id="heroSub">发音 · 数字 · 语法 · 3720 词句 · 5阶段进阶 · 互动测验</p>
   </div>
   <div class="container">
@@ -339,7 +350,7 @@ body:not(.lang-en) .en-only-block{display:none}
         <span class="ph-try" onclick="phTry('Wasser')">Wasser</span>
         <span class="ph-try" onclick="phTry('danke')">danke</span>
         <span class="ph-try" onclick="phTry('schön')">schön</span>
-        <span class="ph-try" onclick="phTry('Entschuldigung')">Entschuldigung</span>
+        <span class="ph-try" onclick="phTry('Entschuldigung')">Entschuldigung</span><span id="phSug"></span>
       </div>
     </div>
     <div class="sec-title" style="margin-top:28px"><span class="sec-title-icon">📚</span><span class="sec-title-text">全部功能</span></div>
@@ -515,9 +526,11 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="pronunciation" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Aussprache</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 14px;color:var(--text)">德语发音规律</h2>
+    <h2 class="page-title">德语发音规律</h2>
     <div class="subnav" id="pronSubnav"></div>
+    <div class="path-strip"><span class="path-step"><b>1</b>先听 26 个字母</span><span class="path-arrow">→</span><span class="path-step"><b>2</b>记住 6 个易错音</span><span class="path-arrow">→</span><span class="path-step"><b>3</b>回首页用拼读器练</span></div>
 
+    <details class="gram-group" open><summary>① 26 个字母 · 先把字母读准（含 6 个最易错）</summary><div class="gram-body">
     <div class="sec-title"><span class="sec-title-icon">🔡</span><span class="sec-title-text">26个字母完整发音表</span></div>
     <div style="margin-bottom:10px;font-size:12px;color:var(--text-dim)">💡 括号内为该字母的<b style="color:var(--gold)">名称读音</b>，发音栏说明该字母在单词中的<b style="color:var(--gold)">实际发音</b></div>
     <div class="letter-grid" id="letterGrid"></div>
@@ -536,7 +549,9 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="gq-box" data-gq="p1"></div>
 
     <div class="tip-card"><div class="tip-title">🧩 拼读器在首页</div><div class="tip-body">想知道任意德语词怎么读？回<b>🏠 首页</b>用「拼读器」：输入单词自动拆解发音、显示中文翻译、点 🔊 即听。</div></div>
+    </div></details>
 
+    <details class="gram-group"><summary>② 变音字母 &amp; 字母组合 · 固定读法照着念</summary><div class="gram-body">
     <div class="sec-title"><span class="sec-title-icon">🔤</span><span class="sec-title-text">特殊字母（变音 Umlaute）</span></div>
     <table class="pron-table">
       <tr><th>字母</th><th>发音</th><th>近似汉语谐音</th><th>例词</th></tr>
@@ -563,6 +578,9 @@ body:not(.lang-en) .en-only-block{display:none}
       <tr><td class="pron-letter">chs</td><td>发"ks"</td><td class="pron-zh">克斯</td><td class="pron-example">wachsen（生长）= 瓦克森</td></tr>
     </table>
 
+    </div></details>
+
+    <details class="gram-group"><summary>③ 6 条关键发音规则 · 读得更像德国人</summary><div class="gram-body">
     <div class="sec-title"><span class="sec-title-icon">📌</span><span class="sec-title-text">关键发音规则</span></div>
     <div class="tip-card"><div class="tip-title">规则1：字尾 -e 轻读</div><div class="tip-body">词尾的e通常发轻声"呃"。例：<b>Hunde</b>（狗们）= 洪德<b>呃</b>，<b>Sprache</b>（语言）= 斯普拉赫<b>呃</b></div></div>
     <div class="tip-card"><div class="tip-title">规则2：-ig 结尾发"希"</div><div class="tip-body">词尾-ig发/ɪç/音，近似"希"。例：<b>richtig</b>（正确的）= 里希<b>希</b>，<b>lustig</b>（有趣的）= 卢斯<b>希</b></div></div>
@@ -570,6 +588,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <div class="tip-card"><div class="tip-title">规则4：重音基本在第一音节</div><div class="tip-body">德语词重音通常在第一个音节。外来词例外。例：<b>KOM</b>-men，<b>SPRA</b>-che，<b>GU</b>-ten</div></div>
     <div class="tip-card"><div class="tip-title">规则5：v 发"f"音</div><div class="tip-body">德语v通常发"f"音。例：<b>Vater</b>（父亲）= <b>法</b>特尔，<b>viel</b>（多）= <b>菲</b>尔</div></div>
     <div class="tip-card"><div class="tip-title">规则6：w 发"v"音</div><div class="tip-body">德语w发"v"音（英语的v）。例：<b>Wasser</b>（水）= <b>瓦</b>瑟，<b>weiß</b>（白色）= <b>魏</b>斯</div></div>
+    </div></details>
   </div>
 </div>
 
@@ -577,8 +596,9 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="numbers" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Zahlen</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 14px;color:var(--text)">德语数字规律</h2>
+    <h2 class="page-title">德语数字规律</h2>
     <div class="subnav" id="numSubnav"></div>
+    <div class="path-strip"><span class="path-step"><b>1</b>背熟 0–12</span><span class="path-arrow">→</span><span class="path-step"><b>2</b>学 13–99 规律（倒序！）</span><span class="path-arrow">→</span><span class="path-step"><b>3</b>做数字练习</span></div>
 
     <div class="sec-title"><span class="sec-title-icon">1️⃣</span><span class="sec-title-text">基础数字 0–12（必须单独记）</span></div>
     <div class="num-grid" id="numGrid0"></div>
@@ -634,8 +654,9 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="grammar" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Grammatik</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 14px;color:var(--text)">德语语法速记</h2>
+    <h2 class="page-title">德语语法速记</h2>
     <div class="subnav" id="grammarSubnav"></div>
+    <div class="path-strip"><span class="path-step"><b>1</b>冠词 · 变位 · 四格</span><span class="path-arrow">→</span><span class="path-step"><b>2</b>一句话走六时态</span><span class="path-arrow">→</span><span class="path-step"><b>3</b>每组答对 3 题</span></div>
 
     <details class="gram-group" open><summary>① 入门必学 · 冠词性别 / 动词变位 / 四个格 / 基础句型</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">名词性别（冠词）</span></div>
     <div class="rule-box">
@@ -935,68 +956,14 @@ body:not(.lang-en) .en-only-block{display:none}
     </div></div></details>
 
     <div class="gq-box" data-gq="g5"></div>
-    </div></details><details class="gram-group"><summary>⑥ 阅读高频词（赞同反对 / 情感 / 连词）</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">📖</span><span class="sec-title-text">阅读理解高频词 · 赞同/反对/中立</span></div>
-    <table class="pron-table">
-      <tr><th>赞同</th><th>反对</th><th>中立</th></tr>
-      <tr><td lang="de">hinnehmen 接受</td><td lang="de">kritisieren 批评</td><td lang="de">allgemein 普遍</td></tr>
-      <tr><td lang="de">überein 同意</td><td lang="de">beklagen 抱怨</td><td lang="de">objektiv 客观</td></tr>
-      <tr><td lang="de">stimmen 一致</td><td lang="de">schimpfen 大骂</td><td lang="de">prinzipiell 原则上</td></tr>
-      <tr><td lang="de">die Überzeugung 坚信</td><td lang="de">widersprechen 反驳</td><td lang="de">sachlich 实事求是</td></tr>
-      <tr><td lang="de">zustimmen 赞成</td><td lang="de">umstritten 有争议</td><td lang="de">grundsätzlich 根本</td></tr>
-      <tr><td lang="de">die Zustimmung 同意</td><td lang="de">absurd 无意义</td><td lang="de">normalerweise 一般</td></tr>
-      <tr><td lang="de">bestimmt 肯定</td><td lang="de">irren 弄错</td><td lang="de">generell 普遍</td></tr>
-      <tr><td lang="de">sicherlich 肯定地</td><td lang="de">der Unsinn 蠢话</td><td></td></tr>
-      <tr><td lang="de">deutlich 明确</td><td lang="de">unterstellen 强加</td><td></td></tr>
-      <tr><td lang="de">einig 一致的</td><td lang="de">keineswegs 绝不</td><td></td></tr>
-      <tr><td lang="de">die Annahme 采纳</td><td lang="de">unmöglich 不可能</td><td></td></tr>
-      <tr><td lang="de">einverstanden 同意的</td><td lang="de">scheinbar 虚假</td><td></td></tr>
-    </table>
-
-    <div class="sec-title"><span class="sec-title-icon">🙂</span><span class="sec-title-text">阅读高频词 · 积极/消极</span></div>
-    <table class="pron-table">
-      <tr><th>积极</th><th>消极</th></tr>
-      <tr><td lang="de">angenehm 令人愉快</td><td lang="de">unerträglich 难以忍受</td></tr>
-      <tr><td lang="de">zuverlässig 可信</td><td lang="de">besorgt 担忧</td></tr>
-      <tr><td lang="de">glücklich 幸福</td><td lang="de">die Enttäuschung 失望</td></tr>
-      <tr><td lang="de">aktiv 积极活跃</td><td lang="de">der Hass 仇恨</td></tr>
-      <tr><td lang="de">kreativ 有创造力</td><td lang="de">unglücklich 不幸</td></tr>
-      <tr><td lang="de">ordentlich 正派</td><td lang="de">verwirren 使迷茫</td></tr>
-      <tr><td lang="de">perfekt 完美</td><td lang="de">verzweifeln 绝望</td></tr>
-      <tr><td lang="de">toll 极好</td><td lang="de">durcheinander 混乱</td></tr>
-      <tr><td lang="de">freundlich 友好</td><td lang="de">hilflos 无助</td></tr>
-      <tr><td lang="de">offen 开放</td><td lang="de">unsicher 没把握</td></tr>
-      <tr><td lang="de">dynamisch 有活力</td><td lang="de">blöd 讨厌/笨</td></tr>
-      <tr><td lang="de">sanft 温柔</td><td lang="de">empfindlich 敏感</td></tr>
-    </table>
-
-    <div class="sec-title"><span class="sec-title-icon">🔗</span><span class="sec-title-text">阅读高频 · 连词</span></div>
-    <table class="pron-table">
-      <tr><td lang="de">allerdings 然而</td><td lang="de">andererseits 另一方面</td><td lang="de">ansonsten 否则</td></tr>
-      <tr><td lang="de">außer 除了</td><td lang="de">dennoch 尽管如此</td><td lang="de">deshalb 所以</td></tr>
-      <tr><td lang="de">deswegen 因此</td><td lang="de">doch 但是/仍然</td><td lang="de">eben 恰好</td></tr>
-      <tr><td lang="de">einerseits 一方面</td><td lang="de">immerhin 毕竟</td><td lang="de">ohnehin 反正</td></tr>
-      <tr><td lang="de">aber 但是</td><td lang="de">entweder…oder 要么</td><td lang="de">indem 通过…(方式)</td></tr>
-    </table>
-
-    <div class="sec-title"><span class="sec-title-icon">🔎</span><span class="sec-title-text">名词性别辨别方法（带例子）</span></div>
-    <div class="rule-box"><div style="font-size:13px;line-height:1.9;color:var(--text-dim)">
-      <div><b style="color:#58cc02">Ge- 开头</b>表"一类总称" → 100% 中性：das Gebäude(建筑)、das Gemüse(蔬菜)、das Geschenk(礼物)、das Gespräch(谈话)</div>
-      <div><b style="color:#58cc02">-um 结尾</b>多中性：das Studium、das Museum、das Zentrum、das Datum、das Visum</div>
-      <div><b style="color:#ff4b4b">-schaft</b> 100% 阴(似英语 -ship)：die Wissenschaft、die Freundschaft、die Gewerkschaft</div>
-      <div><b style="color:#ff4b4b">-keit / -heit</b> 100% 阴：die Gesundheit、die Freiheit、die Möglichkeit、die Einheit</div>
-      <div><b style="color:#ff4b4b">98% -e 结尾</b>阴性：die Schule、die Frage、die Reise、die Tasche、die Lunge</div>
-      <div style="color:var(--text-dim)">例外：少数 -e 阳性弱变化(der Kunde/Affe/Löwe/Kollege)；中性(das Ende/Wochenende)。拉丁/希腊 -ant/-ist/-oph 等多为阳性弱变化(der Pianist、der Philosoph)。</div>
-    </div></div>
-    <div class="gq-box" data-gq="g6"></div>
-    </div></details>
-  </div>
+    </div></details>  </div>
 </div>
 
 <!-- ══════════════ PHRASES ══════════════ -->
 <div id="phrases" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Alltagsdeutsch</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 4px;color:var(--text)">日常对话 + 词汇大全</h2>
+    <h2 class="page-title">日常对话 + 词汇大全</h2>
     <p id="phrasesSub" style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">99个分类 · 3720个词句 · 点击卡片看谐音 · 🔊 点喇叭听地道德语发音</p>
 
     <div class="search-wrap">
@@ -1027,7 +994,7 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="quiz" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Übungen</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 24px;color:var(--text)">练习测验</h2>
+    <h2 class="page-title">练习测验</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px">
       <div class="card" onclick="startQuiz('num')" style="text-align:center;padding:20px">
         <div style="font-size:28px;margin-bottom:8px">🔢</div>
@@ -1077,7 +1044,7 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="reading" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Lesen</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 4px;color:var(--text)">分级阅读短文</h2>
+    <h2 class="page-title">分级阅读短文</h2>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
     <button id="loopAllBtn" class="fab-read" type="button" aria-label="循环朗读全部短文" onclick="toggleLoopAll()">🔊 循环朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="readRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
@@ -1092,7 +1059,7 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="series" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Serie</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 4px;color:var(--text)">留学连载 · 跟着故事学德语</h2>
+    <h2 class="page-title">留学连载 · 跟着故事学德语</h2>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">原创连续剧 · 中德对照 · 🔊 慢速朗读 · 点词查义</p>
     <button id="seriesLoopBtn" class="fab-read" type="button" aria-label="循环朗读全部连载" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
@@ -1110,7 +1077,7 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="support" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Support</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 8px;color:var(--text)">支持作者 · 请杯咖啡 ☕</h2>
+    <h2 class="page-title">支持作者 · 请杯咖啡 ☕</h2>
     <p style="text-align:center;font-size:14px;color:var(--text-dim);line-height:1.9;max-width:520px;margin:0 auto">这份手册从词句整理、发音朗读到测验复习，都是<b>业余时间一点点做出来、并持续维护</b>的；域名和时间都是实打实的成本。它<b>一直免费、无广告</b>。<br>如果它在你学德语的路上帮上了忙，欢迎扫码<b>随手打赏一点</b>，让它能继续更新下去 😊<br>一块两块都是心意，谢谢你的支持！</p>
     <div style="max-width:290px;margin:18px auto 0;background:#fff;border-radius:16px;padding:8px;box-shadow:var(--shadow)">
       <img src="support-qr.png" alt="微信收款二维码" loading="lazy" style="width:100%;height:auto;display:block;border-radius:12px">
@@ -1130,7 +1097,7 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="en-pron" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Pronunciation</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 6px;color:var(--text)">英语发音规律</h2>
+    <h2 class="page-title">英语发音规律</h2>
     <div class="subnav" id="enPronSubnav"></div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">英语<b>不像德语"所见即所读"</b>——同样字母常有多种读法。下面是中国人最该先掌握的规律 + 谐音示例。</p>
 
@@ -1169,7 +1136,7 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="en-num" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Numbers</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 14px;color:var(--text)">英语数字规律</h2>
+    <h2 class="page-title">英语数字规律</h2>
     <div class="subnav" id="enNumSubnav"></div>
 
     <div class="sec-title"><span class="sec-title-icon">1️⃣</span><span class="sec-title-text">1–12（单独记）</span></div>
@@ -1200,7 +1167,7 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="en-grammar" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Grammar</div>
-    <h2 style="text-align:center;font-weight:400;font-size:24px;margin:8px 0 14px;color:var(--text)">英语语法速记</h2>
+    <h2 class="page-title">英语语法速记</h2>
     <div class="subnav" id="enGrammarSubnav"></div>
 
     <div class="sec-title"><span class="sec-title-icon">🔑</span><span class="sec-title-text">be 动词：am / is / are</span></div>
@@ -1884,10 +1851,26 @@ function phonicsHtml(de,lg){
   return dePhonics(de).map(s=>s.sp?'<span style="width:7px;display:inline-block"></span>':
     `<span class="ph-chip${cls}${s.vow?' vow':''}" title="${s.note||''}"><b lang="de">${s.g}</b><i>${s.zh}</i></span>`).join('');
 }
+let _phSug=null;
+function buildPhSug(){ // 联想词表：词库里的单个词（去标点、去重、按字母序）
+  _phSug=[];const seen={};
+  DE_CATEGORIES.forEach(c=>c.phrases.forEach(p=>{
+    const bare=p.de.replace(/[!?.,…;:"'()]/g,'').trim();
+    if(bare&&!/\s/.test(bare)){const k=bare.toLowerCase();if(!seen[k]){seen[k]=1;_phSug.push({w:bare,zh:p.zh,k:k});}}
+  }));
+  _phSug.sort((a,b)=>a.k<b.k?-1:(a.k>b.k?1:0));
+}
 function renderPhTool(){
   const v=(document.getElementById('phInput').value||'').trim();
   const out=document.getElementById('phToolOut');if(!out)return;
-  if(!v){out.innerHTML='';return;}
+  const sugEl=document.getElementById('phSug');
+  if(!v){out.innerHTML='';if(sugEl)sugEl.innerHTML='';return;}
+  if(sugEl){let h='';try{
+    if(!_phSug)buildPhSug();
+    const q=v.toLowerCase(),hits=[];
+    for(let i=0;i<_phSug.length&&hits.length<6;i++){const e=_phSug[i];if(e.k!==q&&e.k.indexOf(q)===0)hits.push(e);}
+    if(hits.length)h='<span style="color:var(--text-faint)"> ｜ 联想：</span>'+hits.map(e=>'<span class="ph-try" onclick="phTry(\''+e.w+'\')">'+e.w+' '+e.zh+'</span>').join('');
+  }catch(e){}sugEl.innerHTML=h;}
   // 查词库给中文翻译（含去冠词匹配）
   let zh='';
   try{
@@ -2520,11 +2503,7 @@ g4:[
 g5:[
  {q:'「今天我踢球」正确语序是？',o:['Heute ich spiele Fußball.','Heute spiele ich Fußball.','Heute Fußball ich spiele.'],a:1,w:'铁律：陈述句动词永远第二位。Heute 占了第一位，动词 spiele 紧跟，主语 ich 退到后面。'},
  {q:'Ich gebe ___ das Buch.（我给你这本书）',o:['du','dich','dir'],a:2,w:'给「谁」用第三格 → dir；给的「东西」用第四格 → das Buch。'},
- {q:'「你来吗？」怎么问？',o:['Du kommst?','Kommst du?','Kommen du?'],a:1,w:'是非问句把变位动词提到句首：Kommst du? 回答 ja / nein。'}],
-g6:[
- {q:'zustimmen 是什么意思？',o:['反对','赞成','怀疑'],a:1,w:'zustimmen＝赞成、同意；名词 die Zustimmung。「反对」常见 widersprechen / kritisieren。'},
- {q:'die Freiheit（自由）为什么是 die？',o:['以 F 开头','-heit 结尾 100% 阴性','抽象名词都是 die'],a:1,w:'-heit / -keit / -ung / -schaft 结尾 100% 阴性——看词尾就能定冠词。'},
- {q:'deshalb 是什么意思？',o:['但是','所以','否则'],a:1,w:'deshalb / deswegen＝所以、因此。「但是」＝aber / doch，「否则」＝ansonsten。'}]
+ {q:'「你来吗？」怎么问？',o:['Du kommst?','Kommst du?','Kommen du?'],a:1,w:'是非问句把变位动词提到句首：Kommst du? 回答 ja / nein。'}]
 };
 function _up(el,cls){while(el&&!(el.classList&&el.classList.contains(cls)))el=el.parentNode;return el;}
 function renderGramQuizzes(){
