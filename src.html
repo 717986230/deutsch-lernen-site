@@ -2275,22 +2275,27 @@ sieben:'七',acht:'八',neun:'九',zehn:'十',elf:'十一',zwölf:'十二',
 zwanzig:'二十',dreißig:'三十',hundert:'百',tausend:'千',uhr:'点钟',
 am:'在…',im:'在…里',ins:'到…里',zum:'到…',zur:'到…',beim:'在…时',vom:'从…',
 mich:'我'};
-function rdGloss(w){ // 词库查词义（含简单词形还原），给逐词小注用；查不到或太长返回 null
-  try{
-    if(!_deWordMap)buildDeWordMap();
-    let t=w.toLowerCase().replace(/^[^a-zäöüß]+|[^a-zäöüß]+$/g,'');
-    if(!t)return null;
-    if(Object.prototype.hasOwnProperty.call(RD_OVR,t))return RD_OVR[t]||null;
-    let hit=_deWordMap[t];
-    if(!hit){
-      const sufs=['est','en','er','em','es','st','e','n','t','s'];
-      for(let i=0;i<sufs.length&&!hit;i++){const f=sufs[i];
-        if(t.length>f.length+2&&t.slice(-f.length)===f){
-          const b=t.slice(0,-f.length);
-          hit=_deWordMap[b]||_deWordMap[b+'en']||_deWordMap[b+'e'];
-        }
+function rdLookup(w){ // 词库查词（含简单词形还原），返回 {de,zh} 或 null；点词与逐词小注共用
+  if(!_deWordMap)buildDeWordMap();
+  let t=w.toLowerCase().replace(/^[^a-zäöüß]+|[^a-zäöüß]+$/g,'');
+  if(!t)return null;
+  if(Object.prototype.hasOwnProperty.call(RD_OVR,t))return RD_OVR[t]?{de:t,zh:RD_OVR[t]}:null;
+  let hit=_deWordMap[t];
+  if(!hit){
+    const sufs=['est','en','er','em','es','st','e','n','t','s'];
+    for(let i=0;i<sufs.length&&!hit;i++){const f=sufs[i];
+      if(t.length>f.length+2&&t.slice(-f.length)===f){
+        const b=t.slice(0,-f.length);
+        const u=b.replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u'); // 变音还原：Zähne→Zahn
+        hit=_deWordMap[b]||_deWordMap[b+'en']||_deWordMap[b+'e']||(u!==b?(_deWordMap[u]||_deWordMap[u+'en']):null);
       }
     }
+  }
+  return hit||null;
+}
+function rdGloss(w){ // 逐词小注：查不到或太长返回 null
+  try{
+    const hit=rdLookup(w);
     if(!hit)return null;
     const z=(hit.zh||'').split(/[，,、/；;（(]/)[0].replace(/[。！？!?.]+$/,'');
     return (z&&z.length<=6)?z:null;
@@ -2319,8 +2324,12 @@ function readWordClick(e,el){
   const clean=raw.replace(/^[^A-Za-zÄÖÜäöüß]+|[^A-Za-zÄÖÜäöüß]+$/g,'');
   if(!clean)return;
   try{speakDE(clean);}catch(_){}
-  const hit=_deWordMap[clean.toLowerCase()];
-  if(hit){ rdToast(hit.de+' — '+hit.zh); }
+  const ART={der:'定冠词（阳性）',die:'定冠词（阴性/复数）',das:'定冠词（中性）',den:'定冠词（第四格）',dem:'定冠词（第三格）',des:'定冠词（第二格）',ein:'不定冠词「一个」',eine:'不定冠词（阴性）',einen:'不定冠词（四格）',einem:'不定冠词（三格）',einer:'不定冠词（阴性）',eines:'不定冠词（二格）'};
+  const lk=clean.toLowerCase();
+  let hit=null;
+  if(ART[lk]){ rdToast(clean+' — '+ART[lk]); return; }
+  try{hit=rdLookup(clean);}catch(_){}
+  if(hit){ rdToast((hit.de===lk?clean:clean+' → '+hit.de)+' — '+hit.zh); }
   else { rdToast('词库暂无「'+clean+'」，可在词句大全搜索'); }
 }
 let _rdToastT=null;
