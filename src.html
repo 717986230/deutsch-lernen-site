@@ -81,6 +81,9 @@ body.lang-en .flag-strip{display:none}
 .read-para{margin-bottom:10px;padding:6px 8px;border-radius:8px;transition:background .2s}
 .read-para.rp-on{background:rgba(88,204,2,.12)}
 .rd-word{cursor:pointer;border-radius:3px;transition:background .12s}
+.rd-word ruby{ruby-position:over}
+.rd-word rt{font-size:10px;color:var(--text-faint);font-weight:400;user-select:none}
+body.no-gloss .rd-word rt{display:none}
 .rd-word:hover{background:rgba(88,204,2,.18)}
 .rd-toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(10px);z-index:400;background:rgba(40,40,40,.92);color:#fff;font-size:13px;padding:9px 16px;border-radius:20px;opacity:0;visibility:hidden;transition:all .2s;max-width:88%;text-align:center}
 .rd-toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
@@ -1025,7 +1028,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
     <button id="loopAllBtn" class="fab-read" type="button" aria-label="循环朗读全部短文" onclick="toggleLoopAll()">🔊 循环朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="readRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
-    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px">▶ 整篇朗读 · 点句即听 · <b style="color:#46a302">点德语词</b>查词义</p>
+    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px">▶ 整篇朗读 · 点句即听 · <b style="color:#46a302">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
     <div class="level-tabs" id="readLevelTabs"></div>
     <div id="readCount" style="font-size:12px;color:var(--gold-dim);margin:4px 0 10px"></div>
     <div id="readList"></div>
@@ -1041,7 +1044,7 @@ body:not(.lang-en) .en-only-block{display:none}
     <button id="seriesLoopBtn" class="fab-read" type="button" aria-label="循环朗读全部连载" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
     <div class="sec-title"><span class="sec-title-icon">🎬</span><span class="sec-title-text">原创连载 · 留学生活</span><span class="sec-title-count" id="seriesCount"></span></div>
-    <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听 · <b style="color:#46a302">点德语词</b>查词义</p>
+    <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听 · <b style="color:#46a302">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
     <div class="level-tabs" id="seriesLevelTabs"></div>
     <div id="seriesList"></div>
     <div class="sec-title" style="margin-top:32px"><span class="sec-title-icon">📺</span><span class="sec-title-text">正版视频资源 · 看原版</span></div>
@@ -2246,15 +2249,73 @@ function buildDeWordMap(){
     const full=p.de.toLowerCase(); if(!_deWordMap[full])_deWordMap[full]=p;
   }));
 }
-function wrapWords(text){
-  return text.split(/(\s+)/).map(t=>/\S/.test(t)?`<span class="rd-word" onclick="readWordClick(event,this)">${t}</span>`:t).join('');
+// 高频词人工词表：保证最常见词标注准确；空串=不标（冠词等语法词，标了是噪音）
+const RD_OVR={der:'',die:'',das:'',den:'',dem:'',des:'',ein:'',eine:'',einen:'',einem:'',einer:'',eines:'',
+ich:'我',du:'你',er:'他',sie:'她/他们',es:'它',wir:'我们',ihr:'你们',man:'人们',sich:'自己',
+mich:'我',mir:'给我',dich:'你',dir:'给你',ihn:'他',ihm:'给他',uns:'我们',euch:'你们',ihnen:'给他们',
+mein:'我的',meine:'我的',dein:'你的',deine:'你的',sein:'他的/是',seine:'他的',
+bin:'是',bist:'是',ist:'是',sind:'是',seid:'是',war:'曾是',waren:'曾是',
+habe:'有',hast:'有',hat:'有',haben:'有',habt:'有',hatte:'曾有',
+werde:'将',wirst:'将',wird:'将',werden:'将/变成',
+kann:'能',kannst:'能',muss:'必须',musst:'必须',will:'想要',willst:'想要',
+soll:'应该',darf:'可以',möchte:'想要',
+und:'和',oder:'或者',aber:'但是',auch:'也',nicht:'不',kein:'没有',keine:'没有',
+zu:'到/太',in:'在…里',an:'在…旁',auf:'在…上',mit:'和/用',für:'为了',von:'从/的',
+bei:'在…处',nach:'去/之后',aus:'从…出',um:'在…点',über:'在…上方',unter:'在…下',
+vor:'在…前',hinter:'在…后',neben:'在…旁',zwischen:'在…之间',durch:'穿过',ohne:'没有',gegen:'对着',
+dann:'然后',denn:'因为',weil:'因为',dass:'……这件事',wenn:'如果/当',als:'当时/作为',
+sehr:'很',gut:'好',heute:'今天',morgen:'明天/早上',gestern:'昨天',jetzt:'现在',
+hier:'这里',dort:'那里',da:'那里/这时',so:'这样/如此',noch:'还',schon:'已经',nur:'只',
+immer:'总是',oft:'经常',manchmal:'有时',nie:'从不',wieder:'又/再',
+alle:'所有',viele:'许多',viel:'多',etwas:'一些',nichts:'什么都没',alles:'一切',mehr:'更多',
+was:'什么',wer:'谁',wie:'怎样/像',wo:'哪里',wann:'何时',warum:'为什么',
+ja:'是的',nein:'不',bitte:'请',danke:'谢谢',
+null:'零',eins:'一',zwei:'二',drei:'三',vier:'四',fünf:'五',sechs:'六',
+sieben:'七',acht:'八',neun:'九',zehn:'十',elf:'十一',zwölf:'十二',
+zwanzig:'二十',dreißig:'三十',hundert:'百',tausend:'千',uhr:'点钟',
+am:'在…',im:'在…里',ins:'到…里',zum:'到…',zur:'到…',beim:'在…时',vom:'从…',
+mich:'我'};
+function rdGloss(w){ // 词库查词义（含简单词形还原），给逐词小注用；查不到或太长返回 null
+  try{
+    if(!_deWordMap)buildDeWordMap();
+    let t=w.toLowerCase().replace(/^[^a-zäöüß]+|[^a-zäöüß]+$/g,'');
+    if(!t)return null;
+    if(Object.prototype.hasOwnProperty.call(RD_OVR,t))return RD_OVR[t]||null;
+    let hit=_deWordMap[t];
+    if(!hit){
+      const sufs=['est','en','er','em','es','st','e','n','t','s'];
+      for(let i=0;i<sufs.length&&!hit;i++){const f=sufs[i];
+        if(t.length>f.length+2&&t.slice(-f.length)===f){
+          const b=t.slice(0,-f.length);
+          hit=_deWordMap[b]||_deWordMap[b+'en']||_deWordMap[b+'e'];
+        }
+      }
+    }
+    if(!hit)return null;
+    const z=(hit.zh||'').split(/[，,、/；;（(]/)[0].replace(/[。！？!?.]+$/,'');
+    return (z&&z.length<=6)?z:null;
+  }catch(e){return null;}
 }
+function wrapWords(text){
+  return text.split(/(\s+)/).map(t=>{
+    if(!/\S/.test(t))return t;
+    const g=rdGloss(t);
+    const inner=g?`<ruby>${t}<rt>${g}</rt></ruby>`:t;
+    return `<span class="rd-word" data-w="${t.replace(/"/g,'&quot;')}" onclick="readWordClick(event,this)">${inner}</span>`;
+  }).join('');
+}
+function toggleGloss(){
+  const off=document.body.classList.toggle('no-gloss');
+  try{localStorage.setItem('gloss',off?'0':'1');}catch(e){}
+  document.querySelectorAll('.gloss-btn').forEach(b=>b.textContent=off?'显示词义':'隐藏词义');
+}
+try{if(localStorage.getItem('gloss')==='0'){document.body.classList.add('no-gloss');document.querySelectorAll('.gloss-btn').forEach(b=>b.textContent='显示词义');}}catch(e){}
 // 转义用于内联 onclick 的字符串：先转义 JS 单引号字符串，再 HTML 实体化（句中含 " 时不会截断属性）
 function escSpk(s){return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
 function readWordClick(e,el){
   e.stopPropagation();
   if(!_deWordMap)buildDeWordMap();
-  const raw=el.textContent;
+  const raw=(el.dataset&&el.dataset.w)?el.dataset.w:el.textContent;
   const clean=raw.replace(/^[^A-Za-zÄÖÜäöüß]+|[^A-Za-zÄÖÜäöüß]+$/g,'');
   if(!clean)return;
   try{speakDE(clean);}catch(_){}
