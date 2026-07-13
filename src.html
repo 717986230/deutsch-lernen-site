@@ -303,8 +303,7 @@ body:not(.lang-en) .en-only-block{display:none}
   <button class="nav-btn nav-en-only" onclick="showSection('en-num')">🔢 英语数字</button>
   <button class="nav-btn nav-en-only" onclick="showSection('en-grammar')">📐 英语语法</button>
   <button class="nav-btn" onclick="showSection('phrases')">💬 词句大全</button>
-  <button class="nav-btn nav-de-only" onclick="showSection('reading')">📖 阅读短文</button>
-  <button class="nav-btn nav-de-only" onclick="showSection('series')">🎬 留学连载</button>
+  <button class="nav-btn nav-de-only" onclick="showSection('reading')">📖 阅读·连载</button>
   <button class="nav-btn" onclick="showSection('quiz')">🎯 练习测验</button>
   <button class="nav-btn" onclick="showSection('support')">❤️ 支持</button>
 </nav>
@@ -376,13 +375,8 @@ body:not(.lang-en) .en-only-block{display:none}
       </div>
       <div class="card" onclick="showSection('reading')" style="text-align:center;padding:24px 16px">
         <div style="font-size:32px;margin-bottom:10px">📖</div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">阅读短文</div>
-        <div style="font-size:12px;color:var(--text-dim)">分级·中德对照·朗读</div>
-      </div>
-      <div class="card" onclick="showSection('series')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">🎬</div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">留学连载</div>
-        <div style="font-size:12px;color:var(--text-dim)">原创连续剧·跟读</div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">阅读·连载</div>
+        <div style="font-size:12px;color:var(--text-dim)">分级短文·留学连续剧</div>
       </div>
       <div class="card" onclick="showSection('quiz')" style="text-align:center;padding:24px 16px">
         <div style="font-size:32px;margin-bottom:10px">🎯</div>
@@ -1024,7 +1018,11 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="reading" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Lesen</div>
-    <h2 class="page-title">分级阅读短文</h2>
+    <h2 class="page-title">阅读 · 连载</h2>
+    <div style="display:flex;gap:8px;justify-content:center;margin:2px 0 10px">
+      <button class="level-tab active" type="button">📖 分级短文</button>
+      <button class="level-tab" type="button" onclick="showSection('series')">🎬 留学连载</button>
+    </div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
     <button id="loopAllBtn" class="fab-read" type="button" aria-label="循环朗读全部短文" onclick="toggleLoopAll()">🔊 循环朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="readRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
@@ -1039,7 +1037,11 @@ body:not(.lang-en) .en-only-block{display:none}
 <div id="series" class="section">
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Serie</div>
-    <h2 class="page-title">留学连载 · 跟着故事学德语</h2>
+    <h2 class="page-title">阅读 · 连载</h2>
+    <div style="display:flex;gap:8px;justify-content:center;margin:2px 0 10px">
+      <button class="level-tab" type="button" onclick="showSection('reading')">📖 分级短文</button>
+      <button class="level-tab active" type="button">🎬 留学连载</button>
+    </div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">原创连续剧 · 中德对照 · 🔊 慢速朗读 · 点词查义</p>
     <button id="seriesLoopBtn" class="fab-read" type="button" aria-label="循环朗读全部连载" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
@@ -1478,8 +1480,9 @@ function showSection(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current');});
   document.getElementById(id).classList.add('active');
+  const navId=(id==='series')?'reading':id;   // 连载并入阅读入口，导航高亮同一按钮
   const btns=document.querySelectorAll('.nav-btn');
-  btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+id+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
+  btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+navId+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
   if(id==='home'&&typeof updateDashboard==='function')updateDashboard();
   if(id==='phrases'&&!_rendered.phrases){renderPhrases();_rendered.phrases=true;}       // 懒渲染：首次打开才渲染长列表
   if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}
