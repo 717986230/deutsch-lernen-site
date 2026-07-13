@@ -2,9 +2,10 @@
   "name": "deutsch-lernen-site",
   "version": "1.0.0",
   "private": true,
-  "description": "德语学习手册（单文件）。改词只改 src.html，再 `npm run build` 生成加密混淆的 index.html。",
+  "description": "德语学习手册（单文件部署）。改词只改 data/*.json，改页面/功能改 src.html，npm run build 生成加密混淆的 index.html。",
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "dev": "node build.mjs --dev"
   },
   "devDependencies": {
     "terser": "^5.48.0"
