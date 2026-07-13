@@ -47,11 +47,11 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
 }
 /* SECTIONS */
-.section{display:none;padding:78px 0 64px}
+.section{display:none;padding:60px 0 60px}
 .section.active{display:block}
 .container{max-width:900px;margin:0 auto;padding:0 20px}
 /* HERO */
-.hero{text-align:center;padding:54px 16px 40px;background:linear-gradient(180deg,rgba(88,204,2,.07) 0%,transparent 100%)}
+.hero{text-align:center;padding:38px 16px 32px;background:linear-gradient(180deg,rgba(88,204,2,.07) 0%,transparent 100%)}
 .flag-strip{width:56px;height:6px;margin:12px auto 10px;border-radius:3px;overflow:hidden;display:flex;box-shadow:0 1px 4px rgba(0,0,0,.15)}
 .flag-strip i{flex:1}.flag-strip i:nth-child(1){background:#2b2b2b}.flag-strip i:nth-child(2){background:#dd0000}.flag-strip i:nth-child(3){background:#ffce00}
 body.lang-en .flag-strip{display:none}
@@ -238,6 +238,15 @@ body:not(.lang-en) .en-only-block{display:none}
 .beginner-fab{position:fixed;left:0;top:44%;transform:translateY(-50%);z-index:280;writing-mode:vertical-rl;border:none;background:#58cc02;color:#fff;font-size:14px;font-weight:700;font-family:inherit;padding:15px 9px;border-radius:0 14px 14px 0;cursor:pointer;box-shadow:3px 3px 14px rgba(88,204,2,.4);letter-spacing:4px;line-height:1.15}
 .beginner-fab:hover{background:#4cb302}
 .beginner-fab:active{transform:translateY(-50%) scale(.94)}
+/* 功能卡图标徽章：渐变底 + 白色线性图标，跨机型一致 */
+.fic{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.fic svg{width:28px;height:28px;display:block}
+.fic-green{background:linear-gradient(135deg,#6fdb1e,#46a302);box-shadow:0 6px 14px rgba(88,204,2,.32)}
+.fic-blue{background:linear-gradient(135deg,#3ec2ff,#0e8fd0);box-shadow:0 6px 14px rgba(28,176,246,.32)}
+.fic-orange{background:linear-gradient(135deg,#ffb340,#e07f00);box-shadow:0 6px 14px rgba(255,150,0,.32)}
+.fic-purple{background:linear-gradient(135deg,#a878ff,#6f3fd6);box-shadow:0 6px 14px rgba(142,92,246,.32)}
+.fic-teal{background:linear-gradient(135deg,#2fd4b2,#0d9488);box-shadow:0 6px 14px rgba(20,184,166,.32)}
+.fic-red{background:linear-gradient(135deg,#ff7a6e,#e03131);box-shadow:0 6px 14px rgba(255,75,75,.32)}
 /* 拼读器右侧小浮钮（约为零基础钮一半大）+ 弹窗 */
 .phfab{position:fixed;right:0;top:44%;transform:translateY(-50%);z-index:280;writing-mode:vertical-rl;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:700;font-family:inherit;padding:9px 6px;border-radius:14px 0 0 14px;cursor:pointer;box-shadow:-3px 3px 12px rgba(28,176,246,.4);letter-spacing:2px;line-height:1.15}
 .phfab:active{transform:translateY(-50%) scale(.94)}
@@ -334,34 +343,34 @@ body.lang-en .phfab{display:none}
    </div>
    <div class="de-only-block">
     <button class="beginner-fab" onclick="goLevel('0')" aria-label="零基础？从第 1 天开始学">🌱 零基础入门</button>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:24px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:22px">
       <div class="card" onclick="showSection('pronunciation')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">🔤</div>
+        <div class="fic fic-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.2 9H3.5v6h2.7L11 19z" fill="#fff"/><path d="M14.8 9.2a4 4 0 0 1 0 5.6M17.4 6.6a7.6 7.6 0 0 1 0 10.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">发音规律</div>
         <div style="font-size:12px;color:var(--text-dim)">字母发音·变音·组合音</div>
       </div>
       <div class="card" onclick="showSection('numbers')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">🔢</div>
+        <div class="fic fic-blue"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="16.8" text-anchor="middle" font-size="12.5" font-family="Georgia,serif" font-weight="bold" fill="#fff">123</text></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">数字规律</div>
         <div style="font-size:12px;color:var(--text-dim)">0-100万·规律·测验</div>
       </div>
       <div class="card" onclick="showSection('grammar')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">📐</div>
+        <div class="fic fic-orange"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle" font-size="19" font-family="Georgia,serif" font-weight="bold" fill="#fff">§</text></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">语法速记</div>
         <div style="font-size:12px;color:var(--text-dim)">冠词·动词变位·格</div>
       </div>
       <div class="card" onclick="showSection('phrases')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">💬</div>
+        <div class="fic fic-purple"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 16h3v4l5-4h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 20 4z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="8.5" cy="10" r="1.15" fill="#fff"/><circle cx="12" cy="10" r="1.15" fill="#fff"/><circle cx="15.5" cy="10" r="1.15" fill="#fff"/></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">词句大全</div>
-        <div style="font-size:12px;color:var(--text-dim)">99分类·含谐音</div>
+        <div style="font-size:12px;color:var(--text-dim)">20大类·含谐音</div>
       </div>
       <div class="card" onclick="showSection('reading')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">📖</div>
+        <div class="fic fic-teal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.2C9.6 4.7 6.6 4.5 4 5.5V19c2.6-1 5.6-.8 8 .7 2.4-1.5 5.4-1.7 8-.7V5.5c-2.6-1-5.6-.8-8 .7z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M12 6.2v13.5" stroke="#fff" stroke-width="2"/></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">阅读·连载</div>
         <div style="font-size:12px;color:var(--text-dim)">分级短文·留学连续剧</div>
       </div>
       <div class="card" onclick="showSection('quiz')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">🎯</div>
+        <div class="fic fic-red"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="1.4" fill="#fff"/></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">练习测验</div>
         <div style="font-size:12px;color:var(--text-dim)">数字·单词·句子·听力</div>
       </div>
@@ -425,29 +434,29 @@ body.lang-en .phfab{display:none}
    </div><!-- /de-only-block -->
 
    <div class="en-only-block">
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:24px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:22px">
       <div class="card" onclick="showSection('en-pron')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">🔤</div>
+        <div class="fic fic-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.2 9H3.5v6h2.7L11 19z" fill="#fff"/><path d="M14.8 9.2a4 4 0 0 1 0 5.6M17.4 6.6a7.6 7.6 0 0 1 0 10.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">英语发音</div>
         <div style="font-size:12px;color:var(--text-dim)">元音·组合音·谐音示例</div>
       </div>
       <div class="card" onclick="showSection('en-num')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">🔢</div>
+        <div class="fic fic-blue"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="16.8" text-anchor="middle" font-size="12.5" font-family="Georgia,serif" font-weight="bold" fill="#fff">123</text></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">英语数字</div>
         <div style="font-size:12px;color:var(--text-dim)">teen/ty·大数·序数词</div>
       </div>
       <div class="card" onclick="showSection('en-grammar')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">📐</div>
+        <div class="fic fic-orange"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle" font-size="19" font-family="Georgia,serif" font-weight="bold" fill="#fff">§</text></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">英语语法</div>
         <div style="font-size:12px;color:var(--text-dim)">be动词·冠词·时态·语序</div>
       </div>
       <div class="card" onclick="showSection('phrases')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">💬</div>
+        <div class="fic fic-purple"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 16h3v4l5-4h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 20 4z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="8.5" cy="10" r="1.15" fill="#fff"/><circle cx="12" cy="10" r="1.15" fill="#fff"/><circle cx="15.5" cy="10" r="1.15" fill="#fff"/></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">词句大全</div>
         <div style="font-size:12px;color:var(--text-dim)">常用英语·含中文谐音</div>
       </div>
       <div class="card" onclick="showSection('quiz')" style="text-align:center;padding:24px 16px">
-        <div style="font-size:32px;margin-bottom:10px">🎯</div>
+        <div class="fic fic-red"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="1.4" fill="#fff"/></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">练习测验</div>
         <div style="font-size:12px;color:var(--text-dim)">看中文·选英语</div>
       </div>
