@@ -1705,6 +1705,21 @@ function filterPhrases(){
   if(q||activeCat!=='all') res.textContent=`找到 ${results.length} 条结果`;
   else res.textContent='';
   renderSearchResults(results,q||activeCat!=='all');
+  // 词库零结果 → 查词典切片（单词前缀+短语词首），结果标「词典」
+  if(q&&!results.length&&/^[a-zäöüß][a-zäöüß\- ]*$/.test(q)){
+    res.textContent='词库无结果，查询词典…';
+    const merge=[];let done=0;
+    const fin=function(){
+      if(++done<3)return;
+      if((document.getElementById('searchInput').value||'').toLowerCase()!==q)return;
+      if(!merge.length){res.textContent='词库和词典都没找到，换个拼写试试';return;}
+      res.textContent=`词典找到 ${merge.length} 条（来自 HanDeDict）`;
+      renderSearchResults(merge.map((e,i)=>({de:e[0],zh:e[1],py:'（词典）',id:'hd-'+i})),true);
+    };
+    try{hdLookup(q,function(h){if(h)merge.unshift(h);fin();});}catch(e){fin();}
+    try{hdPrefix(q,10,function(l){merge.push.apply(merge,l);fin();});}catch(e){fin();}
+    try{hdPhrase(q,6,function(l){merge.push.apply(merge,l);fin();});}catch(e){fin();}
+  }
 }
 
 // ── 分块渲染：大列表(英语高考/四级上千卡)滚动到哪挂载到哪，首屏轻、滚动顺 ──
@@ -1911,7 +1926,7 @@ function renderPhTool(){
   setTimeout(function(){
     const q=v.toLowerCase();
     if(!/^[a-zäöüß][a-zäöüß-]{1,}$/.test(q))return;
-    try{hdPrefix(q,4,function(list){
+    const addRows=function(list){
       const wrap=document.getElementById('phSugWrap');
       if(!wrap||(document.getElementById('phInput').value||'').trim()!==v)return;
       let h='';
@@ -1924,7 +1939,9 @@ function renderPhTool(){
       if(!h)return;
       if(!wrap.innerHTML)h='<div style="font-size:12px;color:var(--text-faint);margin-top:10px">联想（点德语看拼读）：</div>'+h;
       wrap.innerHTML+=h;
-    });}catch(e){}
+    };
+    try{hdPrefix(q,3,addRows);}catch(e){}
+    try{hdPhrase(q,3,addRows);}catch(e){}
   },0);
 }
 function phTry(w){const el=document.getElementById('phInput');if(el){el.value=w;renderPhTool();speakDE(w);}}
@@ -2315,6 +2332,7 @@ function buildDeWordMap(){
     const full=p.de.toLowerCase(); if(!_deWordMap[full])_deWordMap[full]=p;
   }));
 }
+const RD_GLOSS = __DATA_RD_GLOSS__; // 阅读/连载专用小注词表（构建时由词典预生成，见 tools/make_readgloss.py）
 // 高频词人工词表：保证最常见词标注准确；空串=不标（冠词等语法词，标了是噪音）
 const RD_OVR={der:'',die:'',das:'',den:'',dem:'',des:'',ein:'',eine:'',einen:'',einem:'',einer:'',eines:'',
 ich:'我',du:'你',er:'他',sie:'她/他们',es:'它',wir:'我们',ihr:'你们',man:'人们',sich:'自己',
@@ -2346,55 +2364,59 @@ mich:'我'};
 var _hd={},_hdQ={};
 function _hdShard(t){var c=t[0];c={'ä':'a','ö':'o','ü':'u','ß':'s'}[c]||c;return (c>='a'&&c<='z')?c:'x';}
 function hdFind(t){
-  var d=_hd[_hdShard(t)];if(!d)return null;
+  var d=_hd['de_'+_hdShard(t)];if(!d)return null;
   if(d[t])return d[t];
   var sufs=['est','en','er','em','es','st','e','n','t','s'];
   for(var i=0;i<sufs.length;i++){var f=sufs[i];
     if(t.length>f.length+2&&t.slice(-f.length)===f){
       var b=t.slice(0,-f.length),u=b.replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u');
       var cs=[b,b+'en',b+'e'];if(u!==b)cs.push(u,u+'en');
-      for(var j=0;j<cs.length;j++){var hd2=_hd[_hdShard(cs[j])];if(hd2&&hd2[cs[j]])return hd2[cs[j]];}
+      for(var j=0;j<cs.length;j++){var hd2=_hd['de_'+_hdShard(cs[j])];if(hd2&&hd2[cs[j]])return hd2[cs[j]];}
     }
   }
   return null;
 }
-function hdPrefix(q,limit,cb){ // 词典分片前缀联想：确保分片加载后扫描
+function _hdLoad(pre,ch,cb){ // 通用分片加载：pre='de_'单词 / 'ph_'短语；缓存+并发排队
+  var key=pre+ch;
+  if(_hd[key]){cb();return;}
+  if(_hdQ[key]){_hdQ[key].push(cb);return;}
+  _hdQ[key]=[cb];
+  var x=new XMLHttpRequest();
+  x.open('GET','dict/'+key+'.json',true);
+  x.onreadystatechange=function(){
+    if(x.readyState!==4)return;
+    try{_hd[key]=(x.status===200)?JSON.parse(x.responseText):{};}catch(e){_hd[key]={};}
+    var q2=_hdQ[key];delete _hdQ[key];
+    for(var i=0;i<q2.length;i++)try{q2[i]();}catch(e){}
+  };
+  try{x.send();}catch(e){_hd[key]={};cb();}
+}
+function hdPrefix(q,limit,cb){ // 单词分片前缀联想
   var ch=_hdShard(q);
-  function scan(){
-    var d=_hd[ch]||{},out=[];
+  _hdLoad('de_',ch,function(){
+    var d=_hd['de_'+ch]||{},out=[];
     for(var k in d){if(k.length>q.length&&k.indexOf(q)===0)out.push(d[k]);}
     out.sort(function(a,b){return a[0].length-b[0].length;});
     cb(out.slice(0,limit));
-  }
-  if(_hd[ch]){scan();return;}
-  if(_hdQ[ch]){_hdQ[ch].push(scan);return;}
-  _hdQ[ch]=[scan];
-  var x=new XMLHttpRequest();
-  x.open('GET','dict/de_'+ch+'.json',true);
-  x.onreadystatechange=function(){
-    if(x.readyState!==4)return;
-    try{_hd[ch]=(x.status===200)?JSON.parse(x.responseText):{};}catch(e){_hd[ch]={};}
-    var q2=_hdQ[ch];delete _hdQ[ch];
-    for(var i=0;i<q2.length;i++)try{q2[i]();}catch(e){}
-  };
-  try{x.send();}catch(e){_hd[ch]={};cb([]);}
+  });
+}
+function hdPhrase(q,limit,cb){ // 短语分片联想：短语中任一词以 q 开头
+  var ch=_hdShard(q);
+  _hdLoad('ph_',ch,function(){
+    var d=_hd['ph_'+ch]||{},out=[];
+    for(var k in d){
+      var ws=k.split(' ');
+      for(var i=0;i<ws.length;i++){if(ws[i].indexOf(q)===0){out.push(d[k]);break;}}
+      if(out.length>=limit*6)break;
+    }
+    out.sort(function(a,b){return a[0].length-b[0].length;});
+    cb(out.slice(0,limit));
+  });
 }
 function hdLookup(word,cb){ // 异步：cb([德语原形,中文]) 或 cb(null)
   var t=(word||'').toLowerCase().replace(/^[^a-zäöüß]+|[^a-zäöüß]+$/g,'');
   if(!t){cb(null);return;}
-  var ch=_hdShard(t);
-  if(_hd[ch]){cb(hdFind(t));return;}
-  if(_hdQ[ch]){_hdQ[ch].push(function(){cb(hdFind(t));});return;}
-  _hdQ[ch]=[function(){cb(hdFind(t));}];
-  var x=new XMLHttpRequest();
-  x.open('GET','dict/de_'+ch+'.json',true);
-  x.onreadystatechange=function(){
-    if(x.readyState!==4)return;
-    try{_hd[ch]=(x.status===200)?JSON.parse(x.responseText):{};}catch(e){_hd[ch]={};}
-    var q=_hdQ[ch];delete _hdQ[ch];
-    for(var i=0;i<q.length;i++)try{q[i]();}catch(e){}
-  };
-  try{x.send();}catch(e){_hd[ch]={};cb(null);}
+  _hdLoad('de_',_hdShard(t),function(){cb(hdFind(t));});
 }
 function rdLookup(w){ // 词库查词（含简单词形还原），返回 {de,zh} 或 null；点词与逐词小注共用
   if(!_deWordMap)buildDeWordMap();
@@ -2412,7 +2434,9 @@ function rdLookup(w){ // 词库查词（含简单词形还原），返回 {de,zh
       }
     }
   }
-  return hit||null;
+  if(hit)return hit;
+  if(typeof RD_GLOSS!=='undefined'&&RD_GLOSS[t])return{de:RD_GLOSS[t][0],zh:RD_GLOSS[t][1]};
+  return null;
 }
 function rdGloss(w){ // 逐词小注：查不到或太长返回 null
   try{

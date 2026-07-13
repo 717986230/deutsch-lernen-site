@@ -15,8 +15,9 @@ data/
   en_categories.json   英语词库
   readings.json        分级阅读短文
   series.json          留学连载
-dict/                  HanDeDict 德→中兜底词典分片（26 个，运行时按需加载）
+dict/                  HanDeDict 兜底词典分片：de_* 单词 8.2万 / ph_* 短语 4万（按需加载）
 tools/make_dict.py     从 HanDeDict 源数据再生成 dict/ 分片
+tools/make_readgloss.py 为阅读/连载预生成小注词表 data/read_gloss.json（内联加密）
 src.html               页面结构 + 样式 + 全部脚本（数据处为 __DATA_名字__ 占位符）
 build.mjs              构建：注入数据 →（生产）XOR+Base64 加密 + terser 混淆 → index.html
 index.html             部署产物（勿手改）

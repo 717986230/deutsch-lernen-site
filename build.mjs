@@ -27,6 +27,7 @@ const DATA_FILES = {
   EN_CATEGORIES: 'data/en_categories.json',
   READINGS: 'data/readings.json',
   SERIES: 'data/series.json',
+  RD_GLOSS: 'data/read_gloss.json',
 };
 
 function xorB64(text) {
