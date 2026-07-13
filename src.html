@@ -1837,6 +1837,8 @@ function buildPhSug(){ // 联想词表：词库里的单个词（去标点、去
   DE_CATEGORIES.forEach(c=>c.phrases.forEach(p=>{
     const bare=p.de.replace(/[!?.,…;:"'()]/g,'').trim();
     if(bare&&!/\s/.test(bare)){const k=bare.toLowerCase();if(!seen[k]){seen[k]=1;_phSug.push({w:bare,zh:p.zh,k:k});}}
+    const noun=bare.replace(/^(der|die|das)\s+/,'');   // 带冠词名词也进联想：die Wassermelone → Wassermelone
+    if(noun!==bare&&noun&&!/\s/.test(noun)){const k2=noun.toLowerCase();if(!seen[k2]){seen[k2]=1;_phSug.push({w:noun,zh:p.zh,k:k2});}}
   }));
   _phSug.sort((a,b)=>a.k<b.k?-1:(a.k>b.k?1:0));
 }
