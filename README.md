@@ -15,6 +15,8 @@ data/
   en_categories.json   英语词库
   readings.json        分级阅读短文
   series.json          留学连载
+dict/                  HanDeDict 德→中兜底词典分片（26 个，运行时按需加载）
+tools/make_dict.py     从 HanDeDict 源数据再生成 dict/ 分片
 src.html               页面结构 + 样式 + 全部脚本（数据处为 __DATA_名字__ 占位符）
 build.mjs              构建：注入数据 →（生产）XOR+Base64 加密 + terser 混淆 → index.html
 index.html             部署产物（勿手改）
@@ -32,6 +34,13 @@ npm run dev     # 生成 dev.html（明文未混淆，本地打开调试；已 g
 - **加词/改词/加分类**：只改 `data/*.json`（每条目一行，diff 清晰），然后 `npm run build`
 - **改页面/样式/功能**：改 `src.html`，然后 `npm run build`
 - **部署**：提交 `src.html`、`data/`、`index.html`，推到 `main`，GitHub Pages 自动发布
+
+## 词典兜底
+
+点词查义 / 拼读器翻译：先查站内人工词库（3900+，含谐音），查不到再按首字母
+懒加载 `dict/de_*.json`（约 8.2 万键，反向抽取自
+[HanDeDict](https://github.com/gugray/HanDeDict)，CC BY-SA 3.0，已在支持页署名），
+含变位/复数/变音词形还原。重新生成：`python3 tools/make_dict.py <handedict.u8>`。
 
 ## 兼容性要点
 

@@ -1060,6 +1060,7 @@ body:not(.lang-en) .en-only-block{display:none}
       <img src="support-qr.png" alt="微信收款二维码" loading="lazy" style="width:100%;height:auto;display:block;border-radius:12px">
     </div>
     <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-top:12px">微信扫一扫 · 感谢每一份支持 ❤️</p>
+    <p style="text-align:center;font-size:11px;color:var(--text-faint);margin-top:18px">词典兜底数据来源：<a href="https://github.com/gugray/HanDeDict" style="color:var(--text-faint)" rel="license noopener" target="_blank">HanDeDict</a>（CC BY-SA 3.0）</p>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-top:22px">打赏之外 —— <b>把网站分享给同学</b>，也是莫大的支持 🙌</p>
     <div style="text-align:center;margin-top:8px"><button class="btn" onclick="copyShare(this)">📋 复制网址分享</button></div>
     <div style="max-width:420px;margin:26px auto 0;padding:14px 18px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;text-align:center">
@@ -1855,8 +1856,16 @@ function renderPhTool(){
   try{
     if(!_deWordMap)buildDeWordMap();
     const k=v.toLowerCase(),hit=_deWordMap[k]||_deWordMap[k.replace(/^(der|die|das)\s+/,'')];
-    zh=hit?`<div style="font-size:14px;color:var(--text);margin-top:10px">📖 <b lang="de">${hit.de}</b> — <b style="color:#46a302">${hit.zh}</b>${hit.py?` <span style="font-size:12px;color:var(--text-faint)">谐音：${hit.py}</span>`:''}</div>`
-          :`<div style="font-size:12px;color:var(--text-faint);margin-top:10px">📖 这个词不在本站词库里（3900+ 词句），翻译暂缺——拼读和 🔊 朗读照常可用。</div>`;
+    if(hit){zh=`<div style="font-size:14px;color:var(--text);margin-top:10px">📖 <b lang="de">${hit.de}</b> — <b style="color:#46a302">${hit.zh}</b>${hit.py?` <span style="font-size:12px;color:var(--text-faint)">谐音：${hit.py}</span>`:''}</div>`;}
+    else{
+      zh=`<div id="phDictOut" style="font-size:12px;color:var(--text-faint);margin-top:10px">📖 查询词典中…</div>`;
+      setTimeout(function(){hdLookup(v,function(h){
+        const o=document.getElementById('phDictOut');
+        if(!o||(document.getElementById('phInput').value||'').trim()!==v)return;   // 输入已变，丢弃
+        o.innerHTML=h?`📖 <b lang="de" style="font-size:14px;color:var(--text)">${h[0]}</b> — <b style="color:#46a302;font-size:14px">${h[1]}</b> <span style="color:var(--text-faint)">·词典</span>`
+                    :`📖 词库和词典都没查到这个词——拼读和 🔊 朗读照常可用。`;
+      });},0);
+    }
   }catch(e){}
   out.innerHTML=`<div class="ph-row">${phonicsHtml(v,true)}</div>`+zh+`<div style="font-size:12px;color:var(--text-faint);margin-top:8px">蓝色=元音(响)，绿色=辅音。把每段连起来念，就是这个词的读音。点 🔊 听真人发音对照。</div>`;
 }
@@ -2274,6 +2283,40 @@ sieben:'七',acht:'八',neun:'九',zehn:'十',elf:'十一',zwölf:'十二',
 zwanzig:'二十',dreißig:'三十',hundert:'百',tausend:'千',uhr:'点钟',
 am:'在…',im:'在…里',ins:'到…里',zum:'到…',zur:'到…',beim:'在…时',vom:'从…',
 mich:'我'};
+// ── HanDeDict 词典兜底（CC BY-SA 3.0，来源 github.com/gugray/HanDeDict）──
+// 站内词库查不到的词，按首字母懒加载 dict/de_*.json 分片再查（含词形还原）。
+var _hd={},_hdQ={};
+function _hdShard(t){var c=t[0];c={'ä':'a','ö':'o','ü':'u','ß':'s'}[c]||c;return (c>='a'&&c<='z')?c:'x';}
+function hdFind(t){
+  var d=_hd[_hdShard(t)];if(!d)return null;
+  if(d[t])return d[t];
+  var sufs=['est','en','er','em','es','st','e','n','t','s'];
+  for(var i=0;i<sufs.length;i++){var f=sufs[i];
+    if(t.length>f.length+2&&t.slice(-f.length)===f){
+      var b=t.slice(0,-f.length),u=b.replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u');
+      var cs=[b,b+'en',b+'e'];if(u!==b)cs.push(u,u+'en');
+      for(var j=0;j<cs.length;j++){var hd2=_hd[_hdShard(cs[j])];if(hd2&&hd2[cs[j]])return hd2[cs[j]];}
+    }
+  }
+  return null;
+}
+function hdLookup(word,cb){ // 异步：cb([德语原形,中文]) 或 cb(null)
+  var t=(word||'').toLowerCase().replace(/^[^a-zäöüß]+|[^a-zäöüß]+$/g,'');
+  if(!t){cb(null);return;}
+  var ch=_hdShard(t);
+  if(_hd[ch]){cb(hdFind(t));return;}
+  if(_hdQ[ch]){_hdQ[ch].push(function(){cb(hdFind(t));});return;}
+  _hdQ[ch]=[function(){cb(hdFind(t));}];
+  var x=new XMLHttpRequest();
+  x.open('GET','dict/de_'+ch+'.json',true);
+  x.onreadystatechange=function(){
+    if(x.readyState!==4)return;
+    try{_hd[ch]=(x.status===200)?JSON.parse(x.responseText):{};}catch(e){_hd[ch]={};}
+    var q=_hdQ[ch];delete _hdQ[ch];
+    for(var i=0;i<q.length;i++)try{q[i]();}catch(e){}
+  };
+  try{x.send();}catch(e){_hd[ch]={};cb(null);}
+}
 function rdLookup(w){ // 词库查词（含简单词形还原），返回 {de,zh} 或 null；点词与逐词小注共用
   if(!_deWordMap)buildDeWordMap();
   let t=w.toLowerCase().replace(/^[^a-zäöüß]+|[^a-zäöüß]+$/g,'');
@@ -2328,8 +2371,11 @@ function readWordClick(e,el){
   let hit=null;
   if(ART[lk]){ rdToast(clean+' — '+ART[lk]); return; }
   try{hit=rdLookup(clean);}catch(_){}
-  if(hit){ rdToast((hit.de===lk?clean:clean+' → '+hit.de)+' — '+hit.zh); }
-  else { rdToast('词库暂无「'+clean+'」，可在词句大全搜索'); }
+  if(hit){ rdToast((hit.de===lk?clean:clean+' → '+hit.de)+' — '+hit.zh); return; }
+  hdLookup(clean,function(h){
+    if(h){ rdToast((h[0].toLowerCase()===lk?clean:clean+' → '+h[0])+' — '+h[1]+'　·词典'); }
+    else { rdToast('词库暂无「'+clean+'」，可在词句大全搜索'); }
+  });
 }
 let _rdToastT=null;
 function rdToast(msg){
