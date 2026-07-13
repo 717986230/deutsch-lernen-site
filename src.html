@@ -218,7 +218,8 @@ to{opacity:1}}
 .result-box.ok{background:rgba(88,204,2,.1);border:1px solid var(--gold-faint)}
 .result-box.bad{background:rgba(255,75,75,.1);border:1px solid rgba(255,75,75,.3)}
 /* 语言切换 */
-.lang-switch{position:fixed;top:9px;right:12px;z-index:260;display:flex;background:var(--nav-bg);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--gold-faint);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.lang-switch{position:fixed;top:9px;right:12px;z-index:260;display:flex;background:var(--nav-bg);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--gold-faint);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:opacity .25s,transform .25s}
+.lang-switch.ls-hide{opacity:0;visibility:hidden;transform:translateY(-10px)}
 .lang-btn{border:none;background:transparent;color:var(--text-dim);font-size:12px;padding:5px 11px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
 .lang-btn.active{background:#58cc02;color:#fff}
 .theme-toggle{border-left:1px solid var(--gold-faint)}
@@ -2778,7 +2779,11 @@ setLang(LANG); // 应用初始语言（含 localStorage 记忆）
 <script>
 (function(){
   var btn=document.getElementById('toTop');
-  function onScroll(){ (window.scrollY>300?btn.classList.add('show'):btn.classList.remove('show')); }
+  var ls=document.querySelector('.lang-switch');
+  function onScroll(){
+    (window.scrollY>300?btn.classList.add('show'):btn.classList.remove('show'));
+    if(ls)(window.scrollY>30?ls.classList.add('ls-hide'):ls.classList.remove('ls-hide'));   // 语言/夜间开关只在页面顶部显示
+  }
   window.addEventListener('scroll',onScroll,{passive:true});
   onScroll();
 })();
