@@ -1824,16 +1824,21 @@ function phonicsHtml(de,lg){
   return dePhonics(de).map(s=>s.sp?'<span style="width:7px;display:inline-block"></span>':
     `<span class="ph-chip${cls}${s.vow?' vow':''}" title="${s.note||''}"><b lang="de">${s.g}</b><i>${s.zh}</i></span>`).join('');
 }
-let _phSug=null;
-function buildPhSug(){ // 联想词表：词库里的单个词（去标点、去重、按字母序）
-  _phSug=[];const seen={};
+let _phSug=null,_phSugP=null;
+function buildPhSug(){ // 联想表：单词（去标点、去重）+ 日常短句（分词，供词首匹配）
+  _phSug=[];_phSugP=[];const seen={},seenP={};
   DE_CATEGORIES.forEach(c=>c.phrases.forEach(p=>{
     const bare=p.de.replace(/[!?.,…;:"'()]/g,'').trim();
     if(bare&&!/\s/.test(bare)){const k=bare.toLowerCase();if(!seen[k]){seen[k]=1;_phSug.push({w:bare,zh:p.zh,k:k});}}
+    else if(bare&&bare.length<=44&&!/^(der|die|das)\s+\S+$/i.test(p.de)){   // 短句（纯冠词名词除外）
+      const k=bare.toLowerCase();
+      if(!seenP[k]){seenP[k]=1;_phSugP.push({w:p.de,zh:p.zh,ws:k.split(/\s+/)});}
+    }
     const noun=bare.replace(/^(der|die|das)\s+/,'');   // 带冠词名词也进联想：die Wassermelone → Wassermelone
     if(noun!==bare&&noun&&!/\s/.test(noun)){const k2=noun.toLowerCase();if(!seen[k2]){seen[k2]=1;_phSug.push({w:noun,zh:p.zh,k:k2});}}
   }));
   _phSug.sort((a,b)=>a.k<b.k?-1:(a.k>b.k?1:0));
+  _phSugP.sort((a,b)=>a.w.length-b.w.length);
 }
 function phOpen(){var m=document.getElementById('phModal');if(m){m.style.display='flex';var i=document.getElementById('phInput');if(i)setTimeout(function(){i.focus();},50);}}
 function phClose(){var m=document.getElementById('phModal');if(m)m.style.display='none';}
@@ -1861,7 +1866,14 @@ function renderPhTool(){
     const q=v.toLowerCase(),all=[];
     for(let i=0;i<_phSug.length;i++){const e=_phSug[i];if(e.k!==q&&e.k.indexOf(q)===0)all.push(e);}
     all.sort((a,b)=>a.k.length-b.k.length||(a.k<b.k?-1:1));
-    const hits=all.slice(0,6);
+    const hits=all.slice(0,4);
+    if(q.length>=2){   // 日常短句：句中任一词以输入开头即联想
+      let pn=0;
+      for(let i=0;i<_phSugP.length&&pn<4;i++){
+        const e=_phSugP[i];
+        for(let j=0;j<e.ws.length;j++){if(e.ws[j].indexOf(q)===0){hits.push({w:e.w,zh:e.zh});pn++;break;}}
+      }
+    }
     if(hits.length)sug='<div style="font-size:12px;color:var(--text-faint);margin-top:10px">联想（点德语看拼读）：</div>'+hits.map(e=>{
       const w=e.w.replace(/'/g,"\\'");
       return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e.w}</b> — ${e.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
