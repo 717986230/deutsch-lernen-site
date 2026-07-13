@@ -2333,7 +2333,7 @@ function buildReadTabs(){
   document.getElementById('readLevelTabs').innerHTML=READ_LEVELS.map(([k,l])=>
     `<button class="level-tab${k===readActive?' active':''}" onclick="setReadLevel('${k}')">${l}</button>`).join('');
 }
-function setReadLevel(k){stopReading();_readResume=null;_saveResume('readResume',null);readActive=k;buildReadTabs();renderReadings();}
+function setReadLevel(k){stopReading();readActive=k;buildReadTabs();renderReadings();}
 function _getReadList(){return READINGS.filter(r=>readActive==='all'||r.level===readActive);}
 // 阅读点词：朗读 + 查词义（德语）
 let _deWordMap=null;
@@ -2527,39 +2527,25 @@ function renderReadings(){
     (window.requestAnimationFrame||setTimeout)(step,16);
   })();
 }
-// ── 统一阅读朗读引擎：单句 / 单篇 / 循环全部（支持暂停/继续，记住位置；刷新即重置）──
-var _rq=null; // {ri,pi,mode:'loop'|'one',paused}
-function _saveResume(key,val){try{if(val)localStorage.setItem(key,JSON.stringify(val));else localStorage.removeItem(key);}catch(e){}}
-function _loadResume(key){try{return JSON.parse(localStorage.getItem(key)||'null');}catch(e){return null;}}
-var _readResume=_loadResume('readResume'); // 循环朗读位置（持久化到 localStorage，刷新后可继续）
+// ── 统一阅读朗读引擎：单句 / 单篇 / 循环全部（只有播放/停止；停止或刷新后从头读）──
+var _rq=null; // {ri,pi,mode:'loop'|'one'}
 function speakPara(btn,text){stopReading();speakDE(text,btn);}
-function togglePauseRead(){
-  if(!_rq)return;
-  if(_rq.paused){                                                    // 继续
-    _rq.paused=false;_syncReadBtns();
-    if(speechSynthesis.paused)speechSynthesis.resume();              // 原地接着读
-    else _playNext();                                                // 兜底(iOS等)：重读本句
-  }else{                                                             // 暂停（原地停，保留位置）
-    _rq.paused=true;speechSynthesis.pause();_syncReadBtns();
-  }
-}
 function toggleLoopAll(){if(window.__noTTS){_ttsHint();return;}
-  if(_rq&&_rq.mode==='loop'){togglePauseRead();return;}
+  if(_rq&&_rq.mode==='loop'){stopReading();return;}                  // 播放中再按＝停止（下次从头）
   stopReading();
   if(!_getReadList().length)return;
-  const st=_readResume||{ri:0,pi:0}; _readResume=null;               // 从上次暂停处继续
-  _rq={ri:st.ri,pi:st.pi,mode:'loop',paused:false};_syncReadBtns();_playNext();
+  _rq={ri:0,pi:0,mode:'loop',paused:false};_syncReadBtns();_playNext();
 }
 function toggleArticle(btn,ri){if(window.__noTTS){_ttsHint();return;}
-  if(_rq&&_rq.mode==='one'&&_rq.ri===ri){togglePauseRead();return;}
+  if(_rq&&_rq.mode==='one'&&_rq.ri===ri){stopReading();return;}      // 播放中再按＝停止
   stopReading();
   _rq={ri:ri,pi:0,mode:'one',paused:false};_syncReadBtns();_playNext();
 }
 function _syncReadBtns(){
   const lb=document.getElementById('loopAllBtn');
-  if(lb){const on=_rq&&_rq.mode==='loop';lb.classList.toggle('speaking',!!(on&&!_rq.paused));lb.textContent=!on?'🔊 循环朗读':(_rq.paused?'▶ 继续':'⏸ 暂停');}
+  if(lb){const on=_rq&&_rq.mode==='loop';lb.classList.toggle('speaking',!!on);lb.textContent=!on?'🔊 循环朗读':'⏹ 停止';}
   document.querySelectorAll('.read-art-btn').forEach(b=>{b.classList.remove('speaking');b.textContent='▶ 朗读';});
-  if(_rq&&_rq.mode==='one'){const ab=document.getElementById('rab_'+_rq.ri);if(ab){ab.classList.toggle('speaking',!_rq.paused);ab.textContent=_rq.paused?'▶ 继续':'⏸ 暂停';}}
+  if(_rq&&_rq.mode==='one'){const ab=document.getElementById('rab_'+_rq.ri);if(ab){ab.classList.add('speaking');ab.textContent='⏹ 停止';}}
 }
 function _clearReadHL(){document.querySelectorAll('.read-para.rp-on').forEach(e=>e.classList.remove('rp-on'));}
 function _playNext(){
@@ -2582,14 +2568,12 @@ function _playNext(){
   speechSynthesis.speak(u);
 }
 function stopReading(){
-  if(_rq&&_rq.mode==='loop'){_readResume={ri:_rq.ri,pi:_rq.pi};_saveResume('readResume',_readResume);} // 离开/停止时记住并持久化位置
   _rq=null;speechSynthesis.cancel();_clearReadHL();_syncReadBtns();
 }
 
 // ══════════════ 留学连载：独立板块（原创系列 + 视频资源）══════════════
 // 自带朗读引擎，与上方阅读引擎隔离（DOM 前缀 srp_/scard_/srab_，队列 _sq）
 var _sq=null; // {i,j,mode:'one'|'loop',paused} 当前播放的集/句
-var _seriesResume=_loadResume('seriesResume'); // 循环朗读位置（持久化到 localStorage，刷新后可继续）
 let seriesActive='all';
 function _getSeriesList(){return SERIES.filter(r=>seriesActive==='all'||r.level===seriesActive);}
 function buildSeriesTabs(){
@@ -2597,7 +2581,7 @@ function buildSeriesTabs(){
   const present=READ_LEVELS.filter(([k])=>k==='all'||SERIES.some(r=>r.level===k));
   el.innerHTML=present.map(([k,l])=>`<button class="level-tab${k===seriesActive?' active':''}" onclick="setSeriesLevel('${k}')">${l}</button>`).join('');
 }
-function setSeriesLevel(k){stopSeries();_seriesResume=null;_saveResume('seriesResume',null);seriesActive=k;buildSeriesTabs();renderSeries();}
+function setSeriesLevel(k){stopSeries();seriesActive=k;buildSeriesTabs();renderSeries();}
 function renderSeries(){
   const el=document.getElementById('seriesList'); if(!el)return;
   const list=_getSeriesList();
@@ -2617,28 +2601,21 @@ function speakSeriesPara(btn,text){stopSeries();speakDE(text,btn);}
 function _clearSeriesHL(){document.querySelectorAll('#seriesList .read-para.rp-on').forEach(e=>e.classList.remove('rp-on'));}
 function _syncSeriesBtns(){
   const lb=document.getElementById('seriesLoopBtn');
-  if(lb){const on=_sq&&_sq.mode==='loop';lb.classList.toggle('speaking',!!(on&&!_sq.paused));lb.textContent=!on?'🔊 全部朗读':(_sq.paused?'▶ 继续':'⏸ 暂停');}
+  if(lb){const on=_sq&&_sq.mode==='loop';lb.classList.toggle('speaking',!!on);lb.textContent=!on?'🔊 全部朗读':'⏹ 停止';}
   document.querySelectorAll('#seriesList .read-art-btn').forEach(b=>{b.classList.remove('speaking');b.textContent='▶ 朗读';});
-  if(_sq&&_sq.mode==='one'){const ab=document.getElementById('srab_'+_sq.i);if(ab){ab.classList.toggle('speaking',!_sq.paused);ab.textContent=_sq.paused?'▶ 继续':'⏸ 暂停';}}
+  if(_sq&&_sq.mode==='one'){const ab=document.getElementById('srab_'+_sq.i);if(ab){ab.classList.add('speaking');ab.textContent='⏹ 停止';}}
 }
 function stopSeries(){
-  if(_sq&&_sq.mode==='loop'){_seriesResume={i:_sq.i,j:_sq.j};_saveResume('seriesResume',_seriesResume);} // 离开/停止时记住并持久化位置
   _sq=null;speechSynthesis.cancel();_clearSeriesHL();_syncSeriesBtns();
 }
-function toggleSeriesPause(){
-  if(!_sq)return;
-  if(_sq.paused){_sq.paused=false;_syncSeriesBtns();if(speechSynthesis.paused)speechSynthesis.resume();else _playSeriesNext();}
-  else{_sq.paused=true;speechSynthesis.pause();_syncSeriesBtns();}
-}
 function toggleSeriesLoop(){if(window.__noTTS){_ttsHint();return;}
-  if(_sq&&_sq.mode==='loop'){toggleSeriesPause();return;}
+  if(_sq&&_sq.mode==='loop'){stopSeries();return;}                   // 播放中再按＝停止（下次从头）
   stopSeries();
   if(!_getSeriesList().length)return;
-  const st=_seriesResume||{i:0,j:0};_seriesResume=null;             // 从上次暂停处继续
-  _sq={i:st.i,j:st.j,mode:'loop',paused:false};_syncSeriesBtns();_playSeriesNext();
+  _sq={i:0,j:0,mode:'loop',paused:false};_syncSeriesBtns();_playSeriesNext();
 }
 function toggleEpisode(btn,i){if(window.__noTTS){_ttsHint();return;}
-  if(_sq&&_sq.mode==='one'&&_sq.i===i){toggleSeriesPause();return;}
+  if(_sq&&_sq.mode==='one'&&_sq.i===i){stopSeries();return;}         // 播放中再按＝停止
   stopSeries();_sq={i:i,j:0,mode:'one',paused:false};_syncSeriesBtns();_playSeriesNext();
 }
 function _playSeriesNext(){

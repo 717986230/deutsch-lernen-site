@@ -1,5 +1,5 @@
 // 自动生成（build.mjs），勿手改。页面网络优先、词典切片缓存优先。
-const V='de-d2d5cdfb34';
+const V='de-055d19a3af';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['index.html','manifest.webmanifest'])).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
