@@ -238,6 +238,16 @@ body:not(.lang-en) .en-only-block{display:none}
 .beginner-fab{position:fixed;left:0;top:44%;transform:translateY(-50%);z-index:280;writing-mode:vertical-rl;border:none;background:#58cc02;color:#fff;font-size:14px;font-weight:700;font-family:inherit;padding:15px 9px;border-radius:0 14px 14px 0;cursor:pointer;box-shadow:3px 3px 14px rgba(88,204,2,.4);letter-spacing:4px;line-height:1.15}
 .beginner-fab:hover{background:#4cb302}
 .beginner-fab:active{transform:translateY(-50%) scale(.94)}
+/* 拼读器右侧小浮钮（约为零基础钮一半大）+ 弹窗 */
+.phfab{position:fixed;right:0;top:44%;transform:translateY(-50%);z-index:280;writing-mode:vertical-rl;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:700;font-family:inherit;padding:9px 6px;border-radius:14px 0 0 14px;cursor:pointer;box-shadow:-3px 3px 12px rgba(28,176,246,.4);letter-spacing:2px;line-height:1.15}
+.phfab:active{transform:translateY(-50%) scale(.94)}
+body.lang-en .phfab{display:none}
+.ph-overlay{position:fixed;inset:0;z-index:450;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:56px 14px 14px}
+.ph-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;max-width:560px;width:100%;max-height:82vh;overflow:auto;padding:14px 16px;box-shadow:0 14px 44px rgba(0,0,0,.32)}
+.ph-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;color:var(--text)}
+.ph-close{border:none;background:transparent;font-size:18px;color:var(--text-faint);cursor:pointer;padding:2px 8px;font-family:inherit}
+.ph-zhhit{margin:7px 0;font-size:14px;color:var(--text-dim)}
+.ph-zhhit b{color:#46a302;cursor:pointer}
 .gram-group{margin:0 0 14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
 .gram-group>summary{cursor:pointer;padding:14px 16px;font-size:14px;font-weight:600;color:var(--text);list-style:none;-webkit-user-select:none;user-select:none}
 .gram-group>summary::-webkit-details-marker{display:none}
@@ -331,21 +341,6 @@ body:not(.lang-en) .en-only-block{display:none}
    </div>
    <div class="de-only-block">
     <button class="beginner-fab" onclick="goLevel('0')" aria-label="零基础？从第 1 天开始学">🌱 零基础入门</button>
-    <div class="sec-title" style="margin-top:22px"><span class="sec-title-icon">🧩</span><span class="sec-title-text">拼读器 · 任意德语词，怎么读 + 什么意思</span></div>
-    <div class="rule-box">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <input type="text" id="phInput" placeholder="输入德语词，如 Schule、Wasser…" oninput="renderPhTool()" style="flex:1;min-width:180px;padding:11px 14px;border-radius:24px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:15px;outline:none;font-family:inherit;box-shadow:var(--shadow)" lang="de">
-        <button class="speak-btn" type="button" title="朗读" aria-label="朗读输入的词" onclick="var v=document.getElementById('phInput').value.trim();if(v)speakDE(v,this)">🔊</button>
-      </div>
-      <div id="phToolOut" style="margin-top:12px"></div>
-      <div style="margin-top:8px;font-size:12px;color:var(--text-faint)">试试：
-        <span class="ph-try" onclick="phTry('Schule')">Schule</span>
-        <span class="ph-try" onclick="phTry('Wasser')">Wasser</span>
-        <span class="ph-try" onclick="phTry('danke')">danke</span>
-        <span class="ph-try" onclick="phTry('schön')">schön</span>
-        <span class="ph-try" onclick="phTry('Entschuldigung')">Entschuldigung</span><span id="phSug"></span>
-      </div>
-    </div>
     <div class="sec-title" style="margin-top:28px"><span class="sec-title-icon">📚</span><span class="sec-title-text">全部功能</span></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
       <div class="card" onclick="showSection('pronunciation')" style="text-align:center;padding:24px 16px">
@@ -1840,11 +1835,27 @@ function buildPhSug(){ // 联想词表：词库里的单个词（去标点、去
   }));
   _phSug.sort((a,b)=>a.k<b.k?-1:(a.k>b.k?1:0));
 }
+function phOpen(){var m=document.getElementById('phModal');if(m){m.style.display='flex';var i=document.getElementById('phInput');if(i)setTimeout(function(){i.focus();},50);}}
+function phClose(){var m=document.getElementById('phModal');if(m)m.style.display='none';}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')phClose();});
 function renderPhTool(){
   const v=(document.getElementById('phInput').value||'').trim();
   const out=document.getElementById('phToolOut');if(!out)return;
   const sugEl=document.getElementById('phSug');
   if(!v){out.innerHTML='';if(sugEl)sugEl.innerHTML='';return;}
+  // 中文反查：输中文 → 在词库里找德语（点德语再拼读）
+  if(/[\u4e00-\u9fff]/.test(v)){
+    if(sugEl)sugEl.innerHTML='';
+    const hits=[];
+    outer:for(const c of categories){for(const p of c.phrases){if(p.zh&&p.zh.indexOf(v)!==-1){hits.push(p);if(hits.length>=8)break outer;}}}
+    out.innerHTML=hits.length
+      ?'<div style="font-size:12px;color:var(--text-faint)">找到 '+hits.length+' 条（点德语看拼读）：</div>'+hits.map(p=>{
+          const w=p.de.replace(/'/g,"\\'");
+          return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${p.de}</b> — ${p.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
+        }).join('')
+      :'<div style="font-size:13px;color:var(--text-dim)">词库没找到「'+v+'」，换个说法试试（比如"你好""谢谢"）。</div>';
+    return;
+  }
   if(sugEl){let h='';try{
     if(!_phSug)buildPhSug();
     const q=v.toLowerCase(),hits=[];
@@ -2661,6 +2672,31 @@ buildSubNav('en-pron','enPronSubnav');
 buildSubNav('en-num','enNumSubnav');
 setLang(LANG); // 应用初始语言（含 localStorage 记忆）
 </script>
+<button class="phfab" type="button" onclick="phOpen()" aria-label="打开拼读器查词">🧩 拼读查词</button>
+<div class="ph-overlay" id="phModal" style="display:none" onclick="if(event.target===this)phClose()">
+  <div class="ph-card" role="dialog" aria-label="拼读器">
+    <div class="ph-card-head">
+      <b style="font-size:15px">🧩 拼读器 · 查词</b>
+      <button class="ph-close" type="button" onclick="phClose()" aria-label="关闭">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">输德语 → 拆读音+中文；输中文 → 反查德语。词库查不到自动查词典。</div>
+    <div class="rule-box">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="phInput" placeholder="输入德语词，如 Schule、Wasser…" oninput="renderPhTool()" style="flex:1;min-width:180px;padding:11px 14px;border-radius:24px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:15px;outline:none;font-family:inherit;box-shadow:var(--shadow)" lang="de">
+        <button class="speak-btn" type="button" title="朗读" aria-label="朗读输入的词" onclick="var v=document.getElementById('phInput').value.trim();if(v)speakDE(v,this)">🔊</button>
+      </div>
+      <div id="phToolOut" style="margin-top:12px"></div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-faint)">试试：
+        <span class="ph-try" onclick="phTry('Schule')">Schule</span>
+        <span class="ph-try" onclick="phTry('Wasser')">Wasser</span>
+        <span class="ph-try" onclick="phTry('danke')">danke</span>
+        <span class="ph-try" onclick="phTry('schön')">schön</span>
+        <span class="ph-try" onclick="phTry('Entschuldigung')">Entschuldigung</span><span id="phSug"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
 <button id="toTop" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部" aria-label="回到顶部">↑</button>
 <style>
 #toTop{position:fixed;right:20px;bottom:24px;z-index:300;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#46a302;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.12);border:1px solid var(--gold-faint);font-family:inherit;padding:0;opacity:0;visibility:hidden;transform:translateY(12px) scale(.85);transition:all .28s cubic-bezier(.34,1.56,.64,1)}
