@@ -1858,8 +1858,8 @@ function renderPhTool(){
       :'<div style="font-size:13px;color:var(--text-dim)">词库没找到「'+v+'」，换个说法试试（比如"你好""谢谢"）。</div>';
     return;
   }
-  // 联想：与中文反查同样式逐行展示；最短词优先（越短越常用）
-  let sug='';
+  // 联想：本地词库（即时）+ 词典切片（异步补充），同样式逐行展示
+  let sug='';const shown={};
   try{
     if(!_phSug)buildPhSug();
     const q=v.toLowerCase(),all=[];
@@ -1873,10 +1873,12 @@ function renderPhTool(){
         for(let j=0;j<e.ws.length;j++){if(e.ws[j].indexOf(q)===0){hits.push({w:e.w,zh:e.zh});pn++;break;}}
       }
     }
-    if(hits.length)sug='<div style="font-size:12px;color:var(--text-faint);margin-top:10px">联想（点德语看拼读）：</div>'+hits.map(e=>{
+    const rows=hits.map(e=>{
+      shown[e.w.toLowerCase()]=1;
       const w=e.w.replace(/'/g,"\\'");
       return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e.w}</b> — ${e.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
     }).join('');
+    sug='<div id="phSugWrap">'+(rows?'<div style="font-size:12px;color:var(--text-faint);margin-top:10px">联想（点德语看拼读）：</div>'+rows:'')+'</div>';
   }catch(e){}
   // 查词库给中文翻译（含去冠词匹配）
   let zh='';
@@ -1895,6 +1897,25 @@ function renderPhTool(){
     }
   }catch(e){}
   out.innerHTML=`<div class="ph-row">${phonicsHtml(v,true)}</div>`+zh+sug+`<div style="font-size:12px;color:var(--text-faint);margin-top:8px">蓝色=元音(响)，绿色=辅音。把每段连起来念，就是这个词的读音。点 🔊 听真人发音对照。</div>`;
+  // 词典切片联想：分片就绪后补进同一列表（输入已变则丢弃）
+  setTimeout(function(){
+    const q=v.toLowerCase();
+    if(!/^[a-zäöüß][a-zäöüß-]{1,}$/.test(q))return;
+    try{hdPrefix(q,4,function(list){
+      const wrap=document.getElementById('phSugWrap');
+      if(!wrap||(document.getElementById('phInput').value||'').trim()!==v)return;
+      let h='';
+      list.forEach(function(e){
+        const lw=e[0].toLowerCase();
+        if(shown[lw]||lw===q)return;shown[lw]=1;
+        const w=e[0].replace(/'/g,"\\'");
+        h+=`<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e[0]}</b> — ${e[1]} <span style="font-size:11px;color:var(--text-faint)">·词典</span> <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
+      });
+      if(!h)return;
+      if(!wrap.innerHTML)h='<div style="font-size:12px;color:var(--text-faint);margin-top:10px">联想（点德语看拼读）：</div>'+h;
+      wrap.innerHTML+=h;
+    });}catch(e){}
+  },0);
 }
 function phTry(w){const el=document.getElementById('phInput');if(el){el.value=w;renderPhTool();speakDE(w);}}
 function makeCard(p,id){
@@ -2326,6 +2347,27 @@ function hdFind(t){
     }
   }
   return null;
+}
+function hdPrefix(q,limit,cb){ // 词典分片前缀联想：确保分片加载后扫描
+  var ch=_hdShard(q);
+  function scan(){
+    var d=_hd[ch]||{},out=[];
+    for(var k in d){if(k.length>q.length&&k.indexOf(q)===0)out.push(d[k]);}
+    out.sort(function(a,b){return a[0].length-b[0].length;});
+    cb(out.slice(0,limit));
+  }
+  if(_hd[ch]){scan();return;}
+  if(_hdQ[ch]){_hdQ[ch].push(scan);return;}
+  _hdQ[ch]=[scan];
+  var x=new XMLHttpRequest();
+  x.open('GET','dict/de_'+ch+'.json',true);
+  x.onreadystatechange=function(){
+    if(x.readyState!==4)return;
+    try{_hd[ch]=(x.status===200)?JSON.parse(x.responseText):{};}catch(e){_hd[ch]={};}
+    var q2=_hdQ[ch];delete _hdQ[ch];
+    for(var i=0;i<q2.length;i++)try{q2[i]();}catch(e){}
+  };
+  try{x.send();}catch(e){_hd[ch]={};cb([]);}
 }
 function hdLookup(word,cb){ // 异步：cb([德语原形,中文]) 或 cb(null)
   var t=(word||'').toLowerCase().replace(/^[^a-zäöüß]+|[^a-zäöüß]+$/g,'');
