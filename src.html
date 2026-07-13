@@ -1841,11 +1841,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')phClose();})
 function renderPhTool(){
   const v=(document.getElementById('phInput').value||'').trim();
   const out=document.getElementById('phToolOut');if(!out)return;
-  const sugEl=document.getElementById('phSug');
-  if(!v){out.innerHTML='';if(sugEl)sugEl.innerHTML='';return;}
+  if(!v){out.innerHTML='';return;}
   // 中文反查：输中文 → 在词库里找德语（点德语再拼读）
   if(/[\u4e00-\u9fff]/.test(v)){
-    if(sugEl)sugEl.innerHTML='';
     const hits=[];
     outer:for(const c of categories){for(const p of c.phrases){if(p.zh&&p.zh.indexOf(v)!==-1){hits.push(p);if(hits.length>=8)break outer;}}}
     out.innerHTML=hits.length
@@ -1856,12 +1854,19 @@ function renderPhTool(){
       :'<div style="font-size:13px;color:var(--text-dim)">词库没找到「'+v+'」，换个说法试试（比如"你好""谢谢"）。</div>';
     return;
   }
-  if(sugEl){let h='';try{
+  // 联想：与中文反查同样式逐行展示；最短词优先（越短越常用）
+  let sug='';
+  try{
     if(!_phSug)buildPhSug();
-    const q=v.toLowerCase(),hits=[];
-    for(let i=0;i<_phSug.length&&hits.length<6;i++){const e=_phSug[i];if(e.k!==q&&e.k.indexOf(q)===0)hits.push(e);}
-    if(hits.length)h='<span style="color:var(--text-faint)"> ｜ 联想：</span>'+hits.map(e=>'<span class="ph-try" onclick="phTry(\''+e.w+'\')">'+e.w+' '+e.zh+'</span>').join('');
-  }catch(e){}sugEl.innerHTML=h;}
+    const q=v.toLowerCase(),all=[];
+    for(let i=0;i<_phSug.length;i++){const e=_phSug[i];if(e.k!==q&&e.k.indexOf(q)===0)all.push(e);}
+    all.sort((a,b)=>a.k.length-b.k.length||(a.k<b.k?-1:1));
+    const hits=all.slice(0,6);
+    if(hits.length)sug='<div style="font-size:12px;color:var(--text-faint);margin-top:10px">联想（点德语看拼读）：</div>'+hits.map(e=>{
+      const w=e.w.replace(/'/g,"\\'");
+      return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e.w}</b> — ${e.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
+    }).join('');
+  }catch(e){}
   // 查词库给中文翻译（含去冠词匹配）
   let zh='';
   try{
@@ -1878,7 +1883,7 @@ function renderPhTool(){
       });},0);
     }
   }catch(e){}
-  out.innerHTML=`<div class="ph-row">${phonicsHtml(v,true)}</div>`+zh+`<div style="font-size:12px;color:var(--text-faint);margin-top:8px">蓝色=元音(响)，绿色=辅音。把每段连起来念，就是这个词的读音。点 🔊 听真人发音对照。</div>`;
+  out.innerHTML=`<div class="ph-row">${phonicsHtml(v,true)}</div>`+zh+sug+`<div style="font-size:12px;color:var(--text-faint);margin-top:8px">蓝色=元音(响)，绿色=辅音。把每段连起来念，就是这个词的读音。点 🔊 听真人发音对照。</div>`;
 }
 function phTry(w){const el=document.getElementById('phInput');if(el){el.value=w;renderPhTool();speakDE(w);}}
 function makeCard(p,id){
@@ -2691,7 +2696,7 @@ setLang(LANG); // 应用初始语言（含 localStorage 记忆）
         <span class="ph-try" onclick="phTry('Wasser')">Wasser</span>
         <span class="ph-try" onclick="phTry('danke')">danke</span>
         <span class="ph-try" onclick="phTry('schön')">schön</span>
-        <span class="ph-try" onclick="phTry('Entschuldigung')">Entschuldigung</span><span id="phSug"></span>
+        <span class="ph-try" onclick="phTry('Entschuldigung')">Entschuldigung</span>
       </div>
     </div>
 
