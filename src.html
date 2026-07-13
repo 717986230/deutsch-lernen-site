@@ -2738,6 +2738,8 @@ function gqReset(btn){
   });
   var sc=box.querySelector('.gq-score');sc.style.display='none';sc.innerHTML='';
 }
+// Service Worker：真离线支持（https/localhost 下注册；老内核无 SW 自动跳过）
+try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');}catch(e){}
 // INIT
 initPhrases();
 renderGramQuizzes();

@@ -15,6 +15,7 @@
 // 但无法阻止用开发者工具的定向提取——这是任何纯静态站的固有上限。
 
 import { readFileSync, writeFileSync } from 'fs';
+import { createHash } from 'crypto';
 import { minify } from 'terser';
 
 const DEV = process.argv.includes('--dev');
@@ -95,6 +96,27 @@ async function build() {
   out += html.slice(last);
 
   writeFileSync('index.html', out);
+
+  // 3) 生成 Service Worker（缓存名含内容哈希：内容一变自动换缓存，旧缓存激活时清除）
+  const ver = createHash('sha1').update(out).digest('hex').slice(0, 10);
+  writeFileSync('sw.js', `// 自动生成（build.mjs），勿手改。页面网络优先、词典切片缓存优先。
+const V='de-${ver}';
+self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['index.html','manifest.webmanifest'])).then(()=>self.skipWaiting()))});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+self.addEventListener('fetch',e=>{
+  const u=new URL(e.request.url);
+  if(u.origin!==location.origin||e.request.method!=='GET')return;
+  if(e.request.mode==='navigate'||u.pathname==='/'||u.pathname.endsWith('/index.html')){
+    // 页面：网络优先（保证更新），断网回退缓存
+    e.respondWith(fetch(e.request).then(r=>{const cp=r.clone();caches.open(V).then(c=>c.put(e.request,cp));return r;})
+      .catch(()=>caches.match(e.request).then(r=>r||caches.match('index.html'))));
+    return;
+  }
+  // 词典切片与静态资源：缓存优先，未命中回源并写缓存
+  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res.ok){const cp=res.clone();caches.open(V).then(c=>c.put(e.request,cp));}return res;})));
+});
+`);
+  console.log(`  sw.js 版本 de-${ver}`);
   console.log(`✓ 构建完成：加密 ${Object.keys(DATA_FILES).length} 个数组、混淆 ${count} 个脚本块`);
   console.log(`  src.html ${(readFileSync('src.html').length / 1024 | 0)}KB + data/ → index.html ${(out.length / 1024 | 0)}KB`);
 }
