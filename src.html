@@ -761,6 +761,21 @@ body.lang-en .phfab{display:none}
       </div>
     </div>
 
+    <div class="sec-title"><span class="sec-title-icon">📈</span><span class="sec-title-text">形容词比较级 · 最高级</span></div>
+    <div class="rule-box">
+      <h3>规则：原形 → -er → am -sten（德语不用 mehr！）</h3>
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div>klein 小 → klein<b style="color:var(--gold)">er</b> 更小 → am klein<b style="color:var(--gold)">sten</b> 最小</div>
+        <div>单音节 a/o/u 常变音：alt → <b style="color:#ff7a4d">ä</b>lter · groß → gr<b style="color:#ff7a4d">ö</b>ßer · jung → j<b style="color:#ff7a4d">ü</b>nger</div>
+        <div>必背不规则：gut → <b style="color:var(--gold)">besser</b> → am besten；viel → <b style="color:var(--gold)">mehr</b> → am meisten；gern → <b style="color:var(--gold)">lieber</b> → am liebsten</div>
+      </div>
+    </div>
+    <div class="rule-box" style="line-height:1.6">
+      <div style="font-size:15px" lang="de">Er ist größer <b style="color:var(--gold)">als</b> ich. <button class="speak-btn" type="button" onclick="speakDE('Er ist größer als ich.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">他比我高（比较用 als，不是 wie）</span></div>
+      <div style="font-size:15px" lang="de">Ich trinke <b style="color:var(--gold)">lieber</b> Tee. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke lieber Tee.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我更爱喝茶（gern 的比较级）</span></div>
+      <div style="font-size:15px" lang="de">Am liebsten esse ich Nudeln. <button class="speak-btn" type="button" onclick="speakDE('Am liebsten esse ich Nudeln.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我最爱吃面条。</span></div>
+    </div>
+
     <div class="sec-title"><span class="sec-title-icon">🧭</span><span class="sec-title-text">介词支配格（介词自带固定的格）</span></div>
     <div class="tip-card"><div class="tip-body">🔑 每个介词后面<b>固定跟某一个格</b>——把介词连同"格"一起背。初学先记下面两句<b>口诀</b>就够用；<b>Genitiv 组可先跳过</b>。</div></div>
     <div class="rule-box">
@@ -2492,7 +2507,7 @@ function renderReadings(){
   const cnt=document.getElementById('readCount');
   if(cnt)cnt.textContent='共 '+list.length+' 篇短文';
   const el=document.getElementById('readList');
-  el.innerHTML=list.map((r,ri)=>{
+  const htmls=list.map((r,ri)=>{
     const body=r.paras.map((p,pi)=>`<div class="read-para" id="rp_${ri}_${pi}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div></div></div></div>`).join('');
     return `<div class="card" id="rcard_${ri}" style="cursor:default;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
@@ -2501,7 +2516,16 @@ function renderReadings(){
         <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span>
         <button class="read-art-btn" id="rab_${ri}" type="button" title="朗读全文" aria-label="朗读全文：${r.title}" style="margin-left:auto" onclick="toggleArticle(this,${ri})">▶ 朗读</button>
       </div>${body}</div>`;
-  }).join('');
+  });
+  // 分批渲染：先同步出前 6 篇，其余每帧追加（低端机首开不卡）
+  el.innerHTML=htmls.slice(0,6).join('');
+  let i=6;
+  (function step(){
+    if(i>=htmls.length)return;
+    el.insertAdjacentHTML('beforeend',htmls.slice(i,i+6).join(''));
+    i+=6;
+    (window.requestAnimationFrame||setTimeout)(step,16);
+  })();
 }
 // ── 统一阅读朗读引擎：单句 / 单篇 / 循环全部（支持暂停/继续，记住位置；刷新即重置）──
 var _rq=null; // {ri,pi,mode:'loop'|'one',paused}
@@ -2727,7 +2751,10 @@ g3:[
  {q:'Ich lege das Buch auf ___ Tisch.（把书放到桌上）',o:['dem','den','der'],a:1,w:'静三动四：legen 是移动方向 → 第四格 den Tisch。'},
  {q:'Ich komme ___ China.（我来自中国）',o:['von','aus','bei'],a:1,w:'从国家/城市来用 aus：Ich komme aus China。'},
  {q:'Wir fahren ___ dem Zug.（我们坐火车）',o:['mit','für','ohne'],a:0,w:'交通工具用 mit + 第三格：mit dem Zug / mit dem Bus。'},
- {q:'Das Geschenk ist ___ meine Mutter.（给我妈的礼物）',o:['für','mit','zu'],a:0,w:'für 支配第四格：für meine Mutter。'}],
+ {q:'Das Geschenk ist ___ meine Mutter.（给我妈的礼物）',o:['für','mit','zu'],a:0,w:'für 支配第四格：für meine Mutter。'},
+ {q:'「更好」怎么说？',o:['guter','besser','mehr gut'],a:1,w:'gut 不规则：gut → besser → am besten。德语没有 mehr + 形容词的说法。'},
+ {q:'alt（老）的比较级是？',o:['alter','älter','mehr alt'],a:1,w:'单音节 a/o/u 常变音：alt→älter，groß→größer，jung→jünger。'},
+ {q:'「他比我高」怎么说？',o:['Er ist größer als ich.','Er ist größer wie ich.','Er ist mehr groß als ich.'],a:0,w:'比较用 als（标准德语）；wie 用于「和…一样」so groß wie。'}],
 g4:[
  {q:'er / sie / es（他 / 她 / 它）配哪个动词词尾？',o:['-st','-t','-en'],a:1,w:'er/sie/es 配 -t：er lernt，sie macht。'},
  {q:'du ___ müde.（你累了，用 sein）',o:['bin','bist','ist'],a:1,w:'sein 不规则：ich bin，du bist，er ist——必背，它还是完成时助动词。'},
