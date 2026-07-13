@@ -2670,48 +2670,101 @@ function copyQQ(btn){var q="717986230";function ok(){btn.textContent="✓ 已复
 function copyShare(btn){var u="https://www.uuoo.site/";function ok(){btn.textContent="✓ 已复制，去粘贴分享吧";setTimeout(function(){btn.textContent="📋 复制网址分享";},2500);}try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(ok).catch(function(){prompt("复制这个网址分享：",u);});}else{prompt("复制这个网址分享：",u);}}catch(e){prompt("复制这个网址分享：",u);}}
 function rejectDonate(){var t=document.createElement('div');t.textContent='谢谢你来过 \uD83D\uDE0A';t.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9999;background:rgba(40,40,40,.94);color:#fff;font-size:16px;padding:16px 26px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.35)';document.body.appendChild(t);setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);showSection('home');},1100);}
 var VERB_IRR={sein:["bin","bist","ist","sind","seid","sind"],haben:["habe","hast","hat","haben","habt","haben"],werden:["werde","wirst","wird","werden","werdet","werden"],wissen:["weiß","weißt","weiß","wissen","wisst","wissen"],essen:["esse","isst","isst","essen","esst","essen"],geben:["gebe","gibst","gibt","geben","gebt","geben"],nehmen:["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"],sprechen:["spreche","sprichst","spricht","sprechen","sprecht","sprechen"],sehen:["sehe","siehst","sieht","sehen","seht","sehen"],lesen:["lese","liest","liest","lesen","lest","lesen"],helfen:["helfe","hilfst","hilft","helfen","helft","helfen"],treffen:["treffe","triffst","trifft","treffen","trefft","treffen"],fahren:["fahre","fährst","fährt","fahren","fahrt","fahren"],schlafen:["schlafe","schläfst","schläft","schlafen","schlaft","schlafen"],laufen:["laufe","läufst","läuft","laufen","lauft","laufen"],tragen:["trage","trägst","trägt","tragen","tragt","tragen"],fallen:["falle","fällst","fällt","fallen","fallt","fallen"],halten:["halte","hältst","hält","halten","haltet","halten"],waschen:["wasche","wäschst","wäscht","waschen","wascht","waschen"],mögen:["mag","magst","mag","mögen","mögt","mögen"],"können":["kann","kannst","kann","können","könnt","können"],"müssen":["muss","musst","muss","müssen","müsst","müssen"],wollen:["will","willst","will","wollen","wollt","wollen"],sollen:["soll","sollst","soll","sollen","sollt","sollen"],"dürfen":["darf","darfst","darf","dürfen","dürft","dürfen"]};
+var VERB_PART={sein:"gewesen",haben:"gehabt",werden:"geworden",wissen:"gewusst",essen:"gegessen",geben:"gegeben",nehmen:"genommen",sprechen:"gesprochen",sehen:"gesehen",lesen:"gelesen",helfen:"geholfen",treffen:"getroffen",fahren:"gefahren",schlafen:"geschlafen",laufen:"gelaufen",tragen:"getragen",fallen:"gefallen",halten:"gehalten",waschen:"gewaschen","mögen":"gemocht","können":"gekonnt","müssen":"gemusst",wollen:"gewollt",sollen:"gesollt","dürfen":"gedurft"};
+var VERB_SEIN={sein:1,werden:1,fahren:1,laufen:1,fallen:1};   // 完成时用 sein 的（位移/状态变化）
+function perfektOf(v){ // 完成时：助动词 + 过去分词（规则动词自动生成，-ieren 无 ge-）
+  var part=VERB_PART[v];
+  if(!part){
+    var stem=v.replace(/e?n$/,'');
+    if(/ieren$/.test(v))part=stem+'t';
+    else part='ge'+stem+(/[td]$/.test(stem)?'et':'t');
+  }
+  return {aux:VERB_SEIN[v]?'ist':'hat',part:part};
+}
 function conjVerb(v){v=(v||"").trim().toLowerCase().replace(/\s+/g,"");if(!v)return null;if(VERB_IRR[v])return{forms:VERB_IRR[v],reg:false};var stem=v.replace(/en$/,"");if(stem===v)stem=v.replace(/n$/,"");if(!stem)return null;var sE=/[sßxz]$/.test(stem);var needE=/[td]$/.test(stem)||/[^aeiourlh][mn]$/.test(stem);var du=sE?stem+"t":(needE?stem+"est":stem+"st");var er=needE?stem+"et":stem+"t";var ihr=needE?stem+"et":stem+"t";return{forms:[stem+"e",du,er,v,ihr,v],reg:true};}
 function conjEx(v){var i=document.getElementById("conjIn");if(i)i.value=v;runConj();}
-function runConj(){var i=document.getElementById("conjIn"),o=document.getElementById("conjOut");if(!i||!o)return;var v=i.value.trim().toLowerCase();var r=conjVerb(v);if(!r){o.innerHTML=v?"<div style=\"font-size:13px;color:var(--text-dim)\">请输入动词原形（一般以 -en 结尾）</div>":"";return;}var pron=["ich","du","er/sie/es","wir","ihr","sie/Sie"];var rows=r.forms.map(function(f,k){return "<tr><td>"+pron[k]+"</td><td lang=\"de\"><b style=\"color:#46a302\">"+f+"</b> <button class=\"speak-btn\" type=\"button\" style=\"width:22px;height:22px;font-size:11px\" onclick=\"speakDE('"+pron[k].split("/")[0]+" "+f+"',this)\">🔊</button></td></tr>";}).join("");o.innerHTML="<div style=\"font-size:12px;color:var(--text-dim);margin:2px 0 4px\">"+(r.reg?"规则变位":"不规则/变音（已内置）")+" · 现在时</div><table class=\"pron-table\"><tr><th>人称</th><th lang=\"de\">"+v+"</th></tr>"+rows+"</table>";}
+function runConj(){var i=document.getElementById("conjIn"),o=document.getElementById("conjOut");if(!i||!o)return;var v=i.value.trim().toLowerCase();var r=conjVerb(v);if(!r){o.innerHTML=v?"<div style=\"font-size:13px;color:var(--text-dim)\">请输入动词原形（一般以 -en 结尾）</div>":"";return;}var pron=["ich","du","er/sie/es","wir","ihr","sie/Sie"];var rows=r.forms.map(function(f,k){return "<tr><td>"+pron[k]+"</td><td lang=\"de\"><b style=\"color:#46a302\">"+f+"</b> <button class=\"speak-btn\" type=\"button\" style=\"width:22px;height:22px;font-size:11px\" onclick=\"speakDE('"+pron[k].split("/")[0]+" "+f+"',this)\">🔊</button></td></tr>";}).join("");var pf=perfektOf(v);
+o.innerHTML="<div style=\"font-size:12px;color:var(--text-dim);margin:2px 0 4px\">"+(r.reg?"规则变位":"不规则/变音（已内置）")+" · 现在时</div><table class=\"pron-table\"><tr><th>人称</th><th lang=\"de\">"+v+"</th></tr>"+rows+"</table>"+
+"<div style=\"font-size:13px;margin-top:8px;color:var(--text)\">⏰ 完成时（口语过去）：<b lang=\"de\" style=\"color:#46a302\">er "+pf.aux+" "+pf.part+"</b> <button class=\"speak-btn\" type=\"button\" style=\"width:22px;height:22px;font-size:11px\" onclick=\"speakDE('er "+pf.aux+" "+pf.part+"',this)\">🔊</button><span style=\"font-size:12px;color:var(--text-faint)\">　分词甩句尾：Er "+pf.aux+" gestern … "+pf.part+".</span></div>";}
 // 即学即练：语法/发音每组 3 题，学完立刻主动回忆一次
 var GQ_DATA={
 p1:[
  {q:'Wasser（水）的 W 读哪个音？',o:['英语 w「窝」','v「瓦」','f「夫」'],a:1,w:'德语 W 一律发 v 音：Wasser＝瓦瑟。而字母 V 大多发 f 音（Vater＝法特尔）。'},
  {q:'ja（是的）怎么读？',o:['贾','雅','夏'],a:1,w:'J 发 y 音：ja＝雅。德语里没有汉语「鸡」那个 j 音。'},
- {q:'zu（去 / 太）的 z 读什么？',o:['兹 z','楚 ts','苏 s'],a:1,w:'Z 永远读 ts（近似「茨 / 楚」的声母）：zu＝楚，Zeit＝采特。'}],
+ {q:'zu（去 / 太）的 z 读什么？',o:['兹 z','楚 ts','苏 s'],a:1,w:'Z 永远读 ts（近似「茨 / 楚」的声母）：zu＝楚，Zeit＝采特。'},
+ {q:'sch 组合读什么？',o:['s、c、h 分开读','「施」','「斯克」'],a:1,w:'sch 固定读「施」：Schule＝施乌勒，schön＝舍恩。'},
+ {q:'ei 组合读什么？',o:['艾','诶','伊'],a:0,w:'ei 读「艾」：Wein＝魏因，nein＝奈因。别和 ie（长音「伊」）搞混。'},
+ {q:'ie 组合读什么？',o:['艾','长音「伊」','耶'],a:1,w:'ie 读长「伊」：viel＝菲尔，Liebe＝利贝。和 ei 正好相反。'},
+ {q:'Hund（狗）词尾的 d 读什么？',o:['d','t','不发音'],a:1,w:'词尾 b/d/g 清化成 p/t/k：Hund 读「洪特」，Weg 读「韦克」。'},
+ {q:'richtig 词尾的 -ig 读什么？',o:['伊格','伊希','伊克'],a:1,w:'-ig 结尾读「伊希」：richtig＝里希提希，lustig＝卢斯提希。'},
+ {q:'德语单词的重音一般在哪？',o:['最后一个音节','第一个音节','没有规律'],a:1,w:'重音基本落在第一音节：KOMmen、SPRAche、GUten。外来词除外。'}],
 g1:[
  {q:'「学校 Schule」前面用哪个冠词？___ Schule',o:['der','die','das'],a:1,w:'以 -e 结尾的名词 98% 是阴性 → die Schule。记住这条能猜对一大片。'},
  {q:'du trink___ Wasser（你喝水），空里填什么？',o:['-e','-st','-t'],a:1,w:'du 永远配 -st：du trinkst。词尾口诀：-e / -st / -t / -en / -t / -en。'},
- {q:'Ich sehe ___ Mann.（我看见这个男人）',o:['der','dem','den'],a:2,w:'「看见谁」是直接宾语 → 第四格，der 变 den。初学最要紧的就这一个变化。'}],
+ {q:'Ich sehe ___ Mann.（我看见这个男人）',o:['der','dem','den'],a:2,w:'「看见谁」是直接宾语 → 第四格，der 变 den。初学最要紧的就这一个变化。'},
+ {q:'「妈妈 Mutter」是什么性？',o:['阳性 der','阴性 die','中性 das'],a:1,w:'人的自然性别一般一致：der Vater 爸爸（阳）、die Mutter 妈妈（阴）。'},
+ {q:'wir trink___（我们喝）？',o:['-t','-en','-st'],a:1,w:'wir 配 -en，和原形一样：wir trinken。'},
+ {q:'-ung 结尾的名词用哪个冠词？',o:['der','die','das'],a:1,w:'-ung / -heit / -keit / -schaft 结尾 100% 阴性 → die Wohnung、die Zeitung。'},
+ {q:'Das ist ___ Buch.（一本书）',o:['ein','eine','einen'],a:0,w:'Buch 是中性，一格用 ein：ein Buch。阴性才用 eine。'},
+ {q:'ihr mach___（你们做）？',o:['-en','-t','-st'],a:1,w:'ihr（你们）配 -t：ihr macht。'},
+ {q:'Ich helfe ___ Mann.（我帮这个男人）',o:['den','dem','der'],a:1,w:'helfen 固定配第三格 → dem Mann。helfen/danken/gefallen 这几个动词要单独记。'}],
 g2:[
  {q:'口语里说「我学了德语」，最自然的是？',o:['Ich lernte Deutsch.','Ich habe Deutsch gelernt.','Ich werde Deutsch lernen.'],a:1,w:'口语说过去用完成时 Perfekt：habe + gelernt（分词甩句尾）。lernte 是书面 / 讲故事用的。'},
  {q:'Ich ___ nach Berlin gefahren.（我去了柏林）',o:['habe','bin','ist'],a:1,w:'位移动词（fahren / gehen / kommen）完成时用 sein → ich bin … gefahren。'},
- {q:'「因为我病了」正确的语序是？',o:['…, weil ich bin krank.','…, weil ich krank bin.','…, weil bin ich krank.'],a:1,w:'weil / dass / wenn 一出现，变位动词站最后 → weil ich krank bin。'}],
+ {q:'「因为我病了」正确的语序是？',o:['…, weil ich bin krank.','…, weil ich krank bin.','…, weil bin ich krank.'],a:1,w:'weil / dass / wenn 一出现，变位动词站最后 → weil ich krank bin。'},
+ {q:'machen 的过去分词是？',o:['gemacht','machte','gemachen'],a:0,w:'规则动词分词＝ge + 词干 + t：machen → gemacht。'},
+ {q:'Ich habe Pizza ___.（我吃了披萨）',o:['geesst','gegessen','esste'],a:1,w:'essen 不规则：分词 gegessen（ge-…-en 型）。'},
+ {q:'Wir ___ ins Kino gegangen.（我们去了电影院）',o:['haben','sind','waren'],a:1,w:'gehen 是位移动词 → 助动词用 sein：Wir sind ins Kino gegangen。'},
+ {q:'aufstehen（起床）造句正确的是？',o:['Ich aufstehe um 7.','Ich stehe um 7 auf.','Ich auf stehe um 7.'],a:1,w:'可分前缀甩句尾：Ich stehe um 7 Uhr auf。'},
+ {q:'…, dass er Deutsch ___.（……他学德语）',o:['lernt','lernt er','er lernt'],a:0,w:'dass 从句动词放句尾：…, dass er Deutsch lernt。'},
+ {q:'口语「昨天我工作了」最自然：',o:['Ich arbeitete gestern.','Ich habe gestern gearbeitet.','Ich arbeite gestern.'],a:1,w:'口语过去用 Perfekt：habe … gearbeitet（词干带 t → 分词 gearbeitet 插 e）。'}],
 g3:[
  {q:'Ich trinke ___ Kaffee.（我喝热咖啡）',o:['heiß','heiße','heißen'],a:2,w:'形容词放名词前要加词尾；喝「什么」是四格、Kaffee 是阳性 → heißen。放动词后面则不变：Der Kaffee ist heiß.'},
  {q:'Das Buch ist auf ___ Tisch.（书在桌上）',o:['den','dem','der'],a:1,w:'静三动四：ist 表静止位置 → 第三格 dem。若是「把它放到桌上」lege … auf den Tisch 才用四格。'},
- {q:'Das ist für ___.（这是给你的）',o:['du','dir','dich'],a:2,w:'für 永远支配第四格 → dich。口诀：durch für gegen ohne um。'}],
+ {q:'Das ist für ___.（这是给你的）',o:['du','dir','dich'],a:2,w:'für 永远支配第四格 → dich。口诀：durch für gegen ohne um。'},
+ {q:'Der ___ Mann ist mein Lehrer.（这个好人）',o:['gut','gute','guter'],a:1,w:'定冠词后统一加 -e：der gute Mann。der 已点明性别，形容词偷懒。'},
+ {q:'Ein ___ Mann wartet draußen.（一位老先生）',o:['alte','alter','alt'],a:1,w:'ein 看不出阳性 → 形容词补上 -er：ein alter Mann。'},
+ {q:'Ich lege das Buch auf ___ Tisch.（把书放到桌上）',o:['dem','den','der'],a:1,w:'静三动四：legen 是移动方向 → 第四格 den Tisch。'},
+ {q:'Ich komme ___ China.（我来自中国）',o:['von','aus','bei'],a:1,w:'从国家/城市来用 aus：Ich komme aus China。'},
+ {q:'Wir fahren ___ dem Zug.（我们坐火车）',o:['mit','für','ohne'],a:0,w:'交通工具用 mit + 第三格：mit dem Zug / mit dem Bus。'},
+ {q:'Das Geschenk ist ___ meine Mutter.（给我妈的礼物）',o:['für','mit','zu'],a:0,w:'für 支配第四格：für meine Mutter。'}],
 g4:[
  {q:'er / sie / es（他 / 她 / 它）配哪个动词词尾？',o:['-st','-t','-en'],a:1,w:'er/sie/es 配 -t：er lernt，sie macht。'},
  {q:'du ___ müde.（你累了，用 sein）',o:['bin','bist','ist'],a:1,w:'sein 不规则：ich bin，du bist，er ist——必背，它还是完成时助动词。'},
- {q:'arbeiten（工作）→ du arbeit___？',o:['-st','-est','-et'],a:1,w:'词干以 t / d 结尾要插个 e 好发音 → du arbeitest（试试上面的变位器）。'}],
+ {q:'arbeiten（工作）→ du arbeit___？',o:['-st','-est','-et'],a:1,w:'词干以 t / d 结尾要插个 e 好发音 → du arbeitest（试试上面的变位器）。'},
+ {q:'sie（他们）lern___？',o:['-t','-en','-st'],a:1,w:'sie/Sie（他们/您）配 -en：sie lernen。'},
+ {q:'lesen（读）的 du 形式是？',o:['lesst','liest','leset'],a:1,w:'词干以 s 结尾 du 只加 -t，且 e→ie 变音：du liest。'},
+ {q:'fahren（开车/去）的 er 形式是？',o:['fahrt','fährt','fahret'],a:1,w:'强变化动词 a→ä 只发生在 du/er：er fährt，但 wir fahren。'},
+ {q:'Ich ___ 20 Jahre alt.（我20岁）',o:['bin','habe','werde'],a:0,w:'说年龄用 sein：Ich bin 20 Jahre alt。'},
+ {q:'___ du Hunger?（你饿吗）',o:['Bist','Hast','Wirst'],a:1,w:'德语「饿/渴」用 haben：Hast du Hunger?（直译「你有饥饿吗」）。'},
+ {q:'möchten（想要）的 ich 形式？',o:['möchte','möchten','möchtet'],a:0,w:'情态动词 ich 和 er 同形：ich möchte，er möchte（都没有 -e/-t 词尾变化）。'}],
 g5:[
  {q:'「今天我踢球」正确语序是？',o:['Heute ich spiele Fußball.','Heute spiele ich Fußball.','Heute Fußball ich spiele.'],a:1,w:'铁律：陈述句动词永远第二位。Heute 占了第一位，动词 spiele 紧跟，主语 ich 退到后面。'},
  {q:'Ich gebe ___ das Buch.（我给你这本书）',o:['du','dich','dir'],a:2,w:'给「谁」用第三格 → dir；给的「东西」用第四格 → das Buch。'},
- {q:'「你来吗？」怎么问？',o:['Du kommst?','Kommst du?','Kommen du?'],a:1,w:'是非问句把变位动词提到句首：Kommst du? 回答 ja / nein。'}]
+ {q:'「你来吗？」怎么问？',o:['Du kommst?','Kommst du?','Kommen du?'],a:1,w:'是非问句把变位动词提到句首：Kommst du? 回答 ja / nein。'},
+ {q:'Ich sehe ___.（我看见他）',o:['er','ihn','ihm'],a:1,w:'「他」做直接宾语用第四格：er → ihn。'},
+ {q:'Wie geht es ___?（你好吗）',o:['du','dich','dir'],a:2,w:'es geht + 第三格：Wie geht es dir? 回答 Mir geht es gut。'},
+ {q:'「明天我们学德语」正确语序：',o:['Morgen wir lernen Deutsch.','Morgen lernen wir Deutsch.','Morgen Deutsch lernen wir.'],a:1,w:'动词第二位：Morgen lernen wir Deutsch。'},
+ {q:'对方答「aus China」，你问的是？',o:['Wohin kommst du?','Woher kommst du?','Wo kommst du?'],a:1,w:'woher＝从哪来，wohin＝去哪，wo＝在哪——三个别混。'},
+ {q:'「这是我的书」',o:['Das ist mein Buch.','Das ist meine Buch.','Das ist meinen Buch.'],a:0,w:'Buch 中性一格 → mein 不加词尾。meine 是阴性/复数。'},
+ {q:'否定「我不喝咖啡」',o:['Ich trinke nicht Kaffee.','Ich trinke keinen Kaffee.','Ich nicht trinke Kaffee.'],a:1,w:'否定名词用 kein（阳性四格 keinen）；nicht 用来否定动词/形容词。'}]
 };
 function _up(el,cls){while(el&&!(el.classList&&el.classList.contains(cls)))el=el.parentNode;return el;}
-function renderGramQuizzes(){
-  document.querySelectorAll('[data-gq]').forEach(function(box){
-    var qs=GQ_DATA[box.getAttribute('data-gq')];if(!qs)return;
-    var h='<div class="gq-head">✏️ 即学即练</div><div class="gq-sub">学完马上测一测——答错也没关系，看一眼解释就懂了</div>';
-    qs.forEach(function(q,qi){
-      h+='<div class="gq-item"><div class="gq-q">'+(qi+1)+'. '+q.q+'</div><div class="gq-opts">'
-        +q.o.map(function(o,oi){return '<button type="button" class="gq-opt" onclick="gqPick(this,'+q.a+','+oi+')">'+o+'</button>';}).join('')
-        +'</div><div class="gq-why">💡 '+q.w+'</div></div>';
-    });
-    box.innerHTML=h+'<div class="gq-score"></div>';
+function renderGqBox(box){ // 从题池随机抽3题（重练自动换题）
+  var pool=GQ_DATA[box.getAttribute('data-gq')];if(!pool)return;
+  var idx=pool.map(function(_,i){return i;});
+  for(var i=idx.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=idx[i];idx[i]=idx[j];idx[j]=t;}
+  var qs=idx.slice(0,3).map(function(i){return pool[i];});
+  var h='<div class="gq-head">✏️ 即学即练</div><div class="gq-sub">从 '+pool.length+' 题里随机抽 3 题——答错也没关系，看一眼解释就懂了</div>';
+  qs.forEach(function(q,qi){
+    h+='<div class="gq-item"><div class="gq-q">'+(qi+1)+'. '+q.q+'</div><div class="gq-opts">'
+      +q.o.map(function(o,oi){return '<button type="button" class="gq-opt" onclick="gqPick(this,'+q.a+','+oi+')">'+o+'</button>';}).join('')
+      +'</div><div class="gq-why">💡 '+q.w+'</div></div>';
   });
+  box.innerHTML=h+'<div class="gq-score"></div>';
+}
+function renderGramQuizzes(){
+  document.querySelectorAll('[data-gq]').forEach(renderGqBox);
 }
 function gqPick(btn,a,oi){
   var item=_up(btn,'gq-item');if(!item||item.classList.contains('done'))return;
@@ -2727,16 +2780,12 @@ function gqPick(btn,a,oi){
     var sc=box.querySelector('.gq-score');
     sc.style.display='block';
     sc.innerHTML=(r===n?'🎉 全对！这组你已经掌握了':'✅ 答对 '+r+'/'+n+' · 错的看上面绿色解释，马上就懂')
-      +'<button class="btn" type="button" onclick="gqReset(this)">🔄 再练一遍</button>';
+      +'<button class="btn" type="button" onclick="gqReset(this)">🔄 换一组再练</button>';
   }
 }
 function gqReset(btn){
   var box=_up(btn,'gq-box');
-  box.querySelectorAll('.gq-item').forEach(function(it){
-    it.classList.remove('done');it.removeAttribute('data-right');
-    it.querySelectorAll('.gq-opt').forEach(function(o){o.classList.remove('ok','bad');});
-  });
-  var sc=box.querySelector('.gq-score');sc.style.display='none';sc.innerHTML='';
+  renderGqBox(box);   // 重练＝重新随机抽题
 }
 // Service Worker：真离线支持（https/localhost 下注册；老内核无 SW 自动跳过）
 try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');}catch(e){}
