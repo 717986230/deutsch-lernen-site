@@ -277,10 +277,15 @@ body:not(.lang-en) .en-only-block{display:none}
 .bp-chip{border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:14px;padding:4px 11px;font-size:12px;cursor:pointer;font-family:inherit}
 .bp-chip.active{border-color:var(--gold);background:var(--gold);color:#fff}
 .body-wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:flex-start}
+.body-figure{position:relative;width:min(360px,86vw);flex-shrink:0}
+.bdot{position:absolute;width:17px;height:17px;transform:translate(-50%,-50%);border-radius:50%;border:2.5px solid #fff;background:rgba(88,204,2,.92);box-shadow:0 0 0 2px rgba(70,163,2,.5),0 2px 6px rgba(0,0,0,.3);cursor:pointer;padding:0;transition:transform .12s}
+.bdot:hover{transform:translate(-50%,-50%) scale(1.25)}
+.bdot.active{background:#ff9600;box-shadow:0 0 0 3px rgba(255,150,0,.55),0 2px 8px rgba(0,0,0,.35);animation:bpulse 1s infinite}
+@keyframes bpulse{0%,100%{box-shadow:0 0 0 3px rgba(255,150,0,.55)}50%{box-shadow:0 0 0 8px rgba(255,150,0,0)}}
 .body-panel{flex:1;min-width:230px;max-width:340px}
 @media (max-width:700px){
   .body-wrap{flex-direction:column;align-items:center}
-  .body-panel{order:-1;position:sticky;top:52px;z-index:60;width:100%;max-width:340px}
+  .body-panel{order:-1;width:100%;max-width:360px;margin-bottom:4px}
   .body-panel .card{box-shadow:0 6px 20px rgba(0,0,0,.14)}
 }
 /* 拼读器右侧小浮钮（约为零基础钮一半大）+ 弹窗 */
@@ -674,20 +679,10 @@ body.lang-en .phfab{display:none}
     <div id="boardTabs" class="board-tabs"></div>
     <div id="boardBody">
     <div class="body-wrap">
-      <svg id="bodySvg" viewBox="0 0 480 448" style="width:min(430px,94vw);flex-shrink:0" aria-label="人体图解">
-        <defs>
-          <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#7ed957" stop-opacity=".85"/>
-            <stop offset="1" stop-color="#46a302" stop-opacity=".95"/>
-          </linearGradient>
-        </defs>
-        <g transform="translate(140,0)">
-        <!-- 精修人体剪影（原创对称平滑轮廓 + 渐变）-->
-        <path d="M100.0 7.0 C101.7 7.3 107.2 7.3 110.0 9.0 C112.8 10.7 115.3 13.5 117.0 17.0 C118.7 20.5 119.8 25.5 120.0 30.0 C120.2 34.5 119.3 39.5 118.0 44.0 C116.7 48.5 113.7 53.7 112.0 57.0 C110.3 60.3 109.0 61.8 108.0 64.0 C107.0 66.2 106.5 67.7 106.0 70.0 C105.5 72.3 103.0 76.0 105.0 78.0 C107.0 80.0 113.3 80.2 118.0 82.0 C122.7 83.8 128.5 86.3 133.0 89.0 C137.5 91.7 141.8 94.2 145.0 98.0 C148.2 101.8 150.2 105.3 152.0 112.0 C153.8 118.7 155.2 129.5 156.0 138.0 C156.8 146.5 157.2 154.7 157.0 163.0 C156.8 171.3 155.8 180.2 155.0 188.0 C154.2 195.8 152.8 203.0 152.0 210.0 C151.2 217.0 150.5 224.3 150.0 230.0 C149.5 235.7 150.0 240.7 149.0 244.0 C148.0 247.3 145.7 249.7 144.0 250.0 C142.3 250.3 140.2 249.3 139.0 246.0 C137.8 242.7 137.7 236.8 137.0 230.0 C136.3 223.2 135.7 213.7 135.0 205.0 C134.3 196.3 133.7 187.2 133.0 178.0 C132.3 168.8 132.0 160.0 131.0 150.0 C130.0 140.0 128.3 119.7 127.0 118.0 C125.7 116.3 124.5 131.7 123.0 140.0 C121.5 148.3 118.2 160.0 118.0 168.0 C117.8 176.0 120.5 180.7 122.0 188.0 C123.5 195.3 126.0 204.0 127.0 212.0 C128.0 220.0 128.5 226.3 128.0 236.0 C127.5 245.7 125.3 258.7 124.0 270.0 C122.7 281.3 121.2 294.0 120.0 304.0 C118.8 314.0 118.2 321.3 117.0 330.0 C115.8 338.7 114.2 347.3 113.0 356.0 C111.8 364.7 110.7 375.3 110.0 382.0 C109.3 388.7 107.5 391.3 109.0 396.0 C110.5 400.7 116.2 406.8 119.0 410.0 C121.8 413.2 126.8 413.8 126.0 415.0 C125.2 416.2 117.5 417.8 114.0 417.0 C110.5 416.2 106.8 415.8 105.0 410.0 C103.2 404.2 103.5 393.3 103.0 382.0 C102.5 370.7 102.3 355.7 102.0 342.0 C101.7 328.3 101.3 314.0 101.0 300.0 C100.7 286.0 100.2 268.0 100.0 258.0 C99.8 248.0 100.0 240.0 100.0 240.0 C100.0 240.0 100.2 248.0 100.0 258.0 C99.8 268.0 99.3 286.0 99.0 300.0 C98.7 314.0 98.3 328.3 98.0 342.0 C97.7 355.7 97.5 370.7 97.0 382.0 C96.5 393.3 96.8 404.2 95.0 410.0 C93.2 415.8 89.5 416.2 86.0 417.0 C82.5 417.8 74.8 416.2 74.0 415.0 C73.2 413.8 78.2 413.2 81.0 410.0 C83.8 406.8 89.5 400.7 91.0 396.0 C92.5 391.3 90.7 388.7 90.0 382.0 C89.3 375.3 88.2 364.7 87.0 356.0 C85.8 347.3 84.2 338.7 83.0 330.0 C81.8 321.3 81.2 314.0 80.0 304.0 C78.8 294.0 77.3 281.3 76.0 270.0 C74.7 258.7 72.5 245.7 72.0 236.0 C71.5 226.3 72.0 220.0 73.0 212.0 C74.0 204.0 76.5 195.3 78.0 188.0 C79.5 180.7 82.2 176.0 82.0 168.0 C81.8 160.0 78.5 148.3 77.0 140.0 C75.5 131.7 74.3 116.3 73.0 118.0 C71.7 119.7 70.0 140.0 69.0 150.0 C68.0 160.0 67.7 168.8 67.0 178.0 C66.3 187.2 65.7 196.3 65.0 205.0 C64.3 213.7 63.7 223.2 63.0 230.0 C62.3 236.8 62.2 242.7 61.0 246.0 C59.8 249.3 57.7 250.3 56.0 250.0 C54.3 249.7 52.0 247.3 51.0 244.0 C50.0 240.7 50.5 235.7 50.0 230.0 C49.5 224.3 48.8 217.0 48.0 210.0 C47.2 203.0 45.8 195.8 45.0 188.0 C44.2 180.2 43.2 171.3 43.0 163.0 C42.8 154.7 43.2 146.5 44.0 138.0 C44.8 129.5 46.2 118.7 48.0 112.0 C49.8 105.3 51.8 101.8 55.0 98.0 C58.2 94.2 62.5 91.7 67.0 89.0 C71.5 86.3 77.3 83.8 82.0 82.0 C86.7 80.2 93.0 80.0 95.0 78.0 C97.0 76.0 94.5 72.3 94.0 70.0 C93.5 67.7 93.0 66.2 92.0 64.0 C91.0 61.8 89.7 60.3 88.0 57.0 C86.3 53.7 83.3 48.5 82.0 44.0 C80.7 39.5 79.8 34.5 80.0 30.0 C80.2 25.5 81.3 20.5 83.0 17.0 C84.7 13.5 88.8 10.3 90.0 9.0 Z" fill="url(#bodyGrad)" stroke="#2f7a00" stroke-width="1.4" stroke-linejoin="round"/>
-        <g id="bodyDots"></g>
-        </g>
-        <g id="bodyLabels"></g>
-      </svg>
+      <div class="body-figure">
+        <img src="img/body-front.png" alt="人体图" style="width:100%;display:block;border-radius:14px">
+        <div id="bodyDots"></div>
+      </div>
       <div class="body-panel">
         <div class="card" id="bodyOut" style="cursor:default;text-align:center;padding:16px 14px;margin-bottom:0"></div>
       </div>
@@ -2868,36 +2863,36 @@ function gqReset(btn){
 }
 // ── 人体图解：原创SVG + 16个部位点读 ──
 var BODY_PARTS=[
- {de:"das Haar",zh:"头发",py:"达斯 哈尔",x:100,y:12,s:"l",ly:12},
- {de:"die Stirn",zh:"额头",py:"迪 施提恩",x:100,y:30,s:"l",ly:40},
- {de:"die Augenbraue",zh:"眉毛",py:"迪 奥根布劳厄",x:92,y:38,s:"l",ly:68},
- {de:"das Auge",zh:"眼睛",py:"达斯 奥格",x:90,y:43,s:"l",ly:96},
- {de:"die Nase",zh:"鼻子",py:"迪 娜泽",x:100,y:49,s:"l",ly:124},
- {de:"das Kinn",zh:"下巴",py:"达斯 金",x:100,y:63,s:"l",ly:152},
- {de:"die Schulter",zh:"肩膀",py:"迪 舒尔特",x:60,y:96,s:"l",ly:184},
- {de:"die Brust",zh:"胸",py:"迪 布鲁斯特",x:88,y:124,s:"l",ly:216},
- {de:"der Arm",zh:"手臂",py:"德尔 阿姆",x:48,y:150,s:"l",ly:248},
- {de:"die Taille",zh:"腰",py:"迪 塔耶",x:82,y:172,s:"l",ly:280},
- {de:"der Unterbauch",zh:"小腹",py:"德尔 温特包赫",x:92,y:200,s:"l",ly:312},
- {de:"die Handfläche",zh:"手掌",py:"迪 汉特弗莱歇",x:47,y:238,s:"l",ly:344},
- {de:"der Oberschenkel",zh:"大腿",py:"德尔 奥伯申克尔",x:86,y:270,s:"l",ly:376},
- {de:"der Fußknöchel",zh:"脚踝",py:"德尔 福斯克讷歇尔",x:88,y:392,s:"l",ly:408},
- {de:"die Fußsohle",zh:"脚底",py:"迪 福斯佐勒",x:78,y:414,s:"l",ly:436},
- {de:"der Kopf",zh:"头",py:"德尔 科普夫",x:120,y:28,s:"r",ly:12},
- {de:"das Ohr",zh:"耳朵",py:"达斯 奥尔",x:119,y:45,s:"r",ly:40},
- {de:"das Gesicht",zh:"脸",py:"达斯 格济希特",x:110,y:52,s:"r",ly:68},
- {de:"der Mund",zh:"嘴",py:"德尔 蒙特",x:100,y:58,s:"r",ly:96},
- {de:"der Hals",zh:"脖子",py:"德尔 哈尔斯",x:106,y:78,s:"r",ly:124},
- {de:"die Achsel",zh:"腋窝",py:"迪 阿克塞尔",x:130,y:110,s:"r",ly:152},
- {de:"der Oberarm",zh:"上臂",py:"德尔 奥伯阿姆",x:150,y:140,s:"r",ly:184},
- {de:"der Bauch",zh:"肚子",py:"德尔 包赫",x:110,y:170,s:"r",ly:216},
- {de:"der Ellbogen",zh:"手肘",py:"德尔 埃尔博根",x:154,y:172,s:"r",ly:248},
- {de:"das Handgelenk",zh:"手腕",py:"达斯 汉特格伦克",x:150,y:222,s:"r",ly:280},
- {de:"die Hand",zh:"手",py:"迪 汉特",x:151,y:240,s:"r",ly:312},
- {de:"die Leiste",zh:"鼠蹊",py:"迪 莱斯特",x:112,y:230,s:"r",ly:344},
- {de:"der Finger",zh:"手指",py:"德尔 芬格",x:150,y:250,s:"r",ly:376},
- {de:"das Knie",zh:"膝盖",py:"达斯 克尼",x:117,y:302,s:"r",ly:408},
- {de:"der Fuß",zh:"脚",py:"德尔 福斯",x:120,y:410,s:"r",ly:436}
+ {de:"das Haar",zh:"头发",py:"达斯 哈尔",xp:49,yp:3},
+ {de:"die Stirn",zh:"额头",py:"迪 施提恩",xp:49,yp:8},
+ {de:"die Augenbraue",zh:"眉毛",py:"迪 奥根布劳厄",xp:45,yp:9},
+ {de:"das Auge",zh:"眼睛",py:"达斯 奥格",xp:53,yp:10},
+ {de:"die Nase",zh:"鼻子",py:"迪 娜泽",xp:49,yp:12},
+ {de:"der Mund",zh:"嘴",py:"德尔 蒙特",xp:49,yp:15},
+ {de:"das Ohr",zh:"耳朵",py:"达斯 奥尔",xp:57,yp:11},
+ {de:"das Kinn",zh:"下巴",py:"达斯 金",xp:49,yp:17},
+ {de:"der Hals",zh:"脖子",py:"德尔 哈尔斯",xp:49,yp:20},
+ {de:"die Schulter",zh:"肩膀",py:"迪 舒尔特",xp:35,yp:23},
+ {de:"die Achsel",zh:"腋窝",py:"迪 阿克塞尔",xp:34,yp:28},
+ {de:"die Brust",zh:"胸",py:"迪 布鲁斯特",xp:43,yp:29},
+ {de:"der Oberarm",zh:"上臂",py:"德尔 奥伯阿姆",xp:30,yp:33},
+ {de:"der Bauch",zh:"肚子",py:"德尔 包赫",xp:50,yp:36},
+ {de:"der Nabel",zh:"肚脐",py:"德尔 纳贝尔",xp:50,yp:40},
+ {de:"die Taille",zh:"腰",py:"迪 塔耶",xp:38,yp:38},
+ {de:"der Ellbogen",zh:"手肘",py:"德尔 埃尔博根",xp:28,yp:42},
+ {de:"die Leiste",zh:"鼠蹊",py:"迪 莱斯特",xp:44,yp:46},
+ {de:"das Handgelenk",zh:"手腕",py:"达斯 汉特格伦克",xp:26,yp:50},
+ {de:"die Hand",zh:"手",py:"迪 汉特",xp:25,yp:54},
+ {de:"der Finger",zh:"手指",py:"德尔 芬格",xp:24,yp:57},
+ {de:"der Oberschenkel",zh:"大腿",py:"德尔 奥伯申克尔",xp:42,yp:54},
+ {de:"das Knie",zh:"膝盖",py:"达斯 克尼",xp:45,yp:66},
+ {de:"das Schienbein",zh:"小腿",py:"达斯 席恩拜因",xp:45,yp:77},
+ {de:"der Knöchel",zh:"脚踝",py:"德尔 克讷歇尔",xp:41,yp:85},
+ {de:"der Fuß",zh:"脚",py:"德尔 福斯",xp:39,yp:89},
+ {de:"der Kopf",zh:"头",py:"德尔 科普夫",xp:43,yp:6},
+ {de:"das Gesicht",zh:"脸",py:"达斯 格济希特",xp:54,yp:14},
+ {de:"der Arm",zh:"手臂",py:"德尔 阿姆",xp:68,yp:35},
+ {de:"der Zeh",zh:"脚趾",py:"德尔 采",xp:60,yp:89}
 ];
 // 图卡板：emoji 图卡（彩色、全设备一致、免版权），词全部取自站内词库主题
 var PIC_BOARDS=[
@@ -2977,55 +2972,29 @@ function picPick(brd,i,cell){
   try{studyTick(1);}catch(e){}
 }
 function renderBody(){
-  var g=document.getElementById('bodyDots'),chips=document.getElementById('bodyChips'),lab=document.getElementById('bodyLabels');
+  var g=document.getElementById('bodyDots'),chips=document.getElementById('bodyChips');
   if(!g||g.childNodes.length)return;
-  var NS='http://www.w3.org/2000/svg',OX=140;   // 身体在画布内的横向偏移
   BODY_PARTS.forEach(function(p,i){
-    var grp=document.createElementNS(NS,'g');
-    grp.setAttribute('class','bp');grp.setAttribute('data-i',i);
-    var halo=document.createElementNS(NS,'circle');
-    halo.setAttribute('cx',p.x);halo.setAttribute('cy',p.y);halo.setAttribute('r',10);halo.setAttribute('class','halo');
-    var dot=document.createElementNS(NS,'circle');
-    dot.setAttribute('cx',p.x);dot.setAttribute('cy',p.y);dot.setAttribute('r',4.5);dot.setAttribute('class','dot');
-    grp.appendChild(halo);grp.appendChild(dot);
-    grp.addEventListener('click',function(){bpPick(i);});
-    g.appendChild(grp);
-    if(lab){ // 词典式标签 + 引线
-      var lg=document.createElementNS(NS,'g');
-      lg.setAttribute('class','bl');lg.setAttribute('data-i',i);
-      var tx=p.s==='l'?126:354, ax=p.s==='l'?130:350;
-      var line=document.createElementNS(NS,'path');
-      line.setAttribute('d','M'+ax+' '+p.ly+' L'+(p.x+OX+(p.s==='l'?-8:8))+' '+p.y);
-      line.setAttribute('class','bl-line');
-      var t=document.createElementNS(NS,'text');
-      t.setAttribute('x',tx);t.setAttribute('y',p.ly+4);
-      t.setAttribute('text-anchor',p.s==='l'?'end':'start');
-      t.setAttribute('class','bl-de');t.setAttribute('lang','de');
-      t.textContent=p.de;
-      var t2=document.createElementNS(NS,'text');
-      t2.setAttribute('x',tx);t2.setAttribute('y',p.ly+18);
-      t2.setAttribute('text-anchor',p.s==='l'?'end':'start');
-      t2.setAttribute('class','bl-zh');
-      t2.textContent=p.zh;
-      lg.appendChild(line);lg.appendChild(t);lg.appendChild(t2);
-      lg.addEventListener('click',function(){bpPick(i);});
-      lab.appendChild(lg);
-    }
+    var b=document.createElement('button');
+    b.type='button';b.className='bdot';b.setAttribute('data-i',i);
+    b.style.left=p.xp+'%';b.style.top=p.yp+'%';
+    b.title=p.zh;b.setAttribute('aria-label',p.de+' '+p.zh);
+    b.addEventListener('click',function(){bpPick(i);});
+    g.appendChild(b);
   });
   if(chips&&!chips.childNodes.length){
     BODY_PARTS.forEach(function(p,i){
-      var b=document.createElement('button');
-      b.type='button';b.className='bp-chip';b.textContent=p.zh;
-      b.addEventListener('click',function(){bpPick(i);});
-      chips.appendChild(b);
+      var c=document.createElement('button');
+      c.type='button';c.className='bp-chip';c.textContent=p.zh;
+      c.addEventListener('click',function(){bpPick(i);});
+      chips.appendChild(c);
     });
   }
-  bpPick(7,true);   // 默认展示「胸」，不自动发声
+  bpPick(8,true);   // 默认展示「胸」，不自动发声
 }
 function bpPick(i,silent){
   var p=BODY_PARTS[i];if(!p)return;
-  document.querySelectorAll('#bodyDots .bp').forEach(function(x,k){x.setAttribute('class','bp'+(k===i?' active':''));});
-  document.querySelectorAll('#bodyLabels .bl').forEach(function(x,k){x.setAttribute('class','bl'+(k===i?' active':''));});
+  document.querySelectorAll('#bodyDots .bdot').forEach(function(x,k){x.className='bdot'+(k===i?' active':'');});
   document.querySelectorAll('#bodyChips .bp-chip').forEach(function(x,k){x.className='bp-chip'+(k===i?' active':'');});
   var out=document.getElementById('bodyOut');
   if(out)out.innerHTML='<div style="font-size:24px;font-weight:700;color:#46a302" lang="de">'+p.de+' <button class="speak-btn" type="button" onclick="speakDE(\''+p.de+'\',this)" style="vertical-align:middle">🔊</button></div>'
