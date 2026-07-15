@@ -221,6 +221,8 @@ to{opacity:1}}
 /* 语言切换 */
 .lang-switch{position:fixed;top:9px;right:12px;z-index:260;display:flex;background:var(--nav-bg);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--gold-faint);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:opacity .25s,transform .25s}
 .lang-switch.ls-hide{opacity:0;visibility:hidden;transform:translateY(-10px)}
+#pwaInstall{position:fixed;top:9px;left:12px;z-index:260;border:none;background:#58cc02;color:#fff;font-size:13px;font-weight:700;font-family:inherit;padding:8px 14px;border-radius:16px;cursor:pointer;box-shadow:0 3px 12px rgba(88,204,2,.4)}
+#pwaInstall:active{transform:scale(.95)}
 .lang-btn{border:none;background:transparent;color:var(--text-dim);font-size:12px;padding:5px 11px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
 .lang-btn.active{background:#58cc02;color:#fff}
 .theme-toggle{border-left:1px solid var(--gold-faint)}
@@ -356,6 +358,7 @@ body.lang-en .phfab{display:none}
   <button class="lang-btn" data-lang="en" onclick="setLang('en')">🇬🇧 英语</button>
   <button class="lang-btn theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="切换深色/浅色模式" title="深色/浅色">🌙</button>
 </div>
+<button id="pwaInstall" type="button" onclick="pwaInstall()" style="display:none">⬇️ 安装到桌面</button>
 
 <!-- NAV -->
 <nav id="nav" aria-label="主导航">
@@ -2990,6 +2993,15 @@ function bpPick(i){
   out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+p.em+'</span> <b lang="de" style="font-size:20px;color:#46a302;vertical-align:middle">'+p.de+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+p.de.replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+p.zh+' · <span style="color:var(--text-faint)">'+p.py+'</span></div>';
   try{speakDE(p.de);}catch(e){}
   try{studyTick(1);}catch(e){}
+}
+// PWA 安装：捕获浏览器可安装事件，页面上给一个「安装到桌面」按钮（Chrome 自动提示很吝啬，删了就不弹，这里可随时手动装）
+var _deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_deferredPrompt=e;var b=document.getElementById('pwaInstall');if(b&&!_isStandalone())b.style.display='block';});
+window.addEventListener('appinstalled',function(){_deferredPrompt=null;var b=document.getElementById('pwaInstall');if(b)b.style.display='none';});
+function _isStandalone(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;}
+function pwaInstall(){
+  if(_deferredPrompt){_deferredPrompt.prompt();_deferredPrompt.userChoice.then(function(){_deferredPrompt=null;var b=document.getElementById('pwaInstall');if(b)b.style.display='none';});}
+  else{alert('如果没弹出安装框：\n• 电脑 Chrome/Edge：点地址栏右侧的「安装」图标（⊕ / 显示器带箭头）\n• 安卓 Chrome：菜单 ⋮ → 安装应用 / 添加到主屏幕\n• iPhone Safari：分享 → 添加到主屏幕');}
 }
 // Service Worker：真离线支持（https/localhost 下注册；老内核无 SW 自动跳过）
 try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');}catch(e){}
