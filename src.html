@@ -262,6 +262,18 @@ body:not(.lang-en) .en-only-block{display:none}
 .bl-zh{font-size:11px;fill:var(--text-faint)}
 .bl.active .bl-de{fill:#e07f00}
 .bl:hover .bl-de{fill:#46a302}
+.board-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none;justify-content:flex-start}
+.board-tabs::-webkit-scrollbar{display:none}
+.board-tab{flex-shrink:0;padding:7px 15px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-size:13px;font-family:inherit;white-space:nowrap;transition:all .15s}
+.board-tab.active{border-color:var(--gold);background:var(--gold);color:#fff;font-weight:700}
+.pic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.pic-cell{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px 6px 10px;text-align:center;cursor:pointer;transition:transform .12s,box-shadow .15s,border-color .15s;box-shadow:var(--shadow)}
+.pic-cell:hover{transform:translateY(-2px);border-color:var(--gold-dim);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.pic-cell.active{border-color:var(--gold);background:rgba(88,204,2,.08)}
+.pic-emoji{font-size:38px;line-height:1.1}
+.pic-de{font-size:13px;font-weight:600;color:var(--text);margin-top:6px;word-break:break-word}
+.pic-zh{font-size:11px;color:var(--text-faint);margin-top:1px}
+.pic-out{position:sticky;bottom:16px;margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
 .bp-chip{border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:14px;padding:4px 11px;font-size:12px;cursor:pointer;font-family:inherit}
 .bp-chip.active{border-color:var(--gold);background:var(--gold);color:#fff}
 .body-wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:flex-start}
@@ -407,8 +419,8 @@ body.lang-en .phfab{display:none}
       </div>
       <div class="card" onclick="showSection('body')" style="text-align:center;padding:24px 16px">
         <div class="fic fic-pink"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="3.2" fill="#fff"/><path d="M12 10.5c-3 0-4.5 1.6-4.5 3.6V17h2.4l.7 4h2.8l.7-4h2.4v-2.9c0-2-1.5-3.6-4.5-3.6z" fill="#fff"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">人体图解</div>
-        <div style="font-size:12px;color:var(--text-dim)">点图学部位·带发音</div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">图解词典</div>
+        <div style="font-size:12px;color:var(--text-dim)">人体·动物·食物·交通…</div>
       </div>
     </div>
 
@@ -656,9 +668,11 @@ body.lang-en .phfab{display:none}
 <!-- ══════════════ BODY 人体图解（原创SVG） ══════════════ -->
 <div id="body" class="section">
   <div class="container">
-    <div class="hero-label" style="text-align:center;padding-top:20px">Der Körper</div>
-    <h2 class="page-title">人体部位 · 点图学单词</h2>
-    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">点身上的<b style="color:#46a302">绿点</b> → 看德语·听发音 · 学完去「🎯 练习测验」考自己</p>
+    <div class="hero-label" style="text-align:center;padding-top:20px">Bildwörterbuch</div>
+    <h2 class="page-title">图解词典 · 点图学单词</h2>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">选主题 → 点图看德语·听发音·带谐音</p>
+    <div id="boardTabs" class="board-tabs"></div>
+    <div id="boardBody">
     <div class="body-wrap">
       <svg id="bodySvg" viewBox="0 0 480 440" style="width:min(430px,94vw);flex-shrink:0" aria-label="人体图解">
         <g transform="translate(140,0)">
@@ -673,6 +687,9 @@ body.lang-en .phfab{display:none}
       </div>
     </div>
     <div id="bodyChips" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
+    </div>
+    <div id="boardGrid" class="pic-grid" style="display:none"></div>
+    <div id="picOut" class="pic-out" style="display:none"></div>
   </div>
 </div>
 
@@ -1550,7 +1567,7 @@ function showSection(id){
   const btns=document.querySelectorAll('.nav-btn');
   btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+navId+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
   if(id==='phrases'&&!_rendered.phrases){renderPhrases();_rendered.phrases=true;}       // 懒渲染：首次打开才渲染长列表
-  if(id==='body'&&typeof renderBody==='function')renderBody();
+  if(id==='body'){if(typeof renderBoardTabs==='function')renderBoardTabs();if(typeof switchBoard==='function')switchBoard(_curBoard);}
   if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}
   if(id==='series'&&!_rendered.series){renderSeries();renderSeriesLinks();_rendered.series=true;}
   window.scrollTo(0,0);
@@ -2871,6 +2888,83 @@ var BODY_PARTS=[
  {de:"das Bein",zh:"腿",py:"达斯 拜因",x:114,y:296,s:"r",ly:358},
  {de:"der Knöchel",zh:"脚踝",py:"德尔 克讷歇尔",x:108,y:378,s:"r",ly:400}
 ];
+// 图卡板：emoji 图卡（彩色、全设备一致、免版权），词全部取自站内词库主题
+var PIC_BOARDS=[
+ {id:"koerper",icon:"🧍",name:"人体"},
+ {id:"obst",icon:"🍎",name:"水果蔬菜",items:[
+  ["der Apfel","苹果","德尔 阿普费尔","🍎"],["die Banane","香蕉","迪 巴娜呢","🍌"],["die Orange","橙子","迪 奥朗热","🍊"],["die Zitrone","柠檬","迪 齐特罗呢","🍋"],
+  ["die Wassermelone","西瓜","迪 瓦瑟梅隆呢","🍉"],["die Traube","葡萄","迪 特劳伯","🍇"],["die Erdbeere","草莓","迪 埃尔特贝勒","🍓"],["die Kirsche","樱桃","迪 基尔舍","🍒"],
+  ["der Pfirsich","桃子","德尔 普菲尔西希","🍑"],["die Ananas","菠萝","迪 阿纳纳斯","🍍"],["die Mango","芒果","迪 芒果","🥭"],["die Kiwi","猕猴桃","迪 奇维","🥝"],
+  ["die Tomate","番茄","迪 托马特","🍅"],["die Aubergine","茄子","迪 奥贝尔基呢","🍆"],["die Karotte","胡萝卜","迪 卡罗特","🥕"],["der Mais","玉米","德尔 迈斯","🌽"],
+  ["die Kartoffel","土豆","迪 卡托费尔","🥔"],["die Gurke","黄瓜","迪 古尔克","🥒"],["der Brokkoli","西兰花","德尔 布罗科利","🥦"],["die Zwiebel","洋葱","迪 茨维贝尔","🧅"],
+  ["der Knoblauch","大蒜","德尔 克诺布劳赫","🧄"],["der Pilz","蘑菇","德尔 皮尔茨","🍄"]]},
+ {id:"tier",icon:"🐶",name:"动物",items:[
+  ["der Hund","狗","德尔 洪特","🐶"],["die Katze","猫","迪 卡策","🐱"],["das Pferd","马","达斯 普费尔特","🐴"],["die Kuh","牛","迪 库","🐮"],
+  ["das Schwein","猪","达斯 施瓦因","🐷"],["das Schaf","羊","达斯 沙夫","🐑"],["das Huhn","鸡","达斯 洪","🐔"],["die Ente","鸭子","迪 恩特","🦆"],
+  ["der Vogel","鸟","德尔 佛格尔","🐦"],["der Fisch","鱼","德尔 菲什","🐟"],["der Löwe","狮子","德尔 勒维","🦁"],["der Tiger","老虎","德尔 提格","🐯"],
+  ["der Bär","熊","德尔 贝尔","🐻"],["der Panda","熊猫","德尔 潘达","🐼"],["der Elefant","大象","德尔 埃勒方特","🐘"],["das Kaninchen","兔子","达斯 卡宁兴","🐰"],
+  ["der Affe","猴子","德尔 阿费","🐵"],["der Frosch","青蛙","德尔 弗罗什","🐸"],["die Schlange","蛇","迪 施朗厄","🐍"],["die Biene","蜜蜂","迪 比呢","🐝"],
+  ["der Schmetterling","蝴蝶","德尔 施梅特林","🦋"],["der Pinguin","企鹅","德尔 平古因","🐧"]]},
+ {id:"verkehr",icon:"🚗",name:"交通",items:[
+  ["das Auto","汽车","达斯 奥托","🚗"],["der Bus","公交车","德尔 布斯","🚌"],["das Taxi","出租车","达斯 塔克西","🚕"],["das Fahrrad","自行车","达斯 法拉特","🚲"],
+  ["das Motorrad","摩托车","达斯 摩托拉特","🏍️"],["der Zug","火车","德尔 楚克","🚆"],["die U-Bahn","地铁","迪 乌-班","🚇"],["die Straßenbahn","有轨电车","迪 施特拉森班","🚊"],
+  ["das Flugzeug","飞机","达斯 弗鲁克措伊克","✈️"],["das Schiff","轮船","达斯 施夫","🚢"],["der LKW","卡车","德尔 埃尔卡维","🚚"],["der Krankenwagen","救护车","德尔 克兰肯瓦根","🚑"],
+  ["das Polizeiauto","警车","达斯 波利采奥托","🚓"],["das Feuerwehrauto","消防车","达斯 佛伊尔韦尔奥托","🚒"],["die Ampel","红绿灯","迪 安佩尔","🚦"]]},
+ {id:"kleidung",icon:"👕",name:"衣物",items:[
+  ["das T-Shirt","T恤","达斯 提-舍尔特","👕"],["die Hose","裤子","迪 霍泽","👖"],["das Kleid","连衣裙","达斯 克莱特","👗"],["der Rock","裙子","德尔 罗克","👚"],
+  ["der Mantel","大衣","德尔 曼特尔","🧥"],["der Pullover","毛衣","德尔 普洛佛","🧶"],["die Jacke","夹克","迪 亚克","🧥"],["die Socke","袜子","迪 佐克","🧦"],
+  ["der Schuh","鞋","德尔 舒","👞"],["der Stiefel","靴子","德尔 施提弗尔","🥾"],["der Sportschuh","运动鞋","德尔 施波尔特舒","👟"],["der Hut","帽子","德尔 胡特","🎩"],
+  ["die Mütze","毛线帽","迪 缪策","🧢"],["der Handschuh","手套","德尔 汉特舒","🧤"],["der Schal","围巾","德尔 沙尔","🧣"],["die Brille","眼镜","迪 布里勒","👓"],
+  ["die Krawatte","领带","迪 克拉瓦特","👔"],["die Tasche","包","迪 塔舍","👜"]]},
+ {id:"kueche",icon:"🍴",name:"餐具厨房",items:[
+  ["der Teller","盘子","德尔 泰勒","🍽️"],["die Gabel","叉子","迪 加贝尔","🍴"],["das Messer","刀","达斯 梅瑟","🔪"],["der Löffel","勺子","德尔 勒费尔","🥄"],
+  ["die Tasse","杯子","迪 塔瑟","☕"],["das Glas","玻璃杯","达斯 格拉斯","🥛"],["die Flasche","瓶子","迪 弗拉舍","🍾"],["der Topf","锅","德尔 托普夫","🍲"],
+  ["die Pfanne","平底锅","迪 普凡呢","🍳"],["der Kühlschrank","冰箱","德尔 屈尔施兰克","🧊"],["der Herd","炉灶","德尔 黑尔特","🔥"],["die Mikrowelle","微波炉","迪 米克罗韦勒","📻"],
+  ["die Schere","剪刀","迪 舍勒","✂️"],["die Serviette","餐巾","迪 泽尔维耶特","🧻"]]},
+ {id:"wetter",icon:"☀️",name:"天气",items:[
+  ["die Sonne","太阳","迪 佐呢","☀️"],["die Wolke","云","迪 沃尔克","☁️"],["der Regen","雨","德尔 雷根","🌧️"],["der Schnee","雪","德尔 施内","❄️"],
+  ["der Blitz","闪电","德尔 布利茨","⚡"],["der Wind","风","德尔 温特","🌬️"],["der Regenbogen","彩虹","德尔 雷根博根","🌈"],["der Nebel","雾","德尔 内贝尔","🌫️"],
+  ["das Gewitter","雷雨","达斯 格维特","⛈️"],["der Mond","月亮","德尔 蒙特","🌙"],["der Stern","星星","德尔 施特恩","⭐"],["der Schirm","雨伞","德尔 施尔姆","☂️"]]}
+];
+var _curBoard="koerper";
+function renderBoardTabs(){
+  var el=document.getElementById("boardTabs");if(!el||el.childNodes.length)return;
+  PIC_BOARDS.forEach(function(b){
+    var t=document.createElement("button");
+    t.type="button";t.className="board-tab"+(b.id===_curBoard?" active":"");
+    t.textContent=b.icon+" "+b.name;
+    t.addEventListener("click",function(){switchBoard(b.id);});
+    el.appendChild(t);
+  });
+}
+function switchBoard(id){
+  _curBoard=id;
+  document.querySelectorAll("#boardTabs .board-tab").forEach(function(t,i){t.className="board-tab"+(PIC_BOARDS[i].id===id?" active":"");});
+  var isBody=id==="koerper";
+  document.getElementById("boardBody").style.display=isBody?"":"none";
+  document.getElementById("boardGrid").style.display=isBody?"none":"grid";
+  document.getElementById("picOut").style.display="none";
+  if(isBody){renderBody();return;}
+  var brd=null;for(var i=0;i<PIC_BOARDS.length;i++)if(PIC_BOARDS[i].id===id)brd=PIC_BOARDS[i];
+  var g=document.getElementById("boardGrid");
+  g.innerHTML=(brd.items||[]).map(function(it,i){
+    return '<div class="pic-cell" data-i="'+i+'"><div class="pic-emoji">'+it[3]+'</div><div class="pic-de" lang="de">'+it[0]+'</div><div class="pic-zh">'+it[1]+'</div></div>';
+  }).join("");
+  g.querySelectorAll(".pic-cell").forEach(function(c){
+    c.addEventListener("click",function(){picPick(brd,+c.getAttribute("data-i"),c);});
+  });
+}
+function picPick(brd,i,cell){
+  var it=brd.items[i];if(!it)return;
+  brd._grid=document.getElementById("boardGrid");
+  document.querySelectorAll("#boardGrid .pic-cell").forEach(function(c){c.classList.remove("active");});
+  if(cell)cell.classList.add("active");
+  var out=document.getElementById("picOut");
+  out.style.display="block";
+  out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+it[3]+'</span> <b lang="de" style="font-size:20px;color:#46a302;vertical-align:middle">'+it[0]+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+it[0].replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+it[1]+' · <span style="color:var(--text-faint)">'+it[2]+'</span></div>';
+  try{speakDE(it[0]);}catch(e){}
+  try{studyTick(1);}catch(e){}
+}
 function renderBody(){
   var g=document.getElementById('bodyDots'),chips=document.getElementById('bodyChips'),lab=document.getElementById('bodyLabels');
   if(!g||g.childNodes.length)return;
