@@ -687,12 +687,7 @@ body.lang-en .phfab{display:none}
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">选主题 → 点图看德语·听发音·带谐音</p>
     <div id="boardTabs" class="board-tabs"></div>
     <div id="boardBody">
-    <div class="body-wrap">
-      <div class="body-panel">
-        <div class="card" id="bodyOut" style="cursor:default;text-align:center;padding:16px 14px;margin-bottom:0"></div>
-      </div>
-    </div>
-    <div id="bodyChips" class="pic-grid" style="margin-top:16px"></div>
+    <div id="bodyChips" class="pic-grid"></div>
     </div>
     <div id="boardGrid" class="pic-grid" style="display:none"></div>
     <div id="picOut" class="pic-out" style="display:none"></div>
@@ -2983,16 +2978,15 @@ function renderBody(){
     return '<div class="pic-cell" data-i="'+i+'"><div class="pic-emoji">'+p.em+'</div><div class="pic-de" lang="de">'+p.de+'</div><div class="pic-zh">'+p.zh+'</div></div>';
   }).join('');
   chips.querySelectorAll('.pic-cell').forEach(function(c){c.addEventListener('click',function(){bpPick(+c.getAttribute('data-i'));});});
-  bpPick(3,true);
 }
-function bpPick(i,silent){
+function bpPick(i){
   var p=BODY_PARTS[i];if(!p)return;
   document.querySelectorAll('#bodyChips .pic-cell').forEach(function(x,k){x.className='pic-cell'+(k===i?' active':'');});
-  var out=document.getElementById('bodyOut');
-  if(out)out.innerHTML='<div style="font-size:24px;font-weight:700;color:#46a302" lang="de">'+p.de+' <button class="speak-btn" type="button" onclick="speakDE(\''+p.de+'\',this)" style="vertical-align:middle">🔊</button></div>'
-    +'<div style="font-size:16px;color:var(--text);margin-top:6px">'+p.zh+'</div>'
-    +'<div style="font-size:13px;color:var(--text-faint);margin-top:4px">谐音：'+p.py+'</div>';
-  if(!silent){try{speakDE(p.de);}catch(e){}try{studyTick(1);}catch(e){}}
+  var out=document.getElementById('picOut');
+  out.style.display='block';
+  out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+p.em+'</span> <b lang="de" style="font-size:20px;color:#46a302;vertical-align:middle">'+p.de+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+p.de.replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+p.zh+' · <span style="color:var(--text-faint)">'+p.py+'</span></div>';
+  try{speakDE(p.de);}catch(e){}
+  try{studyTick(1);}catch(e){}
 }
 // Service Worker：真离线支持（https/localhost 下注册；老内核无 SW 自动跳过）
 try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');}catch(e){}
