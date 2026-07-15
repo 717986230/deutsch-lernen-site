@@ -277,11 +277,19 @@ body:not(.lang-en) .en-only-block{display:none}
 .bp-chip{border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:14px;padding:4px 11px;font-size:12px;cursor:pointer;font-family:inherit}
 .bp-chip.active{border-color:var(--gold);background:var(--gold);color:#fff}
 .body-wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:flex-start}
-.body-figure{position:relative;width:min(360px,86vw);flex-shrink:0}
-.bdot{position:absolute;width:17px;height:17px;transform:translate(-50%,-50%);border-radius:50%;border:2.5px solid #fff;background:rgba(88,204,2,.92);box-shadow:0 0 0 2px rgba(70,163,2,.5),0 2px 6px rgba(0,0,0,.3);cursor:pointer;padding:0;transition:transform .12s}
-.bdot:hover{transform:translate(-50%,-50%) scale(1.25)}
-.bdot.active{background:#ff9600;box-shadow:0 0 0 3px rgba(255,150,0,.55),0 2px 8px rgba(0,0,0,.35);animation:bpulse 1s infinite}
-@keyframes bpulse{0%,100%{box-shadow:0 0 0 3px rgba(255,150,0,.55)}50%{box-shadow:0 0 0 8px rgba(255,150,0,0)}}
+.body-figure{position:relative;width:min(440px,96vw);flex-shrink:0}
+.bp2{cursor:pointer}
+.bp2 .bdot{fill:#58cc02;stroke:#fff;stroke-width:1.6}
+.bp2 .bhalo{fill:rgba(88,204,2,.28)}
+.bp2.active .bdot{fill:#ff9600}
+.bp2.active .bhalo{fill:rgba(255,150,0,.3)}
+.bl2{cursor:pointer}
+.bl2-line{stroke:#b7c3ad;stroke-width:.8;fill:none}
+.bl2.active .bl2-line{stroke:#ff9600;stroke-width:1.4}
+.bl2-de{font-size:11px;font-weight:600;fill:var(--text);font-family:Georgia,serif}
+.bl2-zh{font-size:8.5px;fill:var(--text-faint)}
+.bl2.active .bl2-de{fill:#e07f00}
+.bl2:hover .bl2-de{fill:#46a302}
 .body-panel{flex:1;min-width:230px;max-width:340px}
 @media (max-width:700px){
   .body-wrap{flex-direction:column;align-items:center}
@@ -680,8 +688,11 @@ body.lang-en .phfab{display:none}
     <div id="boardBody">
     <div class="body-wrap">
       <div class="body-figure">
-        <img src="img/body-front.png" alt="人体图" style="width:100%;display:block;border-radius:14px">
-        <div id="bodyDots"></div>
+        <svg id="bodySvg" viewBox="0 0 480 500" style="width:100%;display:block" aria-label="人体图解">
+          <image href="img/body-front.png" x="140" y="8" width="200" height="480"/>
+          <g id="bodyLabels"></g>
+          <g id="bodyDots"></g>
+        </svg>
       </div>
       <div class="body-panel">
         <div class="card" id="bodyOut" style="cursor:default;text-align:center;padding:16px 14px;margin-bottom:0"></div>
@@ -2972,15 +2983,50 @@ function picPick(brd,i,cell){
   try{studyTick(1);}catch(e){}
 }
 function renderBody(){
-  var g=document.getElementById('bodyDots'),chips=document.getElementById('bodyChips');
+  var g=document.getElementById('bodyDots'),lab=document.getElementById('bodyLabels'),chips=document.getElementById('bodyChips');
   if(!g||g.childNodes.length)return;
+  var NS='http://www.w3.org/2000/svg',OX=140,OY=8,IW=200,IH=480;
+  function BX(p){return OX+p.xp/100*IW;}
+  function BY(p){return OY+p.yp/100*IH;}
+  // 分左右两栏，各自按 y 排布标签，避免重叠
+  var left=[],right=[];
+  BODY_PARTS.forEach(function(p,i){(p.xp<49?left:right).push(i);});
+  left.sort(function(a,b){return BY(BODY_PARTS[a])-BY(BODY_PARTS[b]);});
+  right.sort(function(a,b){return BY(BODY_PARTS[a])-BY(BODY_PARTS[b]);});
+  function layout(list,side){
+    var n=list.length,top=18,bot=486,gap=(bot-top)/(n-1);
+    list.forEach(function(idx,k){
+      var p=BODY_PARTS[idx],ly=top+k*gap;
+      var tx=side==='l'?128:352, lx=side==='l'?132:348;
+      var lg=document.createElementNS(NS,'g');
+      lg.setAttribute('class','bl2');lg.setAttribute('data-i',idx);
+      var line=document.createElementNS(NS,'path');
+      line.setAttribute('d','M'+lx+' '+ly.toFixed(1)+' L'+BX(p).toFixed(1)+' '+BY(p).toFixed(1));
+      line.setAttribute('class','bl2-line');
+      var t=document.createElementNS(NS,'text');
+      t.setAttribute('x',tx);t.setAttribute('y',(ly-1).toFixed(1));
+      t.setAttribute('text-anchor',side==='l'?'end':'start');
+      t.setAttribute('class','bl2-de');t.setAttribute('lang','de');t.textContent=p.de;
+      var t2=document.createElementNS(NS,'text');
+      t2.setAttribute('x',tx);t2.setAttribute('y',(ly+9).toFixed(1));
+      t2.setAttribute('text-anchor',side==='l'?'end':'start');
+      t2.setAttribute('class','bl2-zh');t2.textContent=p.zh;
+      lg.appendChild(line);lg.appendChild(t);lg.appendChild(t2);
+      lg.addEventListener('click',function(){bpPick(idx);});
+      lab.appendChild(lg);
+    });
+  }
+  layout(left,'l');layout(right,'r');
   BODY_PARTS.forEach(function(p,i){
-    var b=document.createElement('button');
-    b.type='button';b.className='bdot';b.setAttribute('data-i',i);
-    b.style.left=p.xp+'%';b.style.top=p.yp+'%';
-    b.title=p.zh;b.setAttribute('aria-label',p.de+' '+p.zh);
-    b.addEventListener('click',function(){bpPick(i);});
-    g.appendChild(b);
+    var grp=document.createElementNS(NS,'g');
+    grp.setAttribute('class','bp2');grp.setAttribute('data-i',i);
+    var halo=document.createElementNS(NS,'circle');
+    halo.setAttribute('cx',BX(p));halo.setAttribute('cy',BY(p));halo.setAttribute('r',7);halo.setAttribute('class','bhalo');
+    var dot=document.createElementNS(NS,'circle');
+    dot.setAttribute('cx',BX(p));dot.setAttribute('cy',BY(p));dot.setAttribute('r',3.6);dot.setAttribute('class','bdot');
+    grp.appendChild(halo);grp.appendChild(dot);
+    grp.addEventListener('click',function(){bpPick(i);});
+    g.appendChild(grp);
   });
   if(chips&&!chips.childNodes.length){
     BODY_PARTS.forEach(function(p,i){
@@ -2990,11 +3036,12 @@ function renderBody(){
       chips.appendChild(c);
     });
   }
-  bpPick(8,true);   // 默认展示「胸」，不自动发声
+  bpPick(11,true);
 }
 function bpPick(i,silent){
   var p=BODY_PARTS[i];if(!p)return;
-  document.querySelectorAll('#bodyDots .bdot').forEach(function(x,k){x.className='bdot'+(k===i?' active':'');});
+  document.querySelectorAll('#bodyDots .bp2').forEach(function(x,k){x.setAttribute('class','bp2'+(k===i?' active':''));});
+  document.querySelectorAll('#bodyLabels .bl2').forEach(function(x){x.setAttribute('class','bl2'+(+x.getAttribute('data-i')===i?' active':''));});
   document.querySelectorAll('#bodyChips .bp-chip').forEach(function(x,k){x.className='bp-chip'+(k===i?' active':'');});
   var out=document.getElementById('bodyOut');
   if(out)out.innerHTML='<div style="font-size:24px;font-weight:700;color:#46a302" lang="de">'+p.de+' <button class="speak-btn" type="button" onclick="speakDE(\''+p.de+'\',this)" style="vertical-align:middle">🔊</button></div>'
