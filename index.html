@@ -1030,7 +1030,7 @@ body.lang-en .phfab{display:none}
       <span id="playAllInfo" style="font-size:12px;color:var(--text-dim)"></span>
     </div>
     <div class="spk-panel">
-      <label>语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="spkRate" oninput="setSpkRate(this.value)"> <span id="spkRateV">0.62</span></label>
+      <label>语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="spkRate" oninput="setSpkRate(this.value)"> <span id="spkRateV">0.62</span></label>
       <label>遍数 <select id="spkRepeat" onchange="spkSet('repeat',+this.value)"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select></label>
       <label><input type="checkbox" id="spkZh" checked onchange="spkSet('zh',this.checked)"> 读中文</label>
       <label><input type="checkbox" id="spkShuffle" onchange="spkSet('shuffle',this.checked)"> 乱序</label>
@@ -1101,7 +1101,7 @@ body.lang-en .phfab{display:none}
     </div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
     <button id="loopAllBtn" class="fab-read" type="button" aria-label="循环朗读全部短文" onclick="toggleLoopAll()">🔊 循环朗读</button>
-    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="readRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
+    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="readRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
     <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px">▶ 整篇朗读 · 点句即听 · <b style="color:#46a302">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
     <div class="level-tabs" id="readLevelTabs"></div>
     <div id="readCount" style="font-size:12px;color:var(--gold-dim);margin:4px 0 10px"></div>
@@ -1120,7 +1120,7 @@ body.lang-en .phfab{display:none}
     </div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">原创连续剧 · 中德对照 · 🔊 慢速朗读 · 点词查义</p>
     <button id="seriesLoopBtn" class="fab-read" type="button" aria-label="循环朗读全部连载" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
-    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.4" max="1.1" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
+    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
     <div class="sec-title"><span class="sec-title-icon">🎬</span><span class="sec-title-text">原创连载 · 留学生活</span><span class="sec-title-count" id="seriesCount"></span></div>
     <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听 · <b style="color:#46a302">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
     <div class="level-tabs" id="seriesLevelTabs"></div>
