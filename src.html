@@ -271,6 +271,7 @@ body:not(.lang-en) .en-only-block{display:none}
 .pic-cell:hover{transform:translateY(-2px);border-color:var(--gold-dim);box-shadow:0 6px 16px rgba(0,0,0,.08)}
 .pic-cell.active{border-color:var(--gold);background:rgba(88,204,2,.08)}
 .pic-emoji{font-size:38px;line-height:1.1}
+.bic{width:44px;height:auto;display:block;margin:0 auto 2px}
 .pic-de{font-size:13px;font-weight:600;color:var(--text);margin-top:6px;word-break:break-word}
 .pic-zh{font-size:11px;color:var(--text-faint);margin-top:1px}
 .pic-out{position:sticky;bottom:16px;margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
@@ -687,12 +688,6 @@ body.lang-en .phfab{display:none}
     <div id="boardTabs" class="board-tabs"></div>
     <div id="boardBody">
     <div class="body-wrap">
-      <div class="body-figure">
-        <svg id="bodySvg" viewBox="0 0 480 500" style="width:100%;display:block" aria-label="人体图解">
-          <image href="img/body-front.png" x="140" y="8" width="200" height="480"/>
-          <g id="bodyDots"></g>
-        </svg>
-      </div>
       <div class="body-panel">
         <div class="card" id="bodyOut" style="cursor:default;text-align:center;padding:16px 14px;margin-bottom:0"></div>
       </div>
@@ -2873,36 +2868,36 @@ function gqReset(btn){
 }
 // ── 人体图解：原创SVG + 16个部位点读 ──
 var BODY_PARTS=[
- {de:"das Haar",zh:"头发",py:"达斯 哈尔",xp:49,yp:3},
- {de:"die Stirn",zh:"额头",py:"迪 施提恩",xp:49,yp:8},
- {de:"die Augenbraue",zh:"眉毛",py:"迪 奥根布劳厄",xp:45,yp:9},
- {de:"das Auge",zh:"眼睛",py:"达斯 奥格",xp:53,yp:10},
- {de:"die Nase",zh:"鼻子",py:"迪 娜泽",xp:49,yp:12},
- {de:"der Mund",zh:"嘴",py:"德尔 蒙特",xp:49,yp:15},
- {de:"das Ohr",zh:"耳朵",py:"达斯 奥尔",xp:57,yp:11},
- {de:"das Kinn",zh:"下巴",py:"达斯 金",xp:49,yp:17},
- {de:"der Hals",zh:"脖子",py:"德尔 哈尔斯",xp:49,yp:20},
- {de:"die Schulter",zh:"肩膀",py:"迪 舒尔特",xp:35,yp:23},
- {de:"die Achsel",zh:"腋窝",py:"迪 阿克塞尔",xp:34,yp:28},
- {de:"die Brust",zh:"胸",py:"迪 布鲁斯特",xp:43,yp:29},
- {de:"der Oberarm",zh:"上臂",py:"德尔 奥伯阿姆",xp:30,yp:33},
- {de:"der Bauch",zh:"肚子",py:"德尔 包赫",xp:50,yp:36},
- {de:"der Nabel",zh:"肚脐",py:"德尔 纳贝尔",xp:50,yp:40},
- {de:"die Taille",zh:"腰",py:"迪 塔耶",xp:38,yp:38},
- {de:"der Ellbogen",zh:"手肘",py:"德尔 埃尔博根",xp:28,yp:42},
- {de:"die Leiste",zh:"鼠蹊",py:"迪 莱斯特",xp:44,yp:46},
- {de:"das Handgelenk",zh:"手腕",py:"达斯 汉特格伦克",xp:26,yp:50},
- {de:"die Hand",zh:"手",py:"迪 汉特",xp:25,yp:54},
- {de:"der Finger",zh:"手指",py:"德尔 芬格",xp:24,yp:57},
- {de:"der Oberschenkel",zh:"大腿",py:"德尔 奥伯申克尔",xp:42,yp:54},
- {de:"das Knie",zh:"膝盖",py:"达斯 克尼",xp:45,yp:66},
- {de:"das Schienbein",zh:"小腿",py:"达斯 席恩拜因",xp:45,yp:77},
- {de:"der Knöchel",zh:"脚踝",py:"德尔 克讷歇尔",xp:41,yp:85},
- {de:"der Fuß",zh:"脚",py:"德尔 福斯",xp:39,yp:89},
- {de:"der Kopf",zh:"头",py:"德尔 科普夫",xp:43,yp:6},
- {de:"das Gesicht",zh:"脸",py:"达斯 格济希特",xp:54,yp:14},
- {de:"der Arm",zh:"手臂",py:"德尔 阿姆",xp:68,yp:35},
- {de:"der Zeh",zh:"脚趾",py:"德尔 采",xp:60,yp:89}
+ {de:"das Haar",zh:"头发",py:"达斯 哈尔",xp:49,yp:3,em:"💇"},
+ {de:"die Stirn",zh:"额头",py:"迪 施提恩",xp:49,yp:8,em:"🧑"},
+ {de:"die Augenbraue",zh:"眉毛",py:"迪 奥根布劳厄",xp:45,yp:9,em:"🤨"},
+ {de:"das Auge",zh:"眼睛",py:"达斯 奥格",xp:53,yp:10,em:"👀"},
+ {de:"die Nase",zh:"鼻子",py:"迪 娜泽",xp:49,yp:12,em:"👃"},
+ {de:"der Mund",zh:"嘴",py:"德尔 蒙特",xp:49,yp:15,em:"👄"},
+ {de:"das Ohr",zh:"耳朵",py:"达斯 奥尔",xp:57,yp:11,em:"👂"},
+ {de:"das Kinn",zh:"下巴",py:"达斯 金",xp:49,yp:17,em:"🧔"},
+ {de:"der Hals",zh:"脖子",py:"德尔 哈尔斯",xp:49,yp:20,em:"🧣"},
+ {de:"die Schulter",zh:"肩膀",py:"迪 舒尔特",xp:35,yp:23,em:"💪"},
+ {de:"die Achsel",zh:"腋窝",py:"迪 阿克塞尔",xp:34,yp:28,em:"🙋"},
+ {de:"die Brust",zh:"胸",py:"迪 布鲁斯特",xp:43,yp:29,em:"👕"},
+ {de:"der Oberarm",zh:"上臂",py:"德尔 奥伯阿姆",xp:30,yp:33,em:"💪"},
+ {de:"der Bauch",zh:"肚子",py:"德尔 包赫",xp:50,yp:36,em:"🫃"},
+ {de:"der Nabel",zh:"肚脐",py:"德尔 纳贝尔",xp:50,yp:40,em:"🔵"},
+ {de:"die Taille",zh:"腰",py:"迪 塔耶",xp:38,yp:38,em:"📏"},
+ {de:"der Ellbogen",zh:"手肘",py:"德尔 埃尔博根",xp:28,yp:42,em:"💪"},
+ {de:"die Leiste",zh:"鼠蹊",py:"迪 莱斯特",xp:44,yp:46,em:"🩲"},
+ {de:"das Handgelenk",zh:"手腕",py:"达斯 汉特格伦克",xp:26,yp:50,em:"⌚"},
+ {de:"die Hand",zh:"手",py:"迪 汉特",xp:25,yp:54,em:"✋"},
+ {de:"der Finger",zh:"手指",py:"德尔 芬格",xp:24,yp:57,em:"👆"},
+ {de:"der Oberschenkel",zh:"大腿",py:"德尔 奥伯申克尔",xp:42,yp:54,em:"🦵"},
+ {de:"das Knie",zh:"膝盖",py:"达斯 克尼",xp:45,yp:66,em:"🦵"},
+ {de:"das Schienbein",zh:"小腿",py:"达斯 席恩拜因",xp:45,yp:77,em:"🦵"},
+ {de:"der Knöchel",zh:"脚踝",py:"德尔 克讷歇尔",xp:41,yp:85,em:"🦶"},
+ {de:"der Fuß",zh:"脚",py:"德尔 福斯",xp:39,yp:89,em:"🦶"},
+ {de:"der Kopf",zh:"头",py:"德尔 科普夫",xp:43,yp:6,em:"🗣️"},
+ {de:"das Gesicht",zh:"脸",py:"达斯 格济希特",xp:54,yp:14,em:"😀"},
+ {de:"der Arm",zh:"手臂",py:"德尔 阿姆",xp:68,yp:35,em:"💪"},
+ {de:"der Zeh",zh:"脚趾",py:"德尔 采",xp:60,yp:89,em:"🦶"}
 ];
 // 图卡板：emoji 图卡（彩色、全设备一致、免版权），词全部取自站内词库主题
 var PIC_BOARDS=[
@@ -2982,32 +2977,16 @@ function picPick(brd,i,cell){
   try{studyTick(1);}catch(e){}
 }
 function renderBody(){
-  var g=document.getElementById('bodyDots'),chips=document.getElementById('bodyChips');
-  if(!g||g.childNodes.length)return;
-  var NS='http://www.w3.org/2000/svg',OX=140,OY=8,IW=200,IH=480;
-  BODY_PARTS.forEach(function(p,i){
-    var grp=document.createElementNS(NS,'g');
-    grp.setAttribute('class','bp2');grp.setAttribute('data-i',i);
-    var cx=OX+p.xp/100*IW, cy=OY+p.yp/100*IH;
-    var halo=document.createElementNS(NS,'circle');
-    halo.setAttribute('cx',cx);halo.setAttribute('cy',cy);halo.setAttribute('r',7);halo.setAttribute('class','bhalo');
-    var dot=document.createElementNS(NS,'circle');
-    dot.setAttribute('cx',cx);dot.setAttribute('cy',cy);dot.setAttribute('r',3.6);dot.setAttribute('class','bdot');
-    grp.appendChild(halo);grp.appendChild(dot);
-    grp.addEventListener('click',function(){bpPick(i);});
-    g.appendChild(grp);
-  });
-  if(chips&&!chips.childNodes.length){
-    chips.innerHTML=BODY_PARTS.map(function(p,i){
-      return '<div class="pic-cell" data-i="'+i+'"><div class="pic-de" lang="de">'+p.de+'</div><div class="pic-zh">'+p.zh+'</div></div>';
-    }).join('');
-    chips.querySelectorAll('.pic-cell').forEach(function(c){c.addEventListener('click',function(){bpPick(+c.getAttribute('data-i'));});});
-  }
-  bpPick(11,true);
+  var chips=document.getElementById('bodyChips');
+  if(!chips||chips.childNodes.length)return;
+  chips.innerHTML=BODY_PARTS.map(function(p,i){
+    return '<div class="pic-cell" data-i="'+i+'"><div class="pic-emoji">'+p.em+'</div><div class="pic-de" lang="de">'+p.de+'</div><div class="pic-zh">'+p.zh+'</div></div>';
+  }).join('');
+  chips.querySelectorAll('.pic-cell').forEach(function(c){c.addEventListener('click',function(){bpPick(+c.getAttribute('data-i'));});});
+  bpPick(3,true);
 }
 function bpPick(i,silent){
   var p=BODY_PARTS[i];if(!p)return;
-  document.querySelectorAll('#bodyDots .bp2').forEach(function(x,k){x.setAttribute('class','bp2'+(k===i?' active':''));});
   document.querySelectorAll('#bodyChips .pic-cell').forEach(function(x,k){x.className='pic-cell'+(k===i?' active':'');});
   var out=document.getElementById('bodyOut');
   if(out)out.innerHTML='<div style="font-size:24px;font-weight:700;color:#46a302" lang="de">'+p.de+' <button class="speak-btn" type="button" onclick="speakDE(\''+p.de+'\',this)" style="vertical-align:middle">🔊</button></div>'
