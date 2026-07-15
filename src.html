@@ -674,7 +674,7 @@ body.lang-en .phfab{display:none}
     <div id="boardTabs" class="board-tabs"></div>
     <div id="boardBody">
     <div class="body-wrap">
-      <svg id="bodySvg" viewBox="0 0 480 440" style="width:min(430px,94vw);flex-shrink:0" aria-label="人体图解">
+      <svg id="bodySvg" viewBox="0 0 480 448" style="width:min(430px,94vw);flex-shrink:0" aria-label="人体图解">
         <defs>
           <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#7ed957" stop-opacity=".85"/>
@@ -2868,31 +2868,36 @@ function gqReset(btn){
 }
 // ── 人体图解：原创SVG + 16个部位点读 ──
 var BODY_PARTS=[
- {de:"das Haar",zh:"头发",py:"达斯 哈尔",x:100,y:12,s:"l",ly:14},
- {de:"die Stirn",zh:"额头",py:"迪 施提恩",x:100,y:30,s:"l",ly:48},
- {de:"das Auge",zh:"眼睛",py:"达斯 奥格",x:90,y:42,s:"l",ly:82},
- {de:"der Mund",zh:"嘴",py:"德尔 蒙特",x:100,y:59,s:"l",ly:116},
- {de:"die Brust",zh:"胸",py:"迪 布鲁斯特",x:100,y:124,s:"l",ly:150},
- {de:"der Bauch",zh:"肚子",py:"德尔 包赫",x:95,y:172,s:"l",ly:184},
- {de:"der Bauchnabel",zh:"肚脐",py:"德尔 包赫纳贝尔",x:100,y:196,s:"l",ly:218},
- {de:"der Finger",zh:"手指",py:"德尔 芬格",x:53,y:251,s:"l",ly:252},
- {de:"das Knie",zh:"膝盖",py:"达斯 克尼",x:81,y:301,s:"l",ly:290},
- {de:"die Wade",zh:"小腿肚",py:"迪 瓦德",x:82,y:334,s:"l",ly:324},
- {de:"der Fuß",zh:"脚",py:"德尔 福斯",x:80,y:400,s:"l",ly:372},
- {de:"die Zehe",zh:"脚趾",py:"迪 采厄",x:126,y:406,s:"l",ly:406},
- {de:"der Kopf",zh:"头",py:"德尔 科普夫",x:122,y:26,s:"r",ly:14},
- {de:"das Ohr",zh:"耳朵",py:"达斯 奥尔",x:119,y:45,s:"r",ly:46},
- {de:"die Nase",zh:"鼻子",py:"迪 娜泽",x:100,y:49,s:"r",ly:78},
- {de:"das Gesicht",zh:"脸",py:"达斯 格济希特",x:110,y:55,s:"r",ly:110},
- {de:"der Hals",zh:"脖子",py:"德尔 哈尔斯",x:107,y:78,s:"r",ly:142},
- {de:"die Schulter",zh:"肩膀",py:"迪 舒尔特",x:140,y:93,s:"r",ly:174},
- {de:"der Arm",zh:"手臂",py:"德尔 阿姆",x:152,y:148,s:"r",ly:206},
- {de:"der Ellbogen",zh:"肘",py:"德尔 埃尔博根",x:155,y:178,s:"r",ly:238},
- {de:"das Handgelenk",zh:"手腕",py:"达斯 汉特格伦克",x:148,y:222,s:"r",ly:268},
- {de:"die Hand",zh:"手",py:"迪 汉特",x:147,y:246,s:"r",ly:298},
- {de:"der Oberschenkel",zh:"大腿",py:"德尔 奥伯申克尔",x:117,y:252,s:"r",ly:328},
- {de:"das Bein",zh:"腿",py:"达斯 拜因",x:114,y:296,s:"r",ly:358},
- {de:"der Knöchel",zh:"脚踝",py:"德尔 克讷歇尔",x:108,y:378,s:"r",ly:400}
+ {de:"das Haar",zh:"头发",py:"达斯 哈尔",x:100,y:12,s:"l",ly:12},
+ {de:"die Stirn",zh:"额头",py:"迪 施提恩",x:100,y:30,s:"l",ly:40},
+ {de:"die Augenbraue",zh:"眉毛",py:"迪 奥根布劳厄",x:92,y:38,s:"l",ly:68},
+ {de:"das Auge",zh:"眼睛",py:"达斯 奥格",x:90,y:43,s:"l",ly:96},
+ {de:"die Nase",zh:"鼻子",py:"迪 娜泽",x:100,y:49,s:"l",ly:124},
+ {de:"das Kinn",zh:"下巴",py:"达斯 金",x:100,y:63,s:"l",ly:152},
+ {de:"die Schulter",zh:"肩膀",py:"迪 舒尔特",x:60,y:96,s:"l",ly:184},
+ {de:"die Brust",zh:"胸",py:"迪 布鲁斯特",x:88,y:124,s:"l",ly:216},
+ {de:"der Arm",zh:"手臂",py:"德尔 阿姆",x:48,y:150,s:"l",ly:248},
+ {de:"die Taille",zh:"腰",py:"迪 塔耶",x:82,y:172,s:"l",ly:280},
+ {de:"der Unterbauch",zh:"小腹",py:"德尔 温特包赫",x:92,y:200,s:"l",ly:312},
+ {de:"die Handfläche",zh:"手掌",py:"迪 汉特弗莱歇",x:47,y:238,s:"l",ly:344},
+ {de:"der Oberschenkel",zh:"大腿",py:"德尔 奥伯申克尔",x:86,y:270,s:"l",ly:376},
+ {de:"der Fußknöchel",zh:"脚踝",py:"德尔 福斯克讷歇尔",x:88,y:392,s:"l",ly:408},
+ {de:"die Fußsohle",zh:"脚底",py:"迪 福斯佐勒",x:78,y:414,s:"l",ly:436},
+ {de:"der Kopf",zh:"头",py:"德尔 科普夫",x:120,y:28,s:"r",ly:12},
+ {de:"das Ohr",zh:"耳朵",py:"达斯 奥尔",x:119,y:45,s:"r",ly:40},
+ {de:"das Gesicht",zh:"脸",py:"达斯 格济希特",x:110,y:52,s:"r",ly:68},
+ {de:"der Mund",zh:"嘴",py:"德尔 蒙特",x:100,y:58,s:"r",ly:96},
+ {de:"der Hals",zh:"脖子",py:"德尔 哈尔斯",x:106,y:78,s:"r",ly:124},
+ {de:"die Achsel",zh:"腋窝",py:"迪 阿克塞尔",x:130,y:110,s:"r",ly:152},
+ {de:"der Oberarm",zh:"上臂",py:"德尔 奥伯阿姆",x:150,y:140,s:"r",ly:184},
+ {de:"der Bauch",zh:"肚子",py:"德尔 包赫",x:110,y:170,s:"r",ly:216},
+ {de:"der Ellbogen",zh:"手肘",py:"德尔 埃尔博根",x:154,y:172,s:"r",ly:248},
+ {de:"das Handgelenk",zh:"手腕",py:"达斯 汉特格伦克",x:150,y:222,s:"r",ly:280},
+ {de:"die Hand",zh:"手",py:"迪 汉特",x:151,y:240,s:"r",ly:312},
+ {de:"die Leiste",zh:"鼠蹊",py:"迪 莱斯特",x:112,y:230,s:"r",ly:344},
+ {de:"der Finger",zh:"手指",py:"德尔 芬格",x:150,y:250,s:"r",ly:376},
+ {de:"das Knie",zh:"膝盖",py:"达斯 克尼",x:117,y:302,s:"r",ly:408},
+ {de:"der Fuß",zh:"脚",py:"德尔 福斯",x:120,y:410,s:"r",ly:436}
 ];
 // 图卡板：emoji 图卡（彩色、全设备一致、免版权），词全部取自站内词库主题
 var PIC_BOARDS=[
@@ -3015,7 +3020,7 @@ function renderBody(){
       chips.appendChild(b);
     });
   }
-  bpPick(4,true);   // 默认展示「胸」，不自动发声
+  bpPick(7,true);   // 默认展示「胸」，不自动发声
 }
 function bpPick(i,silent){
   var p=BODY_PARTS[i];if(!p)return;
