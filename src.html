@@ -249,6 +249,21 @@ body:not(.lang-en) .en-only-block{display:none}
 .fic-purple{background:linear-gradient(135deg,#a878ff,#6f3fd6);box-shadow:0 6px 14px rgba(142,92,246,.32)}
 .fic-teal{background:linear-gradient(135deg,#2fd4b2,#0d9488);box-shadow:0 6px 14px rgba(20,184,166,.32)}
 .fic-red{background:linear-gradient(135deg,#ff7a6e,#e03131);box-shadow:0 6px 14px rgba(255,75,75,.32)}
+.fic-pink{background:linear-gradient(135deg,#ff8fb5,#e0447e);box-shadow:0 6px 14px rgba(224,68,126,.32)}
+.bp{cursor:pointer}
+.bp .dot{fill:#58cc02;stroke:#fff;stroke-width:2}
+.bp .halo{fill:rgba(88,204,2,.25)}
+.bp.active .dot{fill:#ff9600}
+.bp.active .halo{fill:rgba(255,150,0,.25)}
+.bp-chip{border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:14px;padding:4px 11px;font-size:12px;cursor:pointer;font-family:inherit}
+.bp-chip.active{border-color:var(--gold);background:var(--gold);color:#fff}
+.body-wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:flex-start}
+.body-panel{flex:1;min-width:230px;max-width:340px}
+@media (max-width:700px){
+  .body-wrap{flex-direction:column;align-items:center}
+  .body-panel{order:-1;position:sticky;top:52px;z-index:60;width:100%;max-width:340px}
+  .body-panel .card{box-shadow:0 6px 20px rgba(0,0,0,.14)}
+}
 /* 拼读器右侧小浮钮（约为零基础钮一半大）+ 弹窗 */
 .phfab{position:fixed;right:0;top:44%;transform:translateY(-50%);z-index:280;writing-mode:vertical-rl;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:700;font-family:inherit;padding:9px 6px;border-radius:14px 0 0 14px;cursor:pointer;box-shadow:-3px 3px 12px rgba(28,176,246,.4);letter-spacing:2px;line-height:1.15}
 .phfab:active{transform:translateY(-50%) scale(.94)}
@@ -382,6 +397,11 @@ body.lang-en .phfab{display:none}
         <div class="fic fic-red"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="1.4" fill="#fff"/></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">练习测验</div>
         <div style="font-size:12px;color:var(--text-dim)">数字·单词·句子·听力</div>
+      </div>
+      <div class="card" onclick="showSection('body')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-pink"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="3.2" fill="#fff"/><path d="M12 10.5c-3 0-4.5 1.6-4.5 3.6V17h2.4l.7 4h2.8l.7-4h2.4v-2.9c0-2-1.5-3.6-4.5-3.6z" fill="#fff"/></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">人体图解</div>
+        <div style="font-size:12px;color:var(--text-dim)">点图学部位·带发音</div>
       </div>
     </div>
 
@@ -623,6 +643,26 @@ body.lang-en .phfab{display:none}
       <button class="btn" onclick="startNumQuiz('calc')">计算训练</button>
     </div>
     <div id="numQuizArea"></div>
+  </div>
+</div>
+
+<!-- ══════════════ BODY 人体图解（原创SVG） ══════════════ -->
+<div id="body" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Der Körper</div>
+    <h2 class="page-title">人体部位 · 点图学单词</h2>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">点身上的<b style="color:#46a302">绿点</b> → 看德语·听发音 · 学完去「🎯 练习测验」考自己</p>
+    <div class="body-wrap">
+      <svg id="bodySvg" viewBox="0 0 200 440" style="width:min(300px,72vw);flex-shrink:0" aria-label="人体图">
+        <!-- 词典风实心剪影（程序生成的对称平滑轮廓，原创） -->
+        <path d="M100.0 8.0 C104.7 8.0 110.3 9.0 114.0 12.0 C117.7 15.0 120.5 21.0 122.0 26.0 C123.5 31.0 123.7 37.0 123.0 42.0 C122.3 47.0 119.8 52.0 118.0 56.0 C116.2 60.0 113.2 62.7 112.0 66.0 C110.8 69.3 109.0 73.0 111.0 76.0 C113.0 79.0 119.2 81.3 124.0 84.0 C128.8 86.7 136.0 89.0 140.0 92.0 C144.0 95.0 145.8 97.0 148.0 102.0 C150.2 107.0 151.7 114.3 153.0 122.0 C154.3 129.7 155.3 139.0 156.0 148.0 C156.7 157.0 157.3 166.7 157.0 176.0 C156.7 185.3 154.8 196.0 154.0 204.0 C153.2 212.0 151.7 217.7 152.0 224.0 C152.3 230.3 156.3 237.0 156.0 242.0 C155.7 247.0 152.5 252.7 150.0 254.0 C147.5 255.3 143.3 253.0 141.0 250.0 C138.7 247.0 137.2 242.0 136.0 236.0 C134.8 230.0 134.7 222.3 134.0 214.0 C133.3 205.7 132.8 196.3 132.0 186.0 C131.2 175.7 130.0 162.3 129.0 152.0 C128.0 141.7 126.2 127.3 126.0 124.0 C125.8 120.7 128.0 126.3 128.0 132.0 C128.0 137.7 127.0 150.3 126.0 158.0 C125.0 165.7 122.0 171.7 122.0 178.0 C122.0 184.3 124.8 190.0 126.0 196.0 C127.2 202.0 128.7 206.7 129.0 214.0 C129.3 221.3 128.8 231.0 128.0 240.0 C127.2 249.0 125.5 258.0 124.0 268.0 C122.5 278.0 119.7 289.7 119.0 300.0 C118.3 310.3 120.8 319.7 120.0 330.0 C119.2 340.3 115.7 353.0 114.0 362.0 C112.3 371.0 108.3 378.0 110.0 384.0 C111.7 390.0 120.8 394.3 124.0 398.0 C127.2 401.7 129.7 403.7 129.0 406.0 C128.3 408.3 124.2 411.3 120.0 412.0 C115.8 412.7 106.8 415.0 104.0 410.0 C101.2 405.0 102.8 391.7 103.0 382.0 C103.2 372.3 105.0 362.7 105.0 352.0 C105.0 341.3 103.5 328.3 103.0 318.0 C102.5 307.7 102.3 300.0 102.0 290.0 C101.7 280.0 101.3 267.0 101.0 258.0 C100.7 249.0 100.3 236.0 100.0 236.0 C99.7 236.0 99.3 249.0 99.0 258.0 C98.7 267.0 98.3 280.0 98.0 290.0 C97.7 300.0 97.5 307.7 97.0 318.0 C96.5 328.3 95.0 341.3 95.0 352.0 C95.0 362.7 96.8 372.3 97.0 382.0 C97.2 391.7 98.8 405.0 96.0 410.0 C93.2 415.0 84.2 412.7 80.0 412.0 C75.8 411.3 71.7 408.3 71.0 406.0 C70.3 403.7 72.8 401.7 76.0 398.0 C79.2 394.3 88.3 390.0 90.0 384.0 C91.7 378.0 87.7 371.0 86.0 362.0 C84.3 353.0 80.8 340.3 80.0 330.0 C79.2 319.7 81.7 310.3 81.0 300.0 C80.3 289.7 77.5 278.0 76.0 268.0 C74.5 258.0 72.8 249.0 72.0 240.0 C71.2 231.0 70.7 221.3 71.0 214.0 C71.3 206.7 72.8 202.0 74.0 196.0 C75.2 190.0 78.0 184.3 78.0 178.0 C78.0 171.7 75.0 165.7 74.0 158.0 C73.0 150.3 72.0 137.7 72.0 132.0 C72.0 126.3 74.2 120.7 74.0 124.0 C73.8 127.3 72.0 141.7 71.0 152.0 C70.0 162.3 68.8 175.7 68.0 186.0 C67.2 196.3 66.7 205.7 66.0 214.0 C65.3 222.3 65.2 230.0 64.0 236.0 C62.8 242.0 61.3 247.0 59.0 250.0 C56.7 253.0 52.5 255.3 50.0 254.0 C47.5 252.7 44.3 247.0 44.0 242.0 C43.7 237.0 47.7 230.3 48.0 224.0 C48.3 217.7 46.8 212.0 46.0 204.0 C45.2 196.0 43.3 185.3 43.0 176.0 C42.7 166.7 43.3 157.0 44.0 148.0 C44.7 139.0 45.7 129.7 47.0 122.0 C48.3 114.3 49.8 107.0 52.0 102.0 C54.2 97.0 56.0 95.0 60.0 92.0 C64.0 89.0 71.2 86.7 76.0 84.0 C80.8 81.3 87.0 79.0 89.0 76.0 C91.0 73.0 89.2 69.3 88.0 66.0 C86.8 62.7 83.8 60.0 82.0 56.0 C80.2 52.0 77.7 47.0 77.0 42.0 C76.3 37.0 76.5 31.0 78.0 26.0 C79.5 21.0 82.3 15.0 86.0 12.0 C89.7 9.0 95.3 8.0 100.0 8.0 Z" fill="rgba(88,204,2,.16)" stroke="#46a302" stroke-width="2" stroke-linejoin="round"/>
+        <g id="bodyDots"></g>
+      </svg>
+      <div class="body-panel">
+        <div class="card" id="bodyOut" style="cursor:default;text-align:center;padding:16px 14px;margin-bottom:0"></div>
+      </div>
+    </div>
+    <div id="bodyChips" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
   </div>
 </div>
 
@@ -1460,7 +1500,7 @@ function setLang(lang){
   if(typeof buildLevelTabs==='function'){buildLevelTabs();buildCatTabs();if(_rendered.phrases)renderPhrases();showLevelInfo(activeLevel);}
   // 英语模式下若停留在德语专属版块，跳到「词句大全」
   const cur=[...document.querySelectorAll('.section')].find(s=>s.classList.contains('active'));
-  if(cur&&LANG==='en'&&['pronunciation','numbers','grammar','reading','series'].includes(cur.id))showSection('phrases');
+  if(cur&&LANG==='en'&&['pronunciation','numbers','grammar','reading','series','body'].includes(cur.id))showSection('phrases');
   if(cur&&LANG==='de'&&['en-pron','en-num','en-grammar'].includes(cur.id))showSection('phrases');
 }
 function updatePhrasesSub(){
@@ -1500,6 +1540,7 @@ function showSection(id){
   const btns=document.querySelectorAll('.nav-btn');
   btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+navId+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
   if(id==='phrases'&&!_rendered.phrases){renderPhrases();_rendered.phrases=true;}       // 懒渲染：首次打开才渲染长列表
+  if(id==='body'&&typeof renderBody==='function')renderBody();
   if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}
   if(id==='series'&&!_rendered.series){renderSeries();renderSeriesLinks();_rendered.series=true;}
   window.scrollTo(0,0);
@@ -2791,6 +2832,60 @@ function gqPick(btn,a,oi){
 function gqReset(btn){
   var box=_up(btn,'gq-box');
   renderGqBox(box);   // 重练＝重新随机抽题
+}
+// ── 人体图解：原创SVG + 16个部位点读 ──
+var BODY_PARTS=[
+ {de:"das Haar",zh:"头发",py:"达斯 哈尔",x:100,y:12},
+ {de:"der Kopf",zh:"头",py:"德尔 科普夫",x:126,y:30},
+ {de:"das Auge",zh:"眼睛",py:"达斯 奥格",x:90,y:40},
+ {de:"die Nase",zh:"鼻子",py:"迪 娜泽",x:100,y:49},
+ {de:"das Ohr",zh:"耳朵",py:"达斯 奥尔",x:119,y:45},
+ {de:"der Mund",zh:"嘴",py:"德尔 蒙特",x:100,y:59},
+ {de:"der Hals",zh:"脖子",py:"德尔 哈尔斯",x:100,y:78},
+ {de:"die Schulter",zh:"肩膀",py:"迪 舒尔特",x:140,y:93},
+ {de:"die Brust",zh:"胸",py:"迪 布鲁斯特",x:100,y:124},
+ {de:"der Arm",zh:"手臂",py:"德尔 阿姆",x:153,y:160},
+ {de:"der Bauch",zh:"肚子",py:"德尔 包赫",x:100,y:178},
+ {de:"die Hand",zh:"手",py:"迪 汉特",x:147,y:245},
+ {de:"der Finger",zh:"手指",py:"德尔 芬格",x:53,y:251},
+ {de:"das Bein",zh:"腿",py:"达斯 拜因",x:114,y:282},
+ {de:"das Knie",zh:"膝盖",py:"达斯 克尼",x:81,y:301},
+ {de:"der Fuß",zh:"脚",py:"德尔 福斯",x:121,y:403}
+];
+function renderBody(){
+  var g=document.getElementById('bodyDots'),chips=document.getElementById('bodyChips');
+  if(!g||g.childNodes.length)return;
+  var NS='http://www.w3.org/2000/svg';
+  BODY_PARTS.forEach(function(p,i){
+    var grp=document.createElementNS(NS,'g');
+    grp.setAttribute('class','bp');grp.setAttribute('data-i',i);
+    var halo=document.createElementNS(NS,'circle');
+    halo.setAttribute('cx',p.x);halo.setAttribute('cy',p.y);halo.setAttribute('r',13);halo.setAttribute('class','halo');
+    var dot=document.createElementNS(NS,'circle');
+    dot.setAttribute('cx',p.x);dot.setAttribute('cy',p.y);dot.setAttribute('r',6.5);dot.setAttribute('class','dot');
+    grp.appendChild(halo);grp.appendChild(dot);
+    grp.addEventListener('click',function(){bpPick(i);});
+    g.appendChild(grp);
+  });
+  if(chips&&!chips.childNodes.length){
+    BODY_PARTS.forEach(function(p,i){
+      var b=document.createElement('button');
+      b.type='button';b.className='bp-chip';b.textContent=p.zh;
+      b.addEventListener('click',function(){bpPick(i);});
+      chips.appendChild(b);
+    });
+  }
+  bpPick(8,true);   // 默认展示「胸」，不自动发声
+}
+function bpPick(i,silent){
+  var p=BODY_PARTS[i];if(!p)return;
+  document.querySelectorAll('#bodyDots .bp').forEach(function(x,k){x.setAttribute('class','bp'+(k===i?' active':''));});
+  document.querySelectorAll('#bodyChips .bp-chip').forEach(function(x,k){x.className='bp-chip'+(k===i?' active':'');});
+  var out=document.getElementById('bodyOut');
+  if(out)out.innerHTML='<div style="font-size:24px;font-weight:700;color:#46a302" lang="de">'+p.de+' <button class="speak-btn" type="button" onclick="speakDE(\''+p.de+'\',this)" style="vertical-align:middle">🔊</button></div>'
+    +'<div style="font-size:16px;color:var(--text);margin-top:6px">'+p.zh+'</div>'
+    +'<div style="font-size:13px;color:var(--text-faint);margin-top:4px">谐音：'+p.py+'</div>';
+  if(!silent){try{speakDE(p.de);}catch(e){}try{studyTick(1);}catch(e){}}
 }
 // Service Worker：真离线支持（https/localhost 下注册；老内核无 SW 自动跳过）
 try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');}catch(e){}
