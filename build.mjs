@@ -64,12 +64,25 @@ const DECODER =
 async function build() {
   let html = readFileSync('src.html', 'utf8');
 
-  // 1) 注入 4 个数据数组（校验 JSON 合法；生产加密，dev 明文）
+  // 1) 注入数据数组（校验 JSON 合法；生产加密，dev 明文）
+  //    categories 首屏可能即用 → 立即解密；其余 4 个用到才解密（懒加载），
+  //    尤其英语库最大且很少用，避免首屏白解一大坨。
+  const LAZY = new Set(['EN_CATEGORIES', 'READINGS', 'SERIES', 'RD_GLOSS']);
   for (const [name, path] of Object.entries(DATA_FILES)) {
     const json = JSON.stringify(JSON.parse(readFileSync(path, 'utf8'))); // 校验 + 压缩
     const ph = `__DATA_${name}__`;
     if (!html.includes(ph)) throw new Error(`src.html 缺少占位符 ${ph}`);
-    html = html.replace(ph, DEV ? json : `JSON.parse(_dec("${xorB64(json)}"))`);
+    if (LAZY.has(name) && !DEV) {
+      // 把 `const NAME = __DATA_NAME__;` 换成全局懒 getter：首次读取才 _dec，之后缓存为普通属性
+      const decl = `const ${name} = ${ph};`;
+      if (!html.includes(decl)) throw new Error(`src.html 缺少声明 ${decl}`);
+      const lazy = `var _e_${name}=${JSON.stringify(xorB64(json))};`
+        + `Object.defineProperty(window,'${name}',{configurable:true,get:function(){`
+        + `var v=JSON.parse(_dec(_e_${name}));Object.defineProperty(window,'${name}',{value:v,writable:true});return v;}});`;
+      html = html.replace(decl, lazy);
+    } else {
+      html = html.replace(ph, DEV ? json : `JSON.parse(_dec("${xorB64(json)}"))`);
+    }
   }
   // 解码器/垫片注入在第一个数据声明之前（dev 也注入，保证老内核行为一致）
   const catStart = html.indexOf('const categories = ');
