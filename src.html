@@ -1495,6 +1495,7 @@ function setLang(lang){
   if(lang!==LANG){
     LANG=lang;
     try{localStorage.setItem('siteLang',lang);}catch(e){}
+    try{track('lang',{l:lang});}catch(e){}
   }
   applyLangData();
   if(typeof stopAutoPlay==='function')stopAutoPlay();
@@ -1552,6 +1553,7 @@ function showSection(id){
   btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+navId+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
   if(id==='phrases'&&!_rendered.phrases){renderPhrases();_rendered.phrases=true;}       // 懒渲染：首次打开才渲染长列表
   if(id==='body'){if(typeof renderBoardTabs==='function')renderBoardTabs();if(typeof switchBoard==='function')switchBoard(_curBoard);}
+  try{track('view',{s:id});}catch(e){}
   if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}
   if(id==='series'&&!_rendered.series){renderSeries();renderSeriesLinks();_rendered.series=true;}
   window.scrollTo(0,0);
@@ -2719,7 +2721,7 @@ setInterval(()=>{try{if(typeof speechSynthesis!=='undefined'&&speechSynthesis.sp
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking)_wakeOn();});
 
 function applyTheme(t){var r=document.documentElement;if(t==="dark"||t==="light")r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");var dark=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",dark?"#111417":"#58cc02");var b=document.getElementById("themeToggle");if(b)b.textContent=dark?"☀️":"🌙";}function toggleTheme(){var cur=document.documentElement.getAttribute("data-theme");var sys=matchMedia("(prefers-color-scheme:dark)").matches;var eff=cur==="dark"||(cur!=="light"&&sys);var next=eff?"light":"dark";try{localStorage.setItem("theme",next);}catch(e){}applyTheme(next);}(function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}applyTheme(t);})();try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}if(t!=="dark"&&t!=="light")applyTheme(null);});}catch(e){}
-function _today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function _yday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function getStudy(){var s;try{s=JSON.parse(localStorage.getItem("study")||"{}");}catch(e){s={};}if(!s.goal)s.goal=20;return s;}function saveStudy(s){try{localStorage.setItem("study",JSON.stringify(s));}catch(e){}}function studyTick(n){var s=getStudy(),t=_today();if(s.d!==t){s.streak=(s.last===_yday())?(s.streak||0)+1:1;s.last=t;s.d=t;s.n=0;}s.n=(s.n||0)+(n||1);saveStudy(s);}function getKnown(){try{return JSON.parse(localStorage.getItem("known")||"{}");}catch(e){return {};}}function saveKnown(m){try{localStorage.setItem("known",JSON.stringify(m));}catch(e){}}function knownHas(de){return !!getKnown()[de];}function knownToggle(p,btn){var m=getKnown();if(m[p.de]){delete m[p.de];}else{m[p.de]=1;try{studyTick();}catch(e){}}saveKnown(m);if(btn){var on=!!m[p.de];btn.classList.toggle("on",on);btn.title=on?"已学会（点击取消）":"标记为已学会";}}
+function _today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function _yday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function getStudy(){var s;try{s=JSON.parse(localStorage.getItem("study")||"{}");}catch(e){s={};}if(!s.goal)s.goal=20;return s;}function saveStudy(s){try{localStorage.setItem("study",JSON.stringify(s));}catch(e){}}function studyTick(n){var s=getStudy(),t=_today();if(s.d!==t){s.streak=(s.last===_yday())?(s.streak||0)+1:1;s.last=t;s.d=t;s.n=0;}s.n=(s.n||0)+(n||1);saveStudy(s);try{track("study");}catch(e){}}function getKnown(){try{return JSON.parse(localStorage.getItem("known")||"{}");}catch(e){return {};}}function saveKnown(m){try{localStorage.setItem("known",JSON.stringify(m));}catch(e){}}function knownHas(de){return !!getKnown()[de];}function knownToggle(p,btn){var m=getKnown();if(m[p.de]){delete m[p.de];}else{m[p.de]=1;try{studyTick();}catch(e){}}saveKnown(m);if(btn){var on=!!m[p.de];btn.classList.toggle("on",on);btn.title=on?"已学会（点击取消）":"标记为已学会";}}
 function copyQQ(btn){var q="717986230";function ok(){btn.textContent="✓ 已复制";setTimeout(function(){btn.textContent="复制";},2000);}try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(q).then(ok).catch(function(){prompt("QQ 号：",q);});}else{prompt("QQ 号：",q);}}catch(e){prompt("QQ 号：",q);}}
 function copyShare(btn){var u="https://www.uuoo.site/";function ok(){btn.textContent="✓ 已复制，去粘贴分享吧";setTimeout(function(){btn.textContent="📋 复制网址分享";},2500);}try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(ok).catch(function(){prompt("复制这个网址分享：",u);});}else{prompt("复制这个网址分享：",u);}}catch(e){prompt("复制这个网址分享：",u);}}
 function rejectDonate(){var t=document.createElement('div');t.textContent='谢谢你来过 \uD83D\uDE0A';t.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9999;background:rgba(40,40,40,.94);color:#fff;font-size:16px;padding:16px 26px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.35)';document.body.appendChild(t);setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);showSection('home');},1100);}
@@ -3007,13 +3009,33 @@ function bpPick(i){
 // PWA 安装：捕获浏览器可安装事件，页面上给一个「安装到桌面」按钮（Chrome 自动提示很吝啬，删了就不弹，这里可随时手动装）
 var _deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_deferredPrompt=e;var b=document.getElementById('pwaInstall');if(b&&!_isStandalone())b.style.display='block';});
-window.addEventListener('appinstalled',function(){_deferredPrompt=null;var b=document.getElementById('pwaInstall');if(b)b.style.display='none';});
+window.addEventListener('appinstalled',function(){_deferredPrompt=null;var b=document.getElementById('pwaInstall');if(b)b.style.display='none';try{track('install');}catch(e){}});
 function _isStandalone(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;}
 function pwaInstall(){
   if(_deferredPrompt){_deferredPrompt.prompt();_deferredPrompt.userChoice.then(function(){_deferredPrompt=null;var b=document.getElementById('pwaInstall');if(b)b.style.display='none';});}
   else{alert('如果没弹出安装框：\n• 电脑 Chrome/Edge：点地址栏右侧的「安装」图标（⊕ / 显示器带箭头）\n• 安卓 Chrome：菜单 ⋮ → 安装应用 / 添加到主屏幕\n• iPhone Safari：分享 → 添加到主屏幕');}
 }
 // Service Worker：真离线支持（https/localhost 下注册；老内核无 SW 自动跳过）
+// ── 匿名埋点（可选）：只记匿名使用统计；离线队列 + 批量发送 + 失败不打扰用户 ──
+// 部署 analytics/（Cloudflare Worker+D1）后，把 Worker 地址填到 TRACK_URL；留空=完全不采集、零请求。
+var TRACK_URL="";
+var _sid=Math.random().toString(36).slice(2,10),_tq=[];
+function _vid(){try{var v=localStorage.getItem('_vid');if(!v){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem('_vid',v);}return v;}catch(e){return '0';}}
+function _trackOn(){try{if(navigator.doNotTrack=='1'||localStorage.getItem('_noTrack')=='1')return false;}catch(e){}return !!TRACK_URL;}
+function track(name,props){if(!_trackOn())return;_tq.push({t:Date.now(),n:name,p:props||null});if(_tq.length>=10)_trackFlush();}
+function _trackFlush(beacon){
+  if(!_trackOn()||!_tq.length)return;
+  var batch=_tq.splice(0,_tq.length);
+  var body=JSON.stringify({vid:_vid(),sid:_sid,path:location.pathname,ref:document.referrer||'',ua:navigator.userAgent,events:batch});
+  try{
+    if(beacon&&navigator.sendBeacon){navigator.sendBeacon(TRACK_URL,body);return;}
+    fetch(TRACK_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:body,keepalive:true})['catch'](function(){_trackSave(batch);});
+  }catch(e){_trackSave(batch);}
+}
+function _trackSave(b){try{var o=JSON.parse(localStorage.getItem('_tq')||'[]');localStorage.setItem('_tq',JSON.stringify(o.concat(b).slice(-200)));}catch(e){}}
+function _trackResend(){try{var o=JSON.parse(localStorage.getItem('_tq')||'[]');if(o.length&&_trackOn()){localStorage.removeItem('_tq');_tq=o.concat(_tq);_trackFlush();}}catch(e){}}
+try{document.addEventListener('visibilitychange',function(){if(document.visibilityState=='hidden')_trackFlush(true);});}catch(e){}
+try{_trackResend();}catch(e){}
 try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');}catch(e){}
 // INIT
 initPhrases();

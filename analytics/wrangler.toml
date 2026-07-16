@@ -1,0 +1,13 @@
+name = "uuoo-analytics"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# 用 `wrangler d1 create uuoo_analytics` 创建后，把返回的 database_id 填到下面
+[[d1_databases]]
+binding = "DB"
+database_name = "uuoo_analytics"
+database_id = "在这里填 D1 database_id"
+
+# 查看统计的密钥：改成你自己的随机串（GET /stats?key=... 用）
+[vars]
+STATS_KEY = "改成你的密钥"
