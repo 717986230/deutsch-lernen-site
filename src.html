@@ -3018,7 +3018,7 @@ function pwaInstall(){
 // Service Worker：真离线支持（https/localhost 下注册；老内核无 SW 自动跳过）
 // ── 匿名埋点（可选）：只记匿名使用统计；离线队列 + 批量发送 + 失败不打扰用户 ──
 // 部署 analytics/（Cloudflare Worker+D1）后，把 Worker 地址填到 TRACK_URL；留空=完全不采集、零请求。
-var TRACK_URL="";
+var TRACK_URL="https://uuoo-analytics.uuoo.workers.dev/collect";
 var _sid=Math.random().toString(36).slice(2,10),_tq=[];
 function _vid(){try{var v=localStorage.getItem('_vid');if(!v){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem('_vid',v);}return v;}catch(e){return '0';}}
 function _trackOn(){try{if(navigator.doNotTrack=='1'||localStorage.getItem('_noTrack')=='1')return false;}catch(e){}return !!TRACK_URL;}
