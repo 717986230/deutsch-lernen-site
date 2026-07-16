@@ -14,3 +14,5 @@ STATS_KEY = "uuoo-stats-2026-gaKx79"
 SITE_URL = "https://www.uuoo.site"
 # GitHub OAuth App 的 Client ID（公开值，可放这里）；Secret 用 `wrangler secret put GH_CLIENT_SECRET`
 GH_CLIENT_ID = ""
+# Google OAuth Client ID（公开值）；Secret 用 `wrangler secret put GOOGLE_CLIENT_SECRET`
+GOOGLE_CLIENT_ID = ""

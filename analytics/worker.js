@@ -1,8 +1,33 @@
-// Cloudflare Worker：匿名埋点(/collect,/stats) + 账号/排行榜/徽章(/api/*)，数据写入 D1。
-// 账号支持：用户名+密码（Web Crypto PBKDF2 哈希，绝不存明文）、GitHub OAuth 登录。
-// 登录后发随机 session token 存 sessions 表；学习数据由前端同步上来，服务端判定徽章。
+// Cloudflare Worker：匿名埋点(/collect,/stats) + 账号/资料/排行榜/徽章(/api/*)，写入 D1。
+// 账号：用户名+密码（PBKDF2 哈希，不存明文）、GitHub / Google OAuth。登录后发随机 session token。
+// 资料：昵称 + emoji 头像 + 背景色 + 个性签名（服务端白名单/长度校验）。学习数据由前端同步，服务端判定徽章。
+// 面向「社交学习」演进：users 表已含展示资料与统计，后续加关注/动态只需新表。
 
 const JSONH = { 'Content-Type': 'application/json; charset=utf-8' };
+
+// 头像白名单：emoji + 背景色（只接受集合内的值，防注入/超长；无图片上传=无审核负担）
+const AV_EMOJI = ['🦊', '🐼', '🐨', '🐯', '🦁', '🐶', '🐱', '🐰', '🐻', '🐸', '🐵', '🦉', '🐧', '🐢', '🦄', '🐲', '🌷', '🌟', '🍀', '🔥', '🚀', '⚽', '🎨', '🎧', '📚', '☕', '🥨', '🗼'];
+const AV_BG = ['#58cc02', '#1cb0f6', '#ff9600', '#ff4b4b', '#ce82ff', '#2b70c9', '#ff86d0', '#00c2a8', '#f5b800', '#7a869a'];
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+const cleanText = (v, n) => String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, n);
+
+// 第三方登录配置（GitHub / Google 同一套 OAuth2 流程，差异抽到这里）
+const OAUTH = {
+  github: {
+    authUrl: 'https://github.com/login/oauth/authorize',
+    tokenUrl: 'https://github.com/login/oauth/access_token',
+    userUrl: 'https://api.github.com/user',
+    scope: 'read:user', idKey: 'id', loginKey: 'login', nameKey: 'name',
+    cid: e => e.GH_CLIENT_ID, secret: e => e.GH_CLIENT_SECRET, extra: '',
+  },
+  google: {
+    authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+    tokenUrl: 'https://oauth2.googleapis.com/token',
+    userUrl: 'https://openidconnect.googleapis.com/v1/userinfo',
+    scope: 'openid email profile', idKey: 'sub', loginKey: 'email', nameKey: 'name',
+    cid: e => e.GOOGLE_CLIENT_ID, secret: e => e.GOOGLE_CLIENT_SECRET, extra: '&response_type=code&access_type=online',
+  },
+};
 
 export default {
   async fetch(req, env) {
@@ -48,15 +73,15 @@ export default {
     if (M === 'POST' && path === '/api/register') {
       const b = await body(req);
       const name = String(b.username || '').trim().toLowerCase();
-      const nick = (String(b.nickname || '').trim() || name).slice(0, 20);
+      const nick = cleanText(b.nickname, 20) || name;
       const pw = String(b.password || '');
       if (!/^[a-z0-9_]{3,20}$/.test(name)) return json({ err: '用户名需 3-20 位，仅小写字母/数字/下划线' }, 400, cors);
       if (pw.length < 6) return json({ err: '密码至少 6 位' }, 400, cors);
       const exist = await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(name).first();
       if (exist) return json({ err: '用户名已被占用' }, 400, cors);
       const salt = rndHex(16), hash = await pbkdf2(pw, salt), now = Date.now();
-      const r = await env.DB.prepare('INSERT INTO users (username,nickname,pass_salt,pass_hash,provider,created,updated) VALUES (?,?,?,?,?,?,?)')
-        .bind(name, nick, salt, hash, 'pw', now, now).run();
+      const r = await env.DB.prepare('INSERT INTO users (username,nickname,pass_salt,pass_hash,provider,avatar,av_bg,created,updated) VALUES (?,?,?,?,?,?,?,?,?)')
+        .bind(name, nick, salt, hash, 'pw', pick(AV_EMOJI), pick(AV_BG), now, now).run();
       return json({ token: await newSession(env, r.meta.last_row_id), user: { username: name, nickname: nick } }, 200, cors);
     }
     if (M === 'POST' && path === '/api/login') {
@@ -69,46 +94,38 @@ export default {
       return json({ token: await newSession(env, u.id), user: { username: u.username, nickname: u.nickname } }, 200, cors);
     }
 
-    // ───────── GitHub OAuth ─────────
-    if (M === 'GET' && path === '/api/oauth/github/start') {
-      if (!env.GH_CLIENT_ID) return new Response('GitHub 登录未配置', { status: 500 });
-      const state = rndHex(16);
-      await env.DB.prepare('INSERT INTO oauth_state (state,exp) VALUES (?,?)').bind(state, Date.now() + 600000).run();
-      const redirect = url.origin + '/api/oauth/github/callback';
-      const auth = 'https://github.com/login/oauth/authorize?client_id=' + encodeURIComponent(env.GH_CLIENT_ID) +
-        '&redirect_uri=' + encodeURIComponent(redirect) + '&scope=read:user&state=' + state;
-      return Response.redirect(auth, 302);
-    }
-    if (M === 'GET' && path === '/api/oauth/github/callback') {
-      const site = env.SITE_URL || url.origin;
+    // ───────── 第三方登录（GitHub / Google，配置化） ─────────
+    const om = path.match(/^\/api\/oauth\/(github|google)\/(start|callback)$/);
+    if (M === 'GET' && om) {
+      const prov = OAUTH[om[1]], step = om[2], site = env.SITE_URL || url.origin;
+      const cid = prov.cid(env);
+      if (!cid) return new Response('该登录方式未配置', { status: 500 });
+      const redirect = url.origin + '/api/oauth/' + om[1] + '/callback';
+      if (step === 'start') {
+        const state = rndHex(16);
+        await env.DB.prepare('INSERT INTO oauth_state (state,exp) VALUES (?,?)').bind(state, Date.now() + 600000).run();
+        const authUrl = prov.authUrl + '?client_id=' + encodeURIComponent(cid) +
+          '&redirect_uri=' + encodeURIComponent(redirect) + '&scope=' + encodeURIComponent(prov.scope) +
+          '&state=' + state + (prov.extra || '');
+        return Response.redirect(authUrl, 302);
+      }
+      // callback
       const code = url.searchParams.get('code'), state = url.searchParams.get('state');
-      const st = state && await env.DB.prepare('SELECT state,exp FROM oauth_state WHERE state=?').bind(state).first();
+      const st = state && await env.DB.prepare('SELECT exp FROM oauth_state WHERE state=?').bind(state).first();
       if (!code || !st || st.exp < Date.now()) return Response.redirect(site + '/#login?err=oauth', 302);
       await env.DB.prepare('DELETE FROM oauth_state WHERE state=?').bind(state).run();
-      // code → access_token
-      const tr = await fetch('https://github.com/login/oauth/access_token', {
-        method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ client_id: env.GH_CLIENT_ID, client_secret: env.GH_CLIENT_SECRET, code, redirect_uri: url.origin + '/api/oauth/github/callback' }),
+      const tr = await fetch(prov.tokenUrl, {
+        method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ client_id: cid, client_secret: prov.secret(env), code, redirect_uri: redirect, grant_type: 'authorization_code' }),
       });
       const tok = await tr.json().catch(() => ({}));
       if (!tok.access_token) return Response.redirect(site + '/#login?err=oauth', 302);
-      const ur = await fetch('https://api.github.com/user', { headers: { Authorization: 'Bearer ' + tok.access_token, 'User-Agent': 'uuoo-app', Accept: 'application/json' } });
-      const gh = await ur.json().catch(() => ({}));
-      if (!gh.id) return Response.redirect(site + '/#login?err=oauth', 302);
-      const pid = String(gh.id), now = Date.now();
-      let u = await env.DB.prepare("SELECT * FROM users WHERE provider='github' AND provider_id=?").bind(pid).first();
-      if (!u) {
-        // 生成一个唯一用户名：gh_<login>，占用则加数字后缀
-        let base = ('gh_' + (gh.login || pid)).toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 18) || ('gh_' + pid);
-        let name = base, i = 1;
-        while (await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(name).first()) name = base + (++i);
-        const nick = (gh.name || gh.login || name).slice(0, 20);
-        const r = await env.DB.prepare('INSERT INTO users (username,nickname,provider,provider_id,created,updated) VALUES (?,?,?,?,?,?)')
-          .bind(name, nick, 'github', pid, now, now).run();
-        u = { id: r.meta.last_row_id };
-      }
-      const token = await newSession(env, u.id);
-      return Response.redirect(site + '/?acct_token=' + token + '#me', 302);
+      const ur = await fetch(prov.userUrl, { headers: { Authorization: 'Bearer ' + tok.access_token, 'User-Agent': 'uuoo-app', Accept: 'application/json' } });
+      const info = await ur.json().catch(() => ({}));
+      const pid = info[prov.idKey] != null ? String(info[prov.idKey]) : '';
+      if (!pid) return Response.redirect(site + '/#login?err=oauth', 302);
+      const uid = await oauthUpsert(env, om[1], pid, info[prov.loginKey], info[prov.nameKey]);
+      return Response.redirect(site + '/?acct_token=' + (await newSession(env, uid)) + '#me', 302);
     }
 
     // ───────── 同步学习数据（需登录） ─────────
@@ -127,10 +144,36 @@ export default {
     if (M === 'GET' && path === '/api/me') {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
-      const u = await env.DB.prepare('SELECT username,nickname,provider,known,streak,best_streak,total,quiz,level,badges,created FROM users WHERE id=?').bind(uid).first();
+      const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created FROM users WHERE id=?').bind(uid).first();
       if (!u) return json({ err: '账号不存在' }, 404, cors);
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       return json({ user: u, rank: rank.c }, 200, cors);
+    }
+    // 修改资料：昵称 / 头像 / 背景色 / 个性签名（需登录，服务端校验）
+    if (M === 'POST' && path === '/api/profile/update') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const b = await body(req);
+      const set = [], bind = [];
+      if (b.nickname != null) {
+        const nick = cleanText(b.nickname, 20);
+        if (!nick) return json({ err: '昵称不能为空' }, 400, cors);
+        set.push('nickname=?'); bind.push(nick);
+      }
+      if (b.avatar != null) {
+        if (!AV_EMOJI.includes(b.avatar)) return json({ err: '头像不在可选范围' }, 400, cors);
+        set.push('avatar=?'); bind.push(b.avatar);
+      }
+      if (b.av_bg != null) {
+        if (!AV_BG.includes(b.av_bg)) return json({ err: '背景色不在可选范围' }, 400, cors);
+        set.push('av_bg=?'); bind.push(b.av_bg);
+      }
+      if (b.sig != null) { set.push('sig=?'); bind.push(cleanText(b.sig, 60)); }
+      if (!set.length) return json({ err: '无更新内容' }, 400, cors);
+      set.push('updated=?'); bind.push(Date.now()); bind.push(uid);
+      await env.DB.prepare('UPDATE users SET ' + set.join(',') + ' WHERE id=?').bind(...bind).run();
+      const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig FROM users WHERE id=?').bind(uid).first();
+      return json({ ok: 1, user: u }, 200, cors);
     }
 
     // ───────── 排行榜 / 公开主页 ─────────
@@ -139,10 +182,10 @@ export default {
       const by = cols[url.searchParams.get('by')] ? url.searchParams.get('by') : 'known';
       const col = cols[by];
       const rows = await env.DB.prepare(
-        'SELECT username,nickname,known,best_streak,total,level,badges FROM users WHERE ' + col + '>0 ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
+        'SELECT username,nickname,avatar,av_bg,known,best_streak,total,level,badges FROM users WHERE ' + col + '>0 ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
       ).all();
       const list = rows.results.map(r => ({
-        username: r.username, nickname: r.nickname, level: r.level,
+        username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, level: r.level,
         known: r.known, streak: r.best_streak, total: r.total,
         badges: (r.badges || '').split(',').filter(Boolean).length,
       }));
@@ -150,7 +193,7 @@ export default {
     }
     if (M === 'GET' && path === '/api/profile') {
       const name = String(url.searchParams.get('name') || '').trim().toLowerCase();
-      const u = await env.DB.prepare('SELECT username,nickname,provider,known,streak,best_streak,total,quiz,level,badges,created FROM users WHERE username=?').bind(name).first();
+      const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created FROM users WHERE username=?').bind(name).first();
       if (!u) return json({ err: '用户不存在' }, 404, cors);
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       return json({ user: u, rank: rank.c }, 200, cors);
@@ -168,6 +211,20 @@ function computeBadges(s) {
   [[100, 'study100'], [500, 'study500'], [2000, 'study2000']].forEach(([n, id]) => { if (s.total >= n) b.push(id); });
   [[50, 'quiz50'], [200, 'quiz200']].forEach(([n, id]) => { if (s.quiz >= n) b.push(id); });
   return b;
+}
+
+// OAuth 用户：已存在则返回 id，否则新建（用户名唯一、随机头像）
+async function oauthUpsert(env, provider, pid, login, name) {
+  const found = await env.DB.prepare('SELECT id FROM users WHERE provider=? AND provider_id=?').bind(provider, pid).first();
+  if (found) return found.id;
+  const raw = provider === 'google' ? ('g_' + String(login || pid).split('@')[0]) : ('gh_' + (login || pid));
+  let base = raw.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 18) || (provider[0] + '_' + pid);
+  let uname = base, i = 1;
+  while (await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(uname).first()) uname = base + (++i);
+  const nick = cleanText(name || login || uname, 20) || uname, now = Date.now();
+  const r = await env.DB.prepare('INSERT INTO users (username,nickname,provider,provider_id,avatar,av_bg,created,updated) VALUES (?,?,?,?,?,?,?,?)')
+    .bind(uname, nick, provider, pid, pick(AV_EMOJI), pick(AV_BG), now, now).run();
+  return r.meta.last_row_id;
 }
 
 function json(obj, status, cors) { return new Response(JSON.stringify(obj), { status: status || 200, headers: Object.assign({}, JSONH, cors || {}) }); }

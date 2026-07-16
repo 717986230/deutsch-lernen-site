@@ -60,21 +60,27 @@ wrangler deploy                                                 # 部署新版 w
 - `POST /api/register` `{username,password,nickname}` → `{token,user}`
 - `POST /api/login` `{username,password}` → `{token,user}`
 - `POST /api/sync`（带 `Authorization: Bearer <token>`）`{known,streak,best,total,quiz,level}` → 更新数据、返回已点亮徽章
+- `POST /api/profile/update`（带 token）`{nickname?,avatar?,av_bg?,sig?}` → 改昵称/emoji头像/背景色/个性签名（服务端白名单校验）
 - `GET  /api/me`（带 token）→ 自己的资料 + 排名
 - `GET  /api/leaderboard?by=known|streak|total` → Top 50
 - `GET  /api/profile?name=<用户名>` → 公开主页数据
 
-### GitHub 登录（可选）
+资料字段：`nickname`(昵称) `avatar`(emoji 头像) `av_bg`(背景色) `sig`(个性签名)。
+头像不做图片上传，只从预设 emoji + 颜色里选——零存储、零外链、零审核负担，契合站点 emoji 风格。
 
-1. GitHub → Settings → Developer settings → **OAuth Apps** → New OAuth App
-   - Homepage URL：`https://www.uuoo.site`
-   - **Authorization callback URL**：`https://uuoo-analytics.<你的子域>.workers.dev/api/oauth/github/callback`
-2. 拿到 **Client ID** 填进 `wrangler.toml` 的 `GH_CLIENT_ID`；**Client Secret** 用密钥方式存：
-   ```bash
-   wrangler secret put GH_CLIENT_SECRET   # 回车后粘贴 secret
-   wrangler deploy
-   ```
-   不配置 GitHub 登录也没关系，用户名+密码照常可用。
+### 第三方登录（可选：GitHub / Google）
+
+**GitHub**：Settings → Developer settings → **OAuth Apps** → New OAuth App
+- Homepage URL：`https://www.uuoo.site`
+- **Authorization callback URL**：`https://uuoo-analytics.<你的子域>.workers.dev/api/oauth/github/callback`
+- 拿到 **Client ID** 填 `wrangler.toml` 的 `GH_CLIENT_ID`；Secret 用 `wrangler secret put GH_CLIENT_SECRET`
+
+**Google**：Google Cloud Console → APIs & Services → **Credentials** → Create OAuth client ID（Web application）
+- **Authorized redirect URI**：`https://uuoo-analytics.<你的子域>.workers.dev/api/oauth/google/callback`
+- 拿到 **Client ID** 填 `wrangler.toml` 的 `GOOGLE_CLIENT_ID`；Secret 用 `wrangler secret put GOOGLE_CLIENT_SECRET`
+- 注意：Google 在国内/微信内打不开，主要服务海外与桌面 Chrome 用户。
+
+配置完 `wrangler deploy` 生效。哪个都不配也没关系，用户名+密码照常可用。
 
 ## 合规提醒
 

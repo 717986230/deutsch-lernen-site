@@ -23,8 +23,11 @@ CREATE TABLE IF NOT EXISTS users (
   nickname    TEXT,                 -- 昵称（展示用）
   pass_salt   TEXT,                 -- 密码盐（OAuth 用户为空）
   pass_hash   TEXT,                 -- PBKDF2 哈希（OAuth 用户为空）
-  provider    TEXT DEFAULT 'pw',    -- pw / github
+  provider    TEXT DEFAULT 'pw',    -- pw / github / google
   provider_id TEXT,                 -- 第三方用户ID
+  avatar      TEXT DEFAULT '🦊',    -- emoji 头像（服务端白名单）
+  av_bg       TEXT DEFAULT '#58cc02', -- 头像背景色（服务端白名单）
+  sig         TEXT DEFAULT '',      -- 个性签名（≤60 字）
   -- 同步上来的学习数据（用于排行榜/徽章）
   known       INTEGER DEFAULT 0,    -- 掌握词数
   streak      INTEGER DEFAULT 0,    -- 当前连续打卡
