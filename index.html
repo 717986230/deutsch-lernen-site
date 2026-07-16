@@ -273,32 +273,11 @@ body:not(.lang-en) .en-only-block{display:none}
 .pic-cell:hover{transform:translateY(-2px);border-color:var(--gold-dim);box-shadow:0 6px 16px rgba(0,0,0,.08)}
 .pic-cell.active{border-color:var(--gold);background:rgba(88,204,2,.08)}
 .pic-emoji{font-size:38px;line-height:1.1}
-.bic{width:44px;height:auto;display:block;margin:0 auto 2px}
 .pic-de{font-size:13px;font-weight:600;color:var(--text);margin-top:6px;word-break:break-word}
 .pic-zh{font-size:11px;color:var(--text-faint);margin-top:1px}
 .pic-out{position:sticky;bottom:16px;margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
 .bp-chip{border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:14px;padding:4px 11px;font-size:12px;cursor:pointer;font-family:inherit}
 .bp-chip.active{border-color:var(--gold);background:var(--gold);color:#fff}
-.body-wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:flex-start}
-.body-figure{position:relative;width:min(440px,96vw);flex-shrink:0}
-.bp2{cursor:pointer}
-.bp2 .bdot{fill:#58cc02;stroke:#fff;stroke-width:1.6}
-.bp2 .bhalo{fill:rgba(88,204,2,.28)}
-.bp2.active .bdot{fill:#ff9600}
-.bp2.active .bhalo{fill:rgba(255,150,0,.3)}
-.bl2{cursor:pointer}
-.bl2-line{stroke:#b7c3ad;stroke-width:.8;fill:none}
-.bl2.active .bl2-line{stroke:#ff9600;stroke-width:1.4}
-.bl2-de{font-size:11px;font-weight:600;fill:var(--text);font-family:Georgia,serif}
-.bl2-zh{font-size:8.5px;fill:var(--text-faint)}
-.bl2.active .bl2-de{fill:#e07f00}
-.bl2:hover .bl2-de{fill:#46a302}
-.body-panel{flex:1;min-width:230px;max-width:340px}
-@media (max-width:700px){
-  .body-wrap{flex-direction:column;align-items:center}
-  .body-panel{order:-1;width:100%;max-width:360px;margin-bottom:4px}
-  .body-panel .card{box-shadow:0 6px 20px rgba(0,0,0,.14)}
-}
 /* 拼读器右侧小浮钮（约为零基础钮一半大）+ 弹窗 */
 .phfab{position:fixed;right:0;top:44%;transform:translateY(-50%);z-index:280;writing-mode:vertical-rl;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:700;font-family:inherit;padding:9px 6px;border-radius:14px 0 0 14px;cursor:pointer;box-shadow:-3px 3px 12px rgba(28,176,246,.4);letter-spacing:2px;line-height:1.15}
 .phfab:active{transform:translateY(-50%) scale(.94)}
