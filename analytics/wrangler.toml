@@ -2,12 +2,15 @@ name = "uuoo-analytics"
 main = "worker.js"
 compatibility_date = "2024-11-01"
 
-# 用 `wrangler d1 create uuoo_analytics` 创建后，把返回的 database_id 填到下面
 [[d1_databases]]
 binding = "DB"
 database_name = "uuoo_analytics"
-database_id = "在这里填 D1 database_id"
+database_id = "b042a9df-2b10-4ef3-8c4e-e638ecddeffe"
 
-# 查看统计的密钥：改成你自己的随机串（GET /stats?key=... 用）
 [vars]
-STATS_KEY = "改成你的密钥"
+# 查看统计的密钥（GET /stats?key=... 用）
+STATS_KEY = "uuoo-stats-2026-gaKx79"
+# 站点地址（GitHub 登录成功后跳回这里）
+SITE_URL = "https://www.uuoo.site"
+# GitHub OAuth App 的 Client ID（公开值，可放这里）；Secret 用 `wrangler secret put GH_CLIENT_SECRET`
+GH_CLIENT_ID = ""

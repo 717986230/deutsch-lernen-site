@@ -1,6 +1,7 @@
-# uuoo 埋点后端（Cloudflare Workers + D1）
+# uuoo 后端（Cloudflare Workers + D1）
 
-自有全部日志明细，免费额度对个人站足够。数据只存匿名事件，不含个人信息。
+一个 Worker 干两件事：**匿名埋点**（/collect、/stats）和**账号/排行榜/徽章**（/api/*）。
+自有全部数据，免费额度对个人站足够。埋点只存匿名事件；账号存用户名/昵称（密码只存哈希）。
 
 ## 一次性部署（约 5 分钟）
 
@@ -46,7 +47,36 @@ https://uuoo-analytics.<你的子域>.workers.dev/stats?key=你的密钥&days=7
 每个带匿名访客ID（localStorage 随机串）、时间、页面、UA、国家码。**不采集姓名/手机/位置等个人信息。**
 用户设了浏览器 Do-Not-Track，或 localStorage 里 `_noTrack=1`，则自动不采集。
 
+## 账号 / 排行榜 / 徽章（/api/*）
+
+已有部署要**更新代码 + 补建表**（在 analytics 目录）：
+
+```bash
+wrangler d1 execute uuoo_analytics --file=schema.sql --remote   # 新增 users/sessions/oauth_state 表（IF NOT EXISTS，安全重跑）
+wrangler deploy                                                 # 部署新版 worker.js
+```
+
+接口一览：
+- `POST /api/register` `{username,password,nickname}` → `{token,user}`
+- `POST /api/login` `{username,password}` → `{token,user}`
+- `POST /api/sync`（带 `Authorization: Bearer <token>`）`{known,streak,best,total,quiz,level}` → 更新数据、返回已点亮徽章
+- `GET  /api/me`（带 token）→ 自己的资料 + 排名
+- `GET  /api/leaderboard?by=known|streak|total` → Top 50
+- `GET  /api/profile?name=<用户名>` → 公开主页数据
+
+### GitHub 登录（可选）
+
+1. GitHub → Settings → Developer settings → **OAuth Apps** → New OAuth App
+   - Homepage URL：`https://www.uuoo.site`
+   - **Authorization callback URL**：`https://uuoo-analytics.<你的子域>.workers.dev/api/oauth/github/callback`
+2. 拿到 **Client ID** 填进 `wrangler.toml` 的 `GH_CLIENT_ID`；**Client Secret** 用密钥方式存：
+   ```bash
+   wrangler secret put GH_CLIENT_SECRET   # 回车后粘贴 secret
+   wrangler deploy
+   ```
+   不配置 GitHub 登录也没关系，用户名+密码照常可用。
+
 ## 合规提醒
 
-采集使用统计在国内受《个人信息保护法》约束。建议在页面底部/支持页加一句
-"本站仅记录匿名使用统计以改进功能"，只保留匿名数据、需要时可删库。
+匿名统计 + 账号信息在国内均受《个人信息保护法》约束。建议在页面底部/支持页写明
+"本站仅记录匿名使用统计以改进功能；账号仅保存用户名、昵称与密码哈希"，需要时可删库。
