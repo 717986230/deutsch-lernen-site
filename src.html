@@ -694,6 +694,7 @@ body.lang-en .phfab{display:none}
     </div>
     <div id="boardGrid" class="pic-grid" style="display:none"></div>
     <div id="picOut" class="pic-out" style="display:none"></div>
+    <div id="boardQuiz" class="gq-box" style="margin-top:20px"></div>
   </div>
 </div>
 
@@ -2956,7 +2957,7 @@ function switchBoard(id){
   document.getElementById("boardBody").style.display=isBody?"":"none";
   document.getElementById("boardGrid").style.display=isBody?"none":"grid";
   document.getElementById("picOut").style.display="none";
-  if(isBody){renderBody();return;}
+  if(isBody){renderBody();buildBoardQuiz();return;}
   var brd=null;for(var i=0;i<PIC_BOARDS.length;i++)if(PIC_BOARDS[i].id===id)brd=PIC_BOARDS[i];
   var g=document.getElementById("boardGrid");
   g.innerHTML=(brd.items||[]).map(function(it,i){
@@ -2965,6 +2966,7 @@ function switchBoard(id){
   g.querySelectorAll(".pic-cell").forEach(function(c){
     c.addEventListener("click",function(){picPick(brd,+c.getAttribute("data-i"),c);});
   });
+  buildBoardQuiz();
 }
 function picPick(brd,i,cell){
   var it=brd.items[i];if(!it)return;
@@ -2976,6 +2978,35 @@ function picPick(brd,i,cell){
   out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+it[3]+'</span> <b lang="de" style="font-size:20px;color:#46a302;vertical-align:middle">'+it[0]+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+it[0].replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+it[1]+' · <span style="color:var(--text-faint)">'+it[2]+'</span></div>';
   try{speakDE(it[0]);}catch(e){}
   try{studyTick(1);}catch(e){}
+}
+function _boardItems(){
+  if(_curBoard==='koerper')return BODY_PARTS.map(function(p){return{de:p.de,zh:p.zh,em:p.em};});
+  for(var i=0;i<PIC_BOARDS.length;i++)if(PIC_BOARDS[i].id===_curBoard&&PIC_BOARDS[i].items)
+    return PIC_BOARDS[i].items.map(function(it){return{de:it[0],zh:it[1],em:it[3]};});
+  return [];
+}
+function buildBoardQuiz(){
+  var box=document.getElementById('boardQuiz');if(!box)return;
+  var items=_boardItems();if(items.length<4){box.innerHTML='';return;}
+  var ti=Math.floor(Math.random()*items.length),t=items[ti];
+  var opts=[t],guard=0;
+  while(opts.length<4&&guard++<200){var c=items[Math.floor(Math.random()*items.length)];if(opts.indexOf(c)<0&&c.de!==t.de)opts.push(c);}
+  for(var i=opts.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=opts[i];opts[i]=opts[j];opts[j]=x;}
+  var h='<div class="gq-head">✏️ 看图选德语</div><div class="gq-sub">选出下面这个的德语说法</div>'
+    +'<div style="text-align:center;margin:6px 0 10px"><span style="font-size:46px">'+t.em+'</span><div style="font-size:15px;color:var(--text);font-weight:600">'+t.zh+'</div></div>'
+    +'<div class="gq-opts" style="justify-content:center">'
+    +opts.map(function(o){return '<button type="button" class="gq-opt" lang="de" onclick="boardAns(this,\''+o.de.replace(/'/g,"\\'")+'\',\''+t.de.replace(/'/g,"\\'")+'\')">'+o.de+'</button>';}).join('')
+    +'</div><div class="gq-score" style="margin-top:12px"></div>';
+  box.innerHTML=h;
+}
+function boardAns(btn,sel,cor){
+  var box=document.getElementById('boardQuiz');
+  box.querySelectorAll('.gq-opt').forEach(function(b){b.style.pointerEvents='none';if(b.textContent===cor)b.classList.add('ok');});
+  if(sel!==cor)btn.classList.add('bad');
+  try{speakDE(cor);}catch(e){}
+  try{studyTick(1);}catch(e){}
+  var sc=box.querySelector('.gq-score');sc.style.display='block';
+  sc.innerHTML=(sel===cor?'🎉 答对了！':'✅ 正确答案已标绿')+'<button class="btn" type="button" style="padding:5px 14px;font-size:12px;margin-left:8px" onclick="buildBoardQuiz()">🔄 下一题</button>';
 }
 function renderBody(){
   var chips=document.getElementById('bodyChips');
