@@ -3292,10 +3292,15 @@ function _trackResend(){try{var o=JSON.parse(localStorage.getItem('_tq')||'[]');
 try{document.addEventListener('visibilitychange',function(){if(document.visibilityState=='hidden')_trackFlush(true);});}catch(e){}
 try{_trackResend();}catch(e){}
 try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');}catch(e){}
-// INIT
-initPhrases();
-renderGramQuizzes();
-buildReadTabs();buildSeriesTabs();   // 标签轻量先建；阅读/连载长列表在首次打开时懒渲染（见 showSection）
+// INIT：硬登录门槛下，登录页(locked)不建任何内容，解锁后再建，显著加快登录首屏
+var _appInited=false;
+function appInit(){
+  if(_appInited)return;_appInited=true;
+  try{initPhrases();}catch(e){}
+  try{renderGramQuizzes();}catch(e){}
+  try{buildReadTabs();buildSeriesTabs();}catch(e){}   // 标签轻量先建；长列表首次打开懒渲染
+  try{buildSubNav('grammar','grammarSubnav');buildSubNav('en-grammar','enGrammarSubnav');buildSubNav('pronunciation','pronSubnav');buildSubNav('numbers','numSubnav');buildSubNav('en-pron','enPronSubnav');buildSubNav('en-num','enNumSubnav');}catch(e){}
+}
 // 长版块快速跳转条
 function buildSubNav(sectionId,navId){
   const sec=document.getElementById(sectionId), nav=document.getElementById(navId);
@@ -3310,13 +3315,8 @@ function buildSubNav(sectionId,navId){
     nav.appendChild(chip);
   });
 }
-buildSubNav('grammar','grammarSubnav');
-buildSubNav('en-grammar','enGrammarSubnav');
-buildSubNav('pronunciation','pronSubnav');
-buildSubNav('numbers','numSubnav');
-buildSubNav('en-pron','enPronSubnav');
-buildSubNav('en-num','enNumSubnav');
 setLang(LANG); // 应用初始语言（含 localStorage 记忆）
+if(!document.documentElement.classList.contains('locked'))appInit();  // 已登录直接建；未登录等解锁后建
 </script>
 <script>
 // ═══════════════ 账号 / 排行榜 / 个人主页 / 徽章 ═══════════════
@@ -3353,7 +3353,7 @@ function acctSetAuth(token,user){ACCT.token=token;ACCT.user=user;try{localStorag
 function _saveUser(){try{localStorage.setItem('acct_user',JSON.stringify(ACCT.user));}catch(e){}}
 function acctClearLocal(){ACCT.token=null;ACCT.user=null;try{localStorage.removeItem('acct_token');localStorage.removeItem('acct_user');}catch(e){}}
 function acctLogout(){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}
-function acctEnter(){document.documentElement.classList.remove('locked');showSection('home');}
+function acctEnter(){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();showSection('home');}
 function acctTab(w){var lg=w==='login';document.getElementById('tabLogin').classList.toggle('on',lg);document.getElementById('tabReg').classList.toggle('on',!lg);document.getElementById('paneLogin').style.display=lg?'':'none';document.getElementById('paneReg').style.display=lg?'none':'';}
 function acctRegister(){var u=(document.getElementById('rgUser').value||'').trim().toLowerCase();var nick=(document.getElementById('rgNick').value||'').trim();var pw=document.getElementById('rgPass').value||'';var err=document.getElementById('rgErr');err.textContent='';if(!/^[a-z0-9_]{3,20}$/.test(u)){err.textContent='用户名 3-20 位，仅小写字母/数字/下划线';return;}if(pw.length<6){err.textContent='密码至少 6 位';return;}apiFetch('/api/register',{method:'POST',body:{username:u,nickname:nick,password:pw}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'注册失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);acctEnter();},function(){err.textContent='网络错误，请重试';});}
 function acctLogin(){var u=(document.getElementById('lgUser').value||'').trim().toLowerCase();var pw=document.getElementById('lgPass').value||'';var err=document.getElementById('lgErr');err.textContent='';if(!u||!pw){err.textContent='请输入用户名和密码';return;}apiFetch('/api/login',{method:'POST',body:{username:u,password:pw}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'登录失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);acctEnter();},function(){err.textContent='网络错误，请重试';});}
@@ -3382,8 +3382,8 @@ function renderRank(by){if(by)_rankBy=by;var ids={known:'rkKnown',streak:'rkStre
 (function(){var justOauth=false;
 try{var m=(location.hash||'').match(/acct_token=([a-f0-9]+)/)||(location.search||'').match(/[?&]acct_token=([a-f0-9]+)/);if(m){acctSetAuth(m[1],ACCT.user||null);justOauth=true;try{history.replaceState(null,'',location.pathname);}catch(e){}}}catch(e){}
 // 门槛：有 token 先放行（乐观），无 token 锁在登录页
-if(ACCT.token){document.documentElement.classList.remove('locked');}else{document.documentElement.classList.add('locked');showSection('account');}
-if(ACCT.token&&API_BASE){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();document.documentElement.classList.remove('locked');if(justOauth)showSection('home');}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});acctSync(true);}
+if(ACCT.token){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();}else{document.documentElement.classList.add('locked');showSection('account');}
+if(ACCT.token&&API_BASE){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();if(justOauth)showSection('home');}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});acctSync(true);}
 try{document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&ACCT.token)acctSync(true);});}catch(e){}
 })();
 </script>
