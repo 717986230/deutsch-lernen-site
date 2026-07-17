@@ -136,7 +136,7 @@ export default {
       const clamp = (v) => Math.max(0, Math.min(1e7, v | 0));
       const known = clamp(b.known), streak = clamp(b.streak), best = clamp(b.best), total = clamp(b.total), quiz = clamp(b.quiz);
       const level = String(b.level || 'A1').slice(0, 4);
-      const badges = computeBadges({ known, streak, best: Math.max(best, streak), total, quiz }).join(',');
+      const badges = computeBadges({ known, streak, best: Math.max(best, streak), total, quiz }, uid).join(',');
       await env.DB.prepare('UPDATE users SET known=?,streak=?,best_streak=MAX(best_streak,?,?),total=?,quiz=?,level=?,badges=?,updated=? WHERE id=?')
         .bind(known, streak, best, streak, total, quiz, level, badges, Date.now(), uid).run();
       return json({ ok: 1, badges: badges.split(',').filter(Boolean) }, 200, cors);
@@ -203,13 +203,15 @@ export default {
   },
 };
 
-// 徽章判定（服务端唯一真值；前端用同一套门槛渲染灰/亮）
-function computeBadges(s) {
-  const b = ['newbie'];
-  [[3, 'streak3'], [7, 'streak7'], [30, 'streak30'], [100, 'streak100']].forEach(([n, id]) => { if (s.best >= n) b.push(id); });
-  [[50, 'word50'], [200, 'word200'], [500, 'word500'], [1000, 'word1000']].forEach(([n, id]) => { if (s.known >= n) b.push(id); });
-  [[100, 'study100'], [500, 'study500'], [2000, 'study2000']].forEach(([n, id]) => { if (s.total >= n) b.push(id); });
-  [[50, 'quiz50'], [200, 'quiz200']].forEach(([n, id]) => { if (s.quiz >= n) b.push(id); });
+// 徽章判定（服务端唯一真值；前端 BADGES 用同一套门槛渲染灰/亮，两边必须一致）
+// 没有"注册就送"的徽章——全部要靠学习/资历挣。创始人=前 100 个注册账号（按自增 id）。
+function computeBadges(s, uid) {
+  const b = [];
+  if (uid && uid <= 100) b.push('founder');
+  [[7, 'streak7'], [30, 'streak30'], [100, 'streak100'], [365, 'streak365']].forEach(([n, id]) => { if (s.best >= n) b.push(id); });
+  [[100, 'word100'], [500, 'word500'], [1000, 'word1000'], [2000, 'word2000']].forEach(([n, id]) => { if (s.known >= n) b.push(id); });
+  [[500, 'study500'], [2000, 'study2000'], [10000, 'study10000']].forEach(([n, id]) => { if (s.total >= n) b.push(id); });
+  [[200, 'quiz200'], [1000, 'quiz1000']].forEach(([n, id]) => { if (s.quiz >= n) b.push(id); });
   return b;
 }
 

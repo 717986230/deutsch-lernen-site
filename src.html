@@ -1226,6 +1226,22 @@ body.lang-en .phfab{display:none}
 :root.locked .section:not(#account){display:none!important}
 :root.locked #account{display:block!important;padding-top:0}
 :root.locked .auth-stage{min-height:100vh}
+/* 徽章解锁 · 全屏祝贺特效 */
+.bcele-ov{position:fixed;inset:0;z-index:1500;background:rgba(10,14,10,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;animation:bceleFade .35s ease}
+@keyframes bceleFade{from{opacity:0}to{opacity:1}}
+.bcele{position:relative;text-align:center;padding:40px 34px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.bcele-rays{position:absolute;left:50%;top:50%;width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;background:repeating-conic-gradient(rgba(255,215,64,.28) 0 9deg,transparent 9deg 18deg);-webkit-mask:radial-gradient(circle,#000 26%,transparent 68%);mask:radial-gradient(circle,#000 26%,transparent 68%);animation:bceleSpin 9s linear infinite}
+@keyframes bceleSpin{to{transform:rotate(360deg)}}
+.bcele-emo{position:relative;font-size:104px;line-height:1.15;display:block;animation:bcelePop .8s cubic-bezier(.18,1.7,.4,1);filter:drop-shadow(0 10px 26px rgba(255,190,0,.5))}
+@keyframes bcelePop{0%{transform:scale(0) rotate(-30deg);opacity:0}60%{transform:scale(1.22) rotate(6deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+.bcele-tag{position:relative;display:inline-block;margin-top:10px;font-size:12px;letter-spacing:4px;color:#ffd740;font-weight:700;animation:bceleUp .6s .25s ease both}
+.bcele-name{position:relative;font-size:30px;font-weight:800;color:#fff;margin-top:6px;animation:bceleUp .6s .35s ease both}
+.bcele-desc{position:relative;font-size:14px;color:rgba(255,255,255,.75);margin-top:8px;animation:bceleUp .6s .45s ease both}
+.bcele-hint{position:relative;font-size:11px;color:rgba(255,255,255,.4);margin-top:26px;animation:bceleUp .6s 1s ease both}
+@keyframes bceleUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.bcele-cf{position:absolute;top:-10px;width:9px;height:14px;border-radius:2px;opacity:0;animation:bceleCf 2.6s ease-in infinite}
+@keyframes bceleCf{0%{opacity:0;transform:translateY(0) rotate(0)}8%{opacity:1}100%{opacity:0;transform:translateY(76vh) rotate(680deg)}}
+@media (prefers-reduced-motion:reduce){.bcele-rays,.bcele-cf{animation:none;display:none}}
 .glass-title{position:relative;z-index:1;text-align:center;font-size:25px;font-weight:800;letter-spacing:.5px;margin:0 0 5px;color:var(--text)}
 .glass-sub{position:relative;z-index:1;text-align:center;font-size:13px;color:var(--text-dim);max-width:360px;margin:0 0 20px;line-height:1.7}
 .glass-card{position:relative;z-index:1;width:100%;max-width:400px;padding:24px 22px;border-radius:26px;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);border:1px solid rgba(255,255,255,.4);box-shadow:0 14px 46px rgba(20,30,20,.2),inset 0 1px 0 rgba(255,255,255,.55)}
@@ -3230,22 +3246,22 @@ setLang(LANG); // 应用初始语言（含 localStorage 记忆）
 var API_BASE=(typeof TRACK_URL!=='undefined'&&TRACK_URL?TRACK_URL.replace(/\/collect$/,''):'');
 var AV_EMOJI=['🦊','🐼','🐨','🐯','🦁','🐶','🐱','🐰','🐻','🐸','🐵','🦉','🐧','🐢','🦄','🐲','🌷','🌟','🍀','🔥','🚀','⚽','🎨','🎧','📚','☕','🥨','🗼'];
 var AV_BG=['#58cc02','#1cb0f6','#ff9600','#ff4b4b','#ce82ff','#2b70c9','#ff86d0','#00c2a8','#f5b800','#7a869a'];
-// 徽章定义（门槛与服务端 computeBadges 一致；m=依据指标 n=门槛）
+// 徽章定义（门槛与服务端 computeBadges 一致，两边必须同步改）。没有注册就送的徽章，全靠挣。
 var BADGES=[
- {id:'newbie',emo:'🎓',name:'新学员',always:true},
- {id:'streak3',emo:'🔥',name:'坚持三天',m:'best',n:3},
+ {id:'founder',emo:'🌟',name:'创始人',desc:'前 100 名注册'},
  {id:'streak7',emo:'🔥',name:'一周达人',m:'best',n:7},
  {id:'streak30',emo:'🏅',name:'月度铁人',m:'best',n:30},
- {id:'streak100',emo:'👑',name:'百日筑基',m:'best',n:100},
- {id:'word50',emo:'🌱',name:'词汇新芽',m:'known',n:50},
- {id:'word200',emo:'📖',name:'小有词汇',m:'known',n:200},
- {id:'word500',emo:'📚',name:'词汇达人',m:'known',n:500},
- {id:'word1000',emo:'🏆',name:'词汇大师',m:'known',n:1000},
- {id:'study100',emo:'💪',name:'勤学百次',m:'total',n:100},
- {id:'study500',emo:'⚡',name:'勤学不辍',m:'total',n:500},
- {id:'study2000',emo:'🚀',name:'学海不倦',m:'total',n:2000},
- {id:'quiz50',emo:'✏️',name:'测验能手',m:'quiz',n:50},
- {id:'quiz200',emo:'🎯',name:'测验大师',m:'quiz',n:200}
+ {id:'streak100',emo:'💎',name:'百日筑基',m:'best',n:100},
+ {id:'streak365',emo:'👑',name:'全年无休',m:'best',n:365},
+ {id:'word100',emo:'🌱',name:'词汇新芽',m:'known',n:100},
+ {id:'word500',emo:'📖',name:'小有词汇',m:'known',n:500},
+ {id:'word1000',emo:'📚',name:'词汇达人',m:'known',n:1000},
+ {id:'word2000',emo:'🏆',name:'词汇大师',m:'known',n:2000},
+ {id:'study500',emo:'💪',name:'勤学不辍',m:'total',n:500},
+ {id:'study2000',emo:'⚡',name:'学而不厌',m:'total',n:2000},
+ {id:'study10000',emo:'🚀',name:'学海无涯',m:'total',n:10000},
+ {id:'quiz200',emo:'✏️',name:'测验能手',m:'quiz',n:200},
+ {id:'quiz1000',emo:'🎯',name:'测验大师',m:'quiz',n:1000}
 ];
 var ACCT={token:null,user:null};
 var _meUser=null,_syncT=null,_editSel={avatar:null,bg:null};
@@ -3264,11 +3280,16 @@ function acctTab(w){var lg=w==='login';document.getElementById('tabLogin').class
 function acctRegister(){var u=(document.getElementById('rgUser').value||'').trim().toLowerCase();var nick=(document.getElementById('rgNick').value||'').trim();var pw=document.getElementById('rgPass').value||'';var err=document.getElementById('rgErr');err.textContent='';if(!/^[a-z0-9_]{3,20}$/.test(u)){err.textContent='用户名 3-20 位，仅小写字母/数字/下划线';return;}if(pw.length<6){err.textContent='密码至少 6 位';return;}apiFetch('/api/register',{method:'POST',body:{username:u,nickname:nick,password:pw}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'注册失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);acctEnter();},function(){err.textContent='网络错误，请重试';});}
 function acctLogin(){var u=(document.getElementById('lgUser').value||'').trim().toLowerCase();var pw=document.getElementById('lgPass').value||'';var err=document.getElementById('lgErr');err.textContent='';if(!u||!pw){err.textContent='请输入用户名和密码';return;}apiFetch('/api/login',{method:'POST',body:{username:u,password:pw}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'登录失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);acctEnter();},function(){err.textContent='网络错误，请重试';});}
 function oauthLogin(p){if(!API_BASE)return;location.href=API_BASE+'/api/oauth/'+p+'/start';}
-function acctSync(silent){if(!ACCT.token||!API_BASE)return Promise.resolve();return apiFetch('/api/sync',{method:'POST',body:collectStats()}).then(function(r){if(r&&r.status===401)acctClearLocal();return r;},function(){});}
+function acctSync(silent){if(!ACCT.token||!API_BASE)return Promise.resolve();return apiFetch('/api/sync',{method:'POST',body:collectStats()}).then(function(r){if(r&&r.status===401)acctClearLocal();else if(r&&r.ok&&r.data&&r.data.badges)badgeCelebrate(r.data.badges);return r;},function(){});}
+// ── 徽章解锁祝贺特效：对比本地已看过集合，新点亮的排队逐个弹全屏窗 ──
+var _bq=[],_bshowing=false;
+function _badgeSeen(){try{return JSON.parse(localStorage.getItem('badges_seen')||'[]');}catch(e){return [];}}
+function badgeCelebrate(list){var seen=_badgeSeen(),map={},i;for(i=0;i<BADGES.length;i++)map[BADGES[i].id]=BADGES[i];var fresh=[];for(i=0;i<list.length;i++){if(seen.indexOf(list[i])<0){seen.push(list[i]);if(map[list[i]])fresh.push(map[list[i]]);}}try{localStorage.setItem('badges_seen',JSON.stringify(seen));}catch(e){}if(fresh.length){_bq=_bq.concat(fresh);if(!_bshowing)_badgeNext();}}
+function _badgeNext(){if(!_bq.length){_bshowing=false;return;}_bshowing=true;var b=_bq.shift();var ov=document.createElement('div');ov.className='bcele-ov';var cfCols=['#ffd740','#58cc02','#1cb0f6','#ff4b4b','#ce82ff','#ff9600'];var cf='';for(var i=0;i<16;i++){cf+='<i class="bcele-cf" style="left:'+(4+Math.random()*92)+'%;background:'+cfCols[i%6]+';animation-delay:'+(Math.random()*1.8)+'s"></i>';}var goal=b.m?('达成 '+b.n+(b.m==='best'?' 天连续打卡':b.m==='known'?' 个掌握词':b.m==='quiz'?' 题测验':' 次学习')):(b.desc||'');ov.innerHTML=cf+'<div class="bcele"><div class="bcele-rays"></div><span class="bcele-emo">'+b.emo+'</span><div class="bcele-tag">徽 章 解 锁</div><div class="bcele-name">'+b.name+'</div><div class="bcele-desc">'+goal+'</div><div class="bcele-hint">轻触任意处继续</div></div>';function close(){if(ov.parentNode)ov.parentNode.removeChild(ov);setTimeout(_badgeNext,250);}ov.addEventListener('click',close);setTimeout(close,6000);document.body.appendChild(ov);try{track('badge',{id:b.id});}catch(e){}}
 function acctSyncSoon(){if(!ACCT.token)return;if(_syncT)clearTimeout(_syncT);_syncT=setTimeout(function(){acctSync(true);},4000);}
 function _avatarHtml(u,size){var e=(u&&u.avatar)||'🦊';var bg=(u&&u.av_bg)||'#58cc02';var fs=Math.round(size*0.55);return '<span class="avatar" style="width:'+size+'px;height:'+size+'px;background:'+bg+';font-size:'+fs+'px">'+e+'</span>';}
-function _badgesHtml(st){return '<div class="badge-grid">'+BADGES.map(function(b){var on=b.always||(st[b.m]||0)>=b.n;var tail=on?'<div class="bprog" style="color:var(--gold)">已点亮</div>':'<div class="bprog">'+(st[b.m]||0)+'/'+b.n+'</div>';return '<div class="badge'+(on?'':' locked')+'"><div class="bemo">'+b.emo+'</div><div class="bname">'+b.name+'</div>'+tail+'</div>';}).join('')+'</div>';}
-function _renderProfileCard(el,u,rank,isMe){if(isMe)_meUser=u;var st={known:u.known||0,best:u.best_streak||0,total:u.total||0,quiz:u.quiz||0};var prov=u.provider==='github'?' · GitHub':u.provider==='google'?' · Google':'';el.innerHTML='<div class="acct-card"><div class="prof-head">'+_avatarHtml(u,64)+'<div style="min-width:0"><div class="prof-nick">'+_esc(u.nickname||u.username)+'</div><div class="prof-uname">@'+_esc(u.username)+prov+' · 全站第 '+rank+' 名</div></div></div>'+(u.sig?'<div class="prof-sig">'+_esc(u.sig)+'</div>':'')+'<div class="prof-stats"><div class="prof-stat"><b>'+(u.known||0)+'</b><span>掌握词</span></div><div class="prof-stat"><b>'+(u.streak||0)+'</b><span>连续打卡</span></div><div class="prof-stat"><b>'+(u.best_streak||0)+'</b><span>最长打卡</span></div><div class="prof-stat"><b>'+(u.total||0)+'</b><span>累计学习</span></div></div><div class="sec-title" style="margin:6px 0 4px"><span class="sec-title-icon">🏅</span><span class="sec-title-text">徽章墙</span></div>'+_badgesHtml(st)+(isMe?'<div style="display:flex;gap:10px;margin-top:18px"><button class="acct-btn" style="flex:1" onclick="meEditOpen()">✏️ 编辑资料</button><button class="oauth-btn" style="flex:1;margin:0" onclick="acctLogout()">退出登录</button></div>':'')+'</div>';}
+function _badgesHtml(st,earned){earned=earned||[];return '<div class="badge-grid">'+BADGES.map(function(b){var on=earned.indexOf(b.id)>=0||(b.m&&(st[b.m]||0)>=b.n);var tail=on?'<div class="bprog" style="color:var(--gold)">已点亮</div>':'<div class="bprog">'+(b.m?(st[b.m]||0)+'/'+b.n:(b.desc||''))+'</div>';return '<div class="badge'+(on?'':' locked')+'"><div class="bemo">'+b.emo+'</div><div class="bname">'+b.name+'</div>'+tail+'</div>';}).join('')+'</div>';}
+function _renderProfileCard(el,u,rank,isMe){if(isMe)_meUser=u;var st={known:u.known||0,best:u.best_streak||0,total:u.total||0,quiz:u.quiz||0};var earned=String(u.badges||'').split(',').filter(Boolean);var prov=u.provider==='github'?' · GitHub':u.provider==='google'?' · Google':'';el.innerHTML='<div class="acct-card"><div class="prof-head">'+_avatarHtml(u,64)+'<div style="min-width:0"><div class="prof-nick">'+_esc(u.nickname||u.username)+'</div><div class="prof-uname">@'+_esc(u.username)+prov+' · 全站第 '+rank+' 名</div></div></div>'+(u.sig?'<div class="prof-sig">'+_esc(u.sig)+'</div>':'')+'<div class="prof-stats"><div class="prof-stat"><b>'+(u.known||0)+'</b><span>掌握词</span></div><div class="prof-stat"><b>'+(u.streak||0)+'</b><span>连续打卡</span></div><div class="prof-stat"><b>'+(u.best_streak||0)+'</b><span>最长打卡</span></div><div class="prof-stat"><b>'+(u.total||0)+'</b><span>累计学习</span></div></div><div class="sec-title" style="margin:6px 0 4px"><span class="sec-title-icon">🏅</span><span class="sec-title-text">徽章墙</span></div>'+_badgesHtml(st,earned)+(isMe?'<div style="display:flex;gap:10px;margin-top:18px"><button class="acct-btn" style="flex:1" onclick="meEditOpen()">✏️ 编辑资料</button><button class="oauth-btn" style="flex:1;margin:0" onclick="acctLogout()">退出登录</button></div>':'')+'</div>';}
 function renderMe(){if(!ACCT.token){showSection('account');return;}var v=document.getElementById('meView'),ed=document.getElementById('meEdit');ed.style.display='none';v.style.display='';v.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:20px">加载中…</p>';acctSync(true).then(function(){return apiFetch('/api/me');}).then(function(r){if(!r||!r.ok){v.innerHTML='<div class="acct-card"><p class="acct-err">加载失败，请重新登录</p><button class="acct-btn" onclick="acctLogout()">退出登录</button></div>';return;}ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();_renderProfileCard(v,r.data.user,r.data.rank,true);});}
 function _showBare(id){document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});var el=document.getElementById(id);if(el)el.classList.add('active');window.scrollTo(0,0);}
 function openProfile(name){_showBare('me');var v=document.getElementById('meView');document.getElementById('meEdit').style.display='none';v.style.display='';v.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:20px">加载中…</p>';apiFetch('/api/profile?name='+encodeURIComponent(name)).then(function(r){if(!r||!r.ok){v.innerHTML='<div class="acct-card"><p class="acct-err">用户不存在</p></div>';return;}var isMe=ACCT.user&&ACCT.user.username===name;_renderProfileCard(v,r.data.user,r.data.rank,isMe);});}
