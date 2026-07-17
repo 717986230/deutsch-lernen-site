@@ -56,3 +56,13 @@ CREATE TABLE IF NOT EXISTS oauth_state (
   state TEXT PRIMARY KEY,
   exp   INTEGER
 );
+
+-- 社交：关注关系（follower 关注 followee）
+CREATE TABLE IF NOT EXISTS follows (
+  follower INTEGER,
+  followee INTEGER,
+  ts       INTEGER,
+  PRIMARY KEY (follower, followee)
+);
+CREATE INDEX IF NOT EXISTS idx_follows_followee ON follows(followee);
+CREATE INDEX IF NOT EXISTS idx_follows_follower ON follows(follower);

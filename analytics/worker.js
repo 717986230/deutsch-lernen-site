@@ -148,7 +148,28 @@ export default {
       const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created FROM users WHERE id=?').bind(uid).first();
       if (!u) return json({ err: '账号不存在' }, 404, cors);
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
-      return json({ user: u, rank: rank.c }, 200, cors);
+      const fc = await followCounts(env, uid);
+      return json({ user: u, rank: rank.c, followers: fc.followers, following: fc.following }, 200, cors);
+    }
+    // ───────── 社交：关注 / 取关 / 关注列表 ─────────
+    if (M === 'POST' && (path === '/api/follow' || path === '/api/unfollow')) {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const b = await body(req);
+      const name = String(b.name || '').trim().toLowerCase();
+      const t = await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(name).first();
+      if (!t) return json({ err: '用户不存在' }, 404, cors);
+      if (t.id === uid) return json({ err: '不能关注自己' }, 400, cors);
+      if (path === '/api/follow') await env.DB.prepare('INSERT OR IGNORE INTO follows (follower,followee,ts) VALUES (?,?,?)').bind(uid, t.id, Date.now()).run();
+      else await env.DB.prepare('DELETE FROM follows WHERE follower=? AND followee=?').bind(uid, t.id).run();
+      return json({ ok: 1, following: path === '/api/follow' }, 200, cors);
+    }
+    if (M === 'GET' && path === '/api/following') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const rows = await env.DB.prepare('SELECT u.username,u.nickname,u.avatar,u.av_bg,u.known,u.best_streak,u.level,u.badges FROM follows f JOIN users u ON u.id=f.followee WHERE f.follower=? ORDER BY u.known DESC LIMIT 100').bind(uid).all();
+      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: (r.badges || '').split(',').filter(Boolean).length }));
+      return json({ list }, 200, cors);
     }
     // 修改资料：昵称 / 头像 / 背景色 / 个性签名（需登录，服务端校验）
     if (M === 'POST' && path === '/api/profile/update') {
@@ -194,15 +215,29 @@ export default {
     }
     if (M === 'GET' && path === '/api/profile') {
       const name = String(url.searchParams.get('name') || '').trim().toLowerCase();
-      const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created FROM users WHERE username=?').bind(name).first();
+      const u = await env.DB.prepare('SELECT id,username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created FROM users WHERE username=?').bind(name).first();
       if (!u) return json({ err: '用户不存在' }, 404, cors);
+      const pid = u.id; delete u.id;
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
-      return json({ user: u, rank: rank.c }, 200, cors);
+      const fc = await followCounts(env, pid);
+      let isFollowing = false;
+      const viewer = await auth(req, env);
+      if (viewer && viewer !== pid) {
+        const f = await env.DB.prepare('SELECT 1 FROM follows WHERE follower=? AND followee=?').bind(viewer, pid).first();
+        isFollowing = !!f;
+      }
+      return json({ user: u, rank: rank.c, followers: fc.followers, following: fc.following, isFollowing, isMe: viewer === pid }, 200, cors);
     }
 
     return new Response('uuoo app');
   },
 };
+
+async function followCounts(env, uid) {
+  const a = await env.DB.prepare('SELECT COUNT(*) c FROM follows WHERE followee=?').bind(uid).first();
+  const b = await env.DB.prepare('SELECT COUNT(*) c FROM follows WHERE follower=?').bind(uid).first();
+  return { followers: a.c, following: b.c };
+}
 
 // 徽章判定（服务端唯一真值；前端 BADGES 用同一套门槛渲染灰/亮，两边必须一致）
 // 没有"注册就送"的徽章——全部要靠学习/资历挣。创始人=前 100 个注册账号（按自增 id）。
