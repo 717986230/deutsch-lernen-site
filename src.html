@@ -1157,6 +1157,10 @@ body.lang-en .phfab{display:none}
         <button class="on" data-m="zh" onclick="spSetMode('zh')">👀 看中文拼</button>
         <button data-m="listen" onclick="spSetMode('listen')">🎧 听写（更难）</button>
       </div>
+      <div class="sp-levels" id="spDiffs">
+        <button class="on" data-d="blind" onclick="spSetDiff('blind')">✍️ 默写</button>
+        <button data-d="trace" onclick="spSetDiff('trace')">📋 描摹（照着敲）</button>
+      </div>
       <p id="spPoolInfo" style="text-align:center;font-size:12px;color:var(--text-faint);margin:2px 0 16px"></p>
       <div style="text-align:center"><button class="acct-btn" style="max-width:240px;margin:0 auto" onclick="spStart()">开始拼写</button></div>
     </div>
@@ -1166,6 +1170,7 @@ body.lang-en .phfab{display:none}
       <div class="sp-card" id="spCard">
         <div class="sp-zh" id="spZh"></div>
         <div class="sp-py" id="spPy"></div>
+        <div class="sp-trace" id="spTrace"></div>
         <div class="sp-slots-wrap">
           <div class="sp-slots" id="spSlots"></div>
           <input id="spInput" class="sp-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="输入德语拼写">
@@ -1177,6 +1182,7 @@ body.lang-en .phfab{display:none}
         <button type="button" onclick="spReplay()">🔊 读一遍</button>
         <button type="button" onclick="spHint()">💡 提示一个</button>
         <button type="button" onclick="spSkip()">跳过 →</button>
+        <button type="button" id="spSoundBtn" onclick="spToggleSound()">🔔 音效</button>
       </div>
     </div>
     <div id="spDone" style="display:none"></div>
@@ -1289,7 +1295,8 @@ body.lang-en .phfab{display:none}
 @keyframes spOk{0%{box-shadow:0 0 0 0 rgba(88,204,2,.5)}100%{box-shadow:0 0 0 18px rgba(88,204,2,0)}}
 .sp-zh{font-size:26px;font-weight:800;color:var(--text);line-height:1.4}
 .sp-py{font-size:13px;color:var(--text-faint);margin-top:6px;min-height:18px}
-.sp-slots-wrap{position:relative;margin:22px 0 2px}
+.sp-trace{font-size:24px;letter-spacing:7px;color:var(--text-faint);font-family:Georgia,serif;font-weight:700;min-height:20px;margin-top:10px;opacity:.55}
+.sp-slots-wrap{position:relative;margin:14px 0 2px}
 .sp-slots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .sp-slot{width:34px;height:46px;border-radius:10px;background:var(--surface-2);border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--text);font-family:Georgia,serif}
 .sp-slot.cur{border-color:var(--gold);box-shadow:0 0 0 3px rgba(88,204,2,.18)}
@@ -3389,27 +3396,36 @@ try{document.addEventListener('visibilitychange',function(){if(document.visibili
 </script>
 <script>
 // ═══════════════ 拼写记忆 · 键盘输入记单词（借鉴句乐部：中译德 / 听写、逐字母强校验、掌握即移出）═══════════════
-var SP={level:'0',mode:'zh',q:[],i:0,word:'',zh:'',py:'',pos:0,miss:0,revealed:false,learned:0,perfect:0,size:12};
+var SP={level:'0',mode:'zh',diff:'blind',q:[],i:0,item:null,word:'',zh:'',py:'',pos:0,miss:0,revealed:false,learned:0,perfect:0,wrong:[],size:12,sound:true};
+try{SP.sound=localStorage.getItem('spSound')!=='0';}catch(e){}
+var _spAC=null;
+function spBeep(freq,dur,type){if(!SP.sound)return;try{if(!_spAC)_spAC=new(window.AudioContext||window.webkitAudioContext)();var ac=_spAC,o=ac.createOscillator(),g=ac.createGain();o.type=type||'sine';o.frequency.value=freq;o.connect(g);g.connect(ac.destination);var t=ac.currentTime;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.14,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.start(t);o.stop(t+dur+0.02);}catch(e){}}
+function spOK(){spBeep(880,0.06,'triangle');}
+function spBad(){spBeep(150,0.14,'sawtooth');}
+function spDing(){spBeep(660,0.09,'sine');setTimeout(function(){spBeep(990,0.14,'sine');},90);}
+function spToggleSound(){SP.sound=!SP.sound;try{localStorage.setItem('spSound',SP.sound?'1':'0');}catch(e){}var b=document.getElementById('spSoundBtn');if(b)b.textContent=SP.sound?'🔔 音效':'🔕 静音';if(SP.sound)spOK();}
+function spSetDiff(d){SP.diff=d;var b=document.getElementById('spDiffs').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-d')===d);}
 function spBuildPool(level){var out=[],seen={},known=getKnown();for(var ci=0;ci<categories.length;ci++){var c=categories[ci];if(level!=='all'&&c.level!==level)continue;for(var pi=0;pi<c.phrases.length;pi++){var p=c.phrases[pi];var w=(p.de||'').replace(/^[^A-Za-zÄÖÜäöüß]+/,'').replace(/[^A-Za-zÄÖÜäöüß]+$/,'');if(/^[A-Za-zÄÖÜäöüß]{2,16}$/.test(w)){var k=w.toLowerCase();if(!seen[k]&&!known[w]){seen[k]=1;out.push({de:w,zh:p.zh,py:p.py});}}}}return out;}
 function spRenderLevels(){var L=[['0','🌱 零基础'],['a1','⭐ A1'],['a2','⭐⭐ A2'],['b1','🔥 B1'],['b2','💎 B2'],['all','📚 全部']];document.getElementById('spLevels').innerHTML=L.map(function(x){return '<button type="button" class="'+(x[0]===SP.level?'on':'')+'" onclick="spSetLevel(\''+x[0]+'\')">'+x[1]+'</button>';}).join('');}
 function spSetLevel(l){SP.level=l;spRenderLevels();spUpdatePoolInfo();}
 function spSetMode(m){SP.mode=m;var b=document.getElementById('spModes').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-m')===m);}
 function spUpdatePoolInfo(){var n=spBuildPool(SP.level).length;document.getElementById('spPoolInfo').textContent=n?('待记 '+n+' 词（已掌握的自动跳过）· 每组 '+Math.min(SP.size,n)+' 词'):'这个级别的词都掌握啦，换一个级别试试 🎉';}
-function spInit(){spRenderLevels();spSetMode(SP.mode);document.getElementById('spSetup').style.display='';document.getElementById('spDrill').style.display='none';document.getElementById('spDone').style.display='none';spUpdatePoolInfo();var inp=document.getElementById('spInput');if(inp&&!inp._b){inp._b=1;inp.addEventListener('input',spOnInput);}}
+function spInit(){spRenderLevels();spSetMode(SP.mode);spSetDiff(SP.diff);document.getElementById('spSetup').style.display='';document.getElementById('spDrill').style.display='none';document.getElementById('spDone').style.display='none';var sb=document.getElementById('spSoundBtn');if(sb)sb.textContent=SP.sound?'🔔 音效':'🔕 静音';spUpdatePoolInfo();var inp=document.getElementById('spInput');if(inp&&!inp._b){inp._b=1;inp.addEventListener('input',spOnInput);}}
 function _spShuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
-function spStart(){var pool=_spShuf(spBuildPool(SP.level));if(!pool.length){spUpdatePoolInfo();return;}SP.q=pool.slice(0,SP.size);SP.i=0;SP.learned=0;SP.perfect=0;document.getElementById('spSetup').style.display='none';document.getElementById('spDone').style.display='none';document.getElementById('spDrill').style.display='';spLoad();}
-function spLoad(){if(SP.i>=SP.q.length){spFinish();return;}var it=SP.q[SP.i];SP.word=it.de;SP.zh=it.zh;SP.py=it.py;SP.pos=0;SP.miss=0;SP.revealed=false;document.getElementById('spBar').style.width=(SP.i/SP.q.length*100)+'%';document.getElementById('spCount').textContent=(SP.i+1)+' / '+SP.q.length;var listen=SP.mode==='listen';document.getElementById('spZh').textContent=listen?'🎧 听发音，拼出这个词':SP.zh;document.getElementById('spPy').textContent=listen?'':(SP.py||'');spRenderSlots();var inp=document.getElementById('spInput');inp.value='';setTimeout(function(){try{inp.focus();}catch(e){}},30);spReplay();}
+function spStart(){var pool=_spShuf(spBuildPool(SP.level));if(!pool.length){spUpdatePoolInfo();return;}SP.q=pool.slice(0,SP.size);SP.i=0;SP.learned=0;SP.perfect=0;SP.wrong=[];document.getElementById('spSetup').style.display='none';document.getElementById('spDone').style.display='none';document.getElementById('spDrill').style.display='';spLoad();}
+function spLoad(){if(SP.i>=SP.q.length){spFinish();return;}var it=SP.q[SP.i];SP.item=it;SP.word=it.de;SP.zh=it.zh;SP.py=it.py;SP.pos=0;SP.miss=0;SP.revealed=false;document.getElementById('spBar').style.width=(SP.i/SP.q.length*100)+'%';document.getElementById('spCount').textContent=(SP.i+1)+' / '+SP.q.length;var listen=SP.mode==='listen';document.getElementById('spZh').textContent=listen?'🎧 听发音，拼出这个词':SP.zh;document.getElementById('spPy').textContent=listen?'':(SP.py||'');document.getElementById('spTrace').textContent=SP.diff==='trace'?SP.word:'';spRenderSlots();var inp=document.getElementById('spInput');inp.value='';setTimeout(function(){try{inp.focus();}catch(e){}},30);spReplay();}
 function spRenderSlots(){var w=SP.word,h='',i;for(i=0;i<w.length;i++){var cls='sp-slot';if(i<SP.pos)cls+=' filled';else if(i===SP.pos)cls+=' cur';h+='<div class="'+cls+'" id="spS'+i+'">'+(i<SP.pos?w[i]:'')+'</div>';}document.getElementById('spSlots').innerHTML=h;}
 function spMatch(ch,t){ch=ch.toLowerCase();t=t.toLowerCase();if(ch===t)return true;if(t==='ä')return ch==='a';if(t==='ö')return ch==='o';if(t==='ü')return ch==='u';if(t==='ß')return ch==='s';return false;}
-function spTry(ch){if(!SP.word||SP.pos>=SP.word.length)return;if(!/^[A-Za-zÄÖÜäöüß]$/.test(ch))return;var t=SP.word[SP.pos];if(spMatch(ch,t)){var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=t;s.className='sp-slot filled';}SP.pos++;if(SP.pos<SP.word.length){var n=document.getElementById('spS'+SP.pos);if(n)n.className='sp-slot cur';}else spWordDone();}else{SP.miss++;var cur=document.getElementById('spS'+SP.pos);if(cur){cur.classList.add('bad');(function(el){setTimeout(function(){el.classList.remove('bad');},320);})(cur);}if(SP.miss>=4){SP.revealed=true;spReveal();}}}
+function spTry(ch){if(!SP.word||SP.pos>=SP.word.length)return;if(!/^[A-Za-zÄÖÜäöüß]$/.test(ch))return;var t=SP.word[SP.pos];if(spMatch(ch,t)){var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=t;s.className='sp-slot filled';}spOK();SP.pos++;if(SP.pos<SP.word.length){var n=document.getElementById('spS'+SP.pos);if(n)n.className='sp-slot cur';}else spWordDone();}else{SP.miss++;spBad();var cur=document.getElementById('spS'+SP.pos);if(cur){cur.classList.add('bad');(function(el){setTimeout(function(){el.classList.remove('bad');},320);})(cur);}if(SP.miss>=4){SP.revealed=true;spReveal();}}}
 function spReveal(){if(SP.pos>=SP.word.length)return;var t=SP.word[SP.pos];var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=t;s.className='sp-slot filled';}SP.pos++;SP.miss=0;if(SP.pos<SP.word.length){var n=document.getElementById('spS'+SP.pos);if(n)n.className='sp-slot cur';}else spWordDone();}
 function spOnInput(e){var v=e.target.value;e.target.value='';for(var i=0;i<v.length;i++)spTry(v[i]);}
 function spKey(c){spTry(c);try{document.getElementById('spInput').focus();}catch(e){}}
 function spHint(){SP.revealed=true;spReveal();try{document.getElementById('spInput').focus();}catch(e){}}
 function spReplay(){try{if(typeof speakDE==='function')speakDE(SP.word);}catch(e){}}
 function spSkip(){SP.i++;spLoad();}
-function spWordDone(){SP.learned++;if(!SP.revealed&&SP.miss===0)SP.perfect++;var card=document.getElementById('spCard');if(card){card.classList.add('ok');setTimeout(function(){card.classList.remove('ok');},500);}try{var m=getKnown();if(!m[SP.word]){m[SP.word]=1;saveKnown(m);}studyTick(1);acctSyncSoon();}catch(e){}SP.i++;setTimeout(spLoad,650);}
-function spFinish(){document.getElementById('spBar').style.width='100%';document.getElementById('spDrill').style.display='none';var acc=SP.learned?Math.round(SP.perfect/SP.learned*100):0;var d=document.getElementById('spDone');d.style.display='';d.innerHTML='<div class="sp-card"><div style="font-size:44px">🎉</div><div style="font-size:22px;font-weight:800;color:var(--text);margin-top:8px">本组完成！</div><div style="font-size:14px;color:var(--text-dim);margin-top:10px">掌握 <b style="color:var(--gold);font-size:20px">'+SP.learned+'</b> 词 · 一次全对 <b style="color:var(--gold)">'+SP.perfect+'</b> 词（'+acc+'%）</div><div style="display:flex;gap:10px;margin-top:20px"><button type="button" class="acct-btn" style="flex:1" onclick="spStart()">再来一组</button><button type="button" class="oauth-btn" style="flex:1;margin:0" onclick="spInit()">换级别/模式</button></div></div>';}
+function spWordDone(){SP.learned++;var flawless=!SP.revealed&&SP.miss===0;if(flawless)SP.perfect++;else if(SP.item){var w=SP.item,dup=false,k;for(k=0;k<SP.wrong.length;k++)if(SP.wrong[k].de===w.de){dup=true;break;}if(!dup)SP.wrong.push(w);}var card=document.getElementById('spCard');if(card){card.classList.add('ok');setTimeout(function(){card.classList.remove('ok');},500);}spDing();try{var m=getKnown();if(!m[SP.word]){m[SP.word]=1;saveKnown(m);}studyTick(1);acctSyncSoon();}catch(e){}SP.i++;setTimeout(spLoad,650);}
+function spReviewWrong(){if(!SP.wrong.length)return;SP.q=_spShuf(SP.wrong.slice());SP.i=0;SP.learned=0;SP.perfect=0;SP.wrong=[];document.getElementById('spDone').style.display='none';document.getElementById('spDrill').style.display='';spLoad();}
+function spFinish(){document.getElementById('spBar').style.width='100%';document.getElementById('spDrill').style.display='none';var acc=SP.learned?Math.round(SP.perfect/SP.learned*100):0;var nw=SP.wrong.length;var d=document.getElementById('spDone');d.style.display='';d.innerHTML='<div class="sp-card"><div style="font-size:44px">🎉</div><div style="font-size:22px;font-weight:800;color:var(--text);margin-top:8px">本组完成！</div><div style="font-size:14px;color:var(--text-dim);margin-top:10px">掌握 <b style="color:var(--gold);font-size:20px">'+SP.learned+'</b> 词 · 一次全对 <b style="color:var(--gold)">'+SP.perfect+'</b> 词（'+acc+'%）'+(nw?'<br>有 <b style="color:#ff4b4b">'+nw+'</b> 个词卡壳了，重练一遍记更牢':'')+'</div><div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">'+(nw?'<button type="button" class="acct-btn" onclick="spReviewWrong()">🔁 重练错词（'+nw+'）</button>':'')+'<div style="display:flex;gap:10px"><button type="button" class="'+(nw?'oauth-btn':'acct-btn')+'" style="flex:1;margin:0" onclick="spStart()">再来一组</button><button type="button" class="oauth-btn" style="flex:1;margin:0" onclick="spInit()">换级别/模式</button></div></div></div>';}
 </script>
 <nav id="bottomNav" aria-label="底部导航">
   <button class="bn-btn" data-sec="home" onclick="showSection('home')"><span class="bn-i">🏠</span><span class="bn-t">首页</span></button>
