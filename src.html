@@ -319,6 +319,7 @@ body.lang-en .phfab{display:none}
 .know-btn{color:var(--text-faint)}.know-btn:hover{background:rgba(88,204,2,.16)}.know-btn.on{color:#46a302}
 </style>
 <script>(function(){try{var t=localStorage.getItem("theme");var d=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);document.documentElement.setAttribute("data-theme",d?"dark":"light");}catch(e){}})();</script>
+<script>/* 硬登录门槛：无 token 先上锁（无闪烁），主脚本校验后再放行 */(function(){try{if(!localStorage.getItem("acct_token"))document.documentElement.classList.add("locked");}catch(e){document.documentElement.classList.add("locked");}})();</script>
 </head>
 <body>
 <script>
@@ -351,6 +352,8 @@ body.lang-en .phfab{display:none}
   <button class="nav-btn" onclick="showSection('phrases')">💬 词句大全</button>
   <button class="nav-btn nav-de-only" onclick="showSection('reading')">📖 阅读·连载</button>
   <button class="nav-btn" onclick="showSection('quiz')">🎯 练习测验</button>
+  <button class="nav-btn" onclick="showSection('rank')">🏆 排行榜</button>
+  <button class="nav-btn" onclick="showSection('account')">👤 我的</button>
   <button class="nav-btn" onclick="showSection('support')">❤️ 支持</button>
 </nav>
 
@@ -1142,6 +1145,164 @@ body.lang-en .phfab{display:none}
   </div>
 </div>
 
+<!-- ══════════════ 账号 · 排行 · 主页 ══════════════ -->
+<style>
+.acct-wrap{max-width:420px;margin:0 auto}
+.acct-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 18px;box-shadow:var(--shadow)}
+.acct-tabs{display:flex;gap:6px;margin-bottom:16px}
+.acct-tabs button{flex:1;padding:9px;border:none;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--surface-2);color:var(--text-dim)}
+.acct-tabs button.on{background:var(--gold);color:#fff}
+.acct-field{margin-bottom:12px}
+.acct-field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:4px}
+.acct-input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text);font-size:15px;font-family:inherit}
+.acct-input:focus{outline:2px solid var(--gold);outline-offset:-1px;border-color:transparent}
+.acct-btn{width:100%;padding:11px;border:none;border-radius:12px;background:var(--gold);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:4px}
+.acct-btn:active{transform:translateY(1px)}
+.acct-err{color:#ff4b4b;font-size:13px;min-height:18px;margin:6px 0 2px;text-align:center}
+.acct-div{display:flex;align-items:center;gap:10px;color:var(--text-faint);font-size:12px;margin:16px 0}
+.acct-div::before,.acct-div::after{content:"";flex:1;height:1px;background:var(--border)}
+.oauth-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:8px;text-decoration:none}
+.oauth-btn:active{transform:translateY(1px)}
+.acct-note{font-size:11px;color:var(--text-faint);text-align:center;line-height:1.7;margin-top:14px}
+/* 头像 */
+.avatar{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;line-height:1}
+/* 排行榜 */
+.rank-tabs{display:flex;gap:6px;max-width:460px;margin:0 auto 14px;flex-wrap:wrap;justify-content:center}
+.rank-tabs button{padding:7px 14px;border:1px solid var(--border);border-radius:16px;background:var(--surface);color:var(--text-dim);font-size:13px;font-family:inherit;cursor:pointer}
+.rank-tabs button.on{background:var(--gold);color:#fff;border-color:transparent;font-weight:700}
+.rank-list{max-width:520px;margin:0 auto}
+.rank-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--border);margin-bottom:8px;cursor:pointer}
+.rank-row.me{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.rank-no{width:26px;text-align:center;font-weight:800;color:var(--text-faint);font-size:15px;flex-shrink:0}
+.rank-no.top{font-size:20px}
+.rank-name{flex:1;min-width:0}
+.rank-nick{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-meta{font-size:11px;color:var(--text-faint)}
+.rank-val{font-size:17px;font-weight:800;color:var(--gold);flex-shrink:0}
+.rank-val small{font-size:11px;color:var(--text-faint);font-weight:600;margin-left:2px}
+/* 主页 */
+.prof-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.prof-nick{font-size:20px;font-weight:800;color:var(--text)}
+.prof-uname{font-size:12px;color:var(--text-faint)}
+.prof-sig{font-size:13px;color:var(--text-dim);margin:8px 0 0;line-height:1.6}
+.prof-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
+.prof-stat{background:var(--surface-2);border-radius:12px;padding:12px 6px;text-align:center}
+.prof-stat b{display:block;font-size:20px;color:var(--gold);font-weight:800}
+.prof-stat span{font-size:11px;color:var(--text-dim)}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;margin-top:10px}
+.badge{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center}
+.badge .bemo{font-size:30px;line-height:1;filter:none}
+.badge.locked{opacity:.45}
+.badge.locked .bemo{filter:grayscale(1)}
+.badge .bname{font-size:11px;color:var(--text);font-weight:600;margin-top:6px;line-height:1.3}
+.badge .bprog{font-size:10px;color:var(--text-faint);margin-top:2px}
+.emoji-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px;margin:6px 0}
+.emoji-pick button{font-size:22px;padding:6px 0;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);cursor:pointer;line-height:1}
+.emoji-pick button.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.color-pick{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.color-pick button{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer}
+.color-pick button.on{border-color:var(--text)}
+/* 登录页 · 动态玻璃（Apple UI 风） */
+#account{position:relative;overflow:hidden}
+.auth-stage{position:relative;min-height:calc(100vh - 72px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 16px}
+.auth-aurora{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+.auth-aurora i{position:absolute;display:block;border-radius:50%;filter:blur(64px);opacity:.55;will-change:transform;animation:auroraFloat 20s ease-in-out infinite}
+.auth-aurora i:nth-child(1){width:360px;height:360px;background:#58cc02;top:-70px;left:-50px}
+.auth-aurora i:nth-child(2){width:320px;height:320px;background:#1cb0f6;bottom:-60px;right:-40px;animation-delay:-5s}
+.auth-aurora i:nth-child(3){width:280px;height:280px;background:#ce82ff;top:38%;left:52%;animation-delay:-10s}
+.auth-aurora i:nth-child(4){width:240px;height:240px;background:#ff9600;bottom:6%;left:2%;animation-delay:-14s;opacity:.42}
+@keyframes auroraFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(46px,-34px) scale(1.16)}66%{transform:translate(-32px,28px) scale(.88)}}
+@media (prefers-reduced-motion:reduce){.auth-aurora i{animation:none}}
+/* 3D 浮动吉祥物（纯 CSS，离线/微信可用） */
+.mascot{position:relative;z-index:1;width:130px;height:130px;margin-bottom:2px;perspective:640px}
+.mascot-3d{position:absolute;left:0;right:0;top:0;height:118px;font-size:80px;line-height:118px;text-align:center;transform-style:preserve-3d;animation:mascotFloat 4.6s ease-in-out infinite;filter:drop-shadow(0 12px 14px rgba(0,0,0,.24))}
+@keyframes mascotFloat{0%,100%{transform:translateY(0) rotateX(0) rotateY(-13deg) rotateZ(-2deg)}25%{transform:translateY(-15px) rotateX(9deg) rotateY(0deg) rotateZ(0deg)}50%{transform:translateY(-7px) rotateX(0) rotateY(13deg) rotateZ(2deg)}75%{transform:translateY(-15px) rotateX(-9deg) rotateY(0deg) rotateZ(0deg)}}
+.mascot-shadow{position:absolute;left:50%;bottom:4px;width:66px;height:14px;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(0,0,0,.3),rgba(0,0,0,0) 70%);border-radius:50%;animation:mascotShadow 4.6s ease-in-out infinite}
+@keyframes mascotShadow{0%,100%{transform:translateX(-50%) scale(1);opacity:.5}25%,75%{transform:translateX(-50%) scale(.66);opacity:.26}50%{transform:translateX(-50%) scale(.86);opacity:.38}}
+@media (prefers-reduced-motion:reduce){.mascot-3d,.mascot-shadow{animation:none}}
+.hide-fab .phfab{display:none}
+/* 硬登录门槛：上锁时只显示登录页，其余全部隐藏 */
+:root.locked .lang-switch,:root.locked #nav,:root.locked #pwaInstall,:root.locked .phfab,:root.locked .skip-link{display:none!important}
+:root.locked .section:not(#account){display:none!important}
+:root.locked #account{display:block!important;padding-top:0}
+:root.locked .auth-stage{min-height:100vh}
+.glass-title{position:relative;z-index:1;text-align:center;font-size:25px;font-weight:800;letter-spacing:.5px;margin:0 0 5px;color:var(--text)}
+.glass-sub{position:relative;z-index:1;text-align:center;font-size:13px;color:var(--text-dim);max-width:360px;margin:0 0 20px;line-height:1.7}
+.glass-card{position:relative;z-index:1;width:100%;max-width:400px;padding:24px 22px;border-radius:26px;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);border:1px solid rgba(255,255,255,.4);box-shadow:0 14px 46px rgba(20,30,20,.2),inset 0 1px 0 rgba(255,255,255,.55)}
+:root[data-theme=dark] .glass-card{background:rgba(26,30,36,.42);border-color:rgba(255,255,255,.14);box-shadow:0 14px 46px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08)}
+.glass-card .acct-tabs button{background:rgba(255,255,255,.28);color:var(--text)}
+.glass-card .acct-tabs button.on{background:var(--gold);color:#fff}
+:root[data-theme=dark] .glass-card .acct-tabs button{background:rgba(255,255,255,.09)}
+.glass-card .acct-input{background:rgba(255,255,255,.42);border-color:rgba(255,255,255,.55);color:#16321a}
+.glass-card .acct-input::placeholder{color:rgba(20,40,20,.5)}
+:root[data-theme=dark] .glass-card .acct-input{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#fff}
+:root[data-theme=dark] .glass-card .acct-input::placeholder{color:rgba(255,255,255,.45)}
+.glass-card .acct-field label{color:var(--text)}
+.glass-card .oauth-btn{background:rgba(255,255,255,.32);border-color:rgba(255,255,255,.45);color:var(--text)}
+:root[data-theme=dark] .glass-card .oauth-btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16)}
+.glass-card .acct-btn{box-shadow:0 6px 18px rgba(88,204,2,.4)}
+.glass-card .acct-div{color:var(--text-dim)}
+.glass-card .acct-note{color:var(--text-dim)}
+</style>
+
+<!-- 登录 / 注册（动态玻璃 · Apple UI） -->
+<div id="account" class="section">
+  <div class="auth-stage">
+    <div class="auth-aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="mascot" aria-hidden="true"><div class="mascot-3d">🦉</div><div class="mascot-shadow"></div></div>
+    <div class="glass-title">德语学习手册</div>
+    <div class="glass-sub">发音 · 数字 · 语法 · 3900+ 词句 · 互动测验<br>登录后学习进度同步云端，参与排行榜、点亮徽章 🏅</div>
+    <div class="glass-card">
+      <div class="acct-tabs">
+        <button id="tabLogin" class="on" onclick="acctTab('login')">登录</button>
+        <button id="tabReg" onclick="acctTab('reg')">注册</button>
+      </div>
+      <div id="paneLogin">
+          <div class="acct-field"><label>用户名</label><input class="acct-input" id="lgUser" autocomplete="username" placeholder="小写字母/数字/下划线"></div>
+          <div class="acct-field"><label>密码</label><input class="acct-input" id="lgPass" type="password" autocomplete="current-password" placeholder="至少 6 位"></div>
+          <div class="acct-err" id="lgErr"></div>
+          <button class="acct-btn" onclick="acctLogin()">登录</button>
+        </div>
+        <div id="paneReg" style="display:none">
+          <div class="acct-field"><label>用户名（登录用，注册后不可改）</label><input class="acct-input" id="rgUser" autocomplete="username" placeholder="3-20 位，小写字母/数字/下划线"></div>
+          <div class="acct-field"><label>昵称（展示用，可随时改）</label><input class="acct-input" id="rgNick" placeholder="中文/英文均可，≤20 字"></div>
+          <div class="acct-field"><label>密码</label><input class="acct-input" id="rgPass" type="password" autocomplete="new-password" placeholder="至少 6 位"></div>
+          <div class="acct-err" id="rgErr"></div>
+          <button class="acct-btn" onclick="acctRegister()">注册并登录</button>
+        </div>
+        <div class="acct-div" id="oauthDiv">或用第三方登录</div>
+        <a class="oauth-btn" id="oauthGithub" href="javascript:oauthLogin('github')">🐙 用 GitHub 登录</a>
+        <a class="oauth-btn" id="oauthGoogle" href="javascript:oauthLogin('google')">🌈 用 Google 登录</a>
+        <div class="acct-note">本站仅保存用户名、昵称与密码哈希（不存明文），学习数据用于排行榜与徽章。<br>不想登录可随时关闭，本地数据始终保留在你的设备上。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 排行榜 -->
+<div id="rank" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Leaderboard</div>
+    <h2 class="page-title">🏆 学习排行榜</h2>
+    <div class="rank-tabs">
+      <button id="rkKnown" class="on" onclick="renderRank('known')">📖 掌握词数</button>
+      <button id="rkStreak" onclick="renderRank('streak')">🔥 连续打卡</button>
+      <button id="rkTotal" onclick="renderRank('total')">💪 累计学习</button>
+    </div>
+    <div class="rank-list" id="rankList"><p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p></div>
+    <p class="acct-note" id="rankHint" style="max-width:440px;margin:14px auto 0"></p>
+  </div>
+</div>
+
+<!-- 个人主页 -->
+<div id="me" class="section">
+  <div class="container">
+    <div class="acct-wrap" style="max-width:560px">
+      <div id="meView"></div>
+      <div id="meEdit" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ 英语发音 ══════════════ -->
 <div id="en-pron" class="section">
   <div class="container">
@@ -1553,6 +1714,10 @@ function showSection(id){
   btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+navId+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
   if(id==='phrases'&&!_rendered.phrases){renderPhrases();_rendered.phrases=true;}       // 懒渲染：首次打开才渲染长列表
   if(id==='body'){if(typeof renderBoardTabs==='function')renderBoardTabs();if(typeof switchBoard==='function')switchBoard(_curBoard);}
+  if(id==='account'&&typeof acctToken==='function'&&acctToken()){document.getElementById(id).classList.remove('active');document.getElementById('me').classList.add('active');id='me';}
+  if(id==='me'&&typeof renderMe==='function')renderMe();
+  if(id==='rank'&&typeof renderRank==='function')renderRank();
+  document.body.classList.toggle('hide-fab',id==='account'||id==='me'||id==='rank');
   try{track('view',{s:id});}catch(e){}
   if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}
   if(id==='series'&&!_rendered.series){renderSeries();renderSeriesLinks();_rendered.series=true;}
@@ -2721,7 +2886,7 @@ setInterval(()=>{try{if(typeof speechSynthesis!=='undefined'&&speechSynthesis.sp
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking)_wakeOn();});
 
 function applyTheme(t){var r=document.documentElement;if(t==="dark"||t==="light")r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");var dark=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",dark?"#111417":"#58cc02");var b=document.getElementById("themeToggle");if(b)b.textContent=dark?"☀️":"🌙";}function toggleTheme(){var cur=document.documentElement.getAttribute("data-theme");var sys=matchMedia("(prefers-color-scheme:dark)").matches;var eff=cur==="dark"||(cur!=="light"&&sys);var next=eff?"light":"dark";try{localStorage.setItem("theme",next);}catch(e){}applyTheme(next);}(function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}applyTheme(t);})();try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}if(t!=="dark"&&t!=="light")applyTheme(null);});}catch(e){}
-function _today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function _yday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function getStudy(){var s;try{s=JSON.parse(localStorage.getItem("study")||"{}");}catch(e){s={};}if(!s.goal)s.goal=20;return s;}function saveStudy(s){try{localStorage.setItem("study",JSON.stringify(s));}catch(e){}}function studyTick(n){var s=getStudy(),t=_today();if(s.d!==t){s.streak=(s.last===_yday())?(s.streak||0)+1:1;s.last=t;s.d=t;s.n=0;}s.n=(s.n||0)+(n||1);saveStudy(s);try{track("study");}catch(e){}}function getKnown(){try{return JSON.parse(localStorage.getItem("known")||"{}");}catch(e){return {};}}function saveKnown(m){try{localStorage.setItem("known",JSON.stringify(m));}catch(e){}}function knownHas(de){return !!getKnown()[de];}function knownToggle(p,btn){var m=getKnown();if(m[p.de]){delete m[p.de];}else{m[p.de]=1;try{studyTick();}catch(e){}}saveKnown(m);if(btn){var on=!!m[p.de];btn.classList.toggle("on",on);btn.title=on?"已学会（点击取消）":"标记为已学会";}}
+function _today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function _yday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function getStudy(){var s;try{s=JSON.parse(localStorage.getItem("study")||"{}");}catch(e){s={};}if(!s.goal)s.goal=20;return s;}function saveStudy(s){try{localStorage.setItem("study",JSON.stringify(s));}catch(e){}}function studyTick(n,isQuiz){var s=getStudy(),t=_today();if(s.d!==t){s.streak=(s.last===_yday())?(s.streak||0)+1:1;s.last=t;s.d=t;s.n=0;}s.n=(s.n||0)+(n||1);s.total=(s.total||0)+(n||1);if(isQuiz)s.quiz=(s.quiz||0)+1;if((s.streak||0)>(s.best||0))s.best=s.streak;saveStudy(s);try{track("study");}catch(e){}try{acctSyncSoon();}catch(e){}}function getKnown(){try{return JSON.parse(localStorage.getItem("known")||"{}");}catch(e){return {};}}function saveKnown(m){try{localStorage.setItem("known",JSON.stringify(m));}catch(e){}}function knownHas(de){return !!getKnown()[de];}function knownToggle(p,btn){var m=getKnown();if(m[p.de]){delete m[p.de];}else{m[p.de]=1;try{studyTick();}catch(e){}}saveKnown(m);try{acctSyncSoon();}catch(e){}if(btn){var on=!!m[p.de];btn.classList.toggle("on",on);btn.title=on?"已学会（点击取消）":"标记为已学会";}}
 function copyQQ(btn){var q="717986230";function ok(){btn.textContent="✓ 已复制";setTimeout(function(){btn.textContent="复制";},2000);}try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(q).then(ok).catch(function(){prompt("QQ 号：",q);});}else{prompt("QQ 号：",q);}}catch(e){prompt("QQ 号：",q);}}
 function copyShare(btn){var u="https://www.uuoo.site/";function ok(){btn.textContent="✓ 已复制，去粘贴分享吧";setTimeout(function(){btn.textContent="📋 复制网址分享";},2500);}try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(ok).catch(function(){prompt("复制这个网址分享：",u);});}else{prompt("复制这个网址分享：",u);}}catch(e){prompt("复制这个网址分享：",u);}}
 function rejectDonate(){var t=document.createElement('div');t.textContent='谢谢你来过 \uD83D\uDE0A';t.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9999;background:rgba(40,40,40,.94);color:#fff;font-size:16px;padding:16px 26px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.35)';document.body.appendChild(t);setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);showSection('home');},1100);}
@@ -2832,7 +2997,7 @@ function gqPick(btn,a,oi){
   opts[a].classList.add('ok');
   if(oi!==a)btn.classList.add('bad');
   item.setAttribute('data-right',oi===a?'1':'0');
-  try{studyTick(1);}catch(e){}   // 计入首页「今日目标」
+  try{studyTick(1,1);}catch(e){}   // 计入首页「今日目标」
   var box=_up(item,'gq-box');
   if(box.querySelectorAll('.gq-item.done').length===box.querySelectorAll('.gq-item').length){
     var n=box.querySelectorAll('.gq-item').length,r=box.querySelectorAll('.gq-item[data-right="1"]').length;
@@ -2958,7 +3123,7 @@ function picPick(brd,i,cell){
   out.style.display="block";
   out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+it[3]+'</span> <b lang="de" style="font-size:20px;color:#46a302;vertical-align:middle">'+it[0]+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+it[0].replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+it[1]+' · <span style="color:var(--text-faint)">'+it[2]+'</span></div>';
   try{speakDE(it[0]);}catch(e){}
-  try{studyTick(1);}catch(e){}
+  try{studyTick(1,1);}catch(e){}
 }
 function _boardItems(){
   if(_curBoard==='koerper')return BODY_PARTS.map(function(p){return{de:p.de,zh:p.zh,em:p.em};});
@@ -2985,7 +3150,7 @@ function boardAns(btn,sel,cor){
   box.querySelectorAll('.gq-opt').forEach(function(b){b.style.pointerEvents='none';if(b.textContent===cor)b.classList.add('ok');});
   if(sel!==cor)btn.classList.add('bad');
   try{speakDE(cor);}catch(e){}
-  try{studyTick(1);}catch(e){}
+  try{studyTick(1,1);}catch(e){}
   var sc=box.querySelector('.gq-score');sc.style.display='block';
   sc.innerHTML=(sel===cor?'🎉 答对了！':'✅ 正确答案已标绿')+'<button class="btn" type="button" style="padding:5px 14px;font-size:12px;margin-left:8px" onclick="buildBoardQuiz()">🔄 下一题</button>';
 }
@@ -3004,7 +3169,7 @@ function bpPick(i){
   out.style.display='block';
   out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+p.em+'</span> <b lang="de" style="font-size:20px;color:#46a302;vertical-align:middle">'+p.de+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+p.de.replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+p.zh+' · <span style="color:var(--text-faint)">'+p.py+'</span></div>';
   try{speakDE(p.de);}catch(e){}
-  try{studyTick(1);}catch(e){}
+  try{studyTick(1,1);}catch(e){}
 }
 // PWA 安装：捕获浏览器可安装事件，页面上给一个「安装到桌面」按钮（Chrome 自动提示很吝啬，删了就不弹，这里可随时手动装）
 var _deferredPrompt=null;
@@ -3062,6 +3227,70 @@ buildSubNav('numbers','numSubnav');
 buildSubNav('en-pron','enPronSubnav');
 buildSubNav('en-num','enNumSubnav');
 setLang(LANG); // 应用初始语言（含 localStorage 记忆）
+</script>
+<script>
+// ═══════════════ 账号 / 排行榜 / 个人主页 / 徽章 ═══════════════
+// 后端复用埋点同一个 Worker；TRACK_URL 去掉 /collect 即 API 根。留空则账号功能静默禁用。
+var API_BASE=(typeof TRACK_URL!=='undefined'&&TRACK_URL?TRACK_URL.replace(/\/collect$/,''):'');
+var AV_EMOJI=['🦊','🐼','🐨','🐯','🦁','🐶','🐱','🐰','🐻','🐸','🐵','🦉','🐧','🐢','🦄','🐲','🌷','🌟','🍀','🔥','🚀','⚽','🎨','🎧','📚','☕','🥨','🗼'];
+var AV_BG=['#58cc02','#1cb0f6','#ff9600','#ff4b4b','#ce82ff','#2b70c9','#ff86d0','#00c2a8','#f5b800','#7a869a'];
+// 徽章定义（门槛与服务端 computeBadges 一致；m=依据指标 n=门槛）
+var BADGES=[
+ {id:'newbie',emo:'🎓',name:'新学员',always:true},
+ {id:'streak3',emo:'🔥',name:'坚持三天',m:'best',n:3},
+ {id:'streak7',emo:'🔥',name:'一周达人',m:'best',n:7},
+ {id:'streak30',emo:'🏅',name:'月度铁人',m:'best',n:30},
+ {id:'streak100',emo:'👑',name:'百日筑基',m:'best',n:100},
+ {id:'word50',emo:'🌱',name:'词汇新芽',m:'known',n:50},
+ {id:'word200',emo:'📖',name:'小有词汇',m:'known',n:200},
+ {id:'word500',emo:'📚',name:'词汇达人',m:'known',n:500},
+ {id:'word1000',emo:'🏆',name:'词汇大师',m:'known',n:1000},
+ {id:'study100',emo:'💪',name:'勤学百次',m:'total',n:100},
+ {id:'study500',emo:'⚡',name:'勤学不辍',m:'total',n:500},
+ {id:'study2000',emo:'🚀',name:'学海不倦',m:'total',n:2000},
+ {id:'quiz50',emo:'✏️',name:'测验能手',m:'quiz',n:50},
+ {id:'quiz200',emo:'🎯',name:'测验大师',m:'quiz',n:200}
+];
+var ACCT={token:null,user:null};
+var _meUser=null,_syncT=null,_editSel={avatar:null,bg:null};
+try{ACCT.token=localStorage.getItem('acct_token')||null;var _su=localStorage.getItem('acct_user');if(_su)ACCT.user=JSON.parse(_su);}catch(e){}
+function acctToken(){return ACCT.token;}
+function _esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function levelOf(k){return k>=1000?'C1':k>=500?'B2':k>=200?'B1':k>=50?'A2':'A1';}
+function collectStats(){var s={};try{s=getStudy();}catch(e){}var known=0;try{known=Object.keys(getKnown()).length;}catch(e){}var best=Math.max(s.best||0,s.streak||0);return {known:known,streak:s.streak||0,best:best,total:s.total||0,quiz:s.quiz||0,level:levelOf(known)};}
+function apiFetch(path,opts){opts=opts||{};var h=opts.headers||{};if(ACCT.token)h['Authorization']='Bearer '+ACCT.token;if(opts.body&&typeof opts.body!=='string'){h['Content-Type']='text/plain';opts.body=JSON.stringify(opts.body);}opts.headers=h;return fetch(API_BASE+path,opts).then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,data:j};},function(){return {ok:r.ok,status:r.status,data:{}};});},function(){return {ok:false,status:0,data:{}};});}
+function acctSetAuth(token,user){ACCT.token=token;ACCT.user=user;try{localStorage.setItem('acct_token',token);localStorage.setItem('acct_user',JSON.stringify(user));}catch(e){}}
+function _saveUser(){try{localStorage.setItem('acct_user',JSON.stringify(ACCT.user));}catch(e){}}
+function acctClearLocal(){ACCT.token=null;ACCT.user=null;try{localStorage.removeItem('acct_token');localStorage.removeItem('acct_user');}catch(e){}}
+function acctLogout(){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}
+function acctEnter(){document.documentElement.classList.remove('locked');showSection('home');}
+function acctTab(w){var lg=w==='login';document.getElementById('tabLogin').classList.toggle('on',lg);document.getElementById('tabReg').classList.toggle('on',!lg);document.getElementById('paneLogin').style.display=lg?'':'none';document.getElementById('paneReg').style.display=lg?'none':'';}
+function acctRegister(){var u=(document.getElementById('rgUser').value||'').trim().toLowerCase();var nick=(document.getElementById('rgNick').value||'').trim();var pw=document.getElementById('rgPass').value||'';var err=document.getElementById('rgErr');err.textContent='';if(!/^[a-z0-9_]{3,20}$/.test(u)){err.textContent='用户名 3-20 位，仅小写字母/数字/下划线';return;}if(pw.length<6){err.textContent='密码至少 6 位';return;}apiFetch('/api/register',{method:'POST',body:{username:u,nickname:nick,password:pw}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'注册失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);acctEnter();},function(){err.textContent='网络错误，请重试';});}
+function acctLogin(){var u=(document.getElementById('lgUser').value||'').trim().toLowerCase();var pw=document.getElementById('lgPass').value||'';var err=document.getElementById('lgErr');err.textContent='';if(!u||!pw){err.textContent='请输入用户名和密码';return;}apiFetch('/api/login',{method:'POST',body:{username:u,password:pw}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'登录失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);acctEnter();},function(){err.textContent='网络错误，请重试';});}
+function oauthLogin(p){if(!API_BASE)return;location.href=API_BASE+'/api/oauth/'+p+'/start';}
+function acctSync(silent){if(!ACCT.token||!API_BASE)return Promise.resolve();return apiFetch('/api/sync',{method:'POST',body:collectStats()}).then(function(r){if(r&&r.status===401)acctClearLocal();return r;},function(){});}
+function acctSyncSoon(){if(!ACCT.token)return;if(_syncT)clearTimeout(_syncT);_syncT=setTimeout(function(){acctSync(true);},4000);}
+function _avatarHtml(u,size){var e=(u&&u.avatar)||'🦊';var bg=(u&&u.av_bg)||'#58cc02';var fs=Math.round(size*0.55);return '<span class="avatar" style="width:'+size+'px;height:'+size+'px;background:'+bg+';font-size:'+fs+'px">'+e+'</span>';}
+function _badgesHtml(st){return '<div class="badge-grid">'+BADGES.map(function(b){var on=b.always||(st[b.m]||0)>=b.n;var tail=on?'<div class="bprog" style="color:var(--gold)">已点亮</div>':'<div class="bprog">'+(st[b.m]||0)+'/'+b.n+'</div>';return '<div class="badge'+(on?'':' locked')+'"><div class="bemo">'+b.emo+'</div><div class="bname">'+b.name+'</div>'+tail+'</div>';}).join('')+'</div>';}
+function _renderProfileCard(el,u,rank,isMe){if(isMe)_meUser=u;var st={known:u.known||0,best:u.best_streak||0,total:u.total||0,quiz:u.quiz||0};var prov=u.provider==='github'?' · GitHub':u.provider==='google'?' · Google':'';el.innerHTML='<div class="acct-card"><div class="prof-head">'+_avatarHtml(u,64)+'<div style="min-width:0"><div class="prof-nick">'+_esc(u.nickname||u.username)+'</div><div class="prof-uname">@'+_esc(u.username)+prov+' · 全站第 '+rank+' 名</div></div></div>'+(u.sig?'<div class="prof-sig">'+_esc(u.sig)+'</div>':'')+'<div class="prof-stats"><div class="prof-stat"><b>'+(u.known||0)+'</b><span>掌握词</span></div><div class="prof-stat"><b>'+(u.streak||0)+'</b><span>连续打卡</span></div><div class="prof-stat"><b>'+(u.best_streak||0)+'</b><span>最长打卡</span></div><div class="prof-stat"><b>'+(u.total||0)+'</b><span>累计学习</span></div></div><div class="sec-title" style="margin:6px 0 4px"><span class="sec-title-icon">🏅</span><span class="sec-title-text">徽章墙</span></div>'+_badgesHtml(st)+(isMe?'<div style="display:flex;gap:10px;margin-top:18px"><button class="acct-btn" style="flex:1" onclick="meEditOpen()">✏️ 编辑资料</button><button class="oauth-btn" style="flex:1;margin:0" onclick="acctLogout()">退出登录</button></div>':'')+'</div>';}
+function renderMe(){if(!ACCT.token){showSection('account');return;}var v=document.getElementById('meView'),ed=document.getElementById('meEdit');ed.style.display='none';v.style.display='';v.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:20px">加载中…</p>';acctSync(true).then(function(){return apiFetch('/api/me');}).then(function(r){if(!r||!r.ok){v.innerHTML='<div class="acct-card"><p class="acct-err">加载失败，请重新登录</p><button class="acct-btn" onclick="acctLogout()">退出登录</button></div>';return;}ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();_renderProfileCard(v,r.data.user,r.data.rank,true);});}
+function _showBare(id){document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});var el=document.getElementById(id);if(el)el.classList.add('active');window.scrollTo(0,0);}
+function openProfile(name){_showBare('me');var v=document.getElementById('meView');document.getElementById('meEdit').style.display='none';v.style.display='';v.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:20px">加载中…</p>';apiFetch('/api/profile?name='+encodeURIComponent(name)).then(function(r){if(!r||!r.ok){v.innerHTML='<div class="acct-card"><p class="acct-err">用户不存在</p></div>';return;}var isMe=ACCT.user&&ACCT.user.username===name;_renderProfileCard(v,r.data.user,r.data.rank,isMe);});}
+function meEditOpen(){var u=_meUser||{};_editSel.avatar=u.avatar||AV_EMOJI[0];_editSel.bg=u.av_bg||AV_BG[0];var view=document.getElementById('meView'),ed=document.getElementById('meEdit');ed.innerHTML='<div class="acct-card"><h3 style="margin:0 0 14px;font-size:17px;color:var(--text)">编辑资料</h3><div class="acct-field"><label>昵称</label><input class="acct-input" id="edNick" maxlength="20" value="'+_esc(u.nickname||'')+'"></div><div class="acct-field"><label>个性签名</label><input class="acct-input" id="edSig" maxlength="60" placeholder="写句话介绍自己（≤60字）" value="'+_esc(u.sig||'')+'"></div><div class="acct-field"><label>头像</label><div class="emoji-pick" id="edEmoji"></div></div><div class="acct-field"><label>背景色</label><div class="color-pick" id="edColor"></div></div><div class="acct-err" id="edErr"></div><button class="acct-btn" onclick="meSave()">保存</button><button class="oauth-btn" style="margin-top:10px" onclick="meEditClose()">取消</button></div>';ed.querySelector('#edEmoji').innerHTML=AV_EMOJI.map(function(e){return '<button type="button" class="'+(e===_editSel.avatar?'on':'')+'" onclick="mePickEmoji(this,\''+e+'\')">'+e+'</button>';}).join('');ed.querySelector('#edColor').innerHTML=AV_BG.map(function(c){return '<button type="button" class="'+(c===_editSel.bg?'on':'')+'" style="background:'+c+'" onclick="mePickColor(this,\''+c+'\')"></button>';}).join('');view.style.display='none';ed.style.display='';}
+function mePickEmoji(btn,e){_editSel.avatar=e;var p=btn.parentNode.querySelectorAll('button');for(var i=0;i<p.length;i++)p[i].classList.remove('on');btn.classList.add('on');}
+function mePickColor(btn,c){_editSel.bg=c;var p=btn.parentNode.querySelectorAll('button');for(var i=0;i<p.length;i++)p[i].classList.remove('on');btn.classList.add('on');}
+function meEditClose(){document.getElementById('meEdit').style.display='none';document.getElementById('meView').style.display='';}
+function meSave(){var nick=(document.getElementById('edNick').value||'').trim();var sig=document.getElementById('edSig').value||'';var err=document.getElementById('edErr');if(!nick){err.textContent='昵称不能为空';return;}apiFetch('/api/profile/update',{method:'POST',body:{nickname:nick,sig:sig,avatar:_editSel.avatar,av_bg:_editSel.bg}}).then(function(r){if(!r||!r.ok){err.textContent=(r.data&&r.data.err)||'保存失败';return;}if(ACCT.user){ACCT.user.nickname=nick;ACCT.user.avatar=_editSel.avatar;ACCT.user.av_bg=_editSel.bg;_saveUser();}meEditClose();renderMe();},function(){err.textContent='网络错误';});}
+var _rankBy='known';
+function renderRank(by){if(by)_rankBy=by;var ids={known:'rkKnown',streak:'rkStreak',total:'rkTotal'};for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('on',k===_rankBy);}var el=document.getElementById('rankList');if(!el)return;el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p>';if(!API_BASE){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">排行榜暂未开放</p>';return;}apiFetch('/api/leaderboard?by='+_rankBy).then(function(r){if(!r||!r.ok||!r.data.list){el.innerHTML='<p class="acct-err">加载失败，请稍后再试</p>';return;}var list=r.data.list,myname=ACCT.user&&ACCT.user.username;var unit=_rankBy==='streak'?'天':(_rankBy==='total'?'次':'词');if(!list.length){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">还没有人上榜，快去学习成为第一名 🎉</p>';}else{el.innerHTML=list.map(function(u,i){var no=i+1;var medal=no===1?'🥇':no===2?'🥈':no===3?'🥉':no;return '<div class="rank-row'+(u.username===myname?' me':'')+'" onclick="openProfile(\''+_esc(u.username)+'\')"><div class="rank-no'+(no<=3?' top':'')+'">'+medal+'</div>'+_avatarHtml(u,38)+'<div class="rank-name"><div class="rank-nick">'+_esc(u.nickname||u.username)+'</div><div class="rank-meta">'+_esc(u.level||'A1')+' · 🏅'+(u.badges||0)+'</div></div><div class="rank-val">'+(u[_rankBy]||0)+'<small>'+unit+'</small></div></div>';}).join('');}var hint=document.getElementById('rankHint');if(hint)hint.innerHTML=ACCT.token?'点头像看主页 · 你的学习数据会自动同步上榜':'还没登录？<a href="javascript:showSection(\'account\')" style="color:var(--gold)">登录</a>后即可上榜';});}
+// 初始化：接住 OAuth 回跳的 token、拉取自己的资料、离开页面时同步
+(function(){var justOauth=false;
+try{var m=location.search.match(/[?&]acct_token=([a-f0-9]+)/);if(m){acctSetAuth(m[1],ACCT.user||null);justOauth=true;var clean=location.pathname+(location.hash||'');try{history.replaceState(null,'',clean);}catch(e){}}}catch(e){}
+// 门槛：有 token 先放行（乐观），无 token 锁在登录页
+if(ACCT.token){document.documentElement.classList.remove('locked');}else{document.documentElement.classList.add('locked');showSection('account');}
+if(ACCT.token&&API_BASE){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();document.documentElement.classList.remove('locked');if(justOauth)showSection('home');}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});acctSync(true);}
+try{document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&ACCT.token)acctSync(true);});}catch(e){}
+})();
 </script>
 <button class="phfab" type="button" onclick="phOpen()" aria-label="打开拼读器查词">🧩 拼读查词</button>
 <div class="ph-overlay" id="phModal" style="display:none" onclick="if(event.target===this)phClose()">
