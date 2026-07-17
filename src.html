@@ -352,6 +352,7 @@ body.lang-en .phfab{display:none}
   <button class="nav-btn" onclick="showSection('phrases')">💬 词句大全</button>
   <button class="nav-btn nav-de-only" onclick="showSection('reading')">📖 阅读·连载</button>
   <button class="nav-btn" onclick="showSection('quiz')">🎯 练习测验</button>
+  <button class="nav-btn nav-de-only" onclick="showSection('spell')">⌨️ 拼写记忆</button>
   <button class="nav-btn" onclick="showSection('rank')">🏆 排行榜</button>
   <button class="nav-btn" onclick="showSection('account')">👤 我的</button>
   <button class="nav-btn" onclick="showSection('support')">❤️ 支持</button>
@@ -1145,6 +1146,44 @@ body.lang-en .phfab{display:none}
   </div>
 </div>
 
+<!-- ══════════════ 拼写记忆（键盘输入记单词）══════════════ -->
+<div id="spell" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Typing</div>
+    <h2 class="page-title">⌨️ 拼写记忆</h2>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);max-width:470px;margin:0 auto 4px">看中文 / 听发音 → 键盘敲出德语拼写。逐字母强校验，敲错原地纠正；已掌握的词自动跳过，专攻没记牢的。</p>
+    <div id="spSetup">
+      <div class="sp-levels" id="spLevels"></div>
+      <div class="sp-levels" id="spModes">
+        <button class="on" data-m="zh" onclick="spSetMode('zh')">👀 看中文拼</button>
+        <button data-m="listen" onclick="spSetMode('listen')">🎧 听写（更难）</button>
+      </div>
+      <p id="spPoolInfo" style="text-align:center;font-size:12px;color:var(--text-faint);margin:2px 0 16px"></p>
+      <div style="text-align:center"><button class="acct-btn" style="max-width:240px;margin:0 auto" onclick="spStart()">开始拼写</button></div>
+    </div>
+    <div id="spDrill" style="display:none">
+      <div class="sp-prog"><i id="spBar"></i></div>
+      <div class="sp-count" id="spCount"></div>
+      <div class="sp-card" id="spCard">
+        <div class="sp-zh" id="spZh"></div>
+        <div class="sp-py" id="spPy"></div>
+        <div class="sp-slots-wrap">
+          <div class="sp-slots" id="spSlots"></div>
+          <input id="spInput" class="sp-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="输入德语拼写">
+        </div>
+        <div class="sp-tap">⌨️ 电脑直接打字 · 手机点这里调出键盘</div>
+        <div class="sp-uml"><button type="button" onclick="spKey('ä')">ä</button><button type="button" onclick="spKey('ö')">ö</button><button type="button" onclick="spKey('ü')">ü</button><button type="button" onclick="spKey('ß')">ß</button></div>
+      </div>
+      <div class="sp-ctrl">
+        <button type="button" onclick="spReplay()">🔊 读一遍</button>
+        <button type="button" onclick="spHint()">💡 提示一个</button>
+        <button type="button" onclick="spSkip()">跳过 →</button>
+      </div>
+    </div>
+    <div id="spDone" style="display:none"></div>
+  </div>
+</div>
+
 <!-- ══════════════ 账号 · 排行 · 主页 ══════════════ -->
 <style>
 .acct-wrap{max-width:420px;margin:0 auto}
@@ -1242,6 +1281,32 @@ body.lang-en .phfab{display:none}
 .bcele-cf{position:absolute;top:-10px;width:9px;height:14px;border-radius:2px;opacity:0;animation:bceleCf 2.6s ease-in infinite}
 @keyframes bceleCf{0%{opacity:0;transform:translateY(0) rotate(0)}8%{opacity:1}100%{opacity:0;transform:translateY(76vh) rotate(680deg)}}
 @media (prefers-reduced-motion:reduce){.bcele-rays,.bcele-cf{animation:none;display:none}}
+/* 拼写记忆（键盘输入记单词） */
+.sp-prog{height:8px;border-radius:5px;background:var(--surface-2);overflow:hidden;max-width:520px;margin:0 auto 6px}
+.sp-prog i{display:block;height:100%;background:var(--gold);width:0;transition:width .3s}
+.sp-count{text-align:center;font-size:12px;color:var(--text-dim);margin-bottom:14px}
+.sp-card{max-width:520px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px 20px;box-shadow:var(--shadow);text-align:center;position:relative}
+.sp-card.ok{animation:spOk .5s}
+@keyframes spOk{0%{box-shadow:0 0 0 0 rgba(88,204,2,.5)}100%{box-shadow:0 0 0 18px rgba(88,204,2,0)}}
+.sp-zh{font-size:26px;font-weight:800;color:var(--text);line-height:1.4}
+.sp-py{font-size:13px;color:var(--text-faint);margin-top:6px;min-height:18px}
+.sp-slots-wrap{position:relative;margin:22px 0 2px}
+.sp-slots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.sp-slot{width:34px;height:46px;border-radius:10px;background:var(--surface-2);border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--text);font-family:Georgia,serif}
+.sp-slot.cur{border-color:var(--gold);box-shadow:0 0 0 3px rgba(88,204,2,.18)}
+.sp-slot.filled{background:rgba(88,204,2,.14);color:#46a302}
+.sp-slot.bad{animation:spShake .3s;border-color:#ff4b4b;background:rgba(255,75,75,.15)}
+@keyframes spShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.sp-input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;background:transparent;font-size:16px;z-index:2;cursor:text}
+.sp-tap{font-size:12px;color:var(--text-faint);margin-top:4px}
+.sp-uml{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.sp-uml button{width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);font-size:18px;font-family:Georgia,serif;cursor:pointer;color:var(--text)}
+.sp-uml button:active{background:var(--gold);color:#fff}
+.sp-ctrl{display:flex;gap:10px;justify-content:center;margin:18px auto 0;max-width:520px}
+.sp-ctrl button{flex:1;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text-dim);font-size:14px;font-family:inherit;cursor:pointer}
+.sp-levels{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px auto 18px;max-width:460px}
+.sp-levels button{padding:7px 16px;border:1px solid var(--border);border-radius:16px;background:var(--surface);color:var(--text-dim);font-size:13px;font-family:inherit;cursor:pointer}
+.sp-levels button.on{background:var(--gold);color:#fff;border-color:transparent;font-weight:700}
 .glass-title{position:relative;z-index:1;text-align:center;font-size:25px;font-weight:800;letter-spacing:.5px;margin:0 0 5px;color:var(--text)}
 .glass-sub{position:relative;z-index:1;text-align:center;font-size:13px;color:var(--text-dim);max-width:360px;margin:0 0 20px;line-height:1.7}
 .glass-card{position:relative;z-index:1;width:100%;max-width:400px;padding:24px 22px;border-radius:26px;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);border:1px solid rgba(255,255,255,.4);box-shadow:0 14px 46px rgba(20,30,20,.2),inset 0 1px 0 rgba(255,255,255,.55)}
@@ -1729,7 +1794,8 @@ function showSection(id){
   if(id==='account'&&typeof acctToken==='function'&&acctToken()){document.getElementById(id).classList.remove('active');document.getElementById('me').classList.add('active');id='me';}
   if(id==='me'&&typeof renderMe==='function')renderMe();
   if(id==='rank'&&typeof renderRank==='function')renderRank();
-  document.body.classList.toggle('hide-fab',id==='account'||id==='me'||id==='rank');
+  if(id==='spell'&&typeof spInit==='function')spInit();
+  document.body.classList.toggle('hide-fab',id==='account'||id==='me'||id==='rank'||id==='spell');
   try{track('view',{s:id});}catch(e){}
   if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}
   if(id==='series'&&!_rendered.series){renderSeries();renderSeriesLinks();_rendered.series=true;}
@@ -3308,6 +3374,30 @@ if(ACCT.token){document.documentElement.classList.remove('locked');}else{documen
 if(ACCT.token&&API_BASE){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();document.documentElement.classList.remove('locked');if(justOauth)showSection('home');}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});acctSync(true);}
 try{document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&ACCT.token)acctSync(true);});}catch(e){}
 })();
+</script>
+<script>
+// ═══════════════ 拼写记忆 · 键盘输入记单词（借鉴句乐部：中译德 / 听写、逐字母强校验、掌握即移出）═══════════════
+var SP={level:'0',mode:'zh',q:[],i:0,word:'',zh:'',py:'',pos:0,miss:0,revealed:false,learned:0,perfect:0,size:12};
+function spBuildPool(level){var out=[],seen={},known=getKnown();for(var ci=0;ci<categories.length;ci++){var c=categories[ci];if(level!=='all'&&c.level!==level)continue;for(var pi=0;pi<c.phrases.length;pi++){var p=c.phrases[pi];var w=(p.de||'').replace(/^[^A-Za-zÄÖÜäöüß]+/,'').replace(/[^A-Za-zÄÖÜäöüß]+$/,'');if(/^[A-Za-zÄÖÜäöüß]{2,16}$/.test(w)){var k=w.toLowerCase();if(!seen[k]&&!known[w]){seen[k]=1;out.push({de:w,zh:p.zh,py:p.py});}}}}return out;}
+function spRenderLevels(){var L=[['0','🌱 零基础'],['a1','⭐ A1'],['a2','⭐⭐ A2'],['b1','🔥 B1'],['b2','💎 B2'],['all','📚 全部']];document.getElementById('spLevels').innerHTML=L.map(function(x){return '<button type="button" class="'+(x[0]===SP.level?'on':'')+'" onclick="spSetLevel(\''+x[0]+'\')">'+x[1]+'</button>';}).join('');}
+function spSetLevel(l){SP.level=l;spRenderLevels();spUpdatePoolInfo();}
+function spSetMode(m){SP.mode=m;var b=document.getElementById('spModes').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-m')===m);}
+function spUpdatePoolInfo(){var n=spBuildPool(SP.level).length;document.getElementById('spPoolInfo').textContent=n?('待记 '+n+' 词（已掌握的自动跳过）· 每组 '+Math.min(SP.size,n)+' 词'):'这个级别的词都掌握啦，换一个级别试试 🎉';}
+function spInit(){spRenderLevels();spSetMode(SP.mode);document.getElementById('spSetup').style.display='';document.getElementById('spDrill').style.display='none';document.getElementById('spDone').style.display='none';spUpdatePoolInfo();var inp=document.getElementById('spInput');if(inp&&!inp._b){inp._b=1;inp.addEventListener('input',spOnInput);}}
+function _spShuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function spStart(){var pool=_spShuf(spBuildPool(SP.level));if(!pool.length){spUpdatePoolInfo();return;}SP.q=pool.slice(0,SP.size);SP.i=0;SP.learned=0;SP.perfect=0;document.getElementById('spSetup').style.display='none';document.getElementById('spDone').style.display='none';document.getElementById('spDrill').style.display='';spLoad();}
+function spLoad(){if(SP.i>=SP.q.length){spFinish();return;}var it=SP.q[SP.i];SP.word=it.de;SP.zh=it.zh;SP.py=it.py;SP.pos=0;SP.miss=0;SP.revealed=false;document.getElementById('spBar').style.width=(SP.i/SP.q.length*100)+'%';document.getElementById('spCount').textContent=(SP.i+1)+' / '+SP.q.length;var listen=SP.mode==='listen';document.getElementById('spZh').textContent=listen?'🎧 听发音，拼出这个词':SP.zh;document.getElementById('spPy').textContent=listen?'':(SP.py||'');spRenderSlots();var inp=document.getElementById('spInput');inp.value='';setTimeout(function(){try{inp.focus();}catch(e){}},30);spReplay();}
+function spRenderSlots(){var w=SP.word,h='',i;for(i=0;i<w.length;i++){var cls='sp-slot';if(i<SP.pos)cls+=' filled';else if(i===SP.pos)cls+=' cur';h+='<div class="'+cls+'" id="spS'+i+'">'+(i<SP.pos?w[i]:'')+'</div>';}document.getElementById('spSlots').innerHTML=h;}
+function spMatch(ch,t){ch=ch.toLowerCase();t=t.toLowerCase();if(ch===t)return true;if(t==='ä')return ch==='a';if(t==='ö')return ch==='o';if(t==='ü')return ch==='u';if(t==='ß')return ch==='s';return false;}
+function spTry(ch){if(!SP.word||SP.pos>=SP.word.length)return;if(!/^[A-Za-zÄÖÜäöüß]$/.test(ch))return;var t=SP.word[SP.pos];if(spMatch(ch,t)){var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=t;s.className='sp-slot filled';}SP.pos++;if(SP.pos<SP.word.length){var n=document.getElementById('spS'+SP.pos);if(n)n.className='sp-slot cur';}else spWordDone();}else{SP.miss++;var cur=document.getElementById('spS'+SP.pos);if(cur){cur.classList.add('bad');(function(el){setTimeout(function(){el.classList.remove('bad');},320);})(cur);}if(SP.miss>=4){SP.revealed=true;spReveal();}}}
+function spReveal(){if(SP.pos>=SP.word.length)return;var t=SP.word[SP.pos];var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=t;s.className='sp-slot filled';}SP.pos++;SP.miss=0;if(SP.pos<SP.word.length){var n=document.getElementById('spS'+SP.pos);if(n)n.className='sp-slot cur';}else spWordDone();}
+function spOnInput(e){var v=e.target.value;e.target.value='';for(var i=0;i<v.length;i++)spTry(v[i]);}
+function spKey(c){spTry(c);try{document.getElementById('spInput').focus();}catch(e){}}
+function spHint(){SP.revealed=true;spReveal();try{document.getElementById('spInput').focus();}catch(e){}}
+function spReplay(){try{if(typeof speakDE==='function')speakDE(SP.word);}catch(e){}}
+function spSkip(){SP.i++;spLoad();}
+function spWordDone(){SP.learned++;if(!SP.revealed&&SP.miss===0)SP.perfect++;var card=document.getElementById('spCard');if(card){card.classList.add('ok');setTimeout(function(){card.classList.remove('ok');},500);}try{var m=getKnown();if(!m[SP.word]){m[SP.word]=1;saveKnown(m);}studyTick(1);acctSyncSoon();}catch(e){}SP.i++;setTimeout(spLoad,650);}
+function spFinish(){document.getElementById('spBar').style.width='100%';document.getElementById('spDrill').style.display='none';var acc=SP.learned?Math.round(SP.perfect/SP.learned*100):0;var d=document.getElementById('spDone');d.style.display='';d.innerHTML='<div class="sp-card"><div style="font-size:44px">🎉</div><div style="font-size:22px;font-weight:800;color:var(--text);margin-top:8px">本组完成！</div><div style="font-size:14px;color:var(--text-dim);margin-top:10px">掌握 <b style="color:var(--gold);font-size:20px">'+SP.learned+'</b> 词 · 一次全对 <b style="color:var(--gold)">'+SP.perfect+'</b> 词（'+acc+'%）</div><div style="display:flex;gap:10px;margin-top:20px"><button type="button" class="acct-btn" style="flex:1" onclick="spStart()">再来一组</button><button type="button" class="oauth-btn" style="flex:1;margin:0" onclick="spInit()">换级别/模式</button></div></div>';}
 </script>
 <button class="phfab" type="button" onclick="phOpen()" aria-label="打开拼读器查词">🧩 拼读查词</button>
 <div class="ph-overlay" id="phModal" style="display:none" onclick="if(event.target===this)phClose()">
