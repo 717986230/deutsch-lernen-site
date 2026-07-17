@@ -125,7 +125,8 @@ export default {
       const pid = info[prov.idKey] != null ? String(info[prov.idKey]) : '';
       if (!pid) return Response.redirect(site + '/#login?err=oauth', 302);
       const uid = await oauthUpsert(env, om[1], pid, info[prov.loginKey], info[prov.nameKey]);
-      return Response.redirect(site + '/?acct_token=' + (await newSession(env, uid)) + '#me', 302);
+      // token 放 URL 片段(#)而非查询串(?)：片段不进 Referer / 访问日志，前端读后立即清除
+      return Response.redirect(site + '/#acct_token=' + (await newSession(env, uid)), 302);
     }
 
     // ───────── 同步学习数据（需登录） ─────────
