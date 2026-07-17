@@ -57,6 +57,16 @@ CREATE TABLE IF NOT EXISTS oauth_state (
   exp   INTEGER
 );
 
+-- 社交：学习动态（纯系统生成事件：点亮徽章/破纪录，无 UGC）
+CREATE TABLE IF NOT EXISTS activity (
+  id   INTEGER PRIMARY KEY AUTOINCREMENT,
+  uid  INTEGER,
+  type TEXT,     -- badge=点亮徽章 / streak=打卡破纪录
+  data TEXT,     -- badge: 徽章id；streak: 天数
+  ts   INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_activity_uid_ts ON activity(uid, ts DESC);
+
 -- 社交：关注关系（follower 关注 followee）
 CREATE TABLE IF NOT EXISTS follows (
   follower INTEGER,

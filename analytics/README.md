@@ -66,6 +66,8 @@ wrangler deploy                                                 # 部署新版 w
 - `GET  /api/profile?name=<用户名>` → 公开主页数据（带 token 时含 isFollowing/关注数）
 - `POST /api/follow` / `POST /api/unfollow`（带 token）`{name}` → 关注 / 取关
 - `GET  /api/following`（带 token）→ 我关注的人列表
+- `GET  /api/feed`（带 token）→ 学习动态：关注的人+自己的系统事件（点亮徽章/打卡破纪录）
+- `GET  /api/leaderboard?by=...&scope=friends`（带 token）→ 好友榜（只含我和我关注的人）
 
 资料字段：`nickname`(昵称) `avatar`(emoji 头像) `av_bg`(背景色) `sig`(个性签名)。
 头像不做图片上传，只从预设 emoji + 颜色里选——零存储、零外链、零审核负担，契合站点 emoji 风格。

@@ -137,10 +137,24 @@ export default {
       const clamp = (v) => Math.max(0, Math.min(1e7, v | 0));
       const known = clamp(b.known), streak = clamp(b.streak), best = clamp(b.best), total = clamp(b.total), quiz = clamp(b.quiz);
       const level = String(b.level || 'A1').slice(0, 4);
-      const badges = computeBadges({ known, streak, best: Math.max(best, streak), total, quiz }, uid).join(',');
+      const old = await env.DB.prepare('SELECT badges,best_streak FROM users WHERE id=?').bind(uid).first();
+      const list = computeBadges({ known, streak, best: Math.max(best, streak), total, quiz }, uid);
+      const badges = list.join(',');
+      const now = Date.now();
       await env.DB.prepare('UPDATE users SET known=?,streak=?,best_streak=MAX(best_streak,?,?),total=?,quiz=?,level=?,badges=?,updated=? WHERE id=?')
-        .bind(known, streak, best, streak, total, quiz, level, badges, Date.now(), uid).run();
-      return json({ ok: 1, badges: badges.split(',').filter(Boolean) }, 200, cors);
+        .bind(known, streak, best, streak, total, quiz, level, badges, now, uid).run();
+      // 学习动态：纯系统事件（新徽章 / 打卡破纪录），供关注者的 Feed
+      if (old) {
+        const had = new Set((old.badges || '').split(',').filter(Boolean));
+        const acts = list.filter(id => !had.has(id)).map(id => ['badge', id]);
+        const newBest = Math.max(best, streak);
+        if (newBest > (old.best_streak || 0) && newBest >= 3) acts.push(['streak', String(newBest)]);
+        if (acts.length) {
+          const st = env.DB.prepare('INSERT INTO activity (uid,type,data,ts) VALUES (?,?,?,?)');
+          await env.DB.batch(acts.slice(0, 10).map(([t, d]) => st.bind(uid, t, d, now)));
+        }
+      }
+      return json({ ok: 1, badges: list }, 200, cors);
     }
     if (M === 'GET' && path === '/api/me') {
       const uid = await auth(req, env);
@@ -198,14 +212,32 @@ export default {
       return json({ ok: 1, user: u }, 200, cors);
     }
 
+    // ───────── 学习动态 Feed（关注的人 + 自己；纯系统事件） ─────────
+    if (M === 'GET' && path === '/api/feed') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const rows = await env.DB.prepare(
+        'SELECT a.type,a.data,a.ts,u.username,u.nickname,u.avatar,u.av_bg FROM activity a JOIN users u ON u.id=a.uid ' +
+        'WHERE a.uid=? OR a.uid IN (SELECT followee FROM follows WHERE follower=?) ORDER BY a.ts DESC LIMIT 50'
+      ).bind(uid, uid).all();
+      return json({ list: rows.results }, 200, cors);
+    }
+
     // ───────── 排行榜 / 公开主页 ─────────
     if (M === 'GET' && path === '/api/leaderboard') {
       const cols = { known: 'known', streak: 'best_streak', total: 'total' };
       const by = cols[url.searchParams.get('by')] ? url.searchParams.get('by') : 'known';
       const col = cols[by];
+      let where = col + '>0', binds = [];
+      if (url.searchParams.get('scope') === 'friends') {
+        const uid = await auth(req, env);
+        if (!uid) return json({ err: '未登录' }, 401, cors);
+        where += ' AND (id=? OR id IN (SELECT followee FROM follows WHERE follower=?))';
+        binds = [uid, uid];
+      }
       const rows = await env.DB.prepare(
-        'SELECT username,nickname,avatar,av_bg,known,best_streak,total,level,badges FROM users WHERE ' + col + '>0 ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
-      ).all();
+        'SELECT username,nickname,avatar,av_bg,known,best_streak,total,level,badges FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
+      ).bind(...binds).all();
       const list = rows.results.map(r => ({
         username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, level: r.level,
         known: r.known, streak: r.best_streak, total: r.total,
