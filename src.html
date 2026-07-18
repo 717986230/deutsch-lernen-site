@@ -366,6 +366,7 @@ body.lang-en .phfab{display:none}
     <p id="heroSub">发音 · 数字 · 语法 · 3900+ 词句 · 5阶段进阶 · 互动测验</p>
   </div>
   <div class="container">
+   <div id="homeDash"></div>
    <div class="voice-tip" id="voiceTip" onclick="var g=document.getElementById('voiceGuide');g.style.display=g.style.display==='none'?'block':'none'">
      <span style="font-size:22px;flex-shrink:0">🎧</span>
      <div><b>发音不地道？</b>一次装好系统语音包（免费 · 离线），朗读从"机器腔"变接近真人 <span style="color:var(--gold);font-weight:700">▸</span></div>
@@ -1319,6 +1320,22 @@ body.lang-en .phfab{display:none}
 .sp-levels{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px auto 18px;max-width:460px}
 .sp-levels button{padding:7px 16px;border:1px solid var(--border);border-radius:16px;background:var(--surface);color:var(--text-dim);font-size:13px;font-family:inherit;cursor:pointer}
 .sp-levels button.on{background:var(--gold);color:#fff;border-color:transparent;font-weight:700}
+/* 首页学习仪表盘 */
+.dash{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px 16px 14px;margin:14px 0 4px;box-shadow:var(--shadow)}
+.dash-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.dash-hi{font-size:16px;font-weight:800;color:var(--text);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-hi small{display:block;font-size:11px;font-weight:400;color:var(--text-faint);letter-spacing:1px;margin-top:2px}
+.dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.dash-stat{background:var(--surface-2);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer}
+.dash-stat b{display:block;font-size:19px;color:var(--gold);font-weight:800}
+.dash-stat span{font-size:11px;color:var(--text-dim)}
+.dash-goal{margin-top:12px}
+.dash-goal-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text-dim);margin-bottom:5px}
+.dash-goal-bar{height:8px;border-radius:5px;background:var(--surface-2);overflow:hidden}
+.dash-goal-bar i{display:block;height:100%;border-radius:5px;background:var(--gold);transition:width .4s}
+.dash-cta{display:flex;gap:8px;margin-top:12px}
+.dash-cta button{flex:1;padding:9px;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:rgba(88,204,2,.13);color:#46a302}
+.dash-cta button:active{transform:translateY(1px)}
 /* 底部标签导航 */
 #bottomNav{position:fixed;left:0;right:0;bottom:0;z-index:300;display:flex;background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -2px 12px rgba(0,0,0,.07);padding-bottom:env(safe-area-inset-bottom)}
 #bottomNav .bn-btn{flex:1;border:0;background:none;font-family:inherit;cursor:pointer;padding:8px 0 7px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text-faint);transition:color .15s}
@@ -1823,6 +1840,7 @@ function showSection(id){
   if(id==='me'&&typeof renderMe==='function')renderMe();
   if(id==='rank'&&typeof rankScope==='function')rankScope(_rankScope);
   if(id==='spell'&&typeof spInit==='function')spInit();
+  if(id==='home'&&typeof renderHomeDash==='function')renderHomeDash();
   var _bsec=(id==='me'||id==='account')?'account':(id==='series'?'reading':id);
   document.querySelectorAll('#bottomNav .bn-btn').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-sec')===_bsec);});
   document.body.classList.toggle('hide-fab',id==='account'||id==='me'||id==='rank'||id==='spell');
@@ -3396,6 +3414,8 @@ function mePickEmoji(btn,e){_editSel.avatar=e;var p=btn.parentNode.querySelector
 function mePickColor(btn,c){_editSel.bg=c;var p=btn.parentNode.querySelectorAll('button');for(var i=0;i<p.length;i++)p[i].classList.remove('on');btn.classList.add('on');}
 function meEditClose(){document.getElementById('meEdit').style.display='none';document.getElementById('meView').style.display='';}
 function meSave(){var nick=(document.getElementById('edNick').value||'').trim();var sig=document.getElementById('edSig').value||'';var err=document.getElementById('edErr');if(!nick){err.textContent='昵称不能为空';return;}apiFetch('/api/profile/update',{method:'POST',body:{nickname:nick,sig:sig,avatar:_editSel.avatar,av_bg:_editSel.bg}}).then(function(r){if(!r||!r.ok){err.textContent=(r.data&&r.data.err)||'保存失败';return;}if(ACCT.user){ACCT.user.nickname=nick;ACCT.user.avatar=_editSel.avatar;ACCT.user.av_bg=_editSel.bg;_saveUser();}meEditClose();renderMe();},function(){err.textContent='网络错误';});}
+// 首页学习仪表盘：本地数据即时渲染（打卡/掌握词/徽章 + 今日目标 + 快捷入口）
+function renderHomeDash(){var el=document.getElementById('homeDash');if(!el)return;var s={};try{s=getStudy();}catch(e){}var t='';try{t=_today();}catch(e){}var todayN=(s.d===t)?(s.n||0):0;var goal=s.goal||20;var streak=(s.last===t||s.d===t)?(s.streak||0):0;var known=0;try{known=Object.keys(getKnown()).length;}catch(e){}var badges=0;try{badges=_badgeSeen().length;}catch(e){}var pct=Math.min(100,Math.round(todayN/goal*100));var nick=(ACCT.user&&(ACCT.user.nickname||ACCT.user.username))||'同学';var av=ACCT.user?_avatarHtml(ACCT.user,44):'<span class="avatar" style="width:44px;height:44px;background:#58cc02;font-size:24px">🦉</span>';el.innerHTML='<div class="dash"><div class="dash-top">'+av+'<div class="dash-hi">Hallo, '+_esc(nick)+'！<small>'+(pct>=100?'今日目标已达成，太棒了 🎉':(todayN>0?'继续保持，今天已学 '+todayN+' 次':'今天还没开始，来一组拼写吧'))+'</small></div></div><div class="dash-stats"><div class="dash-stat" onclick="showSection(\'me\')"><b>'+streak+'</b><span>🔥 连续打卡</span></div><div class="dash-stat" onclick="showSection(\'spell\')"><b>'+known+'</b><span>📖 掌握词</span></div><div class="dash-stat" onclick="showSection(\'me\')"><b>'+badges+'</b><span>🏅 徽章</span></div></div><div class="dash-goal"><div class="dash-goal-row"><span>今日目标</span><span>'+todayN+' / '+goal+'</span></div><div class="dash-goal-bar"><i style="width:'+pct+'%"></i></div></div><div class="dash-cta"><button type="button" onclick="showSection(\'spell\')">⌨️ 拼写记忆</button><button type="button" onclick="showSection(\'quiz\')">🎯 练习测验</button><button type="button" onclick="showSection(\'rank\')">🏆 排行榜</button></div></div>';}
 var _rankBy='known',_rankScope='all';
 function rankScope(s){_rankScope=s;var ids={all:'rsAll',friends:'rsFriends',feed:'rsFeed'};for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('on',k===s);}document.getElementById('rankMetrics').style.display=(s==='feed')?'none':'';if(s==='feed')renderFeed();else renderRank();}
 function _tago(ts){var d=Date.now()-ts;if(d<60000)return '刚刚';if(d<3600000)return Math.floor(d/60000)+' 分钟前';if(d<86400000)return Math.floor(d/3600000)+' 小时前';if(d<7*86400000)return Math.floor(d/86400000)+' 天前';var t=new Date(ts);return (t.getMonth()+1)+'月'+t.getDate()+'日';}
@@ -3405,8 +3425,8 @@ function renderRank(by){if(by)_rankBy=by;var ids={known:'rkKnown',streak:'rkStre
 (function(){var justOauth=false;
 try{var m=(location.hash||'').match(/acct_token=([a-f0-9]+)/)||(location.search||'').match(/[?&]acct_token=([a-f0-9]+)/);if(m){acctSetAuth(m[1],ACCT.user||null);justOauth=true;try{history.replaceState(null,'',location.pathname);}catch(e){}}}catch(e){}
 // 门槛：有 token 先放行（乐观），无 token 锁在登录页
-if(ACCT.token){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();}else{document.documentElement.classList.add('locked');showSection('account');}
-if(ACCT.token&&API_BASE){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();if(justOauth)showSection('home');}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});acctSync(true);}
+if(ACCT.token){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();try{renderHomeDash();}catch(e){}}else{document.documentElement.classList.add('locked');showSection('account');}
+if(ACCT.token&&API_BASE){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();try{renderHomeDash();}catch(e){}if(justOauth)showSection('home');}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});acctSync(true);}
 try{document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&ACCT.token)acctSync(true);});}catch(e){}
 })();
 </script>
