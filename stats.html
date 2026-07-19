@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>uuoo · 站长数据看板</title>
+<style>
+:root{--surface:#fcfcfb;--surface-2:#f1f3ef;--border:#e4e7e2;--text:#1c2418;--text-dim:#5a6355;--text-muted:#8a9284;--accent:#58cc02;--grid:#ececea}
+:root[data-theme=dark]{--surface:#15181d;--surface-2:#1e232b;--border:#2c333d;--text:#e8ebe6;--text-dim:#a8b0a2;--text-muted:#727a6d;--accent:#46a302;--grid:#242a33}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--surface:#15181d;--surface-2:#1e232b;--border:#2c333d;--text:#e8ebe6;--text-dim:#a8b0a2;--text-muted:#727a6d;--accent:#46a302;--grid:#242a33}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--text);font:14px/1.6 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;padding:20px 16px 48px}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:18px;font-weight:700;margin:0 0 2px}
+.sub{font-size:12px;color:var(--text-muted);margin-bottom:18px}
+/* 过滤行 */
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.filters input{flex:1;min-width:160px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text);font:inherit}
+.seg{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--surface-2);color:var(--text-dim);padding:8px 14px;font:inherit;cursor:pointer}
+.seg button.on{background:var(--accent);color:#fff;font-weight:700}
+.btn{border:0;border-radius:10px;background:var(--accent);color:#fff;font:inherit;font-weight:700;padding:8px 16px;cursor:pointer}
+.ghost{background:var(--surface-2);color:var(--text-dim)}
+/* 英雄数字 + 指标块 */
+.hero{margin:6px 0 4px}
+.hero .label{font-size:12px;color:var(--text-dim)}
+.hero .num{font-size:52px;font-weight:600;line-height:1.15;letter-spacing:-1px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0 26px}
+.tile{background:var(--surface-2);border-radius:14px;padding:12px 14px}
+.tile .label{font-size:12px;color:var(--text-dim)}
+.tile .num{font-size:24px;font-weight:600;margin-top:2px}
+/* 图表卡 */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 16px 12px;margin-bottom:18px}
+.card h2{font-size:14px;font-weight:700;margin:0}
+.card .desc{font-size:12px;color:var(--text-muted);margin:2px 0 12px}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.tbtn{border:1px solid var(--border);background:none;color:var(--text-dim);border-radius:8px;padding:3px 10px;font-size:12px;font-family:inherit;cursor:pointer;flex-shrink:0}
+/* 横向条形图：条≤24px、数据端4px圆角、基线平角、行间留白即2px空隙 */
+.bars{display:flex;flex-direction:column;gap:10px}
+.brow{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:10px;cursor:default}
+.bname{font-size:12px;color:var(--text-dim);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btrack{position:relative;height:22px}
+.bfill{position:absolute;left:0;top:0;height:100%;background:var(--accent);border-radius:0 4px 4px 0;min-width:2px;transition:width .35s}
+.bval{position:absolute;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text);font-variant-numeric:tabular-nums}
+.brow:hover .bfill{filter:brightness(1.08)}
+/* 悬浮提示 */
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--text);color:var(--surface);font-size:12px;padding:6px 10px;border-radius:8px;opacity:0;transition:opacity .12s;white-space:nowrap}
+/* 表格视图（对比度 WARN 的补偿通道） */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--grid)}
+td:last-child,th:last-child{text-align:right;font-variant-numeric:tabular-nums}
+th{color:var(--text-dim);font-weight:600;font-size:12px}
+.empty{color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0}
+.err{color:#d33;font-size:13px;text-align:center;padding:14px 0}
+.theme{position:fixed;top:14px;right:14px;border:1px solid var(--border);background:var(--surface-2);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:15px}
+</style>
+</head>
+<body>
+<button class="theme" onclick="tg()" aria-label="切换深浅色">🌗</button>
+<div class="wrap">
+  <h1>📊 uuoo 数据看板</h1>
+  <div class="sub">德语学习手册 · 匿名统计（仅站长可见，密钥保存在本机）</div>
+
+  <div class="filters">
+    <input id="key" type="password" placeholder="STATS_KEY 密钥" autocomplete="off">
+    <div class="seg" id="days">
+      <button data-d="7" class="on">7天</button><button data-d="30">30天</button><button data-d="90">90天</button>
+    </div>
+    <button class="btn" onclick="load()">查询</button>
+  </div>
+
+  <div id="out" style="display:none">
+    <div class="hero"><div class="label">浏览量 PV（近 <span id="dLab">7</span> 天）</div><div class="num" id="pv">–</div></div>
+    <div class="tiles">
+      <div class="tile"><div class="label">独立访客 UV</div><div class="num" id="uv">–</div></div>
+      <div class="tile"><div class="label">注册用户（累计）</div><div class="num" id="users">–</div></div>
+      <div class="tile"><div class="label">人均浏览</div><div class="num" id="avg">–</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h2>版块热度</h2><div class="desc">view 事件按版块计数 · 悬停看占比</div></div>
+      <button class="tbtn" onclick="tv(this,'viewChart','viewTable')">表格</button></div>
+      <div id="viewChart" class="bars"></div>
+      <div id="viewTable" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h2>事件分布</h2><div class="desc">全部埋点事件计数</div></div>
+      <button class="tbtn" onclick="tv(this,'evChart','evTable')">表格</button></div>
+      <div id="evChart" class="bars"></div>
+      <div id="evTable" style="display:none"></div>
+    </div>
+  </div>
+  <div id="msg" class="empty">输入密钥后点「查询」</div>
+</div>
+<div id="tip" role="tooltip"></div>
+<script>
+var API='https://uuoo-analytics.uuoo.workers.dev';
+var SEC={home:'首页',phrases:'词句大全',pronunciation:'发音规律',numbers:'数字规律',grammar:'语法速记',reading:'阅读短文',series:'连载剧',quiz:'练习测验',spell:'拼写记忆',rank:'排行榜',body:'图解词典',support:'支持页',me:'个人主页',account:'登录页','en-pron':'英语发音','en-num':'英语数字','en-grammar':'英语语法'};
+var EVT={view:'浏览版块',study:'学习动作',lang:'切换语言',install:'安装PWA',badge:'徽章解锁'};
+var _days=7;
+document.getElementById('days').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;_days=+b.dataset.d;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});if(document.getElementById('key').value)load();});
+try{var k=localStorage.getItem('statsKey');if(k)document.getElementById('key').value=k;}catch(e){}
+function tg(){var r=document.documentElement,c=r.getAttribute('data-theme');var dark=c==='dark'||(c!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);r.setAttribute('data-theme',dark?'light':'dark');}
+function tv(btn,chart,table){var c=document.getElementById(chart),t=document.getElementById(table);var showT=t.style.display==='none';t.style.display=showT?'':'none';c.style.display=showT?'none':'';btn.textContent=showT?'图表':'表格';}
+var tip=document.getElementById('tip');
+function showTip(e,html){tip.innerHTML=html;tip.style.opacity=1;var x=Math.min(e.clientX+12,innerWidth-tip.offsetWidth-8),y=e.clientY-34;tip.style.left=x+'px';tip.style.top=Math.max(6,y)+'px';}
+function hideTip(){tip.style.opacity=0;}
+function fmt(n){return (+n||0).toLocaleString('en-US');}
+function bars(elId,tabId,rows,total){ // rows:[{name,c}] 排序条形图：直接标值（对比WARN补偿）+悬停占比+表格
+  var el=document.getElementById(elId),tb=document.getElementById(tabId);
+  if(!rows.length){el.innerHTML='<div class="empty">暂无数据</div>';tb.innerHTML='';return;}
+  var max=rows[0].c;
+  el.innerHTML=rows.map(function(r){
+    var pct=Math.max(2,Math.round(r.c/max*100));
+    var inside=pct>28; // 值放条内需容得下，否则放条尾外侧
+    return '<div class="brow" data-n="'+r.name+'" data-c="'+r.c+'"><div class="bname" title="'+r.name+'">'+r.name+'</div>'
+      +'<div class="btrack"><div class="bfill" style="width:'+pct+'%"></div>'
+      +'<span class="bval" style="'+(inside?'right:'+(100-pct)+'%;margin-right:6px;color:#fff':'left:'+pct+'%;margin-left:6px')+'">'+fmt(r.c)+'</span></div></div>';
+  }).join('');
+  el.querySelectorAll('.brow').forEach(function(row){
+    row.addEventListener('mousemove',function(e){var c=+row.dataset.c;showTip(e,row.dataset.n+'：<b>'+fmt(c)+'</b>（'+(total?Math.round(c/total*100):0)+'%）');});
+    row.addEventListener('mouseleave',hideTip);
+  });
+  tb.innerHTML='<table><tr><th>名称</th><th>次数</th></tr>'+rows.map(function(r){return '<tr><td>'+r.name+'</td><td>'+fmt(r.c)+'</td></tr>';}).join('')+'</table>';
+}
+function load(){
+  var key=document.getElementById('key').value.trim();
+  var msg=document.getElementById('msg');
+  if(!key){msg.className='err';msg.textContent='请先输入 STATS_KEY';return;}
+  try{localStorage.setItem('statsKey',key);}catch(e){}
+  msg.className='empty';msg.textContent='加载中…';msg.style.display='';
+  fetch(API+'/stats?key='+encodeURIComponent(key)+'&days='+_days).then(function(r){
+    if(r.status===403)throw '密钥不对';
+    if(!r.ok)throw '服务异常 '+r.status;
+    return r.json();
+  }).then(function(d){
+    msg.style.display='none';document.getElementById('out').style.display='';
+    document.getElementById('dLab').textContent=d.days;
+    document.getElementById('pv').textContent=fmt(d.pv);
+    document.getElementById('uv').textContent=fmt(d.uv);
+    document.getElementById('users').textContent=fmt(d.users||0);
+    document.getElementById('avg').textContent=d.uv?(d.pv/d.uv).toFixed(1):'–';
+    var views=(d.byView||[]).map(function(x){var s='';try{s=(JSON.parse(x.props)||{}).s||'';}catch(e){}return {name:SEC[s]||s||'未知',c:x.c};});
+    bars('viewChart','viewTable',views,d.pv);
+    var evs=(d.byEvent||[]).map(function(x){return {name:EVT[x.name]||x.name,c:x.c};});
+    var evTotal=evs.reduce(function(s,x){return s+x.c;},0);
+    bars('evChart','evTable',evs,evTotal);
+  }).catch(function(e){
+    document.getElementById('out').style.display='none';
+    msg.style.display='';msg.className='err';msg.textContent=typeof e==='string'?e:'网络错误（Worker 未部署或被墙？）';
+  });
+}
+if(document.getElementById('key').value)load();
+</script>
+</body>
+</html>
