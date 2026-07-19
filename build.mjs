@@ -67,7 +67,8 @@ async function build() {
   // 1) 注入数据数组（校验 JSON 合法；生产加密，dev 明文）
   //    categories 首屏可能即用 → 立即解密；其余 4 个用到才解密（懒加载），
   //    尤其英语库最大且很少用，避免首屏白解一大坨。
-  const LAZY = new Set(['READINGS', 'SERIES', 'RD_GLOSS']);
+  // categories 也懒解密：硬登录门槛下登录页用不到词库，解锁后首次访问才解（见 src 的 setLang 上锁早退）
+  const LAZY = new Set(['categories', 'READINGS', 'SERIES', 'RD_GLOSS']);
   for (const [name, path] of Object.entries(DATA_FILES)) {
     const json = JSON.stringify(JSON.parse(readFileSync(path, 'utf8'))); // 校验 + 压缩
     const ph = `__DATA_${name}__`;
@@ -100,8 +101,9 @@ async function build() {
     }
   }
   // 解码器/垫片注入在第一个数据声明之前（dev 也注入，保证老内核行为一致）
-  const catStart = html.indexOf('const categories = ');
-  if (catStart === -1) throw new Error('未找到 const categories');
+  // 生产模式 categories 已被替换成 var _e_categories=... 懒 getter，锚点随之变化
+  const catStart = DEV ? html.indexOf('const categories = ') : html.indexOf('var _e_categories=');
+  if (catStart === -1) throw new Error('未找到 categories 数据声明锚点');
   html = html.slice(0, catStart) + DECODER + html.slice(catStart);
 
   if (DEV) {
