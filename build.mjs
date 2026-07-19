@@ -67,12 +67,27 @@ async function build() {
   // 1) 注入数据数组（校验 JSON 合法；生产加密，dev 明文）
   //    categories 首屏可能即用 → 立即解密；其余 4 个用到才解密（懒加载），
   //    尤其英语库最大且很少用，避免首屏白解一大坨。
-  const LAZY = new Set(['EN_CATEGORIES', 'READINGS', 'SERIES', 'RD_GLOSS']);
+  const LAZY = new Set(['READINGS', 'SERIES', 'RD_GLOSS']);
   for (const [name, path] of Object.entries(DATA_FILES)) {
     const json = JSON.stringify(JSON.parse(readFileSync(path, 'utf8'))); // 校验 + 压缩
     const ph = `__DATA_${name}__`;
     if (!html.includes(ph)) throw new Error(`src.html 缺少占位符 ${ph}`);
-    if (LAZY.has(name) && !DEV) {
+    if (name === 'EN_CATEGORIES' && !DEV) {
+      // 英语库最大(~600KB)且多数用户不用：拆成独立 en.dat，切英语时才按需下载。
+      // 未加载时 EN_CATEGORIES 为 []；下载完成自动重跑 setLang('en') 补渲染。SW 首次取后缓存。
+      const decl = `const ${name} = ${ph};`;
+      if (!html.includes(decl)) throw new Error(`src.html 缺少声明 ${decl}`);
+      writeFileSync('en.dat', xorB64(json));
+      const loader = 'var _enP=null;'
+        + 'function _loadEN(){if(window._ENC)return Promise.resolve(window._ENC);'
+        + 'if(!_enP)_enP=fetch("en.dat").then(function(r){if(!r.ok)throw 0;return r.text();})'
+        + '.then(function(t){window._ENC=JSON.parse(_dec(t));'
+        + 'try{if(typeof setLang==="function"&&LANG==="en")setLang("en");}catch(e){}return window._ENC;})'
+        + '["catch"](function(e){_enP=null;throw e;});return _enP;}'
+        + `Object.defineProperty(window,'${name}',{configurable:true,get:function(){return window._ENC||[];}});`;
+      html = html.replace(decl, loader);
+      console.log(`  en.dat 拆分：${(xorB64(json).length / 1024 | 0)}KB（按需下载）`);
+    } else if (LAZY.has(name) && !DEV) {
       // 把 `const NAME = __DATA_NAME__;` 换成全局懒 getter：首次读取才 _dec，之后缓存为普通属性
       const decl = `const ${name} = ${ph};`;
       if (!html.includes(decl)) throw new Error(`src.html 缺少声明 ${decl}`);

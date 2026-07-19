@@ -1780,6 +1780,8 @@ function setLang(lang){
     try{localStorage.setItem('siteLang',lang);}catch(e){}
     try{track('lang',{l:lang});}catch(e){}
   }
+  // 英语库按需下载（生产构建拆为 en.dat）：未到货时先渲染空态，到货后 _loadEN 自动重跑 setLang('en')
+  if(LANG==='en'&&typeof _loadEN==='function'&&!window._ENC){try{_loadEN()['catch'](function(){});}catch(e){}}
   applyLangData();
   if(typeof stopAutoPlay==='function')stopAutoPlay();
   if(typeof stopReading==='function')stopReading();
