@@ -3430,8 +3430,8 @@ function meSave(){var nick=(document.getElementById('edNick').value||'').trim();
 function _dashTrend(s,today){
   var h=(s&&s.h)||{},days=[],max=1,i;
   for(i=6;i>=0;i--){var d=new Date(Date.now()-i*864e5);var k=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();var n=h[k]||0;if(i===0&&s.d===today)n=s.n||0;days.push({k:k,n:n,today:i===0});if(n>max)max=n;}
-  var any=days.some(function(x){return x.n>0;});
-  if(!any)return '';
+  var act=days.filter(function(x){return x.n>0;}).length;
+  if(act<2)return '';   // 只有零星一天数据时不显示，避免"孤柱"观感
   return '<div class="dash-trend" role="img" aria-label="近7天每日学习次数">'+days.map(function(x){
     var hpx=x.n?Math.max(4,Math.round(x.n/max*34)):2;
     return '<i class="'+(x.today?'today':'')+'" style="height:'+hpx+'px" title="'+x.k.slice(5)+'：'+x.n+' 次"></i>';
