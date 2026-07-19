@@ -1009,6 +1009,7 @@ body.lang-en .phfab{display:none}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Alltagsdeutsch</div>
     <h2 class="page-title">日常对话 + 词汇大全</h2>
+    <p id="phrasesSub" style="text-align:center;font-size:13px;color:var(--text-dim);margin:0 0 10px"></p>
 
     <div class="search-wrap">
       <input type="text" id="searchInput" placeholder="搜索德语、中文或谐音..." oninput="filterPhrases()">
@@ -3452,7 +3453,7 @@ function spSetDiff(d){SP.diff=d;var b=document.getElementById('spDiffs').querySe
 function _spWrongGet(){try{return JSON.parse(localStorage.getItem('spWrong')||'{}');}catch(e){return {};}}
 function _spWrongSave(m){try{localStorage.setItem('spWrong',JSON.stringify(m));}catch(e){}}
 function spStartWrong(){var m=_spWrongGet(),q=[];for(var k in m)q.push({de:k,zh:m[k].zh,py:m[k].py});if(!q.length)return;SP.q=_spShuf(q).slice(0,20);SP.i=0;SP.learned=0;SP.perfect=0;SP.wrong=[];document.getElementById('spSetup').style.display='none';document.getElementById('spDone').style.display='none';document.getElementById('spDrill').style.display='';spLoad();}
-function spBuildPool(level){var out=[],seen={},known=getKnown();for(var ci=0;ci<categories.length;ci++){var c=categories[ci];if(level!=='all'&&c.level!==level)continue;for(var pi=0;pi<c.phrases.length;pi++){var p=c.phrases[pi];var w=(p.de||'').replace(/^[^A-Za-zÄÖÜäöüß]+/,'').replace(/[^A-Za-zÄÖÜäöüß]+$/,'');if(/^[A-Za-zÄÖÜäöüß]{2,16}$/.test(w)){var k=w.toLowerCase();if(!seen[k]&&!known[w]){seen[k]=1;out.push({de:w,zh:p.zh,py:p.py});}}}}return out;}
+function spBuildPool(level){var out=[],seen={},known=getKnown();var cats=DE_CATEGORIES;for(var ci=0;ci<cats.length;ci++){var c=cats[ci];if(level!=='all'&&c.level!==level)continue;for(var pi=0;pi<c.phrases.length;pi++){var p=c.phrases[pi];var w=(p.de||'').replace(/^[^A-Za-zÄÖÜäöüß]+/,'').replace(/[^A-Za-zÄÖÜäöüß]+$/,'');if(/^[A-Za-zÄÖÜäöüß]{2,16}$/.test(w)){var k=w.toLowerCase();if(!seen[k]&&!known[w]){seen[k]=1;out.push({de:w,zh:p.zh,py:p.py});}}}}return out;}
 function spRenderLevels(){var L=[['0','🌱 零基础'],['a1','⭐ A1'],['a2','⭐⭐ A2'],['b1','🔥 B1'],['b2','💎 B2'],['all','📚 全部']];document.getElementById('spLevels').innerHTML=L.map(function(x){return '<button type="button" class="'+(x[0]===SP.level?'on':'')+'" onclick="spSetLevel(\''+x[0]+'\')">'+x[1]+'</button>';}).join('');}
 function spSetLevel(l){SP.level=l;spRenderLevels();spUpdatePoolInfo();}
 function spSetMode(m){SP.mode=m;var b=document.getElementById('spModes').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-m')===m);}

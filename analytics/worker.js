@@ -307,8 +307,13 @@ async function pbkdf2(pw, saltHex) {
   return [...new Uint8Array(bits)].map(b => b.toString(16).padStart(2, '0')).join('');
 }
 async function newSession(env, uid) {
-  const token = rndHex(24);
-  await env.DB.prepare('INSERT INTO sessions (token,uid,exp) VALUES (?,?,?)').bind(token, uid, Date.now() + 180 * 86400000).run();
+  const token = rndHex(24), now = Date.now();
+  // 发新会话时顺手清理过期数据，防 sessions/oauth_state 无限堆积
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM sessions WHERE exp<?').bind(now),
+    env.DB.prepare('DELETE FROM oauth_state WHERE exp<?').bind(now),
+    env.DB.prepare('INSERT INTO sessions (token,uid,exp) VALUES (?,?,?)').bind(token, uid, now + 180 * 86400000),
+  ]);
   return token;
 }
 async function auth(req, env) {
