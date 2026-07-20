@@ -1159,6 +1159,10 @@ body.lang-en .phfab{display:none}
         <button class="on" data-m="zh" onclick="spSetMode('zh')">👀 看中文拼</button>
         <button data-m="listen" onclick="spSetMode('listen')">🎧 听写（更难）</button>
       </div>
+      <div class="sp-levels" id="spUnits">
+        <button class="on" data-u="word" onclick="spSetUnit('word')">🔤 单词</button>
+        <button data-u="sent" onclick="spSetUnit('sent')">📝 整句（连词成句）</button>
+      </div>
       <div class="sp-levels" id="spDiffs">
         <button class="on" data-d="blind" onclick="spSetDiff('blind')">✍️ 默写</button>
         <button data-d="trace" onclick="spSetDiff('trace')">📋 描摹（照着敲）</button>
@@ -1306,10 +1310,16 @@ body.lang-en .phfab{display:none}
 .sp-trace{font-size:24px;letter-spacing:7px;color:var(--text-faint);font-family:Georgia,serif;font-weight:700;min-height:20px;margin-top:10px;opacity:.55}
 .sp-slots-wrap{position:relative;margin:14px 0 2px}
 .sp-slots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.sp-slot{width:34px;height:46px;border-radius:10px;background:var(--surface-2);border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--text);font-family:Georgia,serif}
+.sp-slot{width:34px;height:46px;border-radius:10px;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--text);font-family:Georgia,serif}
+.sp-slot.filled{border-color:transparent}
 .sp-slot.cur{border-color:var(--gold);box-shadow:0 0 0 3px rgba(88,204,2,.18)}
 .sp-slot.filled{background:rgba(88,204,2,.14);color:#46a302}
 .sp-slot.bad{animation:spShake .3s;border-color:#ff4b4b;background:rgba(255,75,75,.15)}
+/* 整句模式：字母槽更小、按词分组避免词中折行、标点弱化自动填 */
+.sp-word{display:inline-flex;gap:5px}
+.sp-slots.sent{gap:6px 14px}
+.sp-slots.sent .sp-slot{width:26px;height:38px;font-size:18px;border-radius:8px}
+.sp-slot.auto{background:transparent;border-color:transparent;color:var(--text-faint)}
 @keyframes spShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 .sp-input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;background:transparent;font-size:16px;z-index:2;cursor:text}
 .sp-tap{font-size:12px;color:var(--text-faint);margin-top:4px}
@@ -3468,19 +3478,25 @@ function spSetDiff(d){SP.diff=d;var b=document.getElementById('spDiffs').querySe
 function _spWrongGet(){try{return JSON.parse(localStorage.getItem('spWrong')||'{}');}catch(e){return {};}}
 function _spWrongSave(m){try{localStorage.setItem('spWrong',JSON.stringify(m));}catch(e){}}
 function spStartWrong(){var m=_spWrongGet(),q=[];for(var k in m)q.push({de:k,zh:m[k].zh,py:m[k].py});if(!q.length)return;SP.q=_spShuf(q).slice(0,20);SP.i=0;SP.learned=0;SP.perfect=0;SP.wrong=[];document.getElementById('spSetup').style.display='none';document.getElementById('spDone').style.display='none';document.getElementById('spDrill').style.display='';spLoad();}
-function spBuildPool(level){var out=[],seen={},known=getKnown();var cats=DE_CATEGORIES;for(var ci=0;ci<cats.length;ci++){var c=cats[ci];if(level!=='all'&&c.level!==level)continue;for(var pi=0;pi<c.phrases.length;pi++){var p=c.phrases[pi];var w=(p.de||'').replace(/^[^A-Za-zÄÖÜäöüß]+/,'').replace(/[^A-Za-zÄÖÜäöüß]+$/,'');if(/^[A-Za-zÄÖÜäöüß]{2,16}$/.test(w)){var k=w.toLowerCase();if(!seen[k]&&!known[w]){seen[k]=1;out.push({de:w,zh:p.zh,py:p.py});}}}}return out;}
+function spBuildPool(level){var out=[],seen={},known=getKnown();var cats=DE_CATEGORIES;var sent=SP.unit==='sent';for(var ci=0;ci<cats.length;ci++){var c=cats[ci];if(level!=='all'&&c.level!==level)continue;for(var pi=0;pi<c.phrases.length;pi++){var p=c.phrases[pi];if(sent){var s=(p.de||'').trim();if(s.split(/\s+/).length>=2&&s.length>=8&&s.length<=40&&/^[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß ,.!?'’\-]*$/.test(s)){var sk=s.toLowerCase();if(!seen[sk]&&!known[s]){seen[sk]=1;out.push({de:s,zh:p.zh,py:p.py});}}}else{var w=(p.de||'').replace(/^[^A-Za-zÄÖÜäöüß]+/,'').replace(/[^A-Za-zÄÖÜäöüß]+$/,'');if(/^[A-Za-zÄÖÜäöüß]{2,16}$/.test(w)){var k=w.toLowerCase();if(!seen[k]&&!known[w]){seen[k]=1;out.push({de:w,zh:p.zh,py:p.py});}}}}}return out;}
+function spSetUnit(u){SP.unit=u;var b=document.getElementById('spUnits').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-u')===u);spUpdatePoolInfo();}
+function _spIsLetter(ch){return /[A-Za-zÄÖÜäöüß]/.test(ch);}
+function _spAutoAdvance(){ // 越过空格/标点：自动填充其槽位
+  while(SP.pos<SP.word.length&&!_spIsLetter(SP.word[SP.pos])){var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=SP.word[SP.pos];s.className='sp-slot auto filled';}SP.pos++;}
+  if(SP.pos<SP.word.length){var n=document.getElementById('spS'+SP.pos);if(n)n.className='sp-slot cur';}
+}
 function spRenderLevels(){var L=[['0','🌱 零基础'],['a1','⭐ A1'],['a2','⭐⭐ A2'],['b1','🔥 B1'],['b2','💎 B2'],['all','📚 全部']];document.getElementById('spLevels').innerHTML=L.map(function(x){return '<button type="button" class="'+(x[0]===SP.level?'on':'')+'" onclick="spSetLevel(\''+x[0]+'\')">'+x[1]+'</button>';}).join('');}
 function spSetLevel(l){SP.level=l;spRenderLevels();spUpdatePoolInfo();}
 function spSetMode(m){SP.mode=m;var b=document.getElementById('spModes').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-m')===m);}
 function spUpdatePoolInfo(){var n=spBuildPool(SP.level).length;var el=document.getElementById('spPoolInfo');var wn=0;try{wn=Object.keys(_spWrongGet()).length;}catch(e){}el.innerHTML=(n?('待记 '+n+' 词（已掌握的自动跳过）· 每组 '+Math.min(SP.size,n)+' 词'):'这个级别的词都掌握啦，换一个级别试试 🎉')+(wn?'<br><button type="button" class="oauth-btn" style="width:auto;margin:10px auto 0;padding:7px 18px" onclick="spStartWrong()">🔁 错词本重练（'+wn+'）</button>':'');}
-function spInit(){spRenderLevels();spSetMode(SP.mode);spSetDiff(SP.diff);document.getElementById('spSetup').style.display='';document.getElementById('spDrill').style.display='none';document.getElementById('spDone').style.display='none';var sb=document.getElementById('spSoundBtn');if(sb)sb.textContent=SP.sound?'🔔 音效':'🔕 静音';spUpdatePoolInfo();var inp=document.getElementById('spInput');if(inp&&!inp._b){inp._b=1;inp.addEventListener('input',spOnInput);}}
+function spInit(){spRenderLevels();spSetMode(SP.mode);spSetUnit(SP.unit||'word');spSetDiff(SP.diff);document.getElementById('spSetup').style.display='';document.getElementById('spDrill').style.display='none';document.getElementById('spDone').style.display='none';var sb=document.getElementById('spSoundBtn');if(sb)sb.textContent=SP.sound?'🔔 音效':'🔕 静音';spUpdatePoolInfo();var inp=document.getElementById('spInput');if(inp&&!inp._b){inp._b=1;inp.addEventListener('input',spOnInput);}}
 function _spShuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
 function spStart(){var pool=_spShuf(spBuildPool(SP.level));if(!pool.length){spUpdatePoolInfo();return;}SP.q=pool.slice(0,SP.size);SP.i=0;SP.learned=0;SP.perfect=0;SP.wrong=[];document.getElementById('spSetup').style.display='none';document.getElementById('spDone').style.display='none';document.getElementById('spDrill').style.display='';spLoad();}
-function spLoad(){if(SP.i>=SP.q.length){spFinish();return;}var it=SP.q[SP.i];SP.item=it;SP.word=it.de;SP.zh=it.zh;SP.py=it.py;SP.pos=0;SP.miss=0;SP.revealed=false;document.getElementById('spBar').style.width=(SP.i/SP.q.length*100)+'%';document.getElementById('spCount').textContent=(SP.i+1)+' / '+SP.q.length;var listen=SP.mode==='listen';document.getElementById('spZh').textContent=listen?'🎧 听发音，拼出这个词':SP.zh;document.getElementById('spPy').textContent=listen?'':(SP.py||'');document.getElementById('spTrace').textContent=SP.diff==='trace'?SP.word:'';spRenderSlots();var inp=document.getElementById('spInput');inp.value='';setTimeout(function(){try{inp.focus();}catch(e){}},30);spReplay();}
-function spRenderSlots(){var w=SP.word,h='',i;for(i=0;i<w.length;i++){var cls='sp-slot';if(i<SP.pos)cls+=' filled';else if(i===SP.pos)cls+=' cur';h+='<div class="'+cls+'" id="spS'+i+'">'+(i<SP.pos?w[i]:'')+'</div>';}document.getElementById('spSlots').innerHTML=h;}
+function spLoad(){if(SP.i>=SP.q.length){spFinish();return;}var it=SP.q[SP.i];SP.item=it;SP.word=it.de;SP.zh=it.zh;SP.py=it.py;SP.pos=0;SP.miss=0;SP.revealed=false;document.getElementById('spBar').style.width=(SP.i/SP.q.length*100)+'%';document.getElementById('spCount').textContent=(SP.i+1)+' / '+SP.q.length;var listen=SP.mode==='listen';document.getElementById('spZh').textContent=listen?'🎧 听发音，拼出这个词':SP.zh;document.getElementById('spPy').textContent=listen?'':(SP.py||'');document.getElementById('spTrace').textContent=SP.diff==='trace'?SP.word:'';spRenderSlots();_spAutoAdvance();var inp=document.getElementById('spInput');inp.value='';setTimeout(function(){try{inp.focus();}catch(e){}},30);spReplay();}
+function spRenderSlots(){var w=SP.word,el=document.getElementById('spSlots'),sent=SP.unit==='sent';el.classList.toggle('sent',sent);var h='',i,open=false;for(i=0;i<w.length;i++){var ch=w[i];if(ch===' '){if(open){h+='</span>';open=false;}continue;}if(!open){h+='<span class="sp-word">';open=true;}var cls='sp-slot';if(!_spIsLetter(ch))cls+=' auto';if(i<SP.pos)cls+=' filled';else if(i===SP.pos&&_spIsLetter(ch))cls+=' cur';h+='<div class="'+cls+'" id="spS'+i+'">'+(i<SP.pos?ch:'')+'</div>';}if(open)h+='</span>';el.innerHTML=h;}
 function spMatch(ch,t){ch=ch.toLowerCase();t=t.toLowerCase();if(ch===t)return true;if(t==='ä')return ch==='a';if(t==='ö')return ch==='o';if(t==='ü')return ch==='u';if(t==='ß')return ch==='s';return false;}
-function spTry(ch){if(!SP.word||SP.pos>=SP.word.length)return;if(!/^[A-Za-zÄÖÜäöüß]$/.test(ch))return;var t=SP.word[SP.pos];if(spMatch(ch,t)){var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=t;s.className='sp-slot filled';}spOK();SP.pos++;if(SP.pos<SP.word.length){var n=document.getElementById('spS'+SP.pos);if(n)n.className='sp-slot cur';}else spWordDone();}else{SP.miss++;spBad();var cur=document.getElementById('spS'+SP.pos);if(cur){cur.classList.add('bad');(function(el){setTimeout(function(){el.classList.remove('bad');},320);})(cur);}if(SP.miss>=4){SP.revealed=true;spReveal();}}}
-function spReveal(){if(SP.pos>=SP.word.length)return;var t=SP.word[SP.pos];var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=t;s.className='sp-slot filled';}SP.pos++;SP.miss=0;if(SP.pos<SP.word.length){var n=document.getElementById('spS'+SP.pos);if(n)n.className='sp-slot cur';}else spWordDone();}
+function spTry(ch){if(!SP.word||SP.pos>=SP.word.length)return;if(!/^[A-Za-zÄÖÜäöüß]$/.test(ch))return;var t=SP.word[SP.pos];if(spMatch(ch,t)){var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=t;s.className='sp-slot filled';}spOK();SP.pos++;_spAutoAdvance();if(SP.pos>=SP.word.length)spWordDone();}else{SP.miss++;spBad();var cur=document.getElementById('spS'+SP.pos);if(cur){cur.classList.add('bad');(function(el){setTimeout(function(){el.classList.remove('bad');},320);})(cur);}if(SP.miss>=4){SP.revealed=true;spReveal();}}}
+function spReveal(){if(SP.pos>=SP.word.length)return;var t=SP.word[SP.pos];var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=t;s.className='sp-slot filled';}SP.pos++;SP.miss=0;_spAutoAdvance();if(SP.pos>=SP.word.length)spWordDone();}
 function spOnInput(e){var v=e.target.value;e.target.value='';for(var i=0;i<v.length;i++)spTry(v[i]);}
 function spKey(c){spTry(c);try{document.getElementById('spInput').focus();}catch(e){}}
 function spHint(){SP.revealed=true;spReveal();try{document.getElementById('spInput').focus();}catch(e){}}
