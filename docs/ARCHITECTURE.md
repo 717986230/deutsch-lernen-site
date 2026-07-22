@@ -18,7 +18,7 @@ flowchart TB
 
   subgraph Edge["Cloudflare 边缘"]
     W["Worker: uuoo-analytics\nES Module 单文件"]
-    D1[("D1 / SQLite\nusers·sessions·follows\nevents·oauth_state")]
+    D1[("D1 / SQLite\nusers·sessions·follows·activity\nevents·oauth_state·ratelimit")]
   end
 
   GH["GitHub Pages\n静态托管 + 自动部署"]
@@ -78,12 +78,14 @@ erDiagram
   follows  { int follower; int followee; int ts }
   events   { int id PK; int ts; text vid; text name; text props "匿名埋点" }
   oauth_state { text state PK; int exp "防CSRF" }
+  ratelimit { text k PK "动作:标识"; int cnt; int exp "固定窗口频控" }
 ```
 
 **要点**
 - 学习统计（known/best_streak/total/quiz）**冗余存在 users 行**上 → 排行榜/徽章一次查询即得，无需聚合。
 - 徽章是**服务端判定并落库**（`badges` 字段），前端只渲染，杜绝改本地刷徽章。
 - 埋点 `events` 与账号**同库不同表**，且只存匿名 vid，不与 users 关联。
+- `ratelimit` 为固定窗口频控计数（键形如 `reg:IP` / `lgf:IP` / `lgu:用户名`），过期行由 Worker 顺带清理。
 
 ---
 
@@ -100,6 +102,10 @@ erDiagram
 | `GET /api/leaderboard?by=` | 无 | 三榜 Top50 |
 | `GET /api/profile?name=` | 可选 | 公开主页（带 token 时含 isFollowing） |
 | `POST /api/follow` `/api/unfollow` · `GET /api/following` | Bearer | 关注 / 取关 / 关注列表 |
+| `POST /api/account/password` | Bearer | 改密码（验旧密码；成功后踢除当前外全部会话） |
+| `POST /api/account/delete` | Bearer | 注销账号（密码 / `confirm` 验证；硬删 users·sessions·follows·activity） |
+| `POST /api/logout` | Bearer | 登出当前会话（幂等） |
+| `POST /api/logout_all` | Bearer | 踢除当前外全部会话 |
 
 **鉴权模型**：随机不透明 token（192bit）存 `sessions`，`Authorization: Bearer`。**无 Cookie → 无 CSRF**；CORS `*` 因此安全。
 
@@ -161,6 +167,11 @@ sequenceDiagram
 - **离线/微信兼容**：ES5 垫片、无外链资源、Web Audio 本地合成音效、Service Worker 缓存。
 - **单 Worker 单 D1**：个人站规模够用，运维最简；埋点与账号逻辑分表隔离。
 
+**安全审计留档（2026-07，建议级，非阻塞）**
+- 鉴权取 token 仍保留 `?token=` 查询参数兜底（历史兼容）：URL 可能进日志/Referer，前端全量改用 Bearer 头后应移除。
+- `ratelimit` 过期行目前在请求路径顺带 DELETE 清理，够用；若表膨胀可改 Cron Trigger 定期清理（可选）。
+- `lgu`（按用户名计失败）存在「他人恶意输错致真用户暂时被锁」的权衡：当前 10 次/10 分钟窗口短、影响可控，且能挡定向爆破；如误锁投诉增多，可为「已登录会话改密」放宽或改验证码。
+
 ---
 
 ## 8. 演进路线：社交学习
@@ -189,7 +200,7 @@ flowchart LR
 
 **架构层面的注意**
 - Feed 规模变大后：D1 单表分页够用到万级用户；再大可加 `activity` 归档或读扩散缓存（KV）。
-- 滥用防护：注册/关注加简单频控（Cloudflare Turnstile 或 IP 计数）——目前有意未做，上量前补。
+- 滥用防护：注册/登录/验密已有 `ratelimit` 表频控（见 §3）；关注等社交写接口的频控上量前再补（可复用同一机制或 Turnstile）。
 - 若账号量级增长，可把「匿名埋点」拆到独立 Worker/DB，与账号彻底隔离（现为一体，便于运维）。
 
 ---
