@@ -57,6 +57,13 @@ CREATE TABLE IF NOT EXISTS oauth_state (
   exp   INTEGER
 );
 
+-- 频控：固定窗口计数（k = 动作:标识，如 reg:1.2.3.4 / lgf:1.2.3.4 / lgu:username）
+CREATE TABLE IF NOT EXISTS ratelimit (
+  k   TEXT PRIMARY KEY,
+  cnt INTEGER NOT NULL DEFAULT 0,
+  exp INTEGER NOT NULL
+);
+
 -- 社交：学习动态（纯系统生成事件：点亮徽章/破纪录，无 UGC）
 CREATE TABLE IF NOT EXISTS activity (
   id   INTEGER PRIMARY KEY AUTOINCREMENT,

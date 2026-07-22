@@ -11,6 +11,13 @@ const AV_BG = ['#58cc02', '#1cb0f6', '#ff9600', '#ff4b4b', '#ce82ff', '#2b70c9',
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const cleanText = (v, n) => String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, n);
 
+// 频控参数（固定窗口计数，ratelimit 表；调参改这里即可）
+const RL = {
+  reg: { limit: 5, win: 3600000 },  // 注册：每 IP 1 小时 5 次（每请求计）
+  lgf: { limit: 30, win: 600000 },  // 登录验密失败：每 IP 10 分钟 30 次（仅失败计）
+  lgu: { limit: 10, win: 600000 },  // 验密失败：每用户名 10 分钟 10 次（login/delete/password 共用，仅失败计）
+};
+
 // 第三方登录配置（GitHub / Google 同一套 OAuth2 流程，差异抽到这里）
 const OAUTH = {
   github: {
@@ -71,6 +78,11 @@ export default {
 
     // ───────── 账号：注册 / 登录 ─────────
     if (M === 'POST' && path === '/api/register') {
+      const ip = req.headers.get('CF-Connecting-IP') || '';
+      if (ip) { // 注册频控：每请求即计数（无 IP 时放行不计）
+        const rl = await rateHit(env, 'reg:' + ip, RL.reg.limit, RL.reg.win);
+        if (!rl.ok) return tooMany(cors, rl.retry);
+      }
       const b = await body(req);
       const name = String(b.username || '').trim().toLowerCase();
       const nick = cleanText(b.nickname, 20) || name;
@@ -87,11 +99,90 @@ export default {
     if (M === 'POST' && path === '/api/login') {
       const b = await body(req);
       const name = String(b.username || '').trim().toLowerCase();
+      const ip = req.headers.get('CF-Connecting-IP') || '';
+      // 进来先查两桶是否已超限（只读不计；失败后才计数）
+      if (ip) {
+        const c = await rateCheck(env, 'lgf:' + ip, RL.lgf.limit);
+        if (!c.ok) return tooMany(cors, c.retry);
+      }
+      if (name) {
+        const c = await rateCheck(env, 'lgu:' + name, RL.lgu.limit);
+        if (!c.ok) return tooMany(cors, c.retry);
+      }
+      const fail = async () => { // 验密失败：IP 桶 + 用户名桶各计一次
+        if (ip) await rateHit(env, 'lgf:' + ip, RL.lgf.limit, RL.lgf.win);
+        if (name) await rateHit(env, 'lgu:' + name, RL.lgu.limit, RL.lgu.win);
+        return json({ err: '用户名或密码错误' }, 400, cors);
+      };
       const u = await env.DB.prepare('SELECT * FROM users WHERE username=?').bind(name).first();
-      if (!u || !u.pass_hash) return json({ err: '用户名或密码错误' }, 400, cors);
+      if (!u || !u.pass_hash) return fail();
       const hash = await pbkdf2(String(b.password || ''), u.pass_salt);
-      if (hash !== u.pass_hash) return json({ err: '用户名或密码错误' }, 400, cors);
+      if (hash !== u.pass_hash) return fail();
       return json({ token: await newSession(env, u.id), user: { username: u.username, nickname: u.nickname } }, 200, cors);
+    }
+
+    // ───────── 账号安全：注销 / 改密 / 登出 ─────────
+    if (M === 'POST' && path === '/api/account/delete') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const b = await body(req);
+      const u = await env.DB.prepare('SELECT * FROM users WHERE id=?').bind(uid).first();
+      if (!u) return json({ err: '账号不存在' }, 404, cors);
+      if (u.pass_hash) { // 密码账号：必须验密（不接受 confirm 绕过）
+        const c = await rateCheck(env, 'lgu:' + u.username, RL.lgu.limit);
+        if (!c.ok) return tooMany(cors, c.retry);
+        const hash = await pbkdf2(String(b.password || ''), u.pass_salt);
+        if (hash !== u.pass_hash) {
+          await rateHit(env, 'lgu:' + u.username, RL.lgu.limit, RL.lgu.win);
+          return json({ err: '密码错误' }, 400, cors);
+        }
+      } else { // OAuth 账号：必须输入自己的用户名确认（不接受 password 绕过）
+        if (String(b.confirm || '') !== u.username) return json({ err: '确认信息不符' }, 400, cors);
+      }
+      // 硬删：会话 → 关注关系（双向）→ 动态 → 账号本体。匿名埋点与账号无关联，不动。
+      await env.DB.batch([
+        env.DB.prepare('DELETE FROM sessions WHERE uid=?1').bind(uid),
+        env.DB.prepare('DELETE FROM follows WHERE follower=?1 OR followee=?1').bind(uid),
+        env.DB.prepare('DELETE FROM activity WHERE uid=?1').bind(uid),
+        env.DB.prepare('DELETE FROM users WHERE id=?1').bind(uid),
+      ]);
+      return json({ ok: 1 }, 200, cors);
+    }
+    if (M === 'POST' && path === '/api/account/password') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const b = await body(req);
+      const u = await env.DB.prepare('SELECT * FROM users WHERE id=?').bind(uid).first();
+      if (!u) return json({ err: '账号不存在' }, 404, cors);
+      if (u.provider !== 'pw' || !u.pass_hash) return json({ err: '该账号为第三方登录，无密码可改' }, 400, cors);
+      const nw = String(b.new || '');
+      if (nw.length < 6) return json({ err: '新密码至少 6 位' }, 400, cors);
+      const c = await rateCheck(env, 'lgu:' + u.username, RL.lgu.limit);
+      if (!c.ok) return tooMany(cors, c.retry);
+      const oldHash = await pbkdf2(String(b.old || ''), u.pass_salt);
+      if (oldHash !== u.pass_hash) {
+        await rateHit(env, 'lgu:' + u.username, RL.lgu.limit, RL.lgu.win);
+        return json({ err: '原密码错误' }, 400, cors);
+      }
+      const salt = rndHex(16), hash = await pbkdf2(nw, salt);
+      // 改密成功：踢掉当前会话之外的全部会话
+      await env.DB.batch([
+        env.DB.prepare('UPDATE users SET pass_salt=?,pass_hash=?,updated=? WHERE id=?').bind(salt, hash, Date.now(), uid),
+        env.DB.prepare('DELETE FROM sessions WHERE uid=? AND token<>?').bind(uid, getToken(req)),
+      ]);
+      return json({ ok: 1 }, 200, cors);
+    }
+    if (M === 'POST' && path === '/api/logout') {
+      const t = getToken(req);
+      if (!t) return json({ err: '未登录' }, 401, cors);
+      await env.DB.prepare('DELETE FROM sessions WHERE token=?').bind(t).run(); // 幂等：不存在也算成功
+      return json({ ok: 1 }, 200, cors);
+    }
+    if (M === 'POST' && path === '/api/logout_all') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const r = await env.DB.prepare('DELETE FROM sessions WHERE uid=? AND token<>?').bind(uid, getToken(req)).run();
+      return json({ ok: 1, revoked: r.meta.changes }, 200, cors);
     }
 
     // ───────── 第三方登录（GitHub / Google，配置化） ─────────
@@ -298,6 +389,27 @@ async function oauthUpsert(env, provider, pid, login, name) {
 }
 
 function json(obj, status, cors) { return new Response(JSON.stringify(obj), { status: status || 200, headers: Object.assign({}, JSONH, cors || {}) }); }
+const tooMany = (cors, retry) => json({ err: '操作过于频繁，请稍后再试', retry }, 429, cors);
+
+// 频控：固定窗口计数，单语句 UPSERT+RETURNING（写后读无竞态）。cnt>limit → 拒（被拒也计数）。
+async function rateHit(env, key, limit, windowMs) {
+  const now = Date.now();
+  const r = await env.DB.prepare(
+    'INSERT INTO ratelimit (k, cnt, exp) VALUES (?1, 1, ?2) ' +
+    'ON CONFLICT(k) DO UPDATE SET ' +
+    'cnt = CASE WHEN ratelimit.exp <= ?3 THEN 1 ELSE ratelimit.cnt + 1 END, ' +
+    'exp = CASE WHEN ratelimit.exp <= ?3 THEN ?2 ELSE ratelimit.exp END ' +
+    'RETURNING cnt, exp'
+  ).bind(key, now + windowMs, now).first();
+  return { ok: r.cnt <= limit, retry: Math.max(1, Math.ceil((r.exp - now) / 1000)) };
+}
+// 只读检查是否已超限（不计数；配额已耗尽即 cnt>=limit 就拒）
+async function rateCheck(env, key, limit) {
+  const now = Date.now();
+  const r = await env.DB.prepare('SELECT cnt,exp FROM ratelimit WHERE k=?').bind(key).first();
+  if (!r || r.exp <= now || r.cnt < limit) return { ok: true, retry: 0 };
+  return { ok: false, retry: Math.max(1, Math.ceil((r.exp - now) / 1000)) };
+}
 async function body(req) { try { return JSON.parse(await req.text()); } catch { return {}; } }
 function rndHex(n) { const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(x => x.toString(16).padStart(2, '0')).join(''); }
 async function pbkdf2(pw, saltHex) {
@@ -312,13 +424,18 @@ async function newSession(env, uid) {
   await env.DB.batch([
     env.DB.prepare('DELETE FROM sessions WHERE exp<?').bind(now),
     env.DB.prepare('DELETE FROM oauth_state WHERE exp<?').bind(now),
+    env.DB.prepare('DELETE FROM ratelimit WHERE exp<?').bind(now),
     env.DB.prepare('INSERT INTO sessions (token,uid,exp) VALUES (?,?,?)').bind(token, uid, now + 180 * 86400000),
   ]);
   return token;
 }
-async function auth(req, env) {
+// 提取当前请求的 token 原文（与 auth 同一取法：Bearer 头，兜底 ?token=）
+function getToken(req) {
   const h = req.headers.get('Authorization') || '';
-  const t = h.replace(/^Bearer\s+/i, '') || new URL(req.url).searchParams.get('token');
+  return h.replace(/^Bearer\s+/i, '') || new URL(req.url).searchParams.get('token') || '';
+}
+async function auth(req, env) {
+  const t = getToken(req);
   if (!t) return null;
   const s = await env.DB.prepare('SELECT uid,exp FROM sessions WHERE token=?').bind(t).first();
   if (!s || s.exp < Date.now()) return null;

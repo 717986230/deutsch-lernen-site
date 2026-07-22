@@ -68,6 +68,12 @@ wrangler deploy                                                 # 部署新版 w
 - `GET  /api/following`（带 token）→ 我关注的人列表
 - `GET  /api/feed`（带 token）→ 学习动态：关注的人+自己的系统事件（点亮徽章/打卡破纪录）
 - `GET  /api/leaderboard?by=...&scope=friends`（带 token）→ 好友榜（只含我和我关注的人）
+- `POST /api/account/password`（带 token）`{old,new}` → 修改密码（仅密码账号；成功后踢掉除当前外全部会话）
+- `POST /api/account/delete`（带 token）密码账号传 `{password}`、第三方账号传 `{confirm:自己的用户名}` → 注销账号（硬删，不可恢复）
+- `POST /api/logout`（带 token）→ 登出当前会话（幂等）
+- `POST /api/logout_all`（带 token）→ 踢掉除当前外全部会话，返回 `{ok,revoked}`
+
+频控：注册每 IP 1 小时 5 次；登录/改密/注销的验密失败按 IP 与用户名分桶限次。超限返回 `429 {err,retry}`（retry 为建议等待秒数）。
 
 资料字段：`nickname`(昵称) `avatar`(emoji 头像) `av_bg`(背景色) `sig`(个性签名)。
 头像不做图片上传，只从预设 emoji + 颜色里选——零存储、零外链、零审核负担，契合站点 emoji 风格。
@@ -90,3 +96,4 @@ wrangler deploy                                                 # 部署新版 w
 
 匿名统计 + 账号信息在国内均受《个人信息保护法》约束。建议在页面底部/支持页写明
 "本站仅记录匿名使用统计以改进功能；账号仅保存用户名、昵称与密码哈希"，需要时可删库。
+用户可自助注销（`/api/account/delete`）：注销即从 users/sessions/follows/activity 硬删，不可恢复；匿名埋点与账号无关联，不受影响。
