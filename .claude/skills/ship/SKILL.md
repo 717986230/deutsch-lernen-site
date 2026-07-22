@@ -43,6 +43,11 @@ prompt 带：PRD 全文 + 架构决议全文 + 各自铁律 + 「报告改动清
 Claude-Session 行）→ `git checkout main && git merge --ff-only claude/chinese-text-addition-opule2
 && git push -u origin main` → 切回开发分支同步推。后端有改动时在汇报中置顶站长部署命令。
 
+**⑧ 运营与数据（按需，非门禁）**：
+- 面向用户的新功能上线后，可派 `ops` 出推广方案/活动策划（用户要求推广时必派）
+- 大功能在 ① PM 阶段可并行派 `analyst` 定成功指标与埋点清单（写进 PRD）；
+  上线一段时间后用户要看效果时派 `analyst` 出数据解读
+
 ## 最终汇报格式
 需求 → PRD 要点 → 架构决议摘要（如有）→ 各角色产出 → 安全/QA 结论（关键证据）→
 发布单要点 → 已上线 / 待站长操作。中文、简洁。
