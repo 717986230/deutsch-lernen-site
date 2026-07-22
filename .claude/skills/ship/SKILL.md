@@ -1,41 +1,54 @@
 ---
 name: ship
-description: 全流程自动交付一个需求：PM出PRD → 前端/后端并行开发 → QA门禁 → 提交部署。用法：/ship 需求描述
+description: 企业级全流程交付：PM出PRD → 架构评审 → 前端/后端并行开发 → 安全审计 → QA门禁 → 发布管理 → 提交部署。用法：/ship 需求描述
 ---
 
-# /ship 全流程交付流水线
+# /ship 企业级交付流水线
 
-收到 `/ship <需求>` 后，按以下流水线执行。你是流程总控（技术负责人），
-各阶段用 Agent 工具派给对应角色（subagent_type: pm / frontend / backend / qa），
-给每个角色的 prompt 里带上它需要的上下文（PRD 全文、改动摘要等——子代理看不到对话历史）。
+收到 `/ship <需求>` 后按下述流程执行。你是流程总控（技术负责人），用 Agent 工具派工
+（subagent_type: pm / architect / frontend / backend / security / qa / release），
+每个子代理的 prompt 必须自带完整上下文（PRD/决议/改动摘要全文——子代理看不到对话历史）。
 
-## 流水线
+## 团队与流程
 
-**① PM 阶段**：派 `pm` 出迷你 PRD。拿到后自查一遍：若 PRD 与硬约束冲突
-（UGC红线/运维复杂度），退回重出一次。把 PRD 关键内容展示给用户。
+```
+pm ──► [architect]* ──► frontend ─┐
+                  └──► backend  ──┼──► [security]* ──► qa(硬门禁) ──► release ──► 总控提交部署
+                                  ┘
+```
+`*` 为条件门禁：满足触发条件才进入，不满足则跳过并在汇报中说明。
 
-**② 开发阶段**：按 PRD 的改动面派工——
-- 只涉及前端 → 派 `frontend`
-- 只涉及后端 → 派 `backend`
-- 都涉及 → **同一批并行派出**（互不依赖：接口契约以 PRD 为准）
-- prompt 必须包含：PRD 全文 + 相关铁律提醒 + 「完成后报告改动文件清单与自验结果」
+**① PM**：出迷你 PRD。总控自查硬约束（UGC红线/运维极简/微信兼容），冲突则退回重出。
+向用户展示 PRD 要点。**PRD 必须包含「后端参与评估」一节**：本需求后端能做什么
+（接口/数据/防刷/合规），确无后端价值才允许纯前端迭代。
 
-**③ QA 门禁**：派 `qa`，prompt 带上 PRD 验收标准 + 开发报告的改动清单。
-- **打回** → 把 QA 报告的问题清单派回对应开发角色修复，修完重过 QA（最多 2 轮，
-  仍不过则停下向用户汇报卡点）
-- **放行** → 进入 ④
+**② 架构评审**（触发条件：新表/新接口/存储结构变更/跨端契约）：派 `architect` 出技术
+设计决议（DDL+接口契约+风险）。前后端并行开发以决议为唯一契约。纯样式/文案改动跳过。
 
-**④ 提交部署**（总控亲自做，不派子代理）：
-- `git add -A` + 规范提交信息（说明做了什么，末尾带 Co-Authored-By 与 Claude-Session 行）
-- 快进合并 main：`git checkout main && git merge --ff-only claude/chinese-text-addition-opule2 && git push -u origin main`，再切回开发分支同步推送
-- 后端有改动时，在最终汇报里给出站长部署命令：
-  `cd ~/uuoo-analytics && curl -fsSL https://raw.githubusercontent.com/717986230/deutsch-lernen-site/main/analytics/deploy.sh -o deploy.sh && bash deploy.sh`
+**③ 开发**：按改动面派 `frontend` / `backend`，都涉及则**同批并行**。
+prompt 带：PRD 全文 + 架构决议全文 + 各自铁律 + 「报告改动清单与自验结果」。
+后端改动必须同步更新 analytics/schema.sql 与 README 接口表。
+
+**④ 安全审计**（触发条件：鉴权/密码/个人信息/新增写接口/前端凭证处理）：派 `security`。
+**安全打回 = 阻断**，派回开发修复后复审。纯展示类改动跳过。
+
+**⑤ QA 硬门禁**：派 `qa`，带 PRD 验收标准+改动清单。打回→派回修复→复验（最多 2 轮，
+仍不过则停下向用户汇报卡点）。**QA 不放行绝不合并 main，用户催也不越过**。
+（中途如被要求保存进度，只允许 WIP 提交到开发分支，不合并 main。）
+
+**⑥ 发布管理**：派 `release` 出发布单（CHANGELOG、文档同步、部署步骤、回滚预案、
+上线验证点）。
+
+**⑦ 总控提交部署**（亲自做）：git add -A + 规范提交（含 Co-Authored-By 与
+Claude-Session 行）→ `git checkout main && git merge --ff-only claude/chinese-text-addition-opule2
+&& git push -u origin main` → 切回开发分支同步推。后端有改动时在汇报中置顶站长部署命令。
 
 ## 最终汇报格式
-需求 → PRD 要点 → 各角色产出摘要 → QA 结论（引用关键验证证据）→
-已部署内容 / 待站长操作。全程用中文，简洁。
+需求 → PRD 要点 → 架构决议摘要（如有）→ 各角色产出 → 安全/QA 结论（关键证据）→
+发布单要点 → 已上线 / 待站长操作。中文、简洁。
 
 ## 原则
-- QA 不放行绝不提交——这是硬门禁，用户催也不越过
-- 子代理产出要审：总控对最终质量负全责，发现子代理糊弄就重派
-- 小需求（一行文案/改个色值）允许总控直接做+QA 快验，跳过 PM，但要说明
+- 并行优先：互不依赖的角色同批派出，缩短流水线时长
+- 总控对最终质量负全责：子代理产出必须审，糊弄就重派
+- 小需求（一行文案/色值）：总控直做+QA 快验，跳过其余角色，但要说明
+- 角色间只认书面契约（PRD/架构决议），不允许"口头"假设
