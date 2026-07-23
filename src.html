@@ -128,6 +128,12 @@ to{opacity:1}}
 .search-wrap input{width:100%;padding:12px 44px 12px 18px;border-radius:30px;border:1px solid var(--gold-dim);background:rgba(88,204,2,.06);color:var(--text);font-size:14px;outline:none;font-family:inherit}
 .search-wrap input::placeholder{color:var(--text-faint)}
 .search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);opacity:.4;font-size:16px}
+mark.sh{background:rgba(88,204,2,.32);color:inherit;border-radius:3px;padding:0 1px}
+.recent-row{max-width:440px;margin:0 auto 4px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.recent-row .rc-lab{font-size:12px;color:var(--text-faint)}
+.recent-row .rc{font-size:12px;color:var(--text-dim);background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:4px 11px;cursor:pointer;white-space:nowrap}
+.recent-row .rc:hover{color:var(--text);border-color:var(--gold)}
+.recent-row .rc-clr{font-size:12px;color:var(--text-faint);cursor:pointer;margin-left:auto}
 /* CAT TABS */
 .cat-tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 0 8px;scrollbar-width:none}
 .cat-tab{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--gold-faint);background:transparent;color:var(--text-dim);cursor:pointer;font-size:12px;font-family:inherit;white-space:nowrap;transition:all .2s}
@@ -1015,8 +1021,8 @@ body.lang-en .phfab{display:none}
       <input type="text" id="searchInput" placeholder="搜索德语、中文或谐音..." oninput="filterPhrases()">
       <span class="search-icon">🔍</span>
     </div>
-    
-    
+    <div id="recentSearch" class="recent-row"></div>
+
     <div class="level-tabs" id="levelTabs"></div>
     <div class="level-info" id="levelInfo"></div>
     <div class="cat-tabs" id="catTabs"></div>
@@ -1865,6 +1871,7 @@ function showSection(id){
   const btns=document.querySelectorAll('.nav-btn');
   btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+navId+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
   if(id==='phrases'&&!_rendered.phrases){renderPhrases();_rendered.phrases=true;}       // 懒渲染：首次打开才渲染长列表
+  if(id==='phrases'&&typeof renderRecent==='function')renderRecent();
   if(id==='body'){if(typeof renderBoardTabs==='function')renderBoardTabs();if(typeof switchBoard==='function')switchBoard(_curBoard);}
   if(id==='account'&&typeof acctToken==='function'&&acctToken()){document.getElementById(id).classList.remove('active');document.getElementById('me').classList.add('active');id='me';}
   if(id==='me'&&typeof renderMe==='function')renderMe();
@@ -2111,9 +2118,22 @@ function setCat(cat,btn){
   _lastStudySet({level:activeLevel,cat:cat,name:(cat==='all')?_lastStudyName(activeLevel):('词句 · '+cat)});
 }
 
+// 搜索命中高亮：在可信词库文本(de/zh/py)中包裹匹配段，query 仅用于定位、不注入输出，无 XSS
+var _searchQ='';
+function _hl(t,q){if(!q||!t)return t;var lt=(''+t).toLowerCase(),i=lt.indexOf(q);if(i<0)return t;var out='',pos=0;while(i>=0){out+=t.slice(pos,i)+'<mark class="sh">'+t.slice(i,i+q.length)+'</mark>';pos=i+q.length;i=lt.indexOf(q,pos);}return out+t.slice(pos);}
+// 最近搜索
+function _recentGet(){try{return JSON.parse(localStorage.getItem('recentSearch')||'[]');}catch(e){return [];}}
+function _recentAdd(q){q=(q||'').trim();if(q.length<2)return;try{var a=_recentGet().filter(function(x){return x!==q;});a.unshift(q);localStorage.setItem('recentSearch',JSON.stringify(a.slice(0,8)));}catch(e){}}
+function renderRecent(){var el=document.getElementById('recentSearch');if(!el)return;var a=_recentGet();if(!a.length){el.innerHTML='';return;}el.innerHTML='<span class="rc-lab">最近：</span>'+a.map(function(q){return '<span class="rc" onclick="doRecent(\''+_esc(q).replace(/'/g,'&#39;')+'\')">'+_esc(q)+'</span>';}).join('')+'<span class="rc-clr" onclick="clearRecent()">清空</span>';}
+function doRecent(q){var i=document.getElementById('searchInput');if(i){i.value=q;filterPhrases();}}
+function clearRecent(){try{localStorage.removeItem('recentSearch');}catch(e){}renderRecent();}
+var _recentT=null;
 function filterPhrases(){
   if(typeof stopAutoPlay==='function')stopAutoPlay();
   const q=document.getElementById('searchInput').value.toLowerCase();
+  _searchQ=q;
+  if(_recentT)clearTimeout(_recentT);
+  if(q.length>=2)_recentT=setTimeout(function(){_recentAdd(q);renderRecent();},1200);
   let results=[];
   const pool = q ? categories : getLevelCats();
   pool.forEach((cat,ci)=>{
@@ -2377,7 +2397,7 @@ function makeCard(p,id){
   const phon=(lng==='de')
     ? `<div class="py-label" style="margin-bottom:5px">拼读（按字母组合自己读出来）</div><div class="ph-row">${phonicsHtml(p.de)}</div><div style="margin-top:8px"><span class="py-label">谐音参考</span> <span class="py-text">${p.py}</span></div>`
     : `<span class="py-label">谐音</span> <span class="py-text">${p.py}</span>`;
-  d.innerHTML=`<div class="card-de-row"><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${p.de}">🔊</button><div class="card-de" lang="${lng}">${p.de}</div><button class="star-btn know-btn${known?' on':''}" type="button" title="${known?'已学会（点击取消）':'标记为已学会'}" aria-label="标记已学会" style="margin-left:auto">✓</button></div><div class="card-zh">${p.zh}</div><div class="card-py">${phon}</div>`;
+  d.innerHTML=`<div class="card-de-row"><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${p.de}">🔊</button><div class="card-de" lang="${lng}">${_hl(p.de,_searchQ)}</div><button class="star-btn know-btn${known?' on':''}" type="button" title="${known?'已学会（点击取消）':'标记为已学会'}" aria-label="标记已学会" style="margin-left:auto">✓</button></div><div class="card-zh">${_hl(p.zh,_searchQ)}</div><div class="card-py">${phon}</div>`;
   const sb=d.querySelector('.speak-btn');
   sb.addEventListener('click',(e)=>{e.stopPropagation();speakDE(p.de,sb);});
   const kb=d.querySelector('.know-btn');if(kb)kb.addEventListener('click',(e)=>{e.stopPropagation();knownToggle(p,kb);});
