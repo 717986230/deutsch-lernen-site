@@ -1036,6 +1036,7 @@ body.lang-en .phfab{display:none}
       <label><input type="checkbox" id="spkZh" checked onchange="spkSet('zh',this.checked)"> 读中文</label>
       <label><input type="checkbox" id="spkShuffle" onchange="spkSet('shuffle',this.checked)"> 乱序</label>
     </div>
+    <div style="margin:8px 0"><label style="font-size:13px;color:var(--text-dim);cursor:pointer"><input type="checkbox" id="onlyUnknown" onchange="toggleOnlyUnknown(this.checked)"> 只看没学会的（藏起已打✓的词，专攻生词）</label></div>
     <div id="phraseResults" style="font-size:12px;color:var(--gold-dim);margin:8px 0"></div>
     <div id="phraseContent"></div>
   </div>
@@ -2120,6 +2121,8 @@ function setCat(cat,btn){
 
 // 搜索命中高亮：在可信词库文本(de/zh/py)中包裹匹配段，query 仅用于定位、不注入输出，无 XSS
 var _searchQ='';
+var _onlyUnknown=false;
+function toggleOnlyUnknown(v){_onlyUnknown=v;filterPhrases();}
 function _hl(t,q){if(!q||!t)return t;var lt=(''+t).toLowerCase(),i=lt.indexOf(q);if(i<0)return t;var out='',pos=0;while(i>=0){out+=t.slice(pos,i)+'<mark class="sh">'+t.slice(i,i+q.length)+'</mark>';pos=i+q.length;i=lt.indexOf(q,pos);}return out+t.slice(pos);}
 // 最近搜索
 function _recentGet(){try{return JSON.parse(localStorage.getItem('recentSearch')||'[]');}catch(e){return [];}}
@@ -2139,6 +2142,7 @@ function filterPhrases(){
   pool.forEach((cat,ci)=>{
     if(activeCat!=='all'&&cat.name!==activeCat)return;
     cat.phrases.forEach((p,pi)=>{
+      if(_onlyUnknown&&typeof knownHas==='function'&&knownHas(p.de))return; // 藏起已学会的
       if(!q||p.de.toLowerCase().includes(q)||p.zh.includes(q)||p.py.includes(q)){
         results.push(Object.assign({},p,{cat:cat.name,icon:cat.icon,id:`${ci}-${pi}`}));
       }
@@ -2146,8 +2150,9 @@ function filterPhrases(){
   });
   const res=document.getElementById('phraseResults');
   if(q||activeCat!=='all') res.textContent=`找到 ${results.length} 条结果`;
+  else if(_onlyUnknown) res.textContent=`还没学会 ${results.length} 条`;
   else res.textContent='';
-  renderSearchResults(results,q||activeCat!=='all');
+  renderSearchResults(results,q||activeCat!=='all'||_onlyUnknown);
   // 词库零结果 → 查词典切片（单词前缀+短语词首），结果标「词典」
   if(q&&!results.length&&/^[a-zäöüß][a-zäöüß\- ]*$/.test(q)){
     res.textContent='词库无结果，查询词典…';
