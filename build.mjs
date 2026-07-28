@@ -14,12 +14,11 @@
 // 反爬说明：这是客户端"混淆"，能挡住查看源码/curl/复制 JSON 等随手爬取，
 // 但无法阻止用开发者工具的定向提取——这是任何纯静态站的固有上限。
 
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { createHash } from 'crypto';
 import { minify } from 'terser';
 
 const DEV = process.argv.includes('--dev');
-const SOURCE_ENTRY = existsSync('src/index.html') ? 'src/index.html' : 'src.html';
 
 // XOR 密钥（与解码器一致；运行时在页面里由字符码拼装，源码中不出现明文密钥串）
 const KEY_CODES = [68,120,55,36,76,113,57,33,90,114,50,35,87,112,53,38,97,72,56,94,84,110,51,42];
@@ -63,7 +62,7 @@ const DECODER =
   '\n';
 
 async function build() {
-  let html = assembleSource(SOURCE_ENTRY);
+  let html = readFileSync('src.html', 'utf8');
   let enFile = 'en.dat'; // 英语词典切片文件名（生产带内容哈希，便于跨版本复用缓存）
 
   // 1) 注入数据数组（校验 JSON 合法；生产加密，dev 明文）
@@ -180,19 +179,7 @@ self.addEventListener('fetch',e=>{
 `);
   console.log(`  sw.js 版本 de-${ver}（词典切片 ${deFile} + ${enFile} 持久缓存）`);
   console.log(`✓ 构建完成：加密 ${Object.keys(DATA_FILES).length} 个数组、混淆 ${count} 个脚本块`);
-  console.log(`  ${SOURCE_ENTRY} ${(html.length / 1024 | 0)}KB + data/ → index.html ${(out.length / 1024 | 0)}KB`);
-}
-
-function assembleSource(entry) {
-  let html = readFileSync(entry, 'utf8');
-  html = html.replace(/<style data-src="([^"]+)"><\/style>/g, (_, file) => {
-    return `<style>\n${readFileSync(file, 'utf8')}\n</style>`;
-  });
-  html = html.replace(/<script data-src="([^"]+)"><\/script>/g, (_, file) => {
-    return `<script>\n${readFileSync(file, 'utf8')}\n</script>`;
-  });
-  if (entry !== 'src.html') writeFileSync('src.html', html);
-  return html;
+  console.log(`  src.html ${(readFileSync('src.html').length / 1024 | 0)}KB + data/ → index.html ${(out.length / 1024 | 0)}KB`);
 }
 
 build().catch(e => { console.error('构建失败：', e); process.exit(1); });
