@@ -1,0 +1,20 @@
+name = "uuoo-analytics"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "uuoo_analytics"
+database_id = "replace-with-your-d1-database-id"
+
+[vars]
+# Public site URL used by OAuth callbacks.
+SITE_URL = "https://www.uuoo.site"
+# Public OAuth client IDs. Keep provider secrets in wrangler secrets, not in git.
+GH_CLIENT_ID = ""
+GOOGLE_CLIENT_ID = ""
+
+# Required secret values:
+#   wrangler secret put STATS_KEY
+#   wrangler secret put GH_CLIENT_SECRET
+#   wrangler secret put GOOGLE_CLIENT_SECRET

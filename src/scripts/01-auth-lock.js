@@ -1,0 +1,1 @@
+/* 硬登录门槛：无 token 先上锁（无闪烁），主脚本校验后再放行 */(function(){try{if(!localStorage.getItem("acct_token"))document.documentElement.classList.add("locked");}catch(e){document.documentElement.classList.add("locked");}})();

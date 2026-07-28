@@ -8,11 +8,11 @@ database_name = "uuoo_analytics"
 database_id = "b042a9df-2b10-4ef3-8c4e-e638ecddeffe"
 
 [vars]
-# 查看统计的密钥（GET /stats?key=... 用）
-STATS_KEY = "uuoo-stats-2026-gaKx79"
 # 站点地址（GitHub 登录成功后跳回这里）
 SITE_URL = "https://www.uuoo.site"
 # GitHub OAuth App 的 Client ID（公开值，可放这里）；Secret 用 `wrangler secret put GH_CLIENT_SECRET`
 GH_CLIENT_ID = ""
 # Google OAuth Client ID（公开值）；Secret 用 `wrangler secret put GOOGLE_CLIENT_SECRET`
 GOOGLE_CLIENT_ID = ""
+
+# 查看统计的密钥请用 `wrangler secret put STATS_KEY` 配置，不要写入 git。

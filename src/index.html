@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>德语学习手册 · 沉浸式免费自学德语 | 发音·语法·阅读·测验</title>
+<meta name="description" content="面向中文学习者的沉浸式德语学习网站：3900+ 词句、中文谐音与拼读拆解、点词朗读查义、语法例句、分级阅读、留学连载、互动测验和本地学习进度。免费、无广告、支持离线使用。">
+<meta name="keywords" content="德语学习, 德语自学, 德语发音, 德语语法, 德语阅读, A1 德语, 德语词汇, 中文学德语">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://www.uuoo.site/">
+<meta name="theme-color" content="#58cc02">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2358cc02'/%3E%3Ctext x='50' y='70' font-size='54' font-family='Georgia,serif' font-weight='700' text-anchor='middle' fill='white'%3EDE%3C/text%3E%3C/svg%3E">
+<!-- Open Graph / 微信·Twitter 分享卡片 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="德语学习手册">
+<meta property="og:title" content="德语学习手册 · 沉浸式免费自学德语">
+<meta property="og:description" content="从发音、词句、语法到分级阅读与测验，一个适合中文学习者持续阅读和开口跟读的免费德语学习网站。">
+<meta property="og:url" content="https://www.uuoo.site/">
+<meta property="og:image" content="https://www.uuoo.site/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="德语学习手册 · 沉浸式免费自学德语">
+<meta name="twitter:description" content="3900+ 词句、点词朗读查义、语法例句、分级阅读、留学连载和互动测验。">
+<meta name="twitter:image" content="https://www.uuoo.site/og-cover.png">
+<!-- PWA：可添加到主屏 -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="德语手册">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style data-src="src/styles/00-legacy.css"></style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"德语学习手册","url":"https://www.uuoo.site/","applicationCategory":"EducationalApplication","operatingSystem":"Any","inLanguage":["zh-CN","de","en"],"description":"面向中文学习者的免费德语学习网站，提供词汇、发音、语法、阅读、连载、朗读、查词和测验。","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}
+</script>
+<script data-src="src/scripts/00-theme.js"></script>
+<script data-src="src/scripts/01-auth-lock.js"></script>
+</head>
+<body>
+<script data-src="src/scripts/02-error-overlay.js"></script>
+<a href="#nav" class="skip-link">跳到导航</a>
+
+<!-- 语言切换：德 / 英 -->
+<div class="lang-switch">
+  <button class="lang-btn active" data-lang="de" onclick="setLang('de')">🇩🇪 德语</button>
+  <button class="lang-btn" data-lang="en" onclick="setLang('en')">🇬🇧 英语</button>
+  <button class="lang-btn theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="切换深色/浅色模式" title="深色/浅色">🌙</button>
+</div>
+<button id="pwaInstall" type="button" onclick="pwaInstall()" style="display:none">⬇️ 安装到桌面</button>
+
+<!-- NAV -->
+<nav id="nav" aria-label="主导航">
+  <button class="nav-btn active" onclick="showSection('home')">🏠 首页</button>
+  <button class="nav-btn nav-de-only" onclick="showSection('pronunciation')">🔤 发音规律</button>
+  <button class="nav-btn nav-de-only" onclick="showSection('numbers')">🔢 数字规律</button>
+  <button class="nav-btn nav-de-only" onclick="showSection('grammar')">📐 语法速记</button>
+  <button class="nav-btn nav-en-only" onclick="showSection('en-pron')">🔤 英语发音</button>
+  <button class="nav-btn nav-en-only" onclick="showSection('en-num')">🔢 英语数字</button>
+  <button class="nav-btn nav-en-only" onclick="showSection('en-grammar')">📐 英语语法</button>
+  <button class="nav-btn" onclick="showSection('phrases')">💬 词句大全</button>
+  <button class="nav-btn nav-de-only" onclick="showSection('reading')">📖 阅读·连载</button>
+  <button class="nav-btn" onclick="showSection('quiz')">🎯 练习测验</button>
+  <button class="nav-btn nav-de-only" onclick="showSection('spell')">⌨️ 拼写记忆</button>
+  <button class="nav-btn" onclick="showSection('rank')">🏆 排行榜</button>
+  <button class="nav-btn" onclick="showSection('support')">❤️ 支持</button>
+</nav>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div id="home" class="section active">
+  <div class="hero">
+    <img class="hero-cover" src="og-cover.png" alt="" loading="eager" decoding="async" aria-hidden="true">
+    <div class="hero-label" id="heroLabel">Immersives Lesen · 德语学习</div>
+    <h1 id="heroTitle">在阅读里学会德语</h1>
+    <div class="flag-strip" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p id="heroSub">从发音和高频词开始，进入可朗读、可查词、可测验的连续学习体验。</p>
+    <div class="hero-actions" aria-label="开始学习">
+      <button class="btn primary-cta" type="button" onclick="showSection('reading')">开始沉浸阅读</button>
+      <button class="btn secondary-cta" type="button" onclick="goLevel('0')">零基础路线</button>
+      <button class="btn secondary-cta" type="button" onclick="showSection('phrases')">查词句</button>
+    </div>
+    <div class="hero-proof" aria-label="站点能力">
+      <span>3900+ 词句</span>
+      <span>点词朗读查义</span>
+      <span>分级阅读 + 连载</span>
+      <span>离线可用</span>
+    </div>
+  </div>
+  <div class="container">
+   <div id="homeDash"></div>
+   <div class="voice-tip" id="voiceTip" onclick="var g=document.getElementById('voiceGuide');g.style.display=g.style.display==='none'?'block':'none'">
+     <span style="font-size:22px;flex-shrink:0">🎧</span>
+     <div><b>发音不地道？</b>一次装好系统语音包（免费 · 离线），朗读从"机器腔"变接近真人 <span style="color:var(--gold);font-weight:700">▸</span></div>
+   </div>
+   <div id="voiceGuide" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:10px 0 0;font-size:13px;line-height:1.8;color:var(--text-dim)">
+     <div style="font-weight:600;color:var(--text);margin-bottom:6px">为什么要装语音包？</div>
+     朗读用的是<b>系统自带的神经语音引擎</b>（完全离线）。装上原生德语/中文语音后，发音从"机器味"变成接近真人。一次性设置，永久生效。
+     <div style="font-weight:600;color:#46a302;margin:12px 0 4px">🍎 iPhone / iPad</div>
+     设置 → 辅助功能 → 朗读内容 → 声音 → <b>德语</b>（选 Anna/Petra/Markus）下载；中文选「普通话」。
+     <div style="font-weight:600;color:#46a302;margin:10px 0 4px">💻 Mac</div>
+     系统设置 → 辅助功能 → 朗读内容 → 系统声音 → 管理声音 → 勾选<b>德语 Anna/Petra</b> + <b>中文 婷婷</b> 下载。
+     <div style="font-weight:600;color:#46a302;margin:10px 0 4px">🤖 安卓</div>
+     设置 → 搜索"文字转语音/TTS" → 选 Google 语音引擎 → 安装语音数据 → 下载<b>德语 + 中文</b>。
+     <div style="font-weight:600;color:#46a302;margin:10px 0 4px">🌐 电脑 Chrome / Edge</div>
+     自带在线德语/中文语音（Google/Microsoft），通常无需额外安装，音质已很好。
+     <div style="font-size:12px;color:var(--text-faint);margin-top:10px">装好后回到本页刷新，🔊 会自动选用新语音。</div>
+   </div>
+   <div class="de-only-block">
+    <button class="beginner-fab" onclick="goLevel('0')" aria-label="零基础？从第 1 天开始学">🌱 零基础入门</button>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:22px">
+      <div class="card" onclick="showSection('pronunciation')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.2 9H3.5v6h2.7L11 19z" fill="#fff"/><path d="M14.8 9.2a4 4 0 0 1 0 5.6M17.4 6.6a7.6 7.6 0 0 1 0 10.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">发音规律</div>
+        <div style="font-size:12px;color:var(--text-dim)">字母发音·变音·组合音</div>
+      </div>
+      <div class="card" onclick="showSection('numbers')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-blue"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="16.8" text-anchor="middle" font-size="12.5" font-family="Georgia,serif" font-weight="bold" fill="#fff">123</text></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">数字规律</div>
+        <div style="font-size:12px;color:var(--text-dim)">0-100万·规律·测验</div>
+      </div>
+      <div class="card" onclick="showSection('grammar')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-orange"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle" font-size="19" font-family="Georgia,serif" font-weight="bold" fill="#fff">§</text></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">语法速记</div>
+        <div style="font-size:12px;color:var(--text-dim)">冠词·动词变位·格</div>
+      </div>
+      <div class="card" onclick="showSection('phrases')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-purple"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 16h3v4l5-4h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 20 4z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="8.5" cy="10" r="1.15" fill="#fff"/><circle cx="12" cy="10" r="1.15" fill="#fff"/><circle cx="15.5" cy="10" r="1.15" fill="#fff"/></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">词句大全</div>
+        <div style="font-size:12px;color:var(--text-dim)">20大类·含谐音</div>
+      </div>
+      <div class="card" onclick="showSection('reading')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-teal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.2C9.6 4.7 6.6 4.5 4 5.5V19c2.6-1 5.6-.8 8 .7 2.4-1.5 5.4-1.7 8-.7V5.5c-2.6-1-5.6-.8-8 .7z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M12 6.2v13.5" stroke="#fff" stroke-width="2"/></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">阅读·连载</div>
+        <div style="font-size:12px;color:var(--text-dim)">分级短文·留学连续剧</div>
+      </div>
+      <div class="card" onclick="showSection('quiz')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-red"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="1.4" fill="#fff"/></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">练习测验</div>
+        <div style="font-size:12px;color:var(--text-dim)">数字·单词·句子·听力</div>
+      </div>
+      <div class="card" onclick="showSection('body')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-pink"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="3.2" fill="#fff"/><path d="M12 10.5c-3 0-4.5 1.6-4.5 3.6V17h2.4l.7 4h2.8l.7-4h2.4v-2.9c0-2-1.5-3.6-4.5-3.6z" fill="#fff"/></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">图解词典</div>
+        <div style="font-size:12px;color:var(--text-dim)">人体·动物·食物·交通…</div>
+      </div>
+    </div>
+
+    <div class="sec-title" style="margin-top:36px"><span class="sec-title-icon">🎯</span><span class="sec-title-text">按阶段学习 · 点击进入</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:8px">
+      <div class="level-card" onclick="goLevel('0')">
+        <div class="lc-stage" style="color:#58cc02">🌱 零基础 · 第1天</div>
+        <div class="lc-title">打招呼就能开口</div>
+        <div class="lc-desc">问候、道别、礼貌用语<br>134个词句 · 8个分类</div>
+        <div class="lc-arrow">→</div>
+      </div>
+      <div class="level-card" onclick="goLevel('a1')">
+        <div class="lc-stage" style="color:#1cb0f6">⭐ A1 初级 · 第1-2周</div>
+        <div class="lc-title">简单日常交流</div>
+        <div class="lc-desc">自我介绍、时间、天气、家庭、高频词<br>1214个词句 · 30个分类</div>
+        <div class="lc-arrow">→</div>
+      </div>
+      <div class="level-card" onclick="goLevel('a2')">
+        <div class="lc-stage" style="color:var(--gold)">⭐⭐ A2 基础 · 第1-2月</div>
+        <div class="lc-title">熟悉场景顺畅沟通</div>
+        <div class="lc-desc">购物、餐厅、交通、旅行、菜单<br>1279个词句 · 33个分类</div>
+        <div class="lc-arrow">→</div>
+      </div>
+      <div class="level-card" onclick="goLevel('b1')">
+        <div class="lc-stage" style="color:#ff7a4d">🔥 B1 中级 · 第3-6月</div>
+        <div class="lc-title">理解生活主要内容</div>
+        <div class="lc-desc">情感、医疗、银行、社会、抽象词汇<br>870个词句 · 19个分类</div>
+        <div class="lc-arrow">→</div>
+      </div>
+      <div class="level-card" onclick="goLevel('b2')">
+        <div class="lc-stage" style="color:#ff4b4b">💎 B2 中高级 · 第6月+</div>
+        <div class="lc-title">接近流利交流</div>
+        <div class="lc-desc">政府、科技、经济、历史、学术<br>223个词句 · 9个分类</div>
+        <div class="lc-arrow">→</div>
+      </div>
+    </div>
+
+    <details class="home-more" style="margin-top:24px"><summary>💡 学习方法 & 秘诀（点开查看）</summary><div class="home-more-body">
+    <div class="sec-title" style="margin-top:8px"><span class="sec-title-icon">🔑</span><span class="sec-title-text">学习秘诀 · 中国人学德语最优方法</span></div>
+    <div class="tip-card"><div class="tip-title">① 发音先行，规则极强</div><div class="tip-body">德语<b>"所见即所读"</b>，1-2天拿下字母表+变音(ä ö ü)+组合音(ei/ie/ch/sch)，看词就能拼读。<b>谐音只是拐杖，尽早换成模仿真人发音。</b></div></div>
+    <div class="tip-card"><div class="tip-title">② 名词永远连冠词一起背</div><div class="tip-body">der/die/das 决定格与词尾。背单词=<b>冠词+名词+复数</b>三件套。规律：-ung/-heit/-ion→die；-er/-ling/-ismus→der；-chen/-lein/-um→das。</div></div>
+    <div class="tip-card"><div class="tip-title">③ 借英语同源词滚雪球</div><div class="tip-body">德英同源词极多：Haus/house、Wasser/water、Buch/book、gut/good、trinken/drink、Hand/hand。<b>有英语底子可快速白嫖上千词。</b></div></div>
+    <div class="tip-card"><div class="tip-title">④ 死磕高频词，别啃生僻</div><div class="tip-body">约 <b>600-800 高频词覆盖日常 80%</b>。先把 Goethe A1/A2 核心词吃透（本手册已收录），扩词比求全更重要。</div></div>
+    <div class="tip-card"><div class="tip-title">⑤ 抓动词框架这根骨架</div><div class="tip-body">陈述句<b>动词永远第二位</b>，可分动词前缀甩句尾，从句动词到句末。记牢 sein/haben/können/möchten + 万能句型，半数日常句就能拼。</div></div>
+    <div class="tip-card"><div class="tip-title">⑥ 四个格先攻"第一格+第四格"</div><div class="tip-body">日常主要用主格和宾语(第四格)，二三格后补。<b>别被"4格×3性"吓住，先够用再求全。</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑦ 数字记规律不硬背</div><div class="tip-body">1-12硬记，13-19=数字+zehn，整十=词根+zig，<b>21-99是个位+und+十位（倒序！）</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑧ 场景化 + 每天开口跟读</div><div class="tip-body">按场景成块学（问候/点餐/问路），<b>影子跟读(Shadowing)模仿语调</b>。开口比默记有效10倍。</div></div>
+    <div class="tip-card"><div class="tip-title">⑨ 间隔重复，少量多次</div><div class="tip-body">按遗忘曲线复习，<b>每天15-20分钟，胜过周末突击3小时。</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑩ 磨耳朵：先熟语流再听懂</div><div class="tip-body">听德语慢速新闻(langsam gesprochene Nachrichten / DW)、儿歌、播客。<b>先求"听惯节奏"，别一开始追求字字听懂。</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑪ 长词是"拼"出来的，会拆就会懂</div><div class="tip-body">德语复合词<b>从右往左读，最后一节是核心</b>：Handschuh=Hand(手)+Schuh(鞋)→手套；Krankenhaus=Kranke(病人)+Haus(房)→医院；Geschwindigkeitsbegrenzung 再长也是拼的。<b>这是德语记词最强外挂——拆开记，词汇量翻倍。</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑫ 句中大写的词，基本就是名词</div><div class="tip-body">德语<b>所有名词首字母大写</b>。这不是麻烦，是<b>阅读路标</b>——一眼挑出名词、快速抓住句子主干。</div></div>
+    <div class="tip-card"><div class="tip-title">⑬ 给名词"上色"记性别</div><div class="tip-body">背单词时脑内给冠词上色：<b style="color:#1cb0f6">der 蓝</b> / <b style="color:#ff4b4b">die 红</b> / <b style="color:#58cc02">das 绿</b>（与本手册语法版块一致）。<b>视觉记忆比硬背 der/die/das 牢得多。</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑭ 可分动词：前缀甩到句尾</div><div class="tip-body">aufstehen(起床)→「Ich <b>stehe</b> um 7 Uhr <b>auf</b>」。<b>听句子别急着下结论——前缀常在最后才蹦出来</b>，它能彻底改变词义(stehen 站 / aufstehen 起床)。</div></div>
+    <div class="tip-card"><div class="tip-title">⑮ 把手机系统语言切成德语</div><div class="tip-body">制造<b>被动沉浸</b>：每天自然接触几十个高频词(Einstellungen 设置、Senden 发送、Löschen 删除…)。零成本、全天候磨语感。</div></div>
+    <div class="tip-card"><div class="tip-title">⑯ 称呼先分清 du / Sie</div><div class="tip-body">朋友家人用 <b>du</b>，陌生人·长辈·正式场合用 <b>Sie</b>(动词跟着变)。<b>用错比语法错更扎眼</b>——这是礼貌问题，优先记牢。</div></div>
+    <div class="tip-card"><div class="tip-title">⑱ 别怕开口犯错</div><div class="tip-body">德国人欣赏"敢说"。<b>说错→被纠正→记住，正是进步最快的循环</b>。沉默才是最大的障碍，每天逼自己开口几句。</div></div>
+    </div></details>
+    <div style="text-align:center;margin:22px 0 6px"><button class="btn" onclick="showSection('support')" style="border-color:rgba(255,75,75,.4);color:#ff4b4b;background:rgba(255,75,75,.08)">❤️ 支持作者 · 请我一杯咖啡</button></div>
+   </div><!-- /de-only-block -->
+
+   <div class="en-only-block">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:22px">
+      <div class="card" onclick="showSection('en-pron')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.2 9H3.5v6h2.7L11 19z" fill="#fff"/><path d="M14.8 9.2a4 4 0 0 1 0 5.6M17.4 6.6a7.6 7.6 0 0 1 0 10.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">英语发音</div>
+        <div style="font-size:12px;color:var(--text-dim)">元音·组合音·谐音示例</div>
+      </div>
+      <div class="card" onclick="showSection('en-num')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-blue"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="16.8" text-anchor="middle" font-size="12.5" font-family="Georgia,serif" font-weight="bold" fill="#fff">123</text></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">英语数字</div>
+        <div style="font-size:12px;color:var(--text-dim)">teen/ty·大数·序数词</div>
+      </div>
+      <div class="card" onclick="showSection('en-grammar')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-orange"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle" font-size="19" font-family="Georgia,serif" font-weight="bold" fill="#fff">§</text></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">英语语法</div>
+        <div style="font-size:12px;color:var(--text-dim)">be动词·冠词·时态·语序</div>
+      </div>
+      <div class="card" onclick="showSection('phrases')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-purple"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 16h3v4l5-4h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 20 4z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="8.5" cy="10" r="1.15" fill="#fff"/><circle cx="12" cy="10" r="1.15" fill="#fff"/><circle cx="15.5" cy="10" r="1.15" fill="#fff"/></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">词句大全</div>
+        <div style="font-size:12px;color:var(--text-dim)">常用英语·含中文谐音</div>
+      </div>
+      <div class="card" onclick="showSection('quiz')" style="text-align:center;padding:24px 16px">
+        <div class="fic fic-red"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="1.4" fill="#fff"/></svg></div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">练习测验</div>
+        <div style="font-size:12px;color:var(--text-dim)">看中文·选英语</div>
+      </div>
+    </div>
+
+    <div class="sec-title" style="margin-top:36px"><span class="sec-title-icon">🎯</span><span class="sec-title-text">按阶段学习 · 点击进入</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:8px">
+      <div class="level-card" onclick="goLevel('0')">
+        <div class="lc-stage" style="color:#58cc02">🌱 入门</div>
+        <div class="lc-title">开口说第一句</div>
+        <div class="lc-desc">问候、数字、最常用日常表达</div><div class="lc-arrow">→</div>
+      </div>
+      <div class="level-card" onclick="goLevel('a1')">
+        <div class="lc-stage" style="color:#1cb0f6">⭐ 中考</div>
+        <div class="lc-title">初中水平</div>
+        <div class="lc-desc">自我介绍、时间、家庭、高频词</div><div class="lc-arrow">→</div>
+      </div>
+      <div class="level-card" onclick="goLevel('a2')">
+        <div class="lc-stage" style="color:var(--gold)">⭐⭐ 高考</div>
+        <div class="lc-title">高中水平</div>
+        <div class="lc-desc">购物、餐厅、旅行、天气等场景</div><div class="lc-arrow">→</div>
+      </div>
+      <div class="level-card" onclick="goLevel('b1')">
+        <div class="lc-stage" style="color:#ff7a4d">🔥 四级 CET-4</div>
+        <div class="lc-title">大学四级</div>
+        <div class="lc-desc">更广的词汇与表达（持续扩充中）</div><div class="lc-arrow">→</div>
+      </div>
+      <div class="level-card" onclick="goLevel('b2')">
+        <div class="lc-stage" style="color:#ff4b4b">💎 六级 CET-6</div>
+        <div class="lc-title">大学六级</div>
+        <div class="lc-desc">进阶词汇（持续扩充中）</div><div class="lc-arrow">→</div>
+      </div>
+    </div>
+
+    <div class="sec-title" style="margin-top:36px"><span class="sec-title-icon">🔑</span><span class="sec-title-text">学习秘诀 · 中国人学英语</span></div>
+    <div class="tip-card"><div class="tip-title">① 谐音只是拐杖，尽早换成真人发音</div><div class="tip-body">英语很多音中文没有（th、卷舌 r、æ）。先用谐音敢开口，但<b>务必点 🔊 跟读模仿</b>，别长期依赖谐音。</div></div>
+    <div class="tip-card"><div class="tip-title">② 死磕高频词，别贪多</div><div class="tip-body"><b>约 800–1000 高频词覆盖日常 80%</b>。先把入门/中考词吃透，再上四级六级，扩词比求全重要。</div></div>
+    <div class="tip-card"><div class="tip-title">③ 成块记句子，别只背单词</div><div class="tip-body">按场景整句记（问候/点餐/问路），开口就能用。<b>影子跟读(Shadowing)模仿语调</b>最练口语。</div></div>
+    <div class="tip-card"><div class="tip-title">④ 磨耳朵 + 别怕犯错</div><div class="tip-body">多听慢速英语、儿歌、播客先熟节奏；<b>说错→被纠正→记住</b>是进步最快的循环，沉默才是最大障碍。</div></div>
+   </div><!-- /en-only-block -->
+  </div>
+</div>
+
+<!-- ══════════════ PRONUNCIATION ══════════════ -->
+<div id="pronunciation" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Aussprache</div>
+    <h2 class="page-title">德语发音规律</h2>
+    <div class="subnav" id="pronSubnav"></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔡</span><span class="sec-title-text">26个字母完整发音表</span></div>
+    <div style="margin-bottom:10px;font-size:12px;color:var(--text-dim)">💡 括号内为该字母的<b style="color:var(--gold)">名称读音</b>，发音栏说明该字母在单词中的<b style="color:var(--gold)">实际发音</b></div>
+    <div class="letter-grid" id="letterGrid"></div>
+
+    <div class="tip-card" style="border-left-color:#ff4b4b">
+      <div class="tip-title" style="color:#ff4b4b">⚠️ 最易出错的6个字母</div>
+      <div class="tip-body">
+        <b>J</b> → 发"y"音 ✦ ja＝雅，不是"贾"<br>
+        <b>V</b> → 发"f"音 ✦ Vater＝法特尔，不是"瓦特尔"<br>
+        <b>W</b> → 发"v"音 ✦ Wasser＝瓦瑟，不是英语的"w"<br>
+        <b>Z</b> → 发"ts"音 ✦ zu＝楚，Zeit＝采特，不是"兹"<br>
+        <b>S</b> → 母音间发"z兹" ✦ See＝泽，sonst＝松斯特<br>
+        <b>Q</b> → qu发"kv" ✦ Qualität＝克瓦利泰特，不是"kw"
+      </div>
+    </div>
+    <div class="gq-box" data-gq="p1"></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔤</span><span class="sec-title-text">特殊字母（变音 Umlaute）</span></div>
+    <table class="pron-table">
+      <tr><th>字母</th><th>发音</th><th>近似汉语谐音</th><th>例词</th></tr>
+      <tr><td class="pron-letter">Ä / ä</td><td class="pron-sound">类似"诶"拉长</td><td class="pron-zh">诶</td><td class="pron-example">Mädchen（女孩）= 梅特兴</td></tr>
+      <tr><td class="pron-letter">Ö / ö</td><td class="pron-sound">圆唇发"诶"</td><td class="pron-zh">呃（圆唇）</td><td class="pron-example">schön（美）= 修恩</td></tr>
+      <tr><td class="pron-letter">Ü / ü</td><td class="pron-sound">圆唇发"衣"</td><td class="pron-zh">于</td><td class="pron-example">grün（绿）= 格吕因</td></tr>
+      <tr><td class="pron-letter">ß</td><td class="pron-sound">双重S音</td><td class="pron-zh">斯</td><td class="pron-example">Straße（街道）= 斯特拉斯</td></tr>
+    </table>
+
+    <div class="sec-title"><span class="sec-title-icon">🔗</span><span class="sec-title-text">常见字母组合发音</span></div>
+    <table class="pron-table">
+      <tr><th>组合</th><th>发音规则</th><th>谐音</th><th>例词</th></tr>
+      <tr><td class="pron-letter">ei</td><td>发"ai"音</td><td class="pron-zh">艾</td><td class="pron-example">Wein（酒）= 魏因</td></tr>
+      <tr><td class="pron-letter">ie</td><td>发长"i"音</td><td class="pron-zh">伊</td><td class="pron-example">viel（多）= 菲尔</td></tr>
+      <tr><td class="pron-letter">eu/äu</td><td>发"oi"音</td><td class="pron-zh">欧伊</td><td class="pron-example">Freund（朋友）= 弗洛伊恩特</td></tr>
+      <tr><td class="pron-letter">au</td><td>发"ao"音</td><td class="pron-zh">奥</td><td class="pron-example">blau（蓝）= 布劳</td></tr>
+      <tr><td class="pron-letter">ch</td><td>舌后摩擦音</td><td class="pron-zh">希/赫</td><td class="pron-example">ich（我）= 伊希；Bach = 巴赫</td></tr>
+      <tr><td class="pron-letter">sch</td><td>类似"sh"</td><td class="pron-zh">施</td><td class="pron-example">schön（美）= 修恩</td></tr>
+      <tr><td class="pron-letter">sp/st</td><td>词首发"shp/sht"</td><td class="pron-zh">斯普/斯特</td><td class="pron-example">Sprache（语言）= 斯普拉赫</td></tr>
+      <tr><td class="pron-letter">qu</td><td>发"kv"音</td><td class="pron-zh">克夫</td><td class="pron-example">Qualität = 克法利泰特</td></tr>
+      <tr><td class="pron-letter">ng</td><td>鼻音"ng"</td><td class="pron-zh">嗯（鼻音）</td><td class="pron-example">jung（年轻）= 永</td></tr>
+      <tr><td class="pron-letter">pf</td><td>"pf"连读</td><td class="pron-zh">普夫</td><td class="pron-example">Kopf（头）= 科普夫</td></tr>
+      <tr><td class="pron-letter">tz</td><td>发"ts"</td><td class="pron-zh">茨</td><td class="pron-example">Satz（句子）= 扎茨</td></tr>
+      <tr><td class="pron-letter">chs</td><td>发"ks"</td><td class="pron-zh">克斯</td><td class="pron-example">wachsen（生长）= 瓦克森</td></tr>
+    </table>
+
+    <div class="sec-title"><span class="sec-title-icon">📌</span><span class="sec-title-text">关键发音规则</span></div>
+    <div class="tip-card"><div class="tip-title">规则1：字尾 -e 轻读</div><div class="tip-body">词尾的e通常发轻声"呃"。例：<b>Hunde</b>（狗们）= 洪德<b>呃</b>，<b>Sprache</b>（语言）= 斯普拉赫<b>呃</b></div></div>
+    <div class="tip-card"><div class="tip-title">规则2：-ig 结尾发"希"</div><div class="tip-body">词尾-ig发/ɪç/音，近似"希"。例：<b>richtig</b>（正确的）= 里希<b>希</b>，<b>lustig</b>（有趣的）= 卢斯<b>希</b></div></div>
+    <div class="tip-card"><div class="tip-title">规则3：词尾辅音清化</div><div class="tip-body">词尾的b/d/g变清音p/t/k。例：<b>Hund</b>（狗）读作"洪<b>特</b>"，<b>Weg</b>（路）读作"韦<b>克</b>"</div></div>
+    <div class="tip-card"><div class="tip-title">规则4：重音基本在第一音节</div><div class="tip-body">德语词重音通常在第一个音节。外来词例外。例：<b>KOM</b>-men，<b>SPRA</b>-che，<b>GU</b>-ten</div></div>
+    <div class="tip-card"><div class="tip-title">规则5：v 发"f"音</div><div class="tip-body">德语v通常发"f"音。例：<b>Vater</b>（父亲）= <b>法</b>特尔，<b>viel</b>（多）= <b>菲</b>尔</div></div>
+    <div class="tip-card"><div class="tip-title">规则6：w 发"v"音</div><div class="tip-body">德语w发"v"音（英语的v）。例：<b>Wasser</b>（水）= <b>瓦</b>瑟，<b>weiß</b>（白色）= <b>魏</b>斯</div></div>
+  </div>
+</div>
+
+<!-- ══════════════ NUMBERS ══════════════ -->
+<div id="numbers" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Zahlen</div>
+    <h2 class="page-title">德语数字规律</h2>
+    <div class="subnav" id="numSubnav"></div>
+
+    <div class="sec-title"><span class="sec-title-icon">1️⃣</span><span class="sec-title-text">基础数字 0–12（必须单独记）</span></div>
+    <div class="num-grid" id="numGrid0"></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔟</span><span class="sec-title-text">13–19：数字 + zehn（十）</span></div>
+    <div class="rule-box">
+      <h3>规律：个位数 + zehn = 1X</h3>
+      <div class="rule-row"><span class="rule-num">13</span><span class="rule-de">drei<span class="hl-gold">zehn</span></span><span class="rule-zh">十三</span><span class="rule-py">德莱<span class="hl-gold">岑</span></span></div>
+      <div class="rule-row"><span class="rule-num">14</span><span class="rule-de">vier<span class="hl-gold">zehn</span></span><span class="rule-zh">十四</span><span class="rule-py">菲尔<span class="hl-gold">岑</span></span></div>
+      <div class="rule-row"><span class="rule-num">15</span><span class="rule-de">fünf<span class="hl-gold">zehn</span></span><span class="rule-zh">十五</span><span class="rule-py">菲因夫<span class="hl-gold">岑</span></span></div>
+      <div class="rule-row"><span class="rule-num">16</span><span class="rule-de">sech<span class="hl-gold">zehn</span></span><span class="rule-zh">十六</span><span class="rule-py">泽赫<span class="hl-gold">岑</span></span></div>
+      <div class="rule-row"><span class="rule-num">17</span><span class="rule-de">sieb<span class="hl-gold">zehn</span></span><span class="rule-zh">十七</span><span class="rule-py">集普<span class="hl-gold">岑</span></span></div>
+      <div class="rule-row"><span class="rule-num">18</span><span class="rule-de">acht<span class="hl-gold">zehn</span></span><span class="rule-zh">十八</span><span class="rule-py">阿赫特<span class="hl-gold">岑</span></span></div>
+      <div class="rule-row"><span class="rule-num">19</span><span class="rule-de">neun<span class="hl-gold">zehn</span></span><span class="rule-zh">十九</span><span class="rule-py">诺伊因<span class="hl-gold">岑</span></span></div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">💡</span><span class="sec-title-text">整十数 20–90：数字 + zig</span></div>
+    <div class="rule-box">
+      <h3>规律：变形 + zig（注意不规则）</h3>
+      <div class="rule-row"><span class="rule-num">20</span><span class="rule-de">zwan<span class="hl-gold">zig</span></span><span class="rule-zh">二十</span><span class="rule-py">茨万<span class="hl-gold">齐希</span>（不规则！）</span></div>
+      <div class="rule-row"><span class="rule-num">30</span><span class="rule-de">drei<span class="hl-gold">ßig</span></span><span class="rule-zh">三十</span><span class="rule-py">德莱<span class="hl-gold">西希</span>（ß特殊）</span></div>
+      <div class="rule-row"><span class="rule-num">40</span><span class="rule-de">vier<span class="hl-gold">zig</span></span><span class="rule-zh">四十</span><span class="rule-py">菲尔<span class="hl-gold">齐希</span></span></div>
+      <div class="rule-row"><span class="rule-num">50</span><span class="rule-de">fünf<span class="hl-gold">zig</span></span><span class="rule-zh">五十</span><span class="rule-py">菲因夫<span class="hl-gold">齐希</span></span></div>
+      <div class="rule-row"><span class="rule-num">60</span><span class="rule-de">sech<span class="hl-gold">zig</span></span><span class="rule-zh">六十</span><span class="rule-py">泽赫<span class="hl-gold">齐希</span></span></div>
+      <div class="rule-row"><span class="rule-num">70</span><span class="rule-de">sieb<span class="hl-gold">zig</span></span><span class="rule-zh">七十</span><span class="rule-py">集普<span class="hl-gold">齐希</span></span></div>
+      <div class="rule-row"><span class="rule-num">80</span><span class="rule-de">acht<span class="hl-gold">zig</span></span><span class="rule-zh">八十</span><span class="rule-py">阿赫特<span class="hl-gold">齐希</span></span></div>
+      <div class="rule-row"><span class="rule-num">90</span><span class="rule-de">neun<span class="hl-gold">zig</span></span><span class="rule-zh">九十</span><span class="rule-py">诺伊因<span class="hl-gold">齐希</span></span></div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔀</span><span class="sec-title-text">21–99：⚠️ 倒序！个位 + und + 十位</span></div>
+    <div class="rule-box" style="border-color:rgba(255,75,75,.3);background:rgba(255,75,75,.05)">
+      <h3 style="color:#ff4b4b">⚠️ 重要规律：个位在前，十位在后！</h3>
+      <div class="rule-row"><span class="rule-num">21</span><span class="rule-de"><span class="hl-red">ein</span><span class="hl-gold">und</span><span class="hl-blue">zwanzig</span></span><span class="rule-zh">二十一</span><span class="rule-py"><span class="hl-red">一</span><span class="hl-gold">和</span><span class="hl-blue">二十</span> → 倒序</span></div>
+      <div class="rule-row"><span class="rule-num">35</span><span class="rule-de"><span class="hl-red">fünf</span><span class="hl-gold">und</span><span class="hl-blue">dreißig</span></span><span class="rule-zh">三十五</span><span class="rule-py"><span class="hl-red">五</span><span class="hl-gold">和</span><span class="hl-blue">三十</span></span></div>
+      <div class="rule-row"><span class="rule-num">48</span><span class="rule-de"><span class="hl-red">acht</span><span class="hl-gold">und</span><span class="hl-blue">vierzig</span></span><span class="rule-zh">四十八</span><span class="rule-py"><span class="hl-red">八</span><span class="hl-gold">和</span><span class="hl-blue">四十</span></span></div>
+      <div class="rule-row"><span class="rule-num">99</span><span class="rule-de"><span class="hl-red">neun</span><span class="hl-gold">und</span><span class="hl-blue">neunzig</span></span><span class="rule-zh">九十九</span><span class="rule-py"><span class="hl-red">九</span><span class="hl-gold">和</span><span class="hl-blue">九十</span></span></div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">💯</span><span class="sec-title-text">大数字</span></div>
+    <div class="num-grid" id="numGridBig"></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🎮</span><span class="sec-title-text">数字互动练习</span></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="btn" onclick="startNumQuiz('de2zh')">数字→德语</button>
+      <button class="btn" onclick="startNumQuiz('zh2de')">中文→德语</button>
+      <button class="btn" onclick="startNumQuiz('calc')">计算训练</button>
+    </div>
+    <div id="numQuizArea"></div>
+  </div>
+</div>
+
+<!-- ══════════════ BODY 人体图解（原创SVG） ══════════════ -->
+<div id="body" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Bildwörterbuch</div>
+    <h2 class="page-title">图解词典 · 点图学单词</h2>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">选主题 → 点图看德语·听发音·带谐音</p>
+    <div id="boardTabs" class="board-tabs"></div>
+    <div id="boardBody">
+    <div id="bodyChips" class="pic-grid"></div>
+    </div>
+    <div id="boardGrid" class="pic-grid" style="display:none"></div>
+    <div id="picOut" class="pic-out" style="display:none"></div>
+    <div id="boardQuiz" class="gq-box" style="margin-top:20px"></div>
+  </div>
+</div>
+
+<!-- ══════════════ GRAMMAR ══════════════ -->
+<div id="grammar" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Grammatik</div>
+    <h2 class="page-title">德语语法速记</h2>
+    <div class="subnav" id="grammarSubnav"></div>
+
+    <details class="gram-group" open><summary>① 入门必学 · 冠词性别 / 动词变位 / 四个格 / 基础句型</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">名词性别（冠词）</span></div>
+    <div class="rule-box">
+      <h3>三种性别 = 三种定冠词</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px">
+        <div style="text-align:center;padding:12px;background:rgba(28,176,246,.1);border-radius:8px;border:1px solid rgba(28,176,246,.3)">
+          <div style="font-size:20px;color:#1cb0f6;font-style:italic">der</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px">阳性 (m)</div>
+          <div style="font-size:12px;color:#1cb0f6;margin-top:6px">der Mann<br>der Vater</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:rgba(255,75,75,.1);border-radius:8px;border:1px solid rgba(255,75,75,.3)">
+          <div style="font-size:20px;color:#ff4b4b;font-style:italic">die</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px">阴性 (f)</div>
+          <div style="font-size:12px;color:#ff4b4b;margin-top:6px">die Frau<br>die Mutter</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:rgba(88,204,2,.1);border-radius:8px;border:1px solid rgba(88,204,2,.3)">
+          <div style="font-size:20px;color:#58cc02;font-style:italic">das</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px">中性 (n)</div>
+          <div style="font-size:12px;color:#58cc02;margin-top:6px">das Kind<br>das Buch</div>
+        </div>
+      </div>
+    </div>
+    <div class="tip-card"><div class="tip-title">性别记忆技巧</div><div class="tip-body">
+      • 以 <b>-er/-eur/-ismus/-ling</b> 结尾 → 多为 <b style="color:#1cb0f6">der</b><br>
+      • 以 <b>-ung/-heit/-keit/-schaft/-ion</b> 结尾 → 多为 <b style="color:#ff4b4b">die</b><br>
+      • 以 <b>-chen/-lein/-ment/-tum</b> 结尾 → 多为 <b style="color:#58cc02">das</b><br>
+      • <b>动词名词化</b>（das Essen, das Lernen）→ 永远是 <b style="color:#58cc02">das</b>
+    </div></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔄</span><span class="sec-title-text">动词变位（现在时）</span></div>
+    <div class="rule-box">
+      <h3>规则动词：machen（做）</h3>
+      <table style="width:100%;font-size:13px">
+        <tr><th style="text-align:left;color:var(--gold-dim);padding:4px 0;border-bottom:1px solid var(--gold-faint)">人称</th><th style="text-align:left;color:var(--gold-dim);padding:4px 8px;border-bottom:1px solid var(--gold-faint)">变位</th><th style="text-align:left;color:var(--gold-dim);padding:4px 0;border-bottom:1px solid var(--gold-faint)">中文</th><th style="text-align:left;color:var(--gold-dim);padding:4px 8px;border-bottom:1px solid var(--gold-faint)">词尾</th></tr>
+        <tr><td style="padding:6px 0">ich</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">e</b></td><td style="padding:6px 0;color:var(--text-dim)">我做</td><td style="padding:6px 8px;color:var(--gold)">-e</td></tr>
+        <tr><td style="padding:6px 0">du</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">st</b></td><td style="padding:6px 0;color:var(--text-dim)">你做</td><td style="padding:6px 8px;color:var(--gold)">-st</td></tr>
+        <tr><td style="padding:6px 0">er/sie/es</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">t</b></td><td style="padding:6px 0;color:var(--text-dim)">他/她/它做</td><td style="padding:6px 8px;color:var(--gold)">-t</td></tr>
+        <tr><td style="padding:6px 0">wir</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">en</b></td><td style="padding:6px 0;color:var(--text-dim)">我们做</td><td style="padding:6px 8px;color:var(--gold)">-en</td></tr>
+        <tr><td style="padding:6px 0">ihr</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">t</b></td><td style="padding:6px 0;color:var(--text-dim)">你们做</td><td style="padding:6px 8px;color:var(--gold)">-t</td></tr>
+        <tr><td style="padding:6px 0">Sie/sie</td><td style="padding:6px 8px;color:var(--text-dim)">mach<b style="color:var(--gold)">en</b></td><td style="padding:6px 0;color:var(--text-dim)">您/他们做</td><td style="padding:6px 8px;color:var(--gold)">-en</td></tr>
+      </table>
+    </div>
+
+    <div class="rule-box" style="margin-top:10px">
+      <h3>不规则动词：sein（是）/ haben（有）</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div style="font-size:12px;color:var(--gold-dim);margin-bottom:8px;letter-spacing:1px">SEIN（是）</div>
+          <div style="font-size:13px;line-height:2;color:var(--text-dim)">ich <b style="color:var(--gold)">bin</b>（我是）<br>du <b style="color:var(--gold)">bist</b>（你是）<br>er/sie/es <b style="color:var(--gold)">ist</b>（他是）<br>wir <b style="color:var(--gold)">sind</b>（我们是）<br>ihr <b style="color:var(--gold)">seid</b>（你们是）<br>sie/Sie <b style="color:var(--gold)">sind</b>（他们是）</div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--gold-dim);margin-bottom:8px;letter-spacing:1px">HABEN（有）</div>
+          <div style="font-size:13px;line-height:2;color:var(--text-dim)">ich <b style="color:var(--gold)">habe</b>（我有）<br>du <b style="color:var(--gold)">hast</b>（你有）<br>er/sie/es <b style="color:var(--gold)">hat</b>（他有）<br>wir <b style="color:var(--gold)">haben</b>（我们有）<br>ihr <b style="color:var(--gold)">habt</b>（你们有）<br>sie/Sie <b style="color:var(--gold)">haben</b>（他们有）</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">📊</span><span class="sec-title-text">四个格（简化版）</span></div>
+    <table class="pron-table">
+      <tr><th>格</th><th>用途</th><th>der变化</th><th>die变化</th><th>das变化</th></tr>
+      <tr><td><b style="color:var(--gold)">第一格</b><br><small style="color:var(--text-dim)">Nominativ</small></td><td style="color:var(--text-dim)">主语（谁）</td><td>der</td><td>die</td><td>das</td></tr>
+      <tr><td><b style="color:#1cb0f6">第二格</b><br><small style="color:var(--text-dim)">Genitiv</small></td><td style="color:var(--text-dim)">所有格（谁的）</td><td>des</td><td>der</td><td>des</td></tr>
+      <tr><td><b style="color:#ff4b4b">第三格</b><br><small style="color:var(--text-dim)">Dativ</small></td><td style="color:var(--text-dim)">间接宾语（给谁）</td><td>dem</td><td>der</td><td>dem</td></tr>
+      <tr><td><b style="color:#58cc02">第四格</b><br><small style="color:var(--text-dim)">Akkusativ</small></td><td style="color:var(--text-dim)">直接宾语（做什么）</td><td>den</td><td>die</td><td>das</td></tr>
+    </table>
+    <div class="rule-box" style="line-height:1.6">
+      <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px">同一个词「der Mann 男人」走遍四个格，看冠词怎么变：</div>
+      <div style="font-size:15px" lang="de"><b style="color:var(--gold)">Der Mann</b> ist hier. <button class="speak-btn" type="button" onclick="speakDE('Der Mann ist hier.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">这个男人在这里（一格·谁）</span></div>
+      <div style="font-size:15px" lang="de">Ich sehe <b style="color:#58cc02">den Mann</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich sehe den Mann.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我看见这个男人（四格·做什么）</span></div>
+      <div style="font-size:15px" lang="de">Ich gebe <b style="color:#ff4b4b">dem Mann</b> ein Buch. <button class="speak-btn" type="button" onclick="speakDE('Ich gebe dem Mann ein Buch.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我给这个男人一本书（三格·给谁）</span></div>
+      <div style="font-size:15px" lang="de">das Auto <b style="color:#1cb0f6">des Mannes</b> <button class="speak-btn" type="button" onclick="speakDE('das Auto des Mannes',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">这个男人的车（二格·谁的）</span></div>
+    </div>
+    <div class="tip-card"><div class="tip-title">快速记忆：只有阳性der变化最多</div><div class="tip-body">阴性/中性/复数：第三格加m，第四格阴中不变。<b>初学先掌握第一格和第四格</b>，日常交流够用了！</div></div>
+
+    <div class="sec-title"><span class="sec-title-icon">⚡</span><span class="sec-title-text">常用句型模板</span></div>
+    <div class="rule-box">
+      <h3>万能句型</h3>
+      <div style="font-size:13px;line-height:2.2;color:var(--text-dim)">
+        <div>Ich <b style="color:var(--gold)">möchte</b> + 名词/动词原形 → 我想要……</div>
+        <div>Ich <b style="color:var(--gold)">bin</b> + 形容词/职业 → 我是……</div>
+        <div>Ich <b style="color:var(--gold)">habe</b> + 名词（四格） → 我有……</div>
+        <div>Kann ich + 动词原形? → 我可以……吗？</div>
+        <div>Wo ist + 地点? → ……在哪里？</div>
+        <div>Was <b style="color:var(--gold)">kostet</b> + 物品? → ……多少钱？</div>
+        <div>Wie <b style="color:var(--gold)">heißen</b> Sie? → 您叫什么名字？</div>
+        <div>Bitte + 动词 → 请……（命令式）</div>
+      </div>
+    </div>
+
+    <div class="gq-box" data-gq="g1"></div>
+    </div></details><details class="gram-group"><summary>② 完成时 &amp; 句子语序（可分动词 / 从句）</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">完成时 Perfekt（最常用的过去）</span></div>
+    <div class="rule-box">
+      <h3>haben / sein + 过去分词（句尾）</h3>
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div>Ich <b style="color:var(--gold)">habe</b> Deutsch <b style="color:var(--gold)">gelernt</b>.（我学了德语）</div>
+        <div>Ich <b style="color:var(--gold)">bin</b> nach Berlin <b style="color:var(--gold)">gefahren</b>.（我去了柏林）</div>
+        <div style="color:var(--text-dim);margin-top:4px">规律：<b>位移/状态变化用 sein</b>(gehen/kommen/fahren/werden)，<b>其余多用 haben</b>。过去分词常是 <b>ge-…-t</b>(规则) 或 <b>ge-…-en</b>(不规则)，永远<b>甩到句尾</b>。</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">✂️</span><span class="sec-title-text">可分动词</span></div>
+    <div class="tip-card"><div class="tip-body"><b>aufstehen</b>(起床)→ Ich <b style="color:var(--gold)">stehe</b> um 7 Uhr <b style="color:var(--gold)">auf</b>.（前缀 auf 甩句尾）。常见可分前缀：auf-/an-/ein-/aus-/mit-/zu-/ab-/vor-。<b>听句子要等到最后</b>——前缀能改变词义(stehen 站 → aufstehen 起床)。</div></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔚</span><span class="sec-title-text">从句语序：动词到句尾</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div>主句：Ich bleibe zu Hause.（我待在家）</div>
+        <div>加 <b style="color:var(--gold)">weil/dass/wenn/ob</b> → 动词去句尾：</div>
+        <div>…, <b>weil</b> ich krank <b style="color:var(--gold)">bin</b>.（因为我病了）</div>
+        <div>…, <b>dass</b> er morgen <b style="color:var(--gold)">kommt</b>.（……他明天来）</div>
+        <div style="color:var(--text-dim);margin-top:4px">口诀：<b>weil/dass/wenn 一出现，变位动词站最后。</b></div>
+      </div>
+    </div>
+
+    <div class="gq-box" data-gq="g2"></div>
+    </div></details><details class="gram-group"><summary>③ 两大难点 · 形容词词尾 / 介词支配格</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🎨</span><span class="sec-title-text">形容词词尾（先懂逻辑，再记形）</span></div>
+    <div class="tip-card"><div class="tip-title">🔑 只有一种情况要变尾</div><div class="tip-body">形容词<b>放在名词前面（做定语）才加词尾</b>；放在动词后面（做表语）<b>原形不变</b>。</div></div>
+    <div class="rule-box" style="line-height:1.6">
+      <div style="font-size:15px" lang="de">Der Kaffee ist <b style="color:var(--gold)">heiß</b>. <button class="speak-btn" type="button" onclick="speakDE('Der Kaffee ist heiß.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">咖啡是热的（表语·不变）</span></div>
+      <div style="font-size:15px" lang="de">Ich trinke <b style="color:var(--gold)">heißen</b> Kaffee. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke heißen Kaffee.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我喝热咖啡（定语·加尾）</span></div>
+    </div>
+    <div class="rule-box">
+      <h3>最常用：单数 · 主格</h3>
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div>定冠词后统一加 <b style="color:var(--gold)">-e</b>：der gut<b style="color:var(--gold)">e</b> Mann · die gut<b style="color:var(--gold)">e</b> Frau · das gut<b style="color:var(--gold)">e</b> Kind</div>
+        <div>ein 后"补性别"：ein gut<b style="color:#ff4b4b">er</b> Mann · eine gut<b style="color:#ff4b4b">e</b> Frau · ein gut<b style="color:#ff4b4b">es</b> Kind</div>
+        <div style="color:var(--text-dim);margin-top:4px">直觉：<b>der/die/das 已点明性别 → 形容词偷懒用 -e</b>；<b>ein（阳/中看不出性别）→ 形容词补上 -er/-es</b>。这是德语最磨人的点，<b>先够用，用多自然顺</b>。</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">📈</span><span class="sec-title-text">形容词比较级 · 最高级</span></div>
+    <div class="rule-box">
+      <h3>规则：原形 → -er → am -sten（德语不用 mehr！）</h3>
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div>klein 小 → klein<b style="color:var(--gold)">er</b> 更小 → am klein<b style="color:var(--gold)">sten</b> 最小</div>
+        <div>单音节 a/o/u 常变音：alt → <b style="color:#ff7a4d">ä</b>lter · groß → gr<b style="color:#ff7a4d">ö</b>ßer · jung → j<b style="color:#ff7a4d">ü</b>nger</div>
+        <div>必背不规则：gut → <b style="color:var(--gold)">besser</b> → am besten；viel → <b style="color:var(--gold)">mehr</b> → am meisten；gern → <b style="color:var(--gold)">lieber</b> → am liebsten</div>
+      </div>
+    </div>
+    <div class="rule-box" style="line-height:1.6">
+      <div style="font-size:15px" lang="de">Er ist größer <b style="color:var(--gold)">als</b> ich. <button class="speak-btn" type="button" onclick="speakDE('Er ist größer als ich.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">他比我高（比较用 als，不是 wie）</span></div>
+      <div style="font-size:15px" lang="de">Ich trinke <b style="color:var(--gold)">lieber</b> Tee. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke lieber Tee.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我更爱喝茶（gern 的比较级）</span></div>
+      <div style="font-size:15px" lang="de">Am liebsten esse ich Nudeln. <button class="speak-btn" type="button" onclick="speakDE('Am liebsten esse ich Nudeln.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我最爱吃面条。</span></div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🧭</span><span class="sec-title-text">介词支配格（介词自带固定的格）</span></div>
+    <div class="tip-card"><div class="tip-body">🔑 每个介词后面<b>固定跟某一个格</b>——把介词连同"格"一起背。初学先记下面两句<b>口诀</b>就够用；<b>Genitiv 组可先跳过</b>。</div></div>
+    <div class="rule-box">
+      <h3 style="color:#ff7a4d">静三动四（Wechselpräp，9 个）</h3>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">in · an · auf · über · unter · vor · hinter · neben · zwischen</b><br>表<b>静止位置</b>(在哪 wo?)→<b style="color:#ff4b4b">第三格</b>；表<b>移动方向</b>(去哪 wohin?)→<b style="color:#58cc02">第四格</b>。<br>例：Das Buch ist auf <b style="color:#ff4b4b">dem</b> Tisch（静/三）· Ich lege es auf <b style="color:#58cc02">den</b> Tisch（动/四）</div>
+    </div>
+    <div class="rule-box">
+      <h3 style="color:#ff4b4b">只支配第三格 Dativ</h3>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">aus</b>(从里) · <b lang="de">außer</b>(除外) · <b lang="de">bei</b>(在…处) · <b lang="de">mit</b>(和/用) · <b lang="de">nach</b>(向/之后) · <b lang="de">seit</b>(自从) · <b lang="de">von</b>(从/属于) · <b lang="de">zu</b>(向) · <b lang="de">gegenüber</b>(对面)<br><span style="color:var(--text-dim)">口诀：aus bei mit nach seit von zu</span><br><span lang="de" style="color:var(--text)">Ich fahre <b style="color:#ff4b4b">mit dem</b> Bus.</span> <button class="speak-btn" type="button" onclick="speakDE('Ich fahre mit dem Bus.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="color:var(--text-dim)">我坐公交（mit + 第三格 dem）</span></div>
+    </div>
+    <div class="rule-box">
+      <h3 style="color:#58cc02">只支配第四格 Akkusativ</h3>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">durch</b>(穿过) · <b lang="de">für</b>(为了) · <b lang="de">gegen</b>(反对) · <b lang="de">ohne</b>(没有) · <b lang="de">um</b>(围绕/在…时) · <b lang="de">bis</b>(到) · <b lang="de">entlang</b>(沿着) · <b lang="de">wider</b>(违反)<br><span style="color:var(--text-dim)">口诀：durch für gegen ohne um</span><br><span lang="de" style="color:var(--text)">Das ist <b style="color:#58cc02">für dich</b>.</span> <button class="speak-btn" type="button" onclick="speakDE('Das ist für dich.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="color:var(--text-dim)">这是给你的（für + 第四格 dich）</span></div>
+    </div>
+    <div class="rule-box">
+      <h3 style="color:#1cb0f6">支配第二格 Genitiv</h3>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">während</b>(期间) · <b lang="de">wegen</b>(由于) · <b lang="de">trotz</b>(尽管) · <b lang="de">(an)statt</b>(代替) · <b lang="de">innerhalb</b>(之内) · <b lang="de">außerhalb</b>(之外) · <b lang="de">infolge</b>(由于) · <b lang="de">mithilfe</b>(借助) · <b lang="de">ungeachtet</b>(不顾)<br><span style="color:var(--text-dim)">多用于书面/正式，<b>初学可先跳过</b>；口语常用 <b lang="de">von</b> + 第三格 代替。</span></div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">名词性别后缀规律</span></div>
+    <table class="pron-table">
+      <tr><th>性别</th><th>常见后缀</th></tr>
+      <tr><td><b style="color:#1cb0f6">der 阳</b></td><td lang="de">-er · -ling · -ismus · -ist · -or · -ant/-and · -ent · -ich · -ig · -ast</td></tr>
+      <tr><td><b style="color:#ff4b4b">die 阴</b></td><td lang="de">-ung · -heit · -keit · -schaft · -ion · -tät · -ie · -ik · -ei · -in · -anz/-enz</td></tr>
+      <tr><td><b style="color:#58cc02">das 中</b></td><td lang="de">-chen · -lein · -ment · -um · -tum · -ma · -nis · -o · Ge-(总称)</td></tr>
+    </table>
+    <div class="tip-card"><div class="tip-body"><b>98% 以 -e 结尾的名词是阴性</b>(die Schule/Frage/Reise/Tasche)。例外：少数阳性弱变化(der Kunde/Affe/Löwe/Kollege)、中性(das Ende/Wochenende)。</div></div>
+
+    <div class="gq-box" data-gq="g3"></div>
+    </div></details><details class="gram-group"><summary>④ 时态精讲 · 一句话走遍六时态（推荐先看）</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">⏳</span><span class="sec-title-text">时态精讲 · 一句话走遍六时态</span></div>
+    <div class="tip-card"><div class="tip-body">💡 <b>核心观念</b>：时态 = <b>同一件事，在不同时间的说法</b>。下面用同一句「<b>我学德语</b>」走一遍——你会发现<b style="color:#1cb0f6">蓝色的助动词</b>负责表达"时间"，<b style="color:var(--gold)">绿色的主动词</b>才是"做什么"。看懂这一点，时态就通了。</div></div>
+    <div class="rule-box" style="line-height:1.5">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div><div style="font-size:12px;color:var(--text-dim)"><b>① 现在时</b> Präsens · 现在／经常／事实</div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:var(--gold)">lerne</b> Deutsch. <button class="speak-btn" type="button" onclick="speakDE('Ich lerne Deutsch.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我（在）学德语。</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)"><b>② 现在完成时</b> Perfekt · <b>口语里说"过去"就用它</b></div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:#1cb0f6">habe</b> Deutsch <b style="color:var(--gold)">gelernt</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich habe Deutsch gelernt.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我学过德语了。（助动词 habe + 分词 gelernt 甩句尾）</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)"><b>③ 过去时</b> Präteritum · 书面／讲故事的过去</div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:var(--gold)">lernte</b> Deutsch. <button class="speak-btn" type="button" onclick="speakDE('Ich lernte Deutsch.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我（当时）学德语。（多见于书、新闻）</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)"><b>④ 过去完成时</b> Plusquamperfekt · "过去的过去"</div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:#1cb0f6">hatte</b> Deutsch <b style="color:var(--gold)">gelernt</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich hatte Deutsch gelernt.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">（在那之前）我已经学过德语了。</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)"><b>⑤ 将来时</b> Futur I · 将来／打算／推测</div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:#1cb0f6">werde</b> Deutsch <b style="color:var(--gold)">lernen</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich werde Deutsch lernen.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我将要学德语。（口语里也常直接用现在时 + 时间词）</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)"><b>⑥ 将来完成时</b> Futur II · 将来某刻"已完成"（少用）</div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:#1cb0f6">werde</b> Deutsch <b style="color:var(--gold)">gelernt haben</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich werde Deutsch gelernt haben.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">（到那时）我将已经学完德语。</div></div>
+      </div>
+    </div>
+    <div class="tip-card"><div class="tip-body">🎯 <b>初学者只要先掌握两个</b>：<b style="color:var(--gold)">现在时</b>（说现在）+ <b style="color:var(--gold)">现在完成时 Perfekt</b>（口语说过去）。这两个覆盖 90% 的日常表达，其余先眼熟即可。</div></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔤</span><span class="sec-title-text">现在时变位 · 具体怎么变（背下来）</span></div>
+    <div class="rule-box">
+      <h3>规则动词 lernen（学）— 去掉 -en，加人称词尾</h3>
+      <table class="pron-table"><tr><th>人称</th><th>变位</th><th>词尾</th></tr>
+        <tr><td>ich 我</td><td lang="de">lern<b style="color:var(--gold)">e</b></td><td>-e</td></tr>
+        <tr><td>du 你</td><td lang="de">lern<b style="color:var(--gold)">st</b></td><td>-st</td></tr>
+        <tr><td>er/sie/es 他/她/它</td><td lang="de">lern<b style="color:var(--gold)">t</b></td><td>-t</td></tr>
+        <tr><td>wir 我们</td><td lang="de">lern<b style="color:var(--gold)">en</b></td><td>-en</td></tr>
+        <tr><td>ihr 你们</td><td lang="de">lern<b style="color:var(--gold)">t</b></td><td>-t</td></tr>
+        <tr><td>sie/Sie 他们/您</td><td lang="de">lern<b style="color:var(--gold)">en</b></td><td>-en</td></tr>
+      </table>
+      <div style="font-size:12px;color:var(--text-dim);margin-top:6px">规律：<b>-e / -st / -t / -en / -t / -en</b>。大多数动词都这么变（machen, spielen, wohnen, kommen…）。</div>
+    </div>
+    <div class="rule-box">
+      <h3 style="color:#ff7a4d">两个最重要的不规则动词（必背）</h3>
+      <table class="pron-table"><tr><th>人称</th><th>sein（是）</th><th>haben（有）</th></tr>
+        <tr><td>ich</td><td lang="de"><b style="color:#ff4b4b">bin</b></td><td lang="de"><b style="color:#ff4b4b">habe</b></td></tr>
+        <tr><td>du</td><td lang="de"><b style="color:#ff4b4b">bist</b></td><td lang="de"><b style="color:#ff4b4b">hast</b></td></tr>
+        <tr><td>er/sie/es</td><td lang="de"><b style="color:#ff4b4b">ist</b></td><td lang="de"><b style="color:#ff4b4b">hat</b></td></tr>
+        <tr><td>wir</td><td lang="de">sind</td><td lang="de">haben</td></tr>
+        <tr><td>ihr</td><td lang="de"><b style="color:#ff4b4b">seid</b></td><td lang="de"><b style="color:#ff4b4b">habt</b></td></tr>
+        <tr><td>sie/Sie</td><td lang="de">sind</td><td lang="de">haben</td></tr>
+      </table>
+      <div style="font-size:12px;color:var(--text-dim);margin-top:6px">这两个既能单独用（我是/我有），又是完成时的<b>助动词</b>——所以务必背熟。练一练可去「🎯 练习测验 → 动词变位」。</div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🛠️</span><span class="sec-title-text">动词变位器 · 输入动词自动变</span></div>
+    <div class="rule-box">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input id="conjIn" placeholder="输入动词原形，如 spielen / fahren" onkeydown="if(event.key==='Enter')runConj()" style="flex:1;min-width:170px;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:15px;outline:none;font-family:inherit;box-shadow:var(--shadow)" lang="de">
+        <button class="btn" onclick="runConj()">变位</button>
+      </div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-dim)">试试：<span class="ph-try" onclick="conjEx('spielen')">spielen</span><span class="ph-try" onclick="conjEx('arbeiten')">arbeiten</span><span class="ph-try" onclick="conjEx('fahren')">fahren</span><span class="ph-try" onclick="conjEx('essen')">essen</span><span class="ph-try" onclick="conjEx('sein')">sein</span></div>
+      <div id="conjOut" style="margin-top:10px"></div>
+      <div style="font-size:12px;color:var(--text-faint);margin-top:8px">规则动词自动生成；常见不规则/变音/情态动词已内置。仅现在时。</div>
+    </div>
+
+    <div class="gq-box" data-gq="g4"></div>
+    </div></details><details class="gram-group"><summary>⑤ 代词 &amp; 11 种基本句型</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">👤</span><span class="sec-title-text">人称代词（主/宾/与格）</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2;color:var(--text-dim)" lang="de">
+        <div><b style="color:var(--gold)">主格(N)</b>：ich · du · er/sie/es · wir · ihr · sie/Sie</div>
+        <div><b style="color:var(--gold)">第四格(A)</b>：mich · dich · ihn/sie/es · uns · euch · sie/Sie</div>
+        <div><b style="color:var(--gold)">第三格(D)</b>：mir · dir · ihm/ihr/ihm · uns · euch · ihnen/Ihnen</div>
+        <div><b style="color:var(--gold)">物主</b>：mein · dein · sein/ihr/sein · unser · euer · ihr/Ihr</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">📌</span><span class="sec-title-text">物主代词变格（mein）</span></div>
+    <table class="pron-table">
+      <tr><th>格</th><th>阳</th><th>中</th><th>阴</th><th>复</th></tr>
+      <tr><td>一格</td><td lang="de">mein</td><td lang="de">mein</td><td lang="de">meine</td><td lang="de">meine</td></tr>
+      <tr><td>二格</td><td lang="de">meines</td><td lang="de">meines</td><td lang="de">meiner</td><td lang="de">meiner</td></tr>
+      <tr><td>三格</td><td lang="de">meinem</td><td lang="de">meinem</td><td lang="de">meiner</td><td lang="de">meinen</td></tr>
+      <tr><td>四格</td><td lang="de">meinen</td><td lang="de">mein</td><td lang="de">meine</td><td lang="de">meine</td></tr>
+    </table>
+
+    <div class="sec-title"><span class="sec-title-icon">❓</span><span class="sec-title-text">疑问代词</span></div>
+    <table class="pron-table">
+      <tr><td>谁 <b lang="de">wer</b></td><td>谁(四格) <b lang="de">wen</b></td><td>谁(三格) <b lang="de">wem</b></td></tr>
+      <tr><td>谁的 <b lang="de">wessen</b></td><td>什么 <b lang="de">was</b></td><td>哪个 <b lang="de">welch-</b></td></tr>
+      <tr><td>何时 <b lang="de">wann</b></td><td>哪里 <b lang="de">wo</b></td><td>去哪 <b lang="de">wohin</b></td></tr>
+      <tr><td>从哪 <b lang="de">woher</b></td><td>怎样/多 <b lang="de">wie</b></td><td>为什么 <b lang="de">warum</b></td></tr>
+    </table>
+
+    <div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">句子结构 · 一条铁律 + 常用骨架</span></div>
+    <div class="tip-card"><div class="tip-title">🔑 铁律：陈述句里，变位动词永远在「第二位」</div><div class="tip-body">不管句首放的是主语、时间还是地点，<b style="color:var(--gold)">动词都是第二个成分</b>，主语跟着动词走。记住这一条，德语语序就稳了。</div></div>
+    <div class="rule-box" style="line-height:1.5">
+      <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold)">spiele</b> heute Fußball. <button class="speak-btn" type="button" onclick="speakDE('Ich spiele heute Fußball.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:10px">我今天踢球。（主语在第一位，动词第二位）</div>
+      <div style="font-size:15px" lang="de">Heute <b style="color:var(--gold)">spiele</b> ich Fußball. <button class="speak-btn" type="button" onclick="speakDE('Heute spiele ich Fußball.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+      <div style="font-size:13px;color:var(--text-dim)">今天我踢球。（时间提到句首 → <b>动词仍在第二位</b>，主语 ich 退到动词后面）</div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🧱</span><span class="sec-title-text">5 个最常用句子骨架（配例句）</span></div>
+    <div class="rule-box" style="line-height:1.5">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div><div style="font-size:12px;color:var(--text-dim)">① 主 + 谓（不及物）</div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold)">schlafe</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich schlafe.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我睡觉。</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)">② 主 + 谓 + <b style="color:#ff4b4b">第四格</b>宾语（做什么）</div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold)">trinke</b> <b style="color:#ff4b4b">Wasser</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke Wasser.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我喝水。（宾语用<b style="color:#ff4b4b">第四格 Akkusativ</b>）</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)">③ 给<b style="color:#1cb0f6">某人</b>(三格)<b style="color:#ff4b4b">某物</b>(四格)</div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold)">gebe</b> <b style="color:#1cb0f6">dir</b> <b style="color:#ff4b4b">das Buch</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich gebe dir das Buch.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我给你这本书。（人用<b style="color:#1cb0f6">第三格 dir</b>，物用<b style="color:#ff4b4b">第四格 das Buch</b>）</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)">④ 主 + 系动词 + 表语（是／成为）</div>
+          <div style="font-size:15px" lang="de">Er <b style="color:var(--gold)">ist</b> Lehrer. <button class="speak-btn" type="button" onclick="speakDE('Er ist Lehrer.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">他是老师。（sein / werden 后接表语，表语不变格）</div></div>
+        <div><div style="font-size:12px;color:var(--text-dim)">⑤ 主 + 谓 + 介词短语（去哪／在哪）</div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold)">fahre</b> nach Berlin. <button class="speak-btn" type="button" onclick="speakDE('Ich fahre nach Berlin.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:13px;color:var(--text-dim)">我去柏林。</div></div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">❓</span><span class="sec-title-text">两种问句</span></div>
+    <div class="rule-box" style="line-height:1.6">
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:2px"><b>W 问句</b>：疑问词 + 动词 + 主语</div>
+      <div style="font-size:15px" lang="de"><b style="color:var(--blue)">Wann</b> <b style="color:var(--gold)">kommst</b> du? <button class="speak-btn" type="button" onclick="speakDE('Wann kommst du?',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">你什么时候来？</span></div>
+      <div style="font-size:13px;color:var(--text-dim);margin:8px 0 2px"><b>是非问句</b>：动词提到句首（回答 ja/nein）</div>
+      <div style="font-size:15px" lang="de"><b style="color:var(--gold)">Kommst</b> du? <button class="speak-btn" type="button" onclick="speakDE('Kommst du?',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">你来吗？</span></div>
+    </div>
+
+    <details class="gram-group" style="margin-top:8px"><summary>📋 全部 11 种句型（术语参考）</summary><div class="gram-body"><div class="rule-box" style="margin-top:8px">
+      <div style="font-size:13px;line-height:2;color:var(--text-dim)">
+        <div>① 主+谓(不及物)　② 主+谓+第四格宾语　③ 主+谓+第三格宾语</div>
+        <div>④ 主+谓(不及物)+介词短语　⑤ 主+谓+表语　⑥ 主+谓+状语</div>
+        <div>⑦ 主+谓+第三格宾语+第四格宾语（给某人某物）</div>
+        <div>⑧ 主+谓+第四格宾语+介词短语　⑨ 主+谓+第四格宾语+状语</div>
+        <div>⑩ 主+谓+第四格宾语+第四格宾语　⑪ 主+谓+介词短语+介词短语</div>
+      </div>
+    </div></div></details>
+
+    <div class="gq-box" data-gq="g5"></div>
+    </div></details>  </div>
+</div>
+
+<!-- ══════════════ PHRASES ══════════════ -->
+<div id="phrases" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Alltagsdeutsch</div>
+    <h2 class="page-title">日常对话 + 词汇大全</h2>
+    <p id="phrasesSub" style="text-align:center;font-size:13px;color:var(--text-dim);margin:0 0 10px"></p>
+
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="搜索德语、中文或谐音..." oninput="filterPhrases()">
+      <span class="search-icon">🔍</span>
+    </div>
+    <div id="recentSearch" class="recent-row"></div>
+
+    <div class="level-tabs" id="levelTabs"></div>
+    <div class="level-info" id="levelInfo"></div>
+    <div class="cat-tabs" id="catTabs"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin:10px 0;flex-wrap:wrap">
+      <button id="playAllBtn" class="fab-read" onclick="toggleAutoPlay()">▶ 循环朗读</button>
+      <span id="playAllInfo" style="font-size:12px;color:var(--text-dim)"></span>
+    </div>
+    <div class="spk-panel">
+      <label>语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="spkRate" oninput="setSpkRate(this.value)"> <span id="spkRateV">0.62</span></label>
+      <label>遍数 <select id="spkRepeat" onchange="spkSet('repeat',+this.value)"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select></label>
+      <label><input type="checkbox" id="spkZh" checked onchange="spkSet('zh',this.checked)"> 读中文</label>
+      <label><input type="checkbox" id="spkShuffle" onchange="spkSet('shuffle',this.checked)"> 乱序</label>
+    </div>
+    <div style="margin:8px 0"><label style="font-size:13px;color:var(--text-dim);cursor:pointer"><input type="checkbox" id="onlyUnknown" onchange="toggleOnlyUnknown(this.checked)"> 只看没学会的（藏起已打✓的词，专攻生词）</label></div>
+    <div id="phraseResults" style="font-size:12px;color:var(--gold-dim);margin:8px 0"></div>
+    <div id="phraseContent"></div>
+  </div>
+</div>
+
+<!-- ══════════════ QUIZ ══════════════ -->
+<div id="quiz" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Übungen</div>
+    <h2 class="page-title">练习测验</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px">
+      <div class="card" onclick="startQuiz('num')" style="text-align:center;padding:20px">
+        <div style="font-size:28px;margin-bottom:8px">🔢</div>
+        <div style="color:var(--text);font-weight:700;margin-bottom:4px">数字测验</div>
+        <div style="font-size:12px;color:var(--text-dim)" id="qdNum">看数字→说德语</div>
+      </div>
+      <div class="card" onclick="startQuiz('phrase')" style="text-align:center;padding:20px">
+        <div style="font-size:28px;margin-bottom:8px">💬</div>
+        <div style="color:var(--text);font-weight:700;margin-bottom:4px">词汇测验</div>
+        <div style="font-size:12px;color:var(--text-dim)" id="qdPhrase">看中文→选德语</div>
+      </div>
+      <div class="card" onclick="startQuiz('reverse')" style="text-align:center;padding:20px">
+        <div style="font-size:28px;margin-bottom:8px">🔄</div>
+        <div style="color:var(--text);font-weight:700;margin-bottom:4px">反向测验</div>
+        <div style="font-size:12px;color:var(--text-dim)" id="qdReverse">看德语→选中文</div>
+      </div>
+      <div class="card de-only-block" onclick="startQuiz('gender')" style="text-align:center;padding:20px">
+        <div style="font-size:28px;margin-bottom:8px">🏷️</div>
+        <div style="color:var(--text);font-weight:700;margin-bottom:4px">冠词测验</div>
+        <div style="font-size:12px;color:var(--text-dim)">猜 der·die·das</div>
+      </div>
+      <div class="card de-only-block" onclick="startQuiz('conj')" style="text-align:center;padding:20px">
+        <div style="font-size:28px;margin-bottom:8px">🔄</div>
+        <div style="color:var(--text);font-weight:700;margin-bottom:4px">动词变位</div>
+        <div style="font-size:12px;color:var(--text-dim)">选对的变位形式</div>
+      </div>
+      <div class="card" onclick="startQuiz('listen')" style="text-align:center;padding:20px">
+        <div style="font-size:28px;margin-bottom:8px">🎧</div>
+        <div style="color:var(--text);font-weight:700;margin-bottom:4px">听力测验</div>
+        <div style="font-size:12px;color:var(--text-dim)">听德语→选中文</div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text-faint);margin-bottom:4px">出题范围（词汇 / 反向测验）：</div>
+    <div class="level-tabs" id="quizLevelTabs">
+      <button class="level-tab active" onclick="setQuizLevel('all',this)">📚 全部</button>
+      <button class="level-tab" onclick="setQuizLevel('0',this)">🌱 零基础</button>
+      <button class="level-tab" onclick="setQuizLevel('a1',this)">⭐ A1</button>
+      <button class="level-tab" onclick="setQuizLevel('a2',this)">⭐⭐ A2</button>
+      <button class="level-tab" onclick="setQuizLevel('b1',this)">🔥 B1</button>
+      <button class="level-tab" onclick="setQuizLevel('b2',this)">💎 B2</button>
+    </div>
+    <div id="mainQuizArea"></div>
+  </div>
+</div>
+
+<!-- ══════════════ READING ══════════════ -->
+<div id="reading" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Lesen</div>
+    <h2 class="page-title">阅读 · 连载</h2>
+    <div style="display:flex;gap:8px;justify-content:center;margin:2px 0 10px">
+      <button class="level-tab active" type="button">📖 分级短文</button>
+      <button class="level-tab" type="button" onclick="showSection('series')">🎬 留学连载</button>
+    </div>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
+    <button id="loopAllBtn" class="fab-read" type="button" aria-label="循环朗读全部短文" onclick="toggleLoopAll()">🔊 循环朗读</button>
+    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="readRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
+    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px">▶ 整篇朗读 · 点句即听 · <b style="color:#46a302">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
+    <div class="level-tabs" id="readLevelTabs"></div>
+    <div id="readCount" style="font-size:12px;color:var(--gold-dim);margin:4px 0 10px"></div>
+    <div id="readList"></div>
+  </div>
+</div>
+
+<!-- ══════════════ 留学连载（原创系列 + 视频资源） ══════════════ -->
+<div id="series" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Serie</div>
+    <h2 class="page-title">阅读 · 连载</h2>
+    <div style="display:flex;gap:8px;justify-content:center;margin:2px 0 10px">
+      <button class="level-tab" type="button" onclick="showSection('reading')">📖 分级短文</button>
+      <button class="level-tab active" type="button">🎬 留学连载</button>
+    </div>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">原创连续剧 · 中德对照 · 🔊 慢速朗读 · 点词查义</p>
+    <button id="seriesLoopBtn" class="fab-read" type="button" aria-label="循环朗读全部连载" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
+    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
+    <div class="sec-title"><span class="sec-title-icon">🎬</span><span class="sec-title-text">原创连载 · 留学生活</span><span class="sec-title-count" id="seriesCount"></span></div>
+    <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听 · <b style="color:#46a302">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
+    <div class="level-tabs" id="seriesLevelTabs"></div>
+    <div id="seriesList"></div>
+    <div class="sec-title" style="margin-top:32px"><span class="sec-title-icon">📺</span><span class="sec-title-text">正版视频资源 · 看原版</span></div>
+    <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">以下为外部官方/平台资源，点击跳转观看<b>正版</b>。本站不复制其视频或字幕内容，仅提供导航链接。</p>
+    <div class="phrase-grid" id="seriesLinks"></div>
+  </div>
+</div>
+
+<!-- ══════════════ 支持作者 ══════════════ -->
+<div id="support" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Support</div>
+    <h2 class="page-title">支持作者 · 请杯咖啡 ☕</h2>
+    <p style="text-align:center;font-size:14px;color:var(--text-dim);line-height:1.9;max-width:520px;margin:0 auto">这份手册从词句整理、发音朗读到测验复习，都是<b>业余时间一点点做出来、并持续维护</b>的；域名和时间都是实打实的成本。它<b>一直免费、无广告</b>。<br>如果它在你学德语的路上帮上了忙，欢迎扫码<b>随手打赏一点</b>，让它能继续更新下去 😊<br>一块两块都是心意，谢谢你的支持！</p>
+    <div style="max-width:290px;margin:18px auto 0;background:#fff;border-radius:16px;padding:8px;box-shadow:var(--shadow)">
+      <img src="support-qr.png" alt="微信收款二维码" loading="lazy" style="width:100%;height:auto;display:block;border-radius:12px">
+    </div>
+    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-top:12px">微信扫一扫 · 感谢每一份支持 ❤️</p>
+    <p style="text-align:center;font-size:11px;color:var(--text-faint);margin-top:18px">词典兜底数据来源：<a href="https://github.com/gugray/HanDeDict" style="color:var(--text-faint)" rel="license noopener" target="_blank">HanDeDict</a>（CC BY-SA 3.0）</p>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-top:22px">打赏之外 —— <b>把网站分享给同学</b>，也是莫大的支持 🙌</p>
+    <div style="text-align:center;margin-top:8px"><button class="btn" onclick="copyShare(this)">📋 复制网址分享</button></div>
+    <div style="max-width:420px;margin:26px auto 0;padding:14px 18px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;text-align:center">
+      <div style="font-size:14px;color:var(--text);font-weight:600">💬 联系作者</div>
+      <div style="font-size:13px;color:var(--text-dim);margin-top:6px;line-height:1.8">使用心得、纠错、想加的功能，都欢迎来聊：<br>QQ：<b style="color:#46a302;font-size:15px;letter-spacing:.5px" id="qqNum">717986230</b> <button class="btn" style="padding:3px 12px;font-size:12px;margin-left:6px" onclick="copyQQ(this)">复制</button></div>
+    </div>
+    <div style="text-align:center;margin:32px 0 10px"><button onclick="rejectDonate()" aria-label="返回首页" style="border:1px solid var(--border);background:transparent;color:var(--text-faint);border-radius:20px;padding:6px 14px;font-size:12px;font-family:inherit;cursor:pointer">🙅 下次一定 →</button></div>
+  </div>
+</div>
+
+<!-- ══════════════ 拼写记忆（键盘输入记单词）══════════════ -->
+<div id="spell" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Typing</div>
+    <h2 class="page-title">⌨️ 拼写记忆</h2>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);max-width:470px;margin:0 auto 4px">看中文 / 听发音 → 键盘敲出德语拼写。逐字母强校验，敲错原地纠正；已掌握的词自动跳过，专攻没记牢的。</p>
+    <div id="spSetup">
+      <div class="sp-levels" id="spLevels"></div>
+      <div class="sp-levels" id="spModes">
+        <button class="on" data-m="zh" onclick="spSetMode('zh')">👀 看中文拼</button>
+        <button data-m="listen" onclick="spSetMode('listen')">🎧 听写（更难）</button>
+      </div>
+      <div class="sp-levels" id="spUnits">
+        <button class="on" data-u="word" onclick="spSetUnit('word')">🔤 单词</button>
+        <button data-u="sent" onclick="spSetUnit('sent')">📝 整句（连词成句）</button>
+      </div>
+      <div class="sp-levels" id="spDiffs">
+        <button class="on" data-d="blind" onclick="spSetDiff('blind')">✍️ 默写</button>
+        <button data-d="trace" onclick="spSetDiff('trace')">📋 描摹（照着敲）</button>
+      </div>
+      <p id="spPoolInfo" style="text-align:center;font-size:12px;color:var(--text-faint);margin:2px 0 16px"></p>
+      <div style="text-align:center"><button class="acct-btn" style="max-width:240px;margin:0 auto" onclick="spStart()">开始拼写</button></div>
+    </div>
+    <div id="spDrill" style="display:none">
+      <div class="sp-prog"><i id="spBar"></i></div>
+      <div class="sp-count" id="spCount"></div>
+      <div class="sp-card" id="spCard">
+        <div class="sp-zh" id="spZh"></div>
+        <div class="sp-py" id="spPy"></div>
+        <div class="sp-trace" id="spTrace"></div>
+        <div class="sp-slots-wrap">
+          <div class="sp-slots" id="spSlots"></div>
+          <input id="spInput" class="sp-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="输入德语拼写">
+        </div>
+        <div class="sp-tap">⌨️ 电脑直接打字 · 手机点这里调出键盘</div>
+        <div class="sp-uml"><button type="button" onclick="spKey('ä')">ä</button><button type="button" onclick="spKey('ö')">ö</button><button type="button" onclick="spKey('ü')">ü</button><button type="button" onclick="spKey('ß')">ß</button></div>
+      </div>
+      <div class="sp-ctrl">
+        <button type="button" onclick="spReplay()">🔊 读一遍</button>
+        <button type="button" onclick="spHint()">💡 提示一个</button>
+        <button type="button" onclick="spSkip()">跳过 →</button>
+        <button type="button" id="spSoundBtn" onclick="spToggleSound()">🔔 音效</button>
+      </div>
+    </div>
+    <div id="spDone" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ══════════════ 账号 · 排行 · 主页 ══════════════ -->
+<style data-src="src/styles/01-legacy.css"></style>
+
+<!-- 登录 / 注册（动态玻璃 · Apple UI） -->
+<div id="account" class="section">
+  <div class="auth-stage">
+    <div class="auth-aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="glass-card">
+      <div class="acct-tabs">
+        <button id="tabLogin" class="on" onclick="acctTab('login')">登录</button>
+        <button id="tabReg" onclick="acctTab('reg')">注册</button>
+      </div>
+      <div id="paneLogin">
+          <div class="acct-field"><label>用户名</label><input class="acct-input" id="lgUser" autocomplete="username" placeholder="小写字母/数字/下划线" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('lgPass').focus();}"></div>
+          <div class="acct-field"><label>密码</label><input class="acct-input" id="lgPass" type="password" autocomplete="current-password" placeholder="至少 6 位" onkeydown="if(event.key==='Enter'){event.preventDefault();acctLogin();}"></div>
+          <div class="acct-err" id="lgErr"></div>
+          <button class="acct-btn" onclick="acctLogin()">登录</button>
+        </div>
+        <div id="paneReg" style="display:none">
+          <div class="acct-field"><label>用户名（登录用，注册后不可改）</label><input class="acct-input" id="rgUser" autocomplete="username" placeholder="3-20 位，小写字母/数字/下划线" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('rgNick').focus();}"></div>
+          <div class="acct-field"><label>昵称（展示用，可随时改）</label><input class="acct-input" id="rgNick" placeholder="中文/英文均可，≤20 字" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('rgPass').focus();}"></div>
+          <div class="acct-field"><label>密码</label><input class="acct-input" id="rgPass" type="password" autocomplete="new-password" placeholder="至少 6 位" onkeydown="if(event.key==='Enter'){event.preventDefault();acctRegister();}"></div>
+          <div class="acct-err" id="rgErr"></div>
+          <button class="acct-btn" onclick="acctRegister()">注册并登录</button>
+        </div>
+        <div class="acct-div" id="oauthDiv">或用第三方登录</div>
+        <a class="oauth-btn" id="oauthGithub" href="javascript:oauthLogin('github')">🐙 用 GitHub 登录</a>
+        <a class="oauth-btn" id="oauthGoogle" href="javascript:oauthLogin('google')">🌈 用 Google 登录</a>
+    </div>
+  </div>
+</div>
+
+<!-- 排行榜 -->
+<div id="rank" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Leaderboard</div>
+    <h2 class="page-title">🏆 学习排行榜</h2>
+    <div class="rank-tabs" id="rankScopes">
+      <button id="rsAll" class="on" onclick="rankScope('all')">🌍 全站</button>
+      <button id="rsFriends" onclick="rankScope('friends')">👥 好友</button>
+      <button id="rsFeed" onclick="rankScope('feed')">📣 动态</button>
+    </div>
+    <div class="rank-tabs" id="rankMetrics">
+      <button id="rkKnown" class="on" onclick="renderRank('known')">📖 掌握词数</button>
+      <button id="rkStreak" onclick="renderRank('streak')">🔥 连续打卡</button>
+      <button id="rkTotal" onclick="renderRank('total')">💪 累计学习</button>
+    </div>
+    <div class="rank-list" id="rankList"><p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p></div>
+    <p class="acct-note" id="rankHint" style="max-width:440px;margin:14px auto 0"></p>
+  </div>
+</div>
+
+<!-- 个人主页 -->
+<div id="me" class="section">
+  <div class="container">
+    <div class="acct-wrap" style="max-width:560px">
+      <div id="meView"></div>
+      <div id="meEdit" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 英语发音 ══════════════ -->
+<div id="en-pron" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Pronunciation</div>
+    <h2 class="page-title">英语发音规律</h2>
+    <div class="subnav" id="enPronSubnav"></div>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">英语<b>不像德语"所见即所读"</b>——同样字母常有多种读法。下面是中国人最该先掌握的规律 + 谐音示例。</p>
+
+    <div class="sec-title"><span class="sec-title-icon">🔤</span><span class="sec-title-text">5个元音字母：长音 vs 短音</span></div>
+    <table class="pron-table">
+      <tr><th>字母</th><th>短音</th><th>长音（字母本名）</th></tr>
+      <tr><td class="pron-letter">A a</td><td class="pron-zh">æ 诶（cat 凯特）</td><td class="pron-sound">eɪ 诶（cake 凯克）</td></tr>
+      <tr><td class="pron-letter">E e</td><td class="pron-zh">e 诶（bed 拜德）</td><td class="pron-sound">iː 伊（he 嗨/he）</td></tr>
+      <tr><td class="pron-letter">I i</td><td class="pron-zh">ɪ 伊（sit 西特）</td><td class="pron-sound">aɪ 艾（like 赖克）</td></tr>
+      <tr><td class="pron-letter">O o</td><td class="pron-zh">ɒ 啊（hot 哈特）</td><td class="pron-sound">əʊ 欧（go 高）</td></tr>
+      <tr><td class="pron-letter">U u</td><td class="pron-zh">ʌ 啊（cup 卡普）</td><td class="pron-sound">juː 优（use 优兹）</td></tr>
+    </table>
+    <div class="tip-card"><div class="tip-title">规律：词尾 "不发音的 e" 让前面元音读长音（本名）</div><div class="tip-body"><b>cap</b> 凯普 → <b>cape</b> 凯普(长)；<b>hop</b> 哈普 → <b>hope</b> 候普；<b>bit</b> 比特 → <b>bite</b> 拜特。词尾 e 自己不读，但把前面元音"拉成字母本名"。</div></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔗</span><span class="sec-title-text">常见字母组合</span></div>
+    <table class="pron-table">
+      <tr><th>组合</th><th>读音/谐音</th><th>例词</th></tr>
+      <tr><td class="pron-letter">th</td><td class="pron-sound">θ/ð 咬舌"斯/泽"</td><td class="pron-example">think 辛克、this 迪斯</td></tr>
+      <tr><td class="pron-letter">sh</td><td class="pron-sound">ʃ 室</td><td class="pron-example">she 师、fish 飞什</td></tr>
+      <tr><td class="pron-letter">ch</td><td class="pron-sound">tʃ 七</td><td class="pron-example">chair 切尔、much 马奇</td></tr>
+      <tr><td class="pron-letter">ph</td><td class="pron-sound">f 夫</td><td class="pron-example">phone 佛恩、photo 佛投</td></tr>
+      <tr><td class="pron-letter">wh</td><td class="pron-sound">w 我（h多不发音）</td><td class="pron-example">what 沃特、why 外</td></tr>
+      <tr><td class="pron-letter">ee / ea</td><td class="pron-sound">iː 长"伊"</td><td class="pron-example">see 西、tea 踢</td></tr>
+      <tr><td class="pron-letter">oo</td><td class="pron-sound">uː/ʊ "乌"</td><td class="pron-example">food 福德、book 布克</td></tr>
+      <tr><td class="pron-letter">ai / ay</td><td class="pron-sound">eɪ 诶</td><td class="pron-example">rain 瑞恩、day 得伊</td></tr>
+      <tr><td class="pron-letter">ow / ou</td><td class="pron-sound">aʊ 奥</td><td class="pron-example">now 闹、house 豪斯</td></tr>
+      <tr><td class="pron-letter">oo<small>r</small> / or</td><td class="pron-sound">ɔː 哦</td><td class="pron-example">door 多、for 佛</td></tr>
+      <tr><td class="pron-letter">ar</td><td class="pron-sound">ɑː 啊</td><td class="pron-example">car 卡、star 斯达</td></tr>
+      <tr><td class="pron-letter">er / ir / ur</td><td class="pron-sound">ɜː/ə 厄</td><td class="pron-example">her 喝、bird 伯德、turn 特恩</td></tr>
+    </table>
+    <div class="tip-card" style="border-left-color:#ff4b4b"><div class="tip-title" style="color:#ff4b4b">⚠️ 谐音只是拐杖</div><div class="tip-body">英语很多音中文没有(θ、ð、æ、卷舌 r)，谐音只能"近似"。<b>务必点 🔊 多听真人发音模仿</b>，别死记谐音。</div></div>
+  </div>
+</div>
+
+<!-- ══════════════ 英语数字 ══════════════ -->
+<div id="en-num" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Numbers</div>
+    <h2 class="page-title">英语数字规律</h2>
+    <div class="subnav" id="enNumSubnav"></div>
+
+    <div class="sec-title"><span class="sec-title-icon">1️⃣</span><span class="sec-title-text">1–12（单独记）</span></div>
+    <div class="num-grid" id="enNum1"></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔟</span><span class="sec-title-text">13–19：词尾 + <span class="hl-gold">teen</span>（廷）</span></div>
+    <div class="num-grid" id="enNum2"></div>
+
+    <div class="sec-title"><span class="sec-title-icon">💡</span><span class="sec-title-text">整十：词尾 + <span class="hl-gold">ty</span>（提）</span></div>
+    <div class="num-grid" id="enNum3"></div>
+    <div class="tip-card" style="border-left-color:#ff4b4b"><div class="tip-body">⚠️ 重点区分 <b>-teen（廷，重音在后）</b> vs <b>-ty（提，重音在前）</b>：<b>fourteen 佛廷</b>(14) ≠ <b>forty 佛提</b>(40)。听的时候靠重音区分！</div></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔀</span><span class="sec-title-text">21–99 & 大数</span></div>
+    <div class="rule-box">
+      <div class="rule-row"><span class="rule-num">21</span><span class="rule-de">twenty-one</span><span class="rule-py">湍提-万</span><span class="rule-zh" style="width:auto">十位+个位，顺序同中文</span></div>
+      <div class="rule-row"><span class="rule-num">100</span><span class="rule-de">one hundred</span><span class="rule-py">万 航追德</span></div>
+      <div class="rule-row"><span class="rule-num">1000</span><span class="rule-de">one thousand</span><span class="rule-py">万 骚怎德</span></div>
+      <div class="rule-row"><span class="rule-num">百万</span><span class="rule-de">one million</span><span class="rule-py">万 米利恩</span></div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🥇</span><span class="sec-title-text">序数词（第几）</span></div>
+    <div class="num-grid" id="enNum4"></div>
+    <div class="tip-card"><div class="tip-body">其余多为"基数词 + <b>th</b>"：fourth 佛斯、fifth 飞夫斯、tenth 腾斯。</div></div>
+  </div>
+</div>
+
+<!-- ══════════════ 英语语法 ══════════════ -->
+<div id="en-grammar" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Grammar</div>
+    <h2 class="page-title">英语语法速记</h2>
+    <div class="subnav" id="enGrammarSubnav"></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔑</span><span class="sec-title-text">be 动词：am / is / are</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div>I <b style="color:var(--gold)">am</b>（我是）· You/We/They <b style="color:var(--gold)">are</b>（你/我们/他们是）</div>
+        <div>He/She/It <b style="color:var(--gold)">is</b>（他/她/它是）</div>
+        <div style="color:var(--text-dim);margin-top:6px">口诀：<b>我 am，你/复数 are，单数他/她/它 is。</b></div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">冠词 a / an / the</span></div>
+    <div class="tip-card"><div class="tip-body"><b>a</b> + 辅音开头（a book）；<b>an</b> + 元音音开头（an apple, an hour）；<b>the</b> = 特指"这个/那个"。<b>泛指单数可数名词前必须加 a/an。</b></div></div>
+
+    <div class="sec-title"><span class="sec-title-icon">➕</span><span class="sec-title-text">名词复数</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2;color:var(--text-dim)">
+        <div>一般 <b>+s</b>：book→book<b style="color:var(--gold)">s</b></div>
+        <div>s/x/ch/sh 结尾 <b>+es</b>：box→box<b style="color:var(--gold)">es</b></div>
+        <div>辅音+y → <b>去y加ies</b>：city→cit<b style="color:var(--gold)">ies</b></div>
+        <div>不规则：man→men, child→children, foot→feet</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">👤</span><span class="sec-title-text">人称代词</span></div>
+    <table class="pron-table">
+      <tr><th>主格(谁)</th><th>宾格(被…)</th><th>物主(…的)</th></tr>
+      <tr><td>I 我</td><td>me</td><td>my</td></tr>
+      <tr><td>you 你</td><td>you</td><td>your</td></tr>
+      <tr><td>he/she/it</td><td>him/her/it</td><td>his/her/its</td></tr>
+      <tr><td>we 我们</td><td>us</td><td>our</td></tr>
+      <tr><td>they 他们</td><td>them</td><td>their</td></tr>
+    </table>
+
+    <div class="sec-title"><span class="sec-title-icon">⏳</span><span class="sec-title-text">三大基本时态</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div><b style="color:#1cb0f6">现在</b>：I <b>work</b>. / He <b>works</b>.（习惯、事实）</div>
+        <div><b style="color:var(--gold)">过去</b>：I <b>worked</b>.（规则+ed；不规则 go→went, see→saw）</div>
+        <div><b style="color:#ff7a4d">将来</b>：I <b>will work</b>. / I'm <b>going to</b> work.</div>
+        <div><b style="color:#58cc02">现在进行</b>：I <b>am working</b>.（正在做）</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">⚡</span><span class="sec-title-text">英语五种基本句型</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.2;color:var(--text-dim)">
+        <div>① <b>主+谓</b>(SV)：<b style="color:#1cb0f6">I</b> <b style="color:var(--gold)">run</b>.（我跑）</div>
+        <div>② <b>主+谓+宾</b>(SVO)：<b style="color:#1cb0f6">I</b> <b style="color:var(--gold)">eat</b> <b style="color:#ff7a4d">an apple</b>.（我吃苹果）</div>
+        <div>③ <b>主+系+表</b>(SVP)：<b style="color:#1cb0f6">She</b> <b style="color:var(--gold)">is</b> <b style="color:#ff7a4d">happy</b>.（她很开心）</div>
+        <div>④ <b>主+谓+双宾</b>(SVOO)：I <b style="color:var(--gold)">give</b> <b>him</b> <b>a book</b>.（给他一本书）</div>
+        <div>⑤ <b>主+谓+宾+补</b>(SVOC)：We <b style="color:var(--gold)">make</b> <b>him</b> <b>happy</b>.（让他开心）</div>
+        <div style="color:var(--text-dim);margin-top:4px">状语顺序：<b>地点在前、时间在后</b>(go <b>to school</b> <b>every day</b>)；频率副词(often/never)<b>实义动词前、be 后</b>。</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔗</span><span class="sec-title-text">主系表：系动词 + 表语</span></div>
+    <div class="rule-box">
+      <h3>主语 + 系动词 + 表语（形容词/名词）</h3>
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div><b>be 动词</b>：He <b style="color:var(--gold)">is</b> a teacher. · They <b style="color:var(--gold)">are</b> tired.</div>
+        <div><b>感官系动词 + 形容词</b>：look(看起来)/feel(感觉)/sound(听起来)/taste(尝)/smell(闻) → It <b style="color:var(--gold)">looks</b> good. · I <b style="color:var(--gold)">feel</b> cold.</div>
+        <div><b>变化系动词</b>：become/get/turn(变得) → He <b style="color:var(--gold)">became</b> rich. · It's <b style="color:var(--gold)">getting</b> dark.</div>
+        <div style="color:var(--text-dim)">⚠️ 系动词后跟<b>形容词</b>，不是副词：It looks <b>good</b>(✓) 不是 looks well。</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">❓</span><span class="sec-title-text">疑问句：助动词/be 提到句首</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div>一般疑问：<b style="color:var(--gold)">Do</b> you like tea? · <b style="color:var(--gold)">Does</b> he work? · <b style="color:var(--gold)">Are</b> you OK?</div>
+        <div>特殊疑问：<b>疑问词 + 助动词 + 主语</b> → <b style="color:var(--gold)">What do</b> you want? · <b style="color:var(--gold)">Where is</b> the toilet?</div>
+        <div>情态动词直接提前：<b style="color:var(--gold)">Can</b> you help me? · <b style="color:var(--gold)">Will</b> you come?</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🚫</span><span class="sec-title-text">否定句：加 not / don't</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div>实义动词：用 <b style="color:var(--gold)">don't / doesn't</b> + 原形 → I <b>don't</b> know. · He <b>doesn't</b> like it.</div>
+        <div>be 动词 / 情态：直接加 not → I'm <b>not</b> ready. · You <b>can't</b> go.</div>
+        <div style="color:var(--text-dim)">⚠️ 一个句子只否定一次：别说 don't have no…（双重否定）。</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔼</span><span class="sec-title-text">比较级 / 最高级</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div>短词 <b>+er / +est</b>：tall → tall<b style="color:var(--gold)">er</b> → the tall<b style="color:var(--gold)">est</b></div>
+        <div>长词 <b>more / most</b>：important → <b style="color:var(--gold)">more</b> important → the <b style="color:var(--gold)">most</b> important</div>
+        <div>不规则：good → <b>better</b> → best · bad → <b>worse</b> → worst</div>
+        <div>比较用 <b>than</b>：He is taller <b style="color:var(--gold)">than</b> me.</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">📍</span><span class="sec-title-text">There be 句型："某处有某物"</span></div>
+    <div class="rule-box">
+      <h3>There + be + 主语 + 地点/时间</h3>
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div><b style="color:var(--gold)">There is</b> a book <b>on the desk</b>.（桌上有本书）</div>
+        <div><b style="color:var(--gold)">There are</b> two cats <b>in the room</b>.（房间里有两只猫）</div>
+        <div><b>就近一致</b>：be 跟<b>最近的那个名词</b>单复数 → There is a pen and two books.（紧跟 a pen → is）</div>
+        <div>否定：There <b style="color:var(--gold)">isn't</b> / <b style="color:var(--gold)">aren't</b>… · 疑问：<b style="color:var(--gold)">Is/Are there</b>…? → Yes, there is.</div>
+        <div style="color:var(--text-dim)">⚠️ There 在这里<b>不表"那里"</b>，只是引出"有"；真正的主语在 be 后面。</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">📦</span><span class="sec-title-text">常用句型 It / I'd like</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div><b style="color:var(--gold)">It is</b> + 形容词 → 天气/时间/感受 (It is cold. / It is 3 o'clock.)</div>
+        <div>I'd like + 名词 → 我想要…… · I want to + 动词 → 我想做……</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🧱</span><span class="sec-title-text">句子成分</span></div>
+    <table class="pron-table">
+      <tr><td>主语 <b>谁</b></td><td>谓语 <b>做什么</b></td><td>宾语 <b>承受者</b></td></tr>
+      <tr><td>表语 <b>系动词后</b></td><td>定语 <b>修饰名词</b></td><td>状语 <b>修饰动词/句</b></td></tr>
+      <tr><td>补语 <b>补充说明</b></td><td>同位语 <b>等同解释</b></td><td></td></tr>
+    </table>
+
+    <div class="sec-title"><span class="sec-title-icon">🛡️</span><span class="sec-title-text">情态动词（后接动词原形）</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div><b lang="en">can</b> 能/会 · <b lang="en">could</b> 能(过去/委婉) · <b lang="en">may</b> 可以/可能 · <b lang="en">might</b> 也许</div>
+        <div><b lang="en">must</b> 必须 · <b lang="en">should</b> 应该 · <b lang="en">will/would</b> 将/愿意 · <b lang="en">have to</b> 不得不</div>
+        <div style="color:var(--text-dim)">特点：<b>不随人称变(无 -s)</b>、<b>后跟动词原形</b>、否定直接加 not(can't/shouldn't)。</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔄</span><span class="sec-title-text">被动语态：be + 过去分词</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div>主动 They <b style="color:var(--gold)">make</b> cars. → 被动 Cars <b style="color:var(--gold)">are made</b> (by them).（强调承受者）</div>
+        <div>各时态变 be：is done(现在) · was done(过去) · will be done(将来) · has been done(完成)</div>
+        <div style="color:var(--text-dim)">动词永远用<b>过去分词</b>，时态体现在 be 上。</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🌱</span><span class="sec-title-text">非谓语动词</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div><b lang="en">to do</b> 不定式 → 目的/将来：I want <b>to go</b>.（想去）</div>
+        <div><b lang="en">doing</b> 动名词 → 当名词,作主语/宾语：I like <b>swimming</b>.（喜欢游泳）</div>
+        <div><b lang="en">doing</b> 现在分词 → 主动/正在：a <b>running</b> dog（在跑的狗）</div>
+        <div><b lang="en">done</b> 过去分词 → 被动/完成：a <b>broken</b> cup（被打碎的杯子）</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔗</span><span class="sec-title-text">三大从句</span></div>
+    <div class="rule-box">
+      <div style="font-size:13px;line-height:2.1;color:var(--text-dim)">
+        <div><b>名词性从句</b>(that/what/whether)作主/宾/表：I know <b style="color:var(--gold)">that he is right</b>.</div>
+        <div><b>定语从句</b>(who/which/that)修饰名词：The man <b style="color:var(--gold)">who helped me</b> is kind.</div>
+        <div><b>状语从句</b>(when/because/if/although)修饰全句：<b style="color:var(--gold)">When it rains</b>, I stay home.</div>
+      </div>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔤</span><span class="sec-title-text">26 个字母</span></div>
+    <div class="rule-box"><div style="font-size:14px;line-height:2;color:var(--text-dim);letter-spacing:1px" lang="en">A B C D E F G H I J K L M<br>N O P Q R S T U V W X Y Z</div><div style="font-size:12px;color:var(--text-faint);margin-top:4px">5 个元音字母：<b style="color:#1cb0f6">A E I O U</b>，其余为辅音字母（读音见「英语发音」）。</div></div>
+
+    <div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">10 种词性</span></div>
+    <table class="pron-table">
+      <tr><td>名词 <b lang="en">n.</b> 人/物</td><td>动词 <b lang="en">v.</b> 动作</td><td>形容词 <b lang="en">adj.</b> 描述</td></tr>
+      <tr><td>副词 <b lang="en">adv.</b> 修饰</td><td>代词 <b lang="en">pron.</b> 替代</td><td>介词 <b lang="en">prep.</b> 关系</td></tr>
+      <tr><td>冠词 <b lang="en">art.</b> a/the</td><td>连词 <b lang="en">conj.</b> 连接</td><td>数词 <b lang="en">num.</b> 数量</td></tr>
+      <tr><td>感叹词 <b lang="en">int.</b> 语气</td><td></td><td></td></tr>
+    </table>
+
+    <div class="sec-title"><span class="sec-title-icon">❓</span><span class="sec-title-text">21 个疑问词</span></div>
+    <table class="pron-table">
+      <tr><td>为什么 <b lang="en">why</b></td><td>什么 <b lang="en">what</b></td><td>哪里 <b lang="en">where</b></td></tr>
+      <tr><td>谁 <b lang="en">who</b></td><td>谁的 <b lang="en">whose</b></td><td>哪个 <b lang="en">which</b></td></tr>
+      <tr><td>什么时候 <b lang="en">when</b></td><td>怎样 <b lang="en">how</b></td><td>几点 <b lang="en">what time</b></td></tr>
+      <tr><td>多少(可数) <b lang="en">how many</b></td><td>多少钱 <b lang="en">how much</b></td><td>多大年龄 <b lang="en">how old</b></td></tr>
+      <tr><td>多高 <b lang="en">how tall</b></td><td>多大 <b lang="en">how big</b></td><td>多长/多久 <b lang="en">how long</b></td></tr>
+      <tr><td>多频繁 <b lang="en">how often</b></td><td>多远 <b lang="en">how far</b></td><td>多重 <b lang="en">how heavy</b></td></tr>
+      <tr><td>多快(多久后) <b lang="en">how soon</b></td><td>什么颜色 <b lang="en">what colour</b></td><td>星期几 <b lang="en">what day</b></td></tr>
+    </table>
+
+    <div class="sec-title"><span class="sec-title-icon">⏳</span><span class="sec-title-text">16 大时态总表（do=做）</span></div>
+    <table class="pron-table">
+      <tr><th>时间＼体</th><th>一般</th><th>进行</th><th>完成</th><th>完成进行</th></tr>
+      <tr><td>现在</td><td lang="en">do/does</td><td lang="en">am/is/are doing</td><td lang="en">have/has done</td><td lang="en">have been doing</td></tr>
+      <tr><td>过去</td><td lang="en">did</td><td lang="en">was/were doing</td><td lang="en">had done</td><td lang="en">had been doing</td></tr>
+      <tr><td>将来</td><td lang="en">will do</td><td lang="en">will be doing</td><td lang="en">will have done</td><td lang="en">will have been doing</td></tr>
+      <tr><td>过去将来</td><td lang="en">would do</td><td lang="en">would be doing</td><td lang="en">would have done</td><td lang="en">would have been doing</td></tr>
+    </table>
+    <div class="tip-card"><div class="tip-body">入门先掌握左上角 4 个：<b>一般现在 / 一般过去 / 一般将来 / 现在进行</b>，覆盖日常 90%。</div></div>
+
+    <div class="sec-title"><span class="sec-title-icon">✂️</span><span class="sec-title-text">常用缩略词</span></div>
+    <table class="pron-table">
+      <tr><td lang="en">I am → I'm</td><td lang="en">you are → you're</td><td lang="en">it is → it's</td></tr>
+      <tr><td lang="en">that is → that's</td><td lang="en">what is → what's</td><td lang="en">who is → who's</td></tr>
+      <tr><td lang="en">where is → where's</td><td lang="en">there is → there's</td><td lang="en">she is → she's</td></tr>
+      <tr><td lang="en">is not → isn't</td><td lang="en">are not → aren't</td><td lang="en">was not → wasn't</td></tr>
+      <tr><td lang="en">do not → don't</td><td lang="en">does not → doesn't</td><td lang="en">did not → didn't</td></tr>
+      <tr><td lang="en">can not → can't</td><td lang="en">will not → won't</td><td lang="en">we will → we'll</td></tr>
+    </table>
+  </div>
+</div>
+
+<script data-src="src/scripts/10-learning-app.js"></script>
+<script data-src="src/scripts/20-account-social.js"></script>
+<script data-src="src/scripts/30-spelling-drill.js"></script>
+<nav id="bottomNav" aria-label="底部导航">
+  <button class="bn-btn" data-sec="home" onclick="showSection('home')"><span class="bn-i">🏠</span><span class="bn-t">首页</span></button>
+  <button class="bn-btn" data-sec="phrases" onclick="showSection('phrases')"><span class="bn-i">💬</span><span class="bn-t">语句</span></button>
+  <button class="bn-btn nav-de-only" data-sec="reading" onclick="showSection('reading')"><span class="bn-i">📖</span><span class="bn-t">短文</span></button>
+  <button class="bn-btn" data-sec="account" onclick="showSection('account')"><span class="bn-i">👤</span><span class="bn-t">我的</span></button>
+</nav>
+<button class="phfab" type="button" onclick="phOpen()" aria-label="打开拼读器查词">🧩 拼读查词</button>
+<div class="ph-overlay" id="phModal" style="display:none" onclick="if(event.target===this)phClose()">
+  <div class="ph-card" role="dialog" aria-label="拼读器">
+    <div class="ph-card-head">
+      <b style="font-size:15px">🧩 拼读器 · 查词</b>
+      <button class="ph-close" type="button" onclick="phClose()" aria-label="关闭">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">输德语 → 拆读音+中文；输中文 → 反查德语。词库查不到自动查词典。</div>
+    <div class="rule-box">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="phInput" placeholder="输入德语词，如 Schule、Wasser…" oninput="renderPhTool()" style="flex:1;min-width:180px;padding:11px 14px;border-radius:24px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:15px;outline:none;font-family:inherit;box-shadow:var(--shadow)" lang="de">
+        <button class="speak-btn" type="button" title="朗读" aria-label="朗读输入的词" onclick="var v=document.getElementById('phInput').value.trim();if(v)speakDE(v,this)">🔊</button>
+      </div>
+      <div id="phToolOut" style="margin-top:12px"></div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-faint)">试试：
+        <span class="ph-try" onclick="phTry('Schule')">Schule</span>
+        <span class="ph-try" onclick="phTry('Wasser')">Wasser</span>
+        <span class="ph-try" onclick="phTry('danke')">danke</span>
+        <span class="ph-try" onclick="phTry('schön')">schön</span>
+        <span class="ph-try" onclick="phTry('Entschuldigung')">Entschuldigung</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+<button id="toTop" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部" aria-label="回到顶部">↑</button>
+<style data-src="src/styles/02-legacy.css"></style>
+<style data-src="src/styles/design-system.css"></style>
+<script data-src="src/scripts/90-scroll-controls.js"></script>
+<script data-src="src/scripts/dynamic-platform.js"></script>
+<script data-src="src/scripts/ux-motion.js"></script>
+</body>
+</html>

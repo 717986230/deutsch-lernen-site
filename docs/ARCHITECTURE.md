@@ -113,6 +113,34 @@ erDiagram
 
 ## 5. 前端模块（src.html 内逻辑分区）
 
+当前源码采用「模块化 authoring、单文件 shipping」：
+
+```mermaid
+flowchart LR
+  tmpl["src/index.html\n页面模板"] --> asm["build.mjs\n汇总源码"]
+  css["src/styles/*.css\n设计系统/响应式/动效"] --> asm
+  js["src/scripts/*.js\n学习/账号/拼写/动效"] --> asm
+  data["data/*.json\n静态学习内容"] --> build["构建注入/加密/混淆"]
+  asm --> srcHtml["src.html\n兼容旧单文件源码"]
+  srcHtml --> build
+  build --> index["index.html + sw.js\n静态部署产物"]
+```
+
+**源码责任边界**
+- `src/index.html`：公共页面结构、SEO/social metadata、静态区块和脚本/样式装配点。
+- `src/styles/design-system.css`：新版视觉系统、阅读排版、移动端规则、动效 token、无障碍焦点和 reduced-motion 降级。
+- `src/scripts/10-learning-app.js`：词句、发音、语法、阅读/连载、测验、词典、埋点等学习主流程。
+- `src/scripts/20-account-social.js`：账号、资料、排行榜、徽章、关注、同步 API。
+- `src/scripts/30-spelling-drill.js`：拼写记忆、错词本、SRS 到期复习。
+- `src/scripts/dynamic-platform.js`：未来动态能力的 adapter seam；当前以 localStorage 为安全兜底。
+- `src/scripts/ux-motion.js`：页面/卡片/阅读进度等非核心学习逻辑的渐进增强。
+
+**协作规则**
+- 不直接编辑 `index.html`；它是部署产物。
+- 新功能先判断是否属于学习主流程、账号社交、拼写训练、动态平台 adapter 或视觉动效层。
+- 外部服务接入必须先通过 `AppServices` 或 `apiFetch`，不要在渲染函数里散落新的 `fetch` 调用。
+- 动效不得遮挡学习内容；所有新增动画必须受 `prefers-reduced-motion` 约束。
+
 ```mermaid
 flowchart LR
   gate["登录门槛\nlocked 类·早期上锁"] --> appInit

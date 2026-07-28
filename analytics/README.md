@@ -6,18 +6,22 @@
 ## 一次性部署（约 5 分钟）
 
 需要先装 Node 和 wrangler：`npm i -g wrangler`，然后 `wrangler login`。
+不要直接把密钥写进 git；从 `wrangler.example.toml` 复制本地 `wrangler.toml`，再填 D1 id 和公开 Client ID。
 
 ```bash
 cd analytics
 
 # 1) 创建 D1 数据库（记下输出里的 database_id）
 wrangler d1 create uuoo_analytics
-#   把 database_id 填进 wrangler.toml；再把 STATS_KEY 改成你的随机密钥
+#   把 database_id 填进 wrangler.toml
 
-# 2) 建表
+# 2) 写入密钥（不要提交到仓库）
+wrangler secret put STATS_KEY
+
+# 3) 建表
 wrangler d1 execute uuoo_analytics --file=schema.sql --remote
 
-# 3) 部署 Worker（得到形如 https://uuoo-analytics.<你的子域>.workers.dev 的地址）
+# 4) 部署 Worker（得到形如 https://uuoo-analytics.<你的子域>.workers.dev 的地址）
 wrangler deploy
 ```
 
