@@ -69,12 +69,29 @@ async function build() {
   //    categories 首屏可能即用 → 立即解密；其余 4 个用到才解密（懒加载），
   //    尤其英语库最大且很少用，避免首屏白解一大坨。
   // categories 也懒解密：硬登录门槛下登录页用不到词库，解锁后首次访问才解（见 src 的 setLang 上锁早退）
-  const LAZY = new Set(['categories', 'READINGS', 'SERIES', 'RD_GLOSS']);
+  const LAZY = new Set(['READINGS', 'SERIES', 'RD_GLOSS']);
+  let deFile = 'categories(inline)';
   for (const [name, path] of Object.entries(DATA_FILES)) {
     const json = JSON.stringify(JSON.parse(readFileSync(path, 'utf8'))); // 校验 + 压缩
     const ph = `__DATA_${name}__`;
     if (!html.includes(ph)) throw new Error(`src.html 缺少占位符 ${ph}`);
-    if (name === 'EN_CATEGORIES' && !DEV) {
+    if (name === 'categories' && !DEV) {
+      // 德语词库最大(~360KB)且登录页/首页用不到：拆成独立 de.<hash>.dat，解锁后后台预取。
+      // 未到货时 categories 为空数组，DE_CATEGORIES 读 window._DEC；到货后 _onDELoaded 补渲染。
+      const decl = `const ${name} = ${ph};`;
+      if (!html.includes(decl)) throw new Error(`src.html 缺少声明 ${decl}`);
+      const deEnc = xorB64(json);
+      deFile = `de.${createHash('sha1').update(deEnc).digest('hex').slice(0, 8)}.dat`;
+      writeFileSync(deFile, deEnc);
+      const loader = 'var categories=[];var _deP=null;'
+        + 'function _loadDE(){if(window._DEC)return Promise.resolve(window._DEC);'
+        + `if(!_deP)_deP=fetch(${JSON.stringify(deFile)}).then(function(r){if(!r.ok)throw 0;return r.text();})`
+        + '.then(function(t){window._DEC=JSON.parse(_dec(t));'
+        + 'try{if(typeof _onDELoaded==="function")_onDELoaded();}catch(e){}return window._DEC;})'
+        + '["catch"](function(e){_deP=null;throw e;});return _deP;}';
+      html = html.replace(decl, loader);
+      console.log(`  ${deFile} 拆分：${(deEnc.length / 1024 | 0)}KB（解锁后后台预取）`);
+    } else if (name === 'EN_CATEGORIES' && !DEV) {
       // 英语库最大(~600KB)且多数用户不用：拆成独立 en.dat，切英语时才按需下载。
       // 未加载时 EN_CATEGORIES 为 []；下载完成自动重跑 setLang('en') 补渲染。SW 首次取后缓存。
       const decl = `const ${name} = ${ph};`;
@@ -105,8 +122,8 @@ async function build() {
     }
   }
   // 解码器/垫片注入在第一个数据声明之前（dev 也注入，保证老内核行为一致）
-  // 生产模式 categories 已被替换成 var _e_categories=... 懒 getter，锚点随之变化
-  const catStart = DEV ? html.indexOf('const categories = ') : html.indexOf('var _e_categories=');
+  // 生产模式 categories 已被替换成 var categories=[];var _deP=... 的 de.dat 加载器，锚点随之变化
+  const catStart = DEV ? html.indexOf('const categories = ') : html.indexOf('var categories=[];var _deP=');
   if (catStart === -1) throw new Error('未找到 categories 数据声明锚点');
   html = html.slice(0, catStart) + DECODER + html.slice(catStart);
 
@@ -136,14 +153,14 @@ async function build() {
   //    英语库(~600KB)文件名带内容哈希，不变则复用，变了才换名重下，激活时清掉旧切片。
   const ver = createHash('sha1').update(out).digest('hex').slice(0, 10);
   writeFileSync('sw.js', `// 自动生成（build.mjs），勿手改。壳网络优先；词典切片持久缓存、跨版本复用。
-const V='de-${ver}',DATA='de-data',ENF=${JSON.stringify(enFile)};
+const V='de-${ver}',DATA='de-data',KEEP=${JSON.stringify([deFile, enFile])};
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['index.html','manifest.webmanifest','icon-192.png','icon-512.png'])).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{
   const ks=await caches.keys();
   await Promise.all(ks.filter(k=>k!==V&&k!==DATA).map(k=>caches.delete(k)));
-  // 清掉旧版词典切片，只保留当前 en 文件（内容不变则文件名不变，天然复用）
+  // 清掉旧版词典切片，只保留当前 de/en 文件（内容不变则文件名不变，天然复用）
   const dc=await caches.open(DATA),reqs=await dc.keys();
-  await Promise.all(reqs.map(rq=>{const p=new URL(rq.url).pathname;if(p.endsWith('.dat')&&!p.endsWith(ENF))return dc.delete(rq);}));
+  await Promise.all(reqs.map(rq=>{const p=new URL(rq.url).pathname;if(p.endsWith('.dat')&&!KEEP.some(f=>p.endsWith(f)))return dc.delete(rq);}));
   await self.clients.claim();
 })())});
 self.addEventListener('fetch',e=>{
@@ -160,7 +177,7 @@ self.addEventListener('fetch',e=>{
   e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res.ok){const cp=res.clone();caches.open(bucket).then(c=>c.put(e.request,cp));}return res;})));
 });
 `);
-  console.log(`  sw.js 版本 de-${ver}（词典切片 ${enFile} 持久缓存）`);
+  console.log(`  sw.js 版本 de-${ver}（词典切片 ${deFile} + ${enFile} 持久缓存）`);
   console.log(`✓ 构建完成：加密 ${Object.keys(DATA_FILES).length} 个数组、混淆 ${count} 个脚本块`);
   console.log(`  src.html ${(readFileSync('src.html').length / 1024 | 0)}KB + data/ → index.html ${(out.length / 1024 | 0)}KB`);
 }

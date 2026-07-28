@@ -1,12 +1,12 @@
 // 自动生成（build.mjs），勿手改。壳网络优先；词典切片持久缓存、跨版本复用。
-const V='de-b54c318151',DATA='de-data',ENF="en.14daf11a.dat";
+const V='de-f80962670f',DATA='de-data',KEEP=["de.e26d5872.dat","en.14daf11a.dat"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['index.html','manifest.webmanifest','icon-192.png','icon-512.png'])).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{
   const ks=await caches.keys();
   await Promise.all(ks.filter(k=>k!==V&&k!==DATA).map(k=>caches.delete(k)));
-  // 清掉旧版词典切片，只保留当前 en 文件（内容不变则文件名不变，天然复用）
+  // 清掉旧版词典切片，只保留当前 de/en 文件（内容不变则文件名不变，天然复用）
   const dc=await caches.open(DATA),reqs=await dc.keys();
-  await Promise.all(reqs.map(rq=>{const p=new URL(rq.url).pathname;if(p.endsWith('.dat')&&!p.endsWith(ENF))return dc.delete(rq);}));
+  await Promise.all(reqs.map(rq=>{const p=new URL(rq.url).pathname;if(p.endsWith('.dat')&&!KEEP.some(f=>p.endsWith(f)))return dc.delete(rq);}));
   await self.clients.claim();
 })())});
 self.addEventListener('fetch',e=>{

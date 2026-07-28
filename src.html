@@ -1790,12 +1790,27 @@ const LETTERS = [
   {l:'ß',name:'艾斯采特（Eszett）',sound:'等于双ss"斯"<br>长元音/双元音后用<br>Straße=施特拉瑟',say:'Eszett',sp:1},
 ];
 
-const categories = __DATA_categories__; // 数据在 data/categories.json，由 build.mjs 注入（部署时加密）
+const categories = __DATA_categories__; // 数据在 data/categories.json，由 build.mjs 注入（生产拆为 de.<hash>.dat 按需下载）
 
 // ══════════════ 双语框架：德语 / 英语 整站切换 ══════════════
 // categories 切换时原地替换内容，所有引用它的功能自动跟随。
-// DE_CATEGORIES 懒快照：首次访问才 slice（配合生产构建的 categories 懒解密，登录页零解密开销）
-Object.defineProperty(window,'DE_CATEGORIES',{configurable:true,get:function(){var v=categories.slice();Object.defineProperty(window,'DE_CATEGORIES',{value:v,writable:true});return v;}});
+// DE_CATEGORIES：纯德语原始数据。生产拆包后取 window._DEC（到货前为空数组，不冻结）；dev/内联时取 categories 快照。
+Object.defineProperty(window,'DE_CATEGORIES',{configurable:true,get:function(){
+  if(window._DEC)return window._DEC;
+  var v=categories.slice();
+  if(v.length){Object.defineProperty(window,'DE_CATEGORIES',{value:v,writable:true});}
+  return v;
+}});
+// 词库是否就绪：dev 内联即就绪；生产等 de.dat 到货（window._DEC）。_deEnsure 未就绪时后台拉取并在到货后回调。
+function _deReady(){return typeof _loadDE!=='function'||!!window._DEC;}
+function _deEnsure(cb){if(_deReady())return true;try{_loadDE().then(function(){try{cb&&cb();}catch(e){}});}catch(e){}return false;}
+// de.dat 到货回调：清掉依赖词库的派生缓存并补渲染当前版块
+function _onDELoaded(){
+  try{_phSug=null;_phSugP=null;_deWordMap=null;_spMetaMap=null;}catch(e){}
+  try{if(!document.documentElement.classList.contains('locked')&&LANG==='de')setLang('de');}catch(e){}
+  try{var a=document.querySelector('.section.active'),id=a&&a.id;
+      if(id==='spell'&&typeof spUpdatePoolInfo==='function')spUpdatePoolInfo();}catch(e){}
+}
 // 英语版词库（中文谐音学英语）。数据源：packageData/data/en.js，构建时注入。
 // 注：英语词放在 de 字段，复用全部现有逻辑（卡片/朗读/测验）。英语不可规则拼读，故英语模式隐藏「拼读」只显谐音。
 const EN_CATEGORIES = __DATA_EN_CATEGORIES__; // 数据在 data/en_categories.json，由 build.mjs 注入（部署时加密）
@@ -1816,6 +1831,8 @@ function setLang(lang){
   if(document.documentElement.classList.contains('locked'))return;
   // 英语库按需下载（生产构建拆为 en.dat）：未到货时先渲染空态，到货后 _loadEN 自动重跑 setLang('en')
   if(LANG==='en'&&typeof _loadEN==='function'&&!window._ENC){try{_loadEN()['catch'](function(){});}catch(e){}}
+  // 德语词库同理（生产拆为 de.dat）：解锁首次进入即后台预取，到货后 _onDELoaded 补渲染
+  if(LANG==='de'&&typeof _loadDE==='function'&&!window._DEC){try{_loadDE()['catch'](function(){});}catch(e){}}
   applyLangData();
   if(typeof stopAutoPlay==='function')stopAutoPlay();
   if(typeof stopReading==='function')stopReading();
@@ -2202,6 +2219,7 @@ function startChunkedRender(container,items,makeFn){
 function renderPhrases(){
   if(typeof stopAutoPlay==='function')stopAutoPlay();
   _rendered.phrases=true;   // 任何渲染路径都视为已渲染，避免切回时重复渲染
+  if(!_deReady()){const el0=document.getElementById('phraseContent');if(el0)el0.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:48px 0">📖 词库加载中…</div>';_deEnsure(renderPhrases);return;}
   const el=document.getElementById('phraseContent');
   const lb={'0':'lb-0','a1':'lb-a1','a2':'lb-a2','b1':'lb-b1','b2':'lb-b2'};
   const items=[];
@@ -2555,6 +2573,7 @@ function stopAutoPlay(){
 let mq={score:0,total:0,mode:'',current:null,roundLen:10};
 let quizLevel='all';
 function startQuiz(mode){
+  if(!_deEnsure(function(){startQuiz(mode);})){try{_toast('词库加载中，马上开始…',1500);}catch(e){}return;}
   mq={score:0,total:0,mode:mode,current:null,roundLen:10,wrong:[]};
   nextQ();
 }
@@ -3653,10 +3672,10 @@ function _spAutoAdvance(){ // 越过空格/标点：自动填充其槽位
 function spRenderLevels(){var L=[['0','🌱 零基础'],['a1','⭐ A1'],['a2','⭐⭐ A2'],['b1','🔥 B1'],['b2','💎 B2'],['all','📚 全部']];document.getElementById('spLevels').innerHTML=L.map(function(x){return '<button type="button" class="'+(x[0]===SP.level?'on':'')+'" onclick="spSetLevel(\''+x[0]+'\')">'+x[1]+'</button>';}).join('');}
 function spSetLevel(l){SP.level=l;spRenderLevels();spUpdatePoolInfo();}
 function spSetMode(m){SP.mode=m;var b=document.getElementById('spModes').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-m')===m);}
-function spUpdatePoolInfo(){var n=spBuildPool(SP.level).length;var el=document.getElementById('spPoolInfo');var wn=0,dn=0;try{wn=Object.keys(_spWrongGet()).length;}catch(e){}try{dn=srsDueList().length;}catch(e){}var _st=' style="width:auto;display:inline-block;margin:10px 4px 0;padding:7px 18px" onclick="';var btns='';if(dn)btns+='<button type="button" class="acct-btn"'+_st+'spStartReview()">📆 到期复习（'+dn+'）</button>';if(wn)btns+='<button type="button" class="oauth-btn"'+_st+'spStartWrong()">🔁 错词本（'+wn+'）</button>';el.innerHTML=(n?('待记 '+n+' 词（已掌握的自动跳过）· 每组 '+Math.min(SP.size,n)+' 词'):'这个级别的词都掌握啦，换一个级别试试 🎉')+(btns?'<br>'+btns:'');}
+function spUpdatePoolInfo(){var el=document.getElementById('spPoolInfo');if(!_deReady()){if(el)el.innerHTML='词库加载中… ⏳';_deEnsure(spUpdatePoolInfo);return;}var n=spBuildPool(SP.level).length;var wn=0,dn=0;try{wn=Object.keys(_spWrongGet()).length;}catch(e){}try{dn=srsDueList().length;}catch(e){}var _st=' style="width:auto;display:inline-block;margin:10px 4px 0;padding:7px 18px" onclick="';var btns='';if(dn)btns+='<button type="button" class="acct-btn"'+_st+'spStartReview()">📆 到期复习（'+dn+'）</button>';if(wn)btns+='<button type="button" class="oauth-btn"'+_st+'spStartWrong()">🔁 错词本（'+wn+'）</button>';el.innerHTML=(n?('待记 '+n+' 词（已掌握的自动跳过）· 每组 '+Math.min(SP.size,n)+' 词'):'这个级别的词都掌握啦，换一个级别试试 🎉')+(btns?'<br>'+btns:'');}
 function spInit(){spRenderLevels();spSetMode(SP.mode);spSetUnit(SP.unit||'word');spSetDiff(SP.diff);document.getElementById('spSetup').style.display='';document.getElementById('spDrill').style.display='none';document.getElementById('spDone').style.display='none';var sb=document.getElementById('spSoundBtn');if(sb)sb.textContent=SP.sound?'🔔 音效':'🔕 静音';spUpdatePoolInfo();var inp=document.getElementById('spInput');if(inp&&!inp._b){inp._b=1;inp.addEventListener('input',spOnInput);}}
 function _spShuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
-function spStart(){var pool=_spShuf(spBuildPool(SP.level));if(!pool.length){spUpdatePoolInfo();return;}try{_lastStudySet({spell:1,level:SP.level,name:'拼写记忆 · '+(levelName(SP.level)||'全部')});}catch(e){}SP.review=false;SP.q=pool.slice(0,SP.size);_spGo();}
+function spStart(){if(!_deEnsure(spStart))return;var pool=_spShuf(spBuildPool(SP.level));if(!pool.length){spUpdatePoolInfo();return;}try{_lastStudySet({spell:1,level:SP.level,name:'拼写记忆 · '+(levelName(SP.level)||'全部')});}catch(e){}SP.review=false;SP.q=pool.slice(0,SP.size);_spGo();}
 function spLoad(){if(SP.i>=SP.q.length){spFinish();return;}var it=SP.q[SP.i];SP.item=it;SP.word=it.de;SP.zh=it.zh;SP.py=it.py;SP.pos=0;SP.miss=0;SP.revealed=false;document.getElementById('spBar').style.width=(SP.i/SP.q.length*100)+'%';document.getElementById('spCount').textContent=(SP.i+1)+' / '+SP.q.length;var listen=SP.mode==='listen';document.getElementById('spZh').textContent=listen?'🎧 听发音，拼出这个词':SP.zh;document.getElementById('spPy').textContent=listen?'':(SP.py||'');document.getElementById('spTrace').textContent=SP.diff==='trace'?SP.word:'';spRenderSlots();_spAutoAdvance();var inp=document.getElementById('spInput');inp.value='';setTimeout(function(){try{inp.focus();}catch(e){}},30);spReplay();}
 function spRenderSlots(){var w=SP.word,el=document.getElementById('spSlots'),sent=SP.unit==='sent';el.classList.toggle('sent',sent);var h='',i,open=false;for(i=0;i<w.length;i++){var ch=w[i];if(ch===' '){if(open){h+='</span>';open=false;}continue;}if(!open){h+='<span class="sp-word">';open=true;}var cls='sp-slot';if(!_spIsLetter(ch))cls+=' auto';if(i<SP.pos)cls+=' filled';else if(i===SP.pos&&_spIsLetter(ch))cls+=' cur';h+='<div class="'+cls+'" id="spS'+i+'">'+(i<SP.pos?ch:'')+'</div>';}if(open)h+='</span>';el.innerHTML=h;}
 function spMatch(ch,t){ch=ch.toLowerCase();t=t.toLowerCase();if(ch===t)return true;if(t==='ä')return ch==='a';if(t==='ö')return ch==='o';if(t==='ü')return ch==='u';if(t==='ß')return ch==='s';return false;}
