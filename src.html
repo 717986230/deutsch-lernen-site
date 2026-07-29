@@ -29,7 +29,7 @@
 <meta name="apple-mobile-web-app-title" content="德语手册">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
-:root{--gold:#58cc02;--gold-dim:#58cc0266;--gold-faint:#58cc0222;--bg:#f7f9f8;--bg2:#ffffff;--bg3:#ffffff;--surface:#ffffff;--surface-2:#ffffff;--nav-bg:rgba(255,255,255,.9);--border:rgba(0,0,0,.08);--shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);--text:#33383d;--text-dim:#63696f;--text-faint:#8b9198;--red:#ff4b4b;--green:#58cc02;--blue:#1cb0f6;--stripe:rgba(0,0,0,.02);--art-der:#1489c9;--art-die:#e5484d;--art-das:#3d9e00;}:root[data-theme="dark"]{--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#767d84;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#767d84;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}}
+:root{--gold:#58cc02;--gold-dim:#58cc0266;--gold-faint:#58cc0222;--bg:#f7f9f8;--bg2:#ffffff;--bg3:#ffffff;--surface:#ffffff;--surface-2:#ffffff;--nav-bg:rgba(255,255,255,.9);--border:rgba(0,0,0,.08);--shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);--text:#33383d;--text-dim:#63696f;--text-faint:#6b7278;--red:#ff4b4b;--green:#58cc02;--blue:#1cb0f6;--stripe:rgba(0,0,0,.02);--art-der:#0f6f9e;--art-die:#c9252b;--art-das:#2f7d00;--gold-text:#357a00;}:root[data-theme="dark"]{--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#8b939b;--gold-text:#58cc02;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#8b939b;--gold-text:#58cc02;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-height:100vh;overflow-x:hidden}
 /* der/die/das 词性颜色记忆（蓝/红/绿，与语法版块一致）*/
@@ -40,17 +40,17 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .art-legend .art-toggle[aria-pressed=true]{border-color:var(--gold);color:var(--text)}
 .art-legend b{font-weight:800}
 /* 今日课程卡 */
-.dash-daily{display:flex;align-items:center;gap:10px;margin:10px 0;padding:13px 16px;border-radius:14px;background:linear-gradient(135deg,var(--gold),#46a302);color:#fff;cursor:pointer;box-shadow:0 4px 14px var(--gold-dim)}
+.dash-daily{display:flex;align-items:center;gap:10px;margin:10px 0;padding:13px 16px;border-radius:14px;background:linear-gradient(135deg,#3a8200,#2f6b00);color:#fff;cursor:pointer;box-shadow:0 4px 14px var(--gold-dim)}
 .dash-daily .dd-txt{display:flex;flex-direction:column;gap:2px;line-height:1.3}
 .dash-daily .dd-txt b{font-size:16px;font-weight:800}
 .dash-daily .dd-txt span{font-size:12px;opacity:.92}
 .dash-daily .dd-go{margin-left:auto;font-weight:800;font-size:15px;white-space:nowrap;background:rgba(255,255,255,.22);padding:7px 14px;border-radius:999px}
-.dash-daily.done{background:var(--gold-faint);color:var(--gold);box-shadow:none;justify-content:center;font-weight:700;cursor:default}
+.dash-daily.done{background:var(--gold-faint);color:var(--gold-text);box-shadow:none;justify-content:center;font-weight:700;cursor:default}
 /* 场景对话 */
 .dlg-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;margin:0 0 14px;box-shadow:var(--shadow)}
 .dlg-head{display:flex;align-items:center;gap:8px}
 .dlg-scene{font-weight:800;color:var(--text);font-size:15px}
-.dlg-play{margin-left:auto;border:1px solid var(--gold);color:var(--gold);background:transparent;border-radius:999px;padding:4px 12px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.dlg-play{margin-left:auto;border:1px solid var(--gold);color:var(--gold-text);background:transparent;border-radius:999px;padding:4px 12px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
 .dlg-de-title{font-size:12px;color:var(--text-faint);margin:2px 0 10px}
 .dlg-body{display:flex;flex-direction:column;gap:9px}
 .dlg-turn{display:flex}
@@ -64,7 +64,7 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .dlg-zh{font-size:13px;color:var(--text-dim);margin-top:3px}
 .dlg-py{font-size:12px;color:var(--text-faint);margin-top:1px}
 /* NAV */
-#nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--gold-faint);display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;padding:0 8px}
+#nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--gold-faint);display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;padding:0 8px;padding-right:190px}
 .nav-btn{flex-shrink:0;padding:9px 14px;margin:6px 2px;font-size:12px;letter-spacing:1px;color:var(--text-dim);background:none;border:none;border-radius:18px;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit}
 .nav-btn.active{color:#fff;background:var(--gold);font-weight:700}
 .nav-btn:not(.active):hover{color:var(--text);background:rgba(88,204,2,.1)}
@@ -139,8 +139,8 @@ body.no-gloss .rd-word rt{display:none}
 .ph-chip.lg{padding:6px 11px}.ph-chip.lg b{font-size:19px}.ph-chip.lg i{font-size:12px}
 .ph-try{display:inline-block;margin:2px 4px;padding:2px 10px;border-radius:14px;border:1px solid var(--gold-faint);color:#46a302;cursor:pointer;font-size:12px}
 .ph-try:hover{background:rgba(88,204,2,.1)}
-.py-label{font-size:11px;color:var(--gold-dim);letter-spacing:1px}
-.py-text{font-size:13px;color:var(--gold);background:rgba(88,204,2,.12);padding:2px 12px;border-radius:20px}
+.py-label{font-size:11px;color:var(--gold-text);letter-spacing:1px}
+.py-text{font-size:13px;color:var(--gold-text);background:rgba(88,204,2,.12);padding:2px 12px;border-radius:20px}
 to{opacity:1}}
 /* GRID */
 .phrase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
