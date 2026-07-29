@@ -51,6 +51,8 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .dlg-head{display:flex;align-items:center;gap:8px}
 .dlg-scene{font-weight:800;color:var(--text);font-size:15px}
 .dlg-play{margin-left:auto;border:1px solid var(--gold);color:var(--gold-text);background:transparent;border-radius:999px;padding:4px 12px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.dlg-drill{border:none;background:var(--gold);color:#fff;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.dlg-drill:active{transform:scale(.95)}
 .dlg-de-title{font-size:12px;color:var(--text-faint);margin:2px 0 10px}
 .dlg-body{display:flex;flex-direction:column;gap:9px}
 .dlg-turn{display:flex}
@@ -2973,7 +2975,7 @@ function renderDialogues(){
   if(_dlgRendered)return;var el=document.getElementById('dialogList');if(!el)return;
   var h='',i,k;
   for(i=0;i<DIALOGUES.length;i++){var d=DIALOGUES[i];
-    h+='<div class="dlg-card"><div class="dlg-head"><span class="dlg-scene">'+d.icon+' '+d.scene+'</span><button type="button" class="dlg-play" id="dlgPlay'+i+'" onclick="dialogPlay('+i+')">▶ 播放全部</button></div><div class="dlg-de-title" lang="de">'+_esc(d.de)+'</div><div class="dlg-body">';
+    h+='<div class="dlg-card"><div class="dlg-head"><span class="dlg-scene">'+d.icon+' '+d.scene+'</span><button type="button" class="dlg-play" id="dlgPlay'+i+'" onclick="dialogPlay('+i+')">▶ 播放全部</button><button type="button" class="dlg-drill" onclick="spStartDialog('+i+')">⌨️ 练这段</button></div><div class="dlg-de-title" lang="de">'+_esc(d.de)+'</div><div class="dlg-body">';
     for(k=0;k<d.turns.length;k++){var t=d.turns[k];var side=(t.s==='B')?'b':'a';
       h+='<div class="dlg-turn '+side+'" id="dlg'+i+'_'+k+'"><div class="dlg-bubble"><div class="dlg-de-row"><span class="dlg-de" lang="de">'+_esc(t.de)+'</span><button type="button" class="dlg-spk" aria-label="朗读这句" onclick="dialogSpeak(this,'+i+','+k+')">🔊</button></div><div class="dlg-zh">'+_esc(t.zh)+'</div><div class="dlg-py">'+_esc(t.py)+'</div></div></div>';
     }
@@ -3793,7 +3795,9 @@ function resumeLast(){
   var last=null;try{last=JSON.parse(localStorage.getItem('lastStudy')||'null');}catch(e){}
   if(!last)return;
   try{track('resume',{sp:last.spell?1:0});}catch(e){}
-  if(last.spell){try{if(last.level&&typeof SP!=='undefined')SP.level=last.level;}catch(e){}showSection('spell');return;}
+  if(last.spell){
+    if(last.dialog!=null&&typeof spStartDialog==='function'){spStartDialog(last.dialog);return;}
+    try{if(last.level&&typeof SP!=='undefined')SP.level=last.level;}catch(e){}showSection('spell');return;}
   showSection('phrases');
   setTimeout(function(){
     try{
@@ -3838,6 +3842,19 @@ function _spWrongSave(m){try{localStorage.setItem('spWrong',JSON.stringify(m));}
 // 进入拼写练习的公共收尾：重置进度 + 切换面板 + 出题（spStart/spStartWrong/spStartReview 共用）
 function _spGo(){SP.i=0;SP.learned=0;SP.perfect=0;SP.wrong=[];document.getElementById('spSetup').style.display='none';document.getElementById('spDone').style.display='none';document.getElementById('spDrill').style.display='';spLoad();}
 function spStartWrong(){var m=_spWrongGet(),q=[];for(var k in m)q.push({de:k,zh:m[k].zh,py:m[k].py});if(!q.length)return;SP.review=false;SP.daily=false;SP.q=_spShuf(q).slice(0,20);_spGo();}
+// 对话拼写：把一段场景对话的德语句子送进拼写引擎（句子模式），看完就能练
+function spStartDialog(di){
+  var d=(typeof DIALOGUES!=='undefined')&&DIALOGUES[di];if(!d)return;
+  var q=[],i;
+  for(i=0;i<d.turns.length;i++){
+    var t=d.turns[i],s=(t.de||'').trim();
+    if(s.length>=6&&s.length<=42)q.push({de:s,zh:t.zh,py:t.py});
+  }
+  if(!q.length){try{_toast('这段对话的句子偏长，暂不适合拼写练习');}catch(e){}return;}
+  SP.review=false;SP.daily=false;SP.unit='sent';SP.q=q;
+  try{_lastStudySet({spell:1,dialog:di,name:'对话拼写 · '+d.scene});}catch(e){}
+  showSection('spell');_spGo();
+}
 // 今日课程：到期复习词 + 新词 混合成一节引导式微课（复用拼写引擎与 SRS）
 function _dailyGet(){try{return JSON.parse(localStorage.getItem('dailyLesson')||'{}');}catch(e){return {};}}
 function _dailyDone(){var d=_dailyGet();return d.date===_today()&&!!d.done;}
