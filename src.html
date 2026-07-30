@@ -29,7 +29,7 @@
 <meta name="apple-mobile-web-app-title" content="德语手册">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
-:root{--gold:#58cc02;--gold-dim:#58cc0266;--gold-faint:#58cc0222;--bg:#f7f9f8;--bg2:#ffffff;--bg3:#ffffff;--surface:#ffffff;--surface-2:#ffffff;--nav-bg:rgba(255,255,255,.9);--border:rgba(0,0,0,.08);--shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);--text:#33383d;--text-dim:#63696f;--text-faint:#6b7278;--red:#ff4b4b;--green:#58cc02;--blue:#1cb0f6;--stripe:rgba(0,0,0,.02);--art-der:#0f6f9e;--art-die:#c9252b;--art-das:#2f7d00;--gold-text:#357a00;}:root[data-theme="dark"]{--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#8b939b;--gold-text:#58cc02;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#8b939b;--gold-text:#58cc02;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}}
+:root{--gold:#58cc02;--gold-dim:#58cc0266;--gold-faint:#58cc0222;--bg:#f7f9f8;--bg2:#ffffff;--bg3:#ffffff;--surface:#ffffff;--surface-2:#ffffff;--nav-bg:rgba(255,255,255,.9);--border:rgba(0,0,0,.08);--shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);--text:#33383d;--text-dim:#63696f;--text-faint:#6b7278;--red:#ff4b4b;--green:#58cc02;--blue:#1cb0f6;--stripe:rgba(0,0,0,.02);--art-der:#0f6f9e;--art-die:#c9252b;--art-das:#2f7d00;--gold-text:#357a00;--lv0:#357a00;--lva1:#0b6285;--lva2:#7a5200;--lvb1:#95430f;--lvb2:#bf1e28;--lvc1:#6b21b8;--lvc2:#4043bd;}:root[data-theme="dark"]{--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#8b939b;--gold-text:#58cc02;--lv0:#58cc02;--lva1:#1cb0f6;--lva2:#f0b429;--lvb1:#ff7a4d;--lvb2:#ff8a8a;--lvc1:#c9a4ff;--lvc2:#9ea1ff;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#8b939b;--gold-text:#58cc02;--lv0:#58cc02;--lva1:#1cb0f6;--lva2:#f0b429;--lvb1:#ff7a4d;--lvb2:#ff8a8a;--lvc1:#c9a4ff;--lvc2:#9ea1ff;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-height:100vh;overflow-x:hidden}
 /* der/die/das 词性颜色记忆（蓝/红/绿，与语法版块一致）*/
@@ -179,13 +179,13 @@ mark.sh{background:rgba(88,204,2,.32);color:inherit;border-radius:3px;padding:0 
 .level-tab.active{border-color:var(--gold);background:var(--gold);color:#fff;font-weight:700}
 .level-info{display:none;border-left:3px solid var(--gold);background:var(--surface);padding:10px 14px;border-radius:0 8px 8px 0;margin:0 0 14px;font-size:13px;line-height:1.6;color:var(--text-dim)}
 .level-badge{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;vertical-align:middle}
-.lb-0{background:rgba(88,204,2,.18);color:#58cc02}
-.lb-a1{background:rgba(28,176,246,.18);color:#1cb0f6}
-.lb-a2{background:rgba(88,204,2,.18);color:var(--gold)}
-.lb-b1{background:rgba(255,122,77,.18);color:#ff7a4d}
-.lb-b2{background:rgba(255,75,75,.18);color:#ff4b4b}
-.lb-c1{background:rgba(168,85,247,.18);color:#a855f7}
-.lb-c2{background:rgba(99,102,241,.2);color:#6366f1}
+.lb-0{background:rgba(88,204,2,.18);color:var(--lv0)}
+.lb-a1{background:rgba(28,176,246,.18);color:var(--lva1)}
+.lb-a2{background:rgba(232,147,12,.18);color:var(--lva2)}
+.lb-b1{background:rgba(255,122,77,.18);color:var(--lvb1)}
+.lb-b2{background:rgba(255,75,75,.18);color:var(--lvb2)}
+.lb-c1{background:rgba(168,85,247,.18);color:var(--lvc1)}
+.lb-c2{background:rgba(99,102,241,.2);color:var(--lvc2)}
 /* LEVEL CARDS on home */
 .level-card{position:relative;overflow:hidden;cursor:pointer;border-radius:14px;padding:18px 18px 16px;border:1px solid var(--gold-faint);background:var(--surface);transition:all .25s}
 .level-card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 8px 24px rgba(0,0,0,.3)}
@@ -2889,7 +2889,7 @@ function setReadLevel(k){stopReading();readActive=k;buildReadTabs();renderReadin
 function _getReadList(){return READINGS.filter(r=>readActive==='all'||r.level===readActive);}
 // ── 场景对话：真实生活情景短对话（A1 常用，德/中/谐音）──
 var DIALOGUES=[
- {icon:'👋',scene:'打招呼 · 自我介绍',de:'Sich vorstellen',turns:[
+ {icon:'👋',scene:'打招呼 · 自我介绍',lv:'0',de:'Sich vorstellen',turns:[
    {s:'A',de:'Hallo! Wie heißt du?',zh:'你好！你叫什么名字？',py:'哈洛！维 海斯特 杜？'},
    {s:'B',de:'Ich heiße Lena. Und du?',zh:'我叫莱娜。你呢？',py:'伊希 海瑟 莱娜。温特 杜？'},
    {s:'A',de:'Ich bin Tom. Woher kommst du?',zh:'我是汤姆。你从哪儿来？',py:'伊希 宾 汤姆。沃黑尔 康姆斯特 杜？'},
@@ -2897,7 +2897,7 @@ var DIALOGUES=[
    {s:'A',de:'Freut mich, dich kennenzulernen!',zh:'很高兴认识你！',py:'弗罗伊特 米希，迪希 肯能祖莱能！'},
    {s:'B',de:'Freut mich auch!',zh:'我也很高兴！',py:'弗罗伊特 米希 奥赫！'}
  ]},
- {icon:'☕',scene:'咖啡馆点单',de:'Im Café',turns:[
+ {icon:'☕',scene:'咖啡馆点单',lv:'a1',de:'Im Café',turns:[
    {s:'A',de:'Guten Tag! Was möchten Sie?',zh:'您好！您想要点什么？',py:'古腾 塔克！瓦斯 麦希腾 齐？'},
    {s:'B',de:'Einen Kaffee, bitte.',zh:'请来一杯咖啡。',py:'埃能 咖啡，比特。'},
    {s:'A',de:'Mit Milch und Zucker?',zh:'加奶和糖吗？',py:'米特 米尔希 温特 楚克尔？'},
@@ -2905,7 +2905,7 @@ var DIALOGUES=[
    {s:'A',de:'Das macht drei Euro.',zh:'一共三欧元。',py:'达斯 马赫特 德莱 奥罗。'},
    {s:'B',de:'Hier, bitte. Danke schön!',zh:'给您。非常感谢！',py:'希尔，比特。当克 舜！'}
  ]},
- {icon:'📞',scene:'餐厅订位 · 几位客人',de:'Tisch reservieren',turns:[
+ {icon:'📞',scene:'餐厅订位 · 几位客人',lv:'a2',de:'Tisch reservieren',turns:[
    {s:'A',de:'Restaurant Adler, guten Tag!',zh:'阿德勒餐厅，您好！',py:'雷斯托朗 阿德勒，古腾 塔克！'},
    {s:'B',de:'Guten Tag! Ich möchte einen Tisch reservieren.',zh:'您好！我想订一张桌子。',py:'古腾 塔克！伊希 麦希特 埃能 提什 雷泽尔维伦。'},
    {s:'A',de:'Gern. Für wie viele Personen?',zh:'好的。几位客人？',py:'盖恩。菲尔 维 菲勒 佩尔佐能？'},
@@ -2915,7 +2915,7 @@ var DIALOGUES=[
    {s:'A',de:'Auf welchen Namen, bitte?',zh:'请问用什么名字订？',py:'奥夫 维尔希恩 纳门，比特？'},
    {s:'B',de:'Auf den Namen Wang. Vielen Dank!',zh:'王。非常感谢！',py:'奥夫 登 纳门 王。菲伦 当克！'}
  ]},
- {icon:'🥗',scene:'点餐 · 前菜与饮料',de:'Vorspeise bestellen',turns:[
+ {icon:'🥗',scene:'点餐 · 前菜与饮料',lv:'a2',de:'Vorspeise bestellen',turns:[
    {s:'A',de:'Möchten Sie schon bestellen?',zh:'您现在要点餐吗？',py:'麦希腾 齐 舜 贝施泰伦？'},
    {s:'B',de:'Ja, gern. Als Vorspeise nehme ich die Tomatensuppe.',zh:'好的。前菜我要番茄汤。',py:'亚，盖恩。阿尔斯 福尔施派泽 内默 伊希 迪 托马滕祖佩。'},
    {s:'A',de:'Und was möchten Sie trinken?',zh:'您想喝点什么？',py:'温特 瓦斯 麦希腾 齐 特林肯？'},
@@ -2923,7 +2923,7 @@ var DIALOGUES=[
    {s:'A',de:'Möchten Sie auch einen Salat?',zh:'还要一份沙拉吗？',py:'麦希腾 齐 奥赫 埃能 萨拉特？'},
    {s:'B',de:'Nein danke, das ist erst mal alles.',zh:'不用了谢谢，先这些。',py:'耐因 当克，达斯 伊斯特 埃尔斯特 马尔 阿勒斯。'}
  ]},
- {icon:'🍖',scene:'点餐 · 正餐与主食',de:'Hauptgericht bestellen',turns:[
+ {icon:'🍖',scene:'点餐 · 正餐与主食',lv:'a2',de:'Hauptgericht bestellen',turns:[
    {s:'A',de:'Und als Hauptgericht?',zh:'那正餐要什么？',py:'温特 阿尔斯 豪普特格里希特？'},
    {s:'B',de:'Ich hätte gern das Schnitzel.',zh:'我想要炸肉排。',py:'伊希 海特 盖恩 达斯 施尼策尔。'},
    {s:'A',de:'Möchten Sie Reis, Nudeln oder Kartoffeln dazu?',zh:'主食配米饭、面条还是土豆？',py:'麦希腾 齐 莱斯、努德恩 奥德尔 卡托费恩 达祖？'},
@@ -2931,7 +2931,7 @@ var DIALOGUES=[
    {s:'A',de:'Nein, gar nicht. Guten Appetit!',zh:'一点也不辣。祝您用餐愉快！',py:'耐因，加尔 尼希特。古腾 阿佩提特！'},
    {s:'B',de:'Danke! Die Rechnung bitte später.',zh:'谢谢！账单请稍后。',py:'当克！迪 雷希农 比特 施佩特尔。'}
  ]},
- {icon:'🥡',scene:'外卖自取',de:'Essen abholen',turns:[
+ {icon:'🥡',scene:'外卖自取',lv:'a2',de:'Essen abholen',turns:[
    {s:'A',de:'Hallo! Ich möchte mein Essen abholen.',zh:'你好！我来取我的外卖。',py:'哈洛！伊希 麦希特 麦因 埃森 阿普霍伦。'},
    {s:'B',de:'Auf welchen Namen, bitte?',zh:'请问什么名字？',py:'奥夫 维尔希恩 纳门，比特？'},
    {s:'A',de:'Auf den Namen Li. Ich habe online bestellt.',zh:'李。我在网上订的。',py:'奥夫 登 纳门 李。伊希 哈贝 昂莱恩 贝施泰尔特。'},
@@ -2939,7 +2939,7 @@ var DIALOGUES=[
    {s:'A',de:'Ist die Soße auch dabei?',zh:'酱料也在里面吗？',py:'伊斯特 迪 索瑟 奥赫 达拜？'},
    {s:'B',de:'Ja, alles ist dabei. Guten Appetit!',zh:'是的，都在。祝您用餐愉快！',py:'亚，阿勒斯 伊斯特 达拜。古腾 阿佩提特！'}
  ]},
- {icon:'🧭',scene:'问路',de:'Nach dem Weg fragen',turns:[
+ {icon:'🧭',scene:'问路',lv:'a1',de:'Nach dem Weg fragen',turns:[
    {s:'A',de:'Entschuldigung, wo ist der Bahnhof?',zh:'打扰一下，火车站在哪儿？',py:'恩特舒尔迪贡，沃 伊斯特 德尔 巴恩霍夫？'},
    {s:'B',de:'Gehen Sie geradeaus.',zh:'您一直往前走。',py:'盖恩 齐 格拉德奥斯。'},
    {s:'A',de:'Und dann?',zh:'然后呢？',py:'温特 丹？'},
@@ -2947,7 +2947,7 @@ var DIALOGUES=[
    {s:'A',de:'Wie lange dauert das?',zh:'要走多久？',py:'维 朗厄 到尔特 达斯？'},
    {s:'B',de:'Etwa fünf Minuten.',zh:'大约五分钟。',py:'埃特瓦 芬夫 米努滕。'}
  ]},
- {icon:'🛒',scene:'超市结账',de:'An der Kasse',turns:[
+ {icon:'🛒',scene:'超市结账',lv:'a1',de:'An der Kasse',turns:[
    {s:'A',de:'Haben Sie eine Tüte?',zh:'您有袋子吗？',py:'哈本 齐 埃内 提特？'},
    {s:'B',de:'Ja, das kostet zehn Cent.',zh:'有，一个十分。',py:'亚，达斯 科斯特特 采恩 森特。'},
    {s:'A',de:'Kann ich mit Karte zahlen?',zh:'我能刷卡吗？',py:'坎 伊希 米特 卡特 察伦？'},
@@ -2955,7 +2955,7 @@ var DIALOGUES=[
    {s:'A',de:'Danke. Schönen Tag noch!',zh:'谢谢。祝您今天愉快！',py:'当克。舜能 塔克 诺赫！'},
    {s:'B',de:'Danke, gleichfalls!',zh:'谢谢，您也是！',py:'当克，格莱希法尔斯！'}
  ]},
- {icon:'🩺',scene:'看医生',de:'Beim Arzt',turns:[
+ {icon:'🩺',scene:'看医生',lv:'a1',de:'Beim Arzt',turns:[
    {s:'A',de:'Guten Tag! Was fehlt Ihnen?',zh:'您好！您哪里不舒服？',py:'古腾 塔克！瓦斯 费尔特 伊能？'},
    {s:'B',de:'Ich habe Kopfschmerzen.',zh:'我头疼。',py:'伊希 哈贝 科普夫施梅尔岑。'},
    {s:'A',de:'Seit wann?',zh:'从什么时候开始的？',py:'赛特 万？'},
@@ -2963,7 +2963,7 @@ var DIALOGUES=[
    {s:'A',de:'Nehmen Sie diese Tabletten.',zh:'吃这些药片。',py:'内门 齐 迪泽 塔布莱滕。'},
    {s:'B',de:'Vielen Dank, Herr Doktor.',zh:'非常感谢，医生。',py:'菲伦 当克，黑尔 多克托尔。'}
  ]},
- {icon:'🏠',scene:'租房看房',de:'Wohnungssuche',turns:[
+ {icon:'🏠',scene:'租房看房',lv:'b1',de:'Wohnungssuche',turns:[
    {s:'A',de:'Ich suche eine Wohnung.',zh:'我在找房子。',py:'伊希 苏赫 埃内 沃农。'},
    {s:'B',de:'Wie viele Zimmer möchten Sie?',zh:'您想要几个房间？',py:'维 菲勒 齐默 麦希腾 齐？'},
    {s:'A',de:'Zwei Zimmer, bitte.',zh:'请要两个房间。',py:'茨外 齐默，比特。'},
@@ -2977,7 +2977,9 @@ function renderDialogues(){
   if(_dlgRendered)return;var el=document.getElementById('dialogList');if(!el)return;
   var h='',i,k;
   for(i=0;i<DIALOGUES.length;i++){var d=DIALOGUES[i];
-    h+='<div class="dlg-card"><div class="dlg-head"><span class="dlg-scene">'+d.icon+' '+d.scene+'</span><button type="button" class="dlg-play" id="dlgPlay'+i+'" onclick="dialogPlay('+i+')">▶ 播放全部</button><button type="button" class="dlg-drill" onclick="spStartDialog('+i+')">⌨️ 练这段</button></div><div class="dlg-de-title" lang="de">'+_esc(d.de)+'</div><div class="dlg-body">';
+    var lb={'0':'lb-0','a1':'lb-a1','a2':'lb-a2','b1':'lb-b1','b2':'lb-b2'};
+    var badge=d.lv?'<span class="level-badge '+(lb[d.lv]||'')+'">'+(levelName(d.lv)||d.lv)+'</span>':'';
+    h+='<div class="dlg-card"><div class="dlg-head"><span class="dlg-scene">'+d.icon+' '+d.scene+badge+'</span><button type="button" class="dlg-play" id="dlgPlay'+i+'" onclick="dialogPlay('+i+')">▶ 播放全部</button><button type="button" class="dlg-drill" onclick="spStartDialog('+i+')">⌨️ 练这段</button></div><div class="dlg-de-title" lang="de">'+_esc(d.de)+'</div><div class="dlg-body">';
     for(k=0;k<d.turns.length;k++){var t=d.turns[k];var side=(t.s==='B')?'b':'a';
       h+='<div class="dlg-turn '+side+'" id="dlg'+i+'_'+k+'"><div class="dlg-bubble"><div class="dlg-de-row"><span class="dlg-de" lang="de">'+_esc(t.de)+'</span><button type="button" class="dlg-spk" aria-label="朗读这句" onclick="dialogSpeak(this,'+i+','+k+')">🔊</button></div><div class="dlg-zh">'+_esc(t.zh)+'</div><div class="dlg-py">'+_esc(t.py)+'</div></div></div>';
     }
