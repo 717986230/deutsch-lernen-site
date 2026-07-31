@@ -1139,11 +1139,12 @@ body.lang-en .phfab{display:none}
     <div class="hero-label" style="text-align:center;padding-top:20px">Lesen</div>
     <h2 class="page-title">阅读 · 连载</h2>
     <div style="display:flex;gap:8px;justify-content:center;margin:2px 0 10px">
-      <button class="level-tab active" type="button">📖 分级短文</button>
-      <button class="level-tab" type="button" onclick="showSection('series')">🎬 留学连载</button>
-      <button class="level-tab" type="button" onclick="showSection('dialog')">💬 场景对话</button>
+      <button class="level-tab active" id="rtGraded" type="button" onclick="setReadTopic('')">📖 短文</button>
+      <button class="level-tab" id="rtRest" type="button" onclick="setReadTopic('restaurant')">🍽️ 餐厅</button>
+      <button class="level-tab" type="button" onclick="showSection('series')">🎬 连载</button>
+      <button class="level-tab" type="button" onclick="showSection('dialog')">💬 对话</button>
     </div>
-    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
+    <p id="readSub" style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
     <button id="loopAllBtn" class="fab-read" type="button" aria-label="循环朗读全部短文" onclick="toggleLoopAll()">🔊 循环朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="readRateV" style="color:#46a302;font-weight:600">0.62</span> 🐇</div>
     <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px">▶ 整篇朗读 · 点句即听 · <b style="color:#46a302">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
@@ -1159,9 +1160,10 @@ body.lang-en .phfab{display:none}
     <div class="hero-label" style="text-align:center;padding-top:20px">Serie</div>
     <h2 class="page-title">阅读 · 连载</h2>
     <div style="display:flex;gap:8px;justify-content:center;margin:2px 0 10px">
-      <button class="level-tab" type="button" onclick="showSection('reading')">📖 分级短文</button>
-      <button class="level-tab active" type="button">🎬 留学连载</button>
-      <button class="level-tab" type="button" onclick="showSection('dialog')">💬 场景对话</button>
+      <button class="level-tab" type="button" onclick="showSection('reading');setReadTopic('')">📖 短文</button>
+      <button class="level-tab" type="button" onclick="showSection('reading');setReadTopic('restaurant')">🍽️ 餐厅</button>
+      <button class="level-tab active" type="button">🎬 连载</button>
+      <button class="level-tab" type="button" onclick="showSection('dialog')">💬 对话</button>
     </div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">原创连续剧 · 中德对照 · 🔊 慢速朗读 · 点词查义</p>
     <button id="seriesLoopBtn" class="fab-read" type="button" aria-label="循环朗读全部连载" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
@@ -1182,9 +1184,10 @@ body.lang-en .phfab{display:none}
     <div class="hero-label" style="text-align:center;padding-top:20px">Dialog</div>
     <h2 class="page-title">阅读 · 连载</h2>
     <div style="display:flex;gap:8px;justify-content:center;margin:2px 0 10px">
-      <button class="level-tab" type="button" onclick="showSection('reading')">📖 分级短文</button>
-      <button class="level-tab" type="button" onclick="showSection('series')">🎬 留学连载</button>
-      <button class="level-tab active" type="button">💬 场景对话</button>
+      <button class="level-tab" type="button" onclick="showSection('reading');setReadTopic('')">📖 短文</button>
+      <button class="level-tab" type="button" onclick="showSection('reading');setReadTopic('restaurant')">🍽️ 餐厅</button>
+      <button class="level-tab" type="button" onclick="showSection('series')">🎬 连载</button>
+      <button class="level-tab active" type="button">💬 对话</button>
     </div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">真实生活情景 · 中德对照 · 🔊 点句即听 / 整段连播</p>
     <div id="dialogList"></div>
@@ -2891,7 +2894,26 @@ function buildReadTabs(){
     `<button class="level-tab${k===readActive?' active':''}" onclick="setReadLevel('${k}')">${l}</button>`).join('');
 }
 function setReadLevel(k){stopReading();readActive=k;buildReadTabs();renderReadings();}
-function _getReadList(){return READINGS.filter(r=>readActive==='all'||r.level===readActive);}
+// 餐厅专题：带 topic:'restaurant' 的短文集中到「🍽️ 餐厅」标签，不与分级短文混排
+var readTopic='';
+function _getReadList(){
+  if(readTopic==='restaurant')return READINGS.filter(r=>r.topic==='restaurant');
+  return READINGS.filter(r=>r.topic!=='restaurant'&&(readActive==='all'||r.level===readActive));
+}
+function setReadTopic(t){
+  readTopic=t||'';
+  if(typeof stopReading==='function')stopReading();
+  var g=document.getElementById('rtGraded'),rt=document.getElementById('rtRest');
+  if(g)g.classList.toggle('active',readTopic!=='restaurant');
+  if(rt)rt.classList.toggle('active',readTopic==='restaurant');
+  var lt=document.getElementById('readLevelTabs');
+  if(lt)lt.style.display=(readTopic==='restaurant')?'none':'';
+  var sub=document.getElementById('readSub');
+  if(sub)sub.textContent=(readTopic==='restaurant')
+    ?'餐厅德语全套 · 从进门点单到加餐具打包买单 · 中德对照 · 🔊 点句即听'
+    :'0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读';
+  buildReadTabs();renderReadings();
+}
 // ── 场景对话：真实生活情景短对话（A1 常用，德/中/谐音）──
 var DIALOGUES=[
  {icon:'👋',scene:'打招呼 · 自我介绍',lv:'0',de:'Sich vorstellen',turns:[
@@ -3179,6 +3201,7 @@ function rdToast(msg){
   t.textContent=msg; t.classList.add('show');
   clearTimeout(_rdToastT); _rdToastT=setTimeout(()=>t.classList.remove('show'),1800);
 }
+var _rdGen=0;
 function renderReadings(){
   const list=_getReadList();
   const cnt=document.getElementById('readCount');
@@ -3195,9 +3218,13 @@ function renderReadings(){
       </div>${body}</div>`;
   });
   // 分批渲染：先同步出前 6 篇，其余每帧追加（低端机首开不卡）
+  // 带渲染代号：快速切换标签/级别时，上一次的追加循环必须立即作废，
+  // 否则旧文章会继续往新列表里追加（曾导致「餐厅」10 篇里混进 23 篇分级短文）
+  const gen=++_rdGen;
   el.innerHTML=htmls.slice(0,6).join('');
   let i=6;
   (function step(){
+    if(gen!==_rdGen)return;
     if(i>=htmls.length)return;
     el.insertAdjacentHTML('beforeend',htmls.slice(i,i+6).join(''));
     i+=6;
