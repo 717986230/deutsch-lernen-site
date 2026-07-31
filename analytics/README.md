@@ -85,6 +85,13 @@ wrangler deploy                                                 # 部署新版 w
 
 找回密码的邮箱通道用 [Resend](https://resend.com) 发信（免费额度 3000 封/月、100 封/天，够个人站用）。
 
+> ⚠️ **已有部署升级时必看**：`schema.sql` 用的是 `CREATE TABLE IF NOT EXISTS`，
+> 对**已存在**的 `users` 表不会加任何新列。给老库补列必须跑迁移文件：
+> ```bash
+> wrangler d1 execute uuoo_analytics --remote --file=migrate-users-recovery.sql
+> ```
+> 漏了这步会导致 worker 查不到列、账号接口全 500，前端表现为「离线中」。
+
 ```bash
 cd analytics
 wrangler secret put RESEND_API_KEY     # 在 Resend 后台创建，切勿写进 wrangler.toml（明文进 git）
