@@ -65,6 +65,11 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .dlg-spk{border:none;background:transparent;cursor:pointer;font-size:15px;padding:0;line-height:1}
 .dlg-zh{font-size:13px;color:var(--text-dim);margin-top:3px}
 .dlg-py{font-size:12px;color:var(--text-faint);margin-top:1px}
+/* 触摸目标扩展：视觉尺寸与排版一律不变，用透明伪元素把可点范围补到 ~44px（Apple HIG）
+   卡片上的 🔊/✓ 只有 28–30px、对话里的 🔊 只有 19×15px，手指很容易点空 */
+.speak-btn,.star-btn,.para-spk,.dlg-spk{position:relative}
+.speak-btn::after,.star-btn::after,.dlg-spk::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px}
+.para-spk::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:40px}
 /* NAV */
 /* 顶栏：左侧版块条可横滑，右侧语言/主题独占一列——用 flex 分栏保证二者永不重叠 */
 #topbar{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--gold-faint);padding:0 6px}
