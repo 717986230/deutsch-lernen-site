@@ -3154,6 +3154,9 @@ function rdLookup(w){ // 词库查词（含简单词形还原），返回 {de,zh
 }
 function rdGloss(w){ // 逐词小注：查不到或太长返回 null
   try{
+    // 句中大写 Sie 是敬语「您」（小写 sie 才是她/他们）。礼貌对话里 Sie 极常见，
+    // 统一注成「她」会让「möchten Sie…」这类句子彻底读歪。
+    if(/^Sie[^A-Za-zÄÖÜäöüß]*$/.test(w))return '您';
     const hit=rdLookup(w);
     if(!hit)return null;
     const z=(hit.zh||'').split(/[，,、/；;（(]/)[0].replace(/[。！？!?.]+$/,'');
@@ -3208,7 +3211,7 @@ function renderReadings(){
   if(cnt)cnt.textContent='共 '+list.length+' 篇短文';
   const el=document.getElementById('readList');
   const htmls=list.map((r,ri)=>{
-    const body=r.paras.map((p,pi)=>`<div class="read-para" id="rp_${ri}_${pi}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div></div></div></div>`).join('');
+    const body=r.paras.map((p,pi)=>`<div class="read-para" id="rp_${ri}_${pi}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div>${p[2]?`<div style="font-size:12px;color:var(--text-faint);margin-top:1px">${p[2]}</div>`:''}</div></div></div>`).join('');
     return `<div class="card" id="rcard_${ri}" style="cursor:default;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
         <span style="font-size:17px;font-weight:600;color:#46a302" lang="de">${r.title}</span>
@@ -3291,7 +3294,7 @@ function renderSeries(){
   const list=_getSeriesList();
   const cnt=document.getElementById('seriesCount'); if(cnt)cnt.textContent='共 '+list.length+' 集';
   el.innerHTML=list.map((r,i)=>{
-    const body=r.paras.map((p,j)=>`<div class="read-para" id="srp_${i}_${j}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakSeriesPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div></div></div></div>`).join('');
+    const body=r.paras.map((p,j)=>`<div class="read-para" id="srp_${i}_${j}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakSeriesPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="de">${wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div>${p[2]?`<div style="font-size:12px;color:var(--text-faint);margin-top:1px">${p[2]}</div>`:''}</div></div></div>`).join('');
     return `<div class="card" id="scard_${i}" style="cursor:default;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
         <span style="font-size:17px;font-weight:600;color:#46a302" lang="de">${r.title}</span>
