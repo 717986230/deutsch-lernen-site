@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS users (
   mail_hash   TEXT,
   mail_exp    INTEGER,              -- 过期时间戳(ms)
   mail_try    INTEGER DEFAULT 0,    -- 本轮已试错次数
-  email_ok    INTEGER DEFAULT 0     -- 邮箱是否已通过验证码验证归属
+  email_ok    INTEGER DEFAULT 0,    -- 邮箱是否已通过验证码验证归属
   -- 同步上来的学习数据（用于排行榜/徽章）
   known       INTEGER DEFAULT 0,    -- 掌握词数
   streak      INTEGER DEFAULT 0,    -- 当前连续打卡
