@@ -11,6 +11,25 @@ const AV_BG = ['#58cc02', '#1cb0f6', '#ff9600', '#ff4b4b', '#ce82ff', '#2b70c9',
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const cleanText = (v, n) => String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, n);
 
+// ───────── 联系方式（选填，用于找回密码）─────────
+// 属个人信息：只在用户主动填写时收集，返回前端一律掩码，注销时随账号硬删。
+// 传空字符串＝清空该项，存 null（SQLite 中 NULL 互不相等，唯一索引会忽略未填的行）。
+function normEmail(v) {
+  const s = cleanText(v, 120).toLowerCase();
+  if (!s) return { ok: true, val: null };
+  if (!/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(s)) return { ok: false, err: '邮箱格式不正确' };
+  return { ok: true, val: s };
+}
+function normPhone(v) {
+  const raw = cleanText(v, 24);
+  if (!raw) return { ok: true, val: null };
+  const s = raw.replace(/[\s\-()]/g, '').replace(/^\+/, '');
+  if (!/^\d{6,15}$/.test(s)) return { ok: false, err: '手机号格式不正确（可带国家码，如 8613812345678）' };
+  return { ok: true, val: s };
+}
+const maskEmail = (e) => { if (!e) return ''; const i = e.indexOf('@'); const n = e.slice(0, i), d = e.slice(i); return (n.length <= 1 ? n : n[0] + '***') + d; };
+const maskPhone = (p) => { if (!p) return ''; return p.length <= 4 ? '****' : p.slice(0, 3) + '****' + p.slice(-4); };
+
 // 频控参数（固定窗口计数，ratelimit 表；调参改这里即可）
 const RL = {
   reg: { limit: 5, win: 3600000 },  // 注册：每 IP 1 小时 5 次（每请求计）
@@ -89,11 +108,18 @@ export default {
       const pw = String(b.password || '');
       if (!/^[a-z0-9_]{3,20}$/.test(name)) return json({ err: '用户名需 3-20 位，仅小写字母/数字/下划线' }, 400, cors);
       if (pw.length < 6) return json({ err: '密码至少 6 位' }, 400, cors);
+      // 邮箱/手机号均为选填，仅用于日后找回密码
+      const em = normEmail(b.email); if (!em.ok) return json({ err: em.err }, 400, cors);
+      const ph = normPhone(b.phone); if (!ph.ok) return json({ err: ph.err }, 400, cors);
       const exist = await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(name).first();
       if (exist) return json({ err: '用户名已被占用' }, 400, cors);
+      if (em.val && await env.DB.prepare('SELECT id FROM users WHERE email=?').bind(em.val).first())
+        return json({ err: '该邮箱已被使用' }, 400, cors);
+      if (ph.val && await env.DB.prepare('SELECT id FROM users WHERE phone=?').bind(ph.val).first())
+        return json({ err: '该手机号已被使用' }, 400, cors);
       const salt = rndHex(16), hash = await pbkdf2(pw, salt), now = Date.now();
-      const r = await env.DB.prepare('INSERT INTO users (username,nickname,pass_salt,pass_hash,provider,avatar,av_bg,created,updated) VALUES (?,?,?,?,?,?,?,?,?)')
-        .bind(name, nick, salt, hash, 'pw', pick(AV_EMOJI), pick(AV_BG), now, now).run();
+      const r = await env.DB.prepare('INSERT INTO users (username,nickname,pass_salt,pass_hash,provider,avatar,av_bg,email,phone,created,updated) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
+        .bind(name, nick, salt, hash, 'pw', pick(AV_EMOJI), pick(AV_BG), em.val, ph.val, now, now).run();
       return json({ token: await newSession(env, r.meta.last_row_id), user: { username: name, nickname: nick } }, 200, cors);
     }
     if (M === 'POST' && path === '/api/login') {
@@ -250,8 +276,11 @@ export default {
     if (M === 'GET' && path === '/api/me') {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
-      const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created FROM users WHERE id=?').bind(uid).first();
+      const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created,email,phone FROM users WHERE id=?').bind(uid).first();
       if (!u) return json({ err: '账号不存在' }, 404, cors);
+      // 联系方式只回掩码 + 是否已填，明文不出服务端
+      u.hasEmail = !!u.email; u.hasPhone = !!u.phone;
+      u.email = maskEmail(u.email); u.phone = maskPhone(u.phone);
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, uid);
       return json({ user: u, rank: rank.c, followers: fc.followers, following: fc.following }, 200, cors);
@@ -290,6 +319,18 @@ export default {
       if (b.avatar != null) {
         if (!AV_EMOJI.includes(b.avatar)) return json({ err: '头像不在可选范围' }, 400, cors);
         set.push('avatar=?'); bind.push(b.avatar);
+      }
+      if (b.email != null) {
+        const em = normEmail(b.email); if (!em.ok) return json({ err: em.err }, 400, cors);
+        if (em.val) { const dup = await env.DB.prepare('SELECT id FROM users WHERE email=? AND id<>?').bind(em.val, uid).first();
+          if (dup) return json({ err: '该邮箱已被使用' }, 400, cors); }
+        set.push('email=?'); bind.push(em.val);
+      }
+      if (b.phone != null) {
+        const ph = normPhone(b.phone); if (!ph.ok) return json({ err: ph.err }, 400, cors);
+        if (ph.val) { const dup = await env.DB.prepare('SELECT id FROM users WHERE phone=? AND id<>?').bind(ph.val, uid).first();
+          if (dup) return json({ err: '该手机号已被使用' }, 400, cors); }
+        set.push('phone=?'); bind.push(ph.val);
       }
       if (b.av_bg != null) {
         if (!AV_BG.includes(b.av_bg)) return json({ err: '背景色不在可选范围' }, 400, cors);

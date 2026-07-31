@@ -60,11 +60,11 @@ wrangler deploy                                                 # 部署新版 w
 ```
 
 接口一览：
-- `POST /api/register` `{username,password,nickname}` → `{token,user}`
+- `POST /api/register` `{username,password,nickname,email?,phone?}` → `{token,user}`（邮箱/手机号选填，仅用于找回密码）
 - `POST /api/login` `{username,password}` → `{token,user}`
 - `POST /api/sync`（带 `Authorization: Bearer <token>`）`{known,streak,best,total,quiz,level}` → 更新数据、返回已点亮徽章
-- `POST /api/profile/update`（带 token）`{nickname?,avatar?,av_bg?,sig?}` → 改昵称/emoji头像/背景色/个性签名（服务端白名单校验）
-- `GET  /api/me`（带 token）→ 自己的资料 + 排名
+- `POST /api/profile/update`（带 token）`{nickname?,avatar?,av_bg?,sig?,email?,phone?}` → 改资料与联系方式；邮箱/手机号传空字符串＝删除，服务端校验格式与唯一性
+- `GET  /api/me`（带 token）→ 自己的资料 + 排名；`email`/`phone` **只返回掩码**（如 `t***@qq.com`、`861****5678`），另有 `hasEmail`/`hasPhone` 布尔位
 - `GET  /api/leaderboard?by=known|streak|total` → Top 50
 - `GET  /api/profile?name=<用户名>` → 公开主页数据（带 token 时含 isFollowing/关注数）
 - `POST /api/follow` / `POST /api/unfollow`（带 token）`{name}` → 关注 / 取关
@@ -78,7 +78,13 @@ wrangler deploy                                                 # 部署新版 w
 
 频控：注册每 IP 1 小时 5 次；登录/改密/注销的验密失败按 IP 与用户名分桶限次。超限返回 `429 {err,retry}`（retry 为建议等待秒数）。
 
-资料字段：`nickname`(昵称) `avatar`(emoji 头像) `av_bg`(背景色) `sig`(个性签名)。
+资料字段：`nickname`(昵称) `avatar`(emoji 头像) `av_bg`(背景色) `sig`(个性签名) `email`/`phone`(选填联系方式)。
+
+**联系方式（邮箱/手机号）**：均为**选填**，只在用户主动填写时收集，用途仅限「忘记密码时找回」。
+服务端规范化后存储（邮箱转小写；手机号只留数字，去掉 `+` 与分隔符），各自建唯一索引；
+`/api/me` 一律只回掩码，明文不出服务端；注销账号时随 users 行硬删。
+> 注意：**发送验证码需要第三方短信/邮件服务**，目前尚未接入——字段与录入界面已就绪，
+> 找回密码的实际下发流程待选定服务商后接上。
 头像不做图片上传，只从预设 emoji + 颜色里选——零存储、零外链、零审核负担，契合站点 emoji 风格。
 
 ### 第三方登录（可选：GitHub / Google）
