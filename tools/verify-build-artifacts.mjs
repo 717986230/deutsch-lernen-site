@@ -1,0 +1,34 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+
+const requiredFiles = ['index.html', 'sw.js'];
+const refs = new Set();
+const refPattern = /\b(?:de|en)\.[a-f0-9]{8}\.dat\b/g;
+
+for (const file of requiredFiles) {
+  if (!existsSync(file)) fail(`${file} is missing. Run npm run build first.`);
+  const text = readFileSync(file, 'utf8');
+  for (const match of text.matchAll(refPattern)) refs.add(match[0]);
+}
+
+for (const expectedPrefix of ['de.', 'en.']) {
+  if (![...refs].some((ref) => ref.startsWith(expectedPrefix))) {
+    fail(`No ${expectedPrefix}<hash>.dat reference found in index.html or sw.js.`);
+  }
+}
+
+for (const ref of refs) {
+  if (!existsSync(ref)) fail(`${ref} is referenced but missing from the working tree.`);
+  try {
+    execFileSync('git', ['ls-files', '--error-unmatch', ref], { stdio: 'ignore' });
+  } catch {
+    fail(`${ref} is referenced but not tracked by git. Add it before deploying.`);
+  }
+}
+
+console.log(`OK Verified ${refs.size} generated data slice(s): ${[...refs].sort().join(', ')}`);
+
+function fail(message) {
+  console.error(`ERROR ${message}`);
+  process.exit(1);
+}

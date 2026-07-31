@@ -23,6 +23,7 @@ wrangler deploy
 
 echo ""
 echo "✅ 部署完成！Worker 地址：https://uuoo-analytics.uuoo.workers.dev"
-echo "   首次配第三方登录密钥（只需一次，之后不用再跑）："
+echo "   首次配置或轮换密钥（只需在值变化时运行）："
+echo "     wrangler secret put STATS_KEY             # /stats 查询密钥"
 echo "     wrangler secret put GH_CLIENT_SECRET      # GitHub 登录"
 echo "     wrangler secret put GOOGLE_CLIENT_SECRET  # Google 登录"

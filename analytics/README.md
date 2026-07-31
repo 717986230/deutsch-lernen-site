@@ -12,13 +12,16 @@ cd analytics
 
 # 1) 创建 D1 数据库（记下输出里的 database_id）
 wrangler d1 create uuoo_analytics
-#   把 database_id 填进 wrangler.toml；再把 STATS_KEY 改成你的随机密钥
+#   把 database_id 填进 wrangler.toml
 
 # 2) 建表
 wrangler d1 execute uuoo_analytics --file=schema.sql --remote
 
 # 3) 部署 Worker（得到形如 https://uuoo-analytics.<你的子域>.workers.dev 的地址）
 wrangler deploy
+
+# 4) 设置统计查询密钥；真实值不要写进 wrangler.toml 或提交到仓库
+wrangler secret put STATS_KEY
 ```
 
 ## 让网站开始上报
@@ -33,7 +36,7 @@ var TRACK_URL="https://uuoo-analytics.<你的子域>.workers.dev/collect";
 
 ## 看数据
 
-浏览器打开（key 换成你的 STATS_KEY）：
+浏览器打开（key 换成你通过 `wrangler secret put STATS_KEY` 设置的值）：
 
 ```
 https://uuoo-analytics.<你的子域>.workers.dev/stats?key=你的密钥&days=7
@@ -91,6 +94,17 @@ wrangler deploy                                                 # 部署新版 w
 - 注意：Google 在国内/微信内打不开，主要服务海外与桌面 Chrome 用户。
 
 配置完 `wrangler deploy` 生效。哪个都不配也没关系，用户名+密码照常可用。
+
+### 密钥轮换
+
+如果 `STATS_KEY` 曾经被提交到仓库或发给他人，视为已泄露。生成新随机值后重新运行：
+
+```bash
+wrangler secret put STATS_KEY
+wrangler deploy
+```
+
+旧值不要继续使用，也不要写入 README、`wrangler.toml`、脚本或 issue。
 
 ## 合规提醒
 
