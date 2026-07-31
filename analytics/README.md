@@ -74,11 +74,28 @@ wrangler deploy                                                 # 部署新版 w
 - `POST /api/account/password`（带 token）`{old,new}` → 修改密码（仅密码账号；成功后踢掉除当前外全部会话）
 - `POST /api/account/delete`（带 token）密码账号传 `{password}`、第三方账号传 `{confirm:自己的用户名}` → 注销账号（硬删，不可恢复）
 - `POST /api/account/recovery`（带 token）`{password}` → 重新生成恢复码（密码账号须验当前密码），返回 `{recovery}`，**旧码立即作废**
-- `POST /api/account/reset` `{username,code,new}` → 用恢复码重置密码（无需登录）；成功后踢掉全部会话、返回新 token 与**一枚新恢复码**
+- `POST /api/account/email_code` `{username}` → 给该账号绑定的邮箱发 6 位验证码（10 分钟有效）。**无论账号/邮箱是否存在都返回同一句**，防账号枚举
+- `POST /api/account/reset` `{username,new,code?|emailCode?}` → 重置密码（无需登录）。**恢复码与邮箱验证码二选一**；成功后踢掉全部会话、返回新 token 与**一枚新恢复码**；走邮箱通道会顺带标记 `email_ok=1`
 - `POST /api/logout`（带 token）→ 登出当前会话（幂等）
 - `POST /api/logout_all`（带 token）→ 踢掉除当前外全部会话，返回 `{ok,revoked}`
 
 频控：注册每 IP 1 小时 5 次；登录/改密/注销的验密失败按 IP 与用户名分桶限次；**恢复码校验失败每 IP、每用户名各 1 小时 8 次**。超限返回 `429 {err,retry}`（retry 为建议等待秒数）。
+
+### 邮件服务（Resend）
+
+找回密码的邮箱通道用 [Resend](https://resend.com) 发信（免费额度 3000 封/月、100 封/天，够个人站用）。
+
+```bash
+cd analytics
+wrangler secret put RESEND_API_KEY     # 在 Resend 后台创建，切勿写进 wrangler.toml（明文进 git）
+# 可选：自定义发件人（域名需先在 Resend 验证）
+#   在 wrangler.toml 的 [vars] 里加 MAIL_FROM = "uuoo 德语学习手册 <noreply@uuoo.site>"
+wrangler deploy
+```
+
+未配置 `RESEND_API_KEY` 时，`/api/account/email_code` 返回 500 并提示未配置——恢复码通道不受影响，照常可用。
+验证码只存 PBKDF2 哈希，10 分钟过期，同一枚最多试 5 次，用掉即清除。
+发送频控：每用户名 1 小时 5 次、每 IP 1 小时 20 次。
 
 **恢复码（忘记密码的自助入口，不依赖任何第三方发送）**
 格式 `UUOO-XXXX-XXXX-XXXX`，字符集去掉易混的 `0/O/1/I/L`，熵约 59.5 bit。

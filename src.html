@@ -1475,8 +1475,13 @@ body{padding-bottom:calc(58px + env(safe-area-inset-bottom))}
           <div class="acct-field"><label>密码</label><input class="acct-input" id="lgPass" type="password" autocomplete="current-password" placeholder="至少 6 位" onkeydown="if(event.key==='Enter'){event.preventDefault();acctLogin();}"></div>
           <div style="text-align:right;margin:-4px 0 8px"><button type="button" onclick="acctForgot()" style="background:none;border:none;color:var(--gold-text);font-size:12px;font-family:inherit;cursor:pointer;padding:4px">忘记密码？用恢复码重置</button></div>
           <div id="lgForgot" style="display:none;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--bg)">
-            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:8px">输入注册时保存的恢复码即可重置密码。重置后所有设备需重新登录，并会发给你一枚新的恢复码。</div>
+            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:8px">两种方式任选其一：<b>绑定过邮箱</b>就点「发送验证码」；没绑定就用注册时保存的<b>恢复码</b>。重置后所有设备需重新登录，并会发给你一枚新的恢复码。</div>
             <input class="acct-input" id="fgUser" placeholder="用户名" autocomplete="username" style="margin-bottom:8px">
+            <div style="display:flex;gap:6px;margin-bottom:8px">
+              <input class="acct-input" id="fgMail" inputmode="numeric" placeholder="邮箱验证码（6 位）" style="flex:1;margin:0">
+              <button type="button" class="oauth-btn" id="fgSendBtn" style="width:auto;margin:0;white-space:nowrap;padding:10px 12px;font-size:12px" onclick="acctSendMailCode()">发送验证码</button>
+            </div>
+            <div style="text-align:center;font-size:11px;color:var(--text-faint);margin:-2px 0 8px">— 或用恢复码 —</div>
             <input class="acct-input" id="fgCode" placeholder="恢复码，如 UUOO-XXXX-XXXX-XXXX" style="margin-bottom:8px">
             <input class="acct-input" id="fgNew" type="password" autocomplete="new-password" placeholder="新密码（至少 6 位）" onkeydown="if(event.key==='Enter'){event.preventDefault();acctReset();}">
             <div class="acct-err" id="fgErr"></div>
@@ -3863,14 +3868,34 @@ function acctForgot(){
   var ed=document.getElementById('lgForgot');if(!ed)return;
   ed.style.display=(ed.style.display==='none'||!ed.style.display)?'':'none';
 }
+function acctSendMailCode(){
+  var u=(document.getElementById('fgUser').value||'').trim().toLowerCase();
+  var err=document.getElementById('fgErr'),btn=document.getElementById('fgSendBtn');
+  err.style.color='';err.textContent='';
+  if(!u){err.textContent='请先填写用户名';return;}
+  if(btn.disabled)return;
+  btn.disabled=true;
+  apiFetch('/api/account/email_code',{method:'POST',body:{username:u}}).then(function(r){
+    if(r&&r.ok){
+      err.style.color='var(--gold-text)';err.textContent=(r.data&&r.data.msg)||'验证码已发出，请查收邮箱';
+      var n=60;btn.textContent=n+'s 后重发';
+      var t=setInterval(function(){n--;if(n<=0){clearInterval(t);btn.disabled=false;btn.textContent='发送验证码';}else btn.textContent=n+'s 后重发';},1000);
+    }else{
+      btn.disabled=false;
+      err.textContent=(r&&r.data&&r.data.err)||'发送失败，请稍后再试';
+    }
+  },function(){btn.disabled=false;err.textContent='网络错误';});
+}
 function acctReset(){
   var u=(document.getElementById('fgUser').value||'').trim().toLowerCase();
   var c=document.getElementById('fgCode').value||'';
+  var mc=(document.getElementById('fgMail')||{}).value||'';
   var nw=document.getElementById('fgNew').value||'';
   var err=document.getElementById('fgErr');err.style.color='';err.textContent='';
-  if(!u||!c){err.textContent='请填写用户名与恢复码';return;}
+  if(!u){err.textContent='请填写用户名';return;}
+  if(!c&&!mc){err.textContent='请填写邮箱验证码或恢复码';return;}
   if(nw.length<6){err.textContent='新密码至少 6 位';return;}
-  apiFetch('/api/account/reset',{method:'POST',body:{username:u,code:c,'new':nw}}).then(function(r){
+  apiFetch('/api/account/reset',{method:'POST',body:{username:u,code:c,emailCode:mc,'new':nw}}).then(function(r){
     if(!r||!r.ok){err.textContent=(r&&r.data&&r.data.err)||'重置失败';return;}
     acctSetAuth(r.data.token,{username:u});acctSync(true);
     if(r.data.recovery)showRecovery(r.data.recovery,true);else acctEnter();

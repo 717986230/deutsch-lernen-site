@@ -27,6 +27,27 @@ function normPhone(v) {
   if (!/^\d{6,15}$/.test(s)) return { ok: false, err: '手机号格式不正确（可带国家码，如 8613812345678）' };
   return { ok: true, val: s };
 }
+// ───────── 邮箱验证码（Resend 发信）─────────
+// 密钥用 `wrangler secret put RESEND_API_KEY` 设置，切勿写进 wrangler.toml（那是明文进 git 的）。
+// 发信域名需在 Resend 后台验证过；发件人可用 MAIL_FROM 覆盖。
+const MAIL_TTL = 10 * 60 * 1000;   // 验证码 10 分钟有效
+const MAIL_MAX_TRY = 5;            // 同一枚码最多试 5 次
+function genMailCode() { const a = new Uint32Array(1); crypto.getRandomValues(a); return String(a[0] % 1000000).padStart(6, '0'); }
+async function sendMail(env, to, code) {
+  if (!env.RESEND_API_KEY) return { ok: false, err: '服务端未配置邮件服务（RESEND_API_KEY）' };
+  const from = env.MAIL_FROM || 'uuoo 德语学习手册 <noreply@uuoo.site>';
+  const text = '你的验证码是 ' + code + '，10 分钟内有效。\n\n如果不是你本人操作，请忽略本邮件，你的账号不受影响。';
+  try {
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from, to, subject: 'uuoo 验证码 ' + code, text }),
+    });
+    if (!r.ok) return { ok: false, err: '邮件发送失败(' + r.status + ')' };
+    return { ok: true };
+  } catch { return { ok: false, err: '邮件发送异常' }; }
+}
+
 // ───────── 恢复码（忘记密码的唯一凭证；不依赖任何第三方发送）─────────
 // 格式 UUOO-XXXX-XXXX-XXXX，字符集去掉易混的 0/O/1/I/L；库里只存 PBKDF2 哈希。
 const REC_ALPHA = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
@@ -55,6 +76,8 @@ const RL = {
   lgf: { limit: 30, win: 600000 },  // 登录验密失败：每 IP 10 分钟 30 次（仅失败计）
   lgu: { limit: 10, win: 600000 },  // 验密失败：每用户名 10 分钟 10 次（login/delete/password 共用，仅失败计）
   rst: { limit: 8, win: 3600000 },  // 恢复码校验失败：每 IP / 每用户名 1 小时各 8 次（仅失败计）
+  mls: { limit: 5, win: 3600000 },  // 发送邮箱验证码：每用户名 1 小时 5 次（每次发送即计）
+  mli: { limit: 20, win: 3600000 }, // 发送邮箱验证码：每 IP 1 小时 20 次
 };
 
 // 第三方登录配置（GitHub / Google 同一套 OAuth2 流程，差异抽到这里）
@@ -213,6 +236,27 @@ export default {
       }
       return json({ recovery: await setRecovery(env, uid) }, 200, cors);
     }
+    // 申请邮箱验证码（免登录）。无论账号/邮箱是否存在，一律返回同一句，防账号枚举。
+    if (M === 'POST' && path === '/api/account/email_code') {
+      const b = await body(req);
+      const name = String(b.username || '').trim().toLowerCase();
+      const ip = req.headers.get('CF-Connecting-IP') || '';
+      const generic = json({ ok: 1, msg: '若该用户名已绑定邮箱，验证码已发出，请查收（含垃圾箱）' }, 200, cors);
+      if (ip) { const c = await rateCheck(env, 'mli:' + ip, RL.mli.limit); if (!c.ok) return tooMany(cors, c.retry); }
+      if (name) { const c = await rateCheck(env, 'mls:' + name, RL.mls.limit); if (!c.ok) return tooMany(cors, c.retry); }
+      if (!name) return generic;
+      const u = await env.DB.prepare('SELECT id,email FROM users WHERE username=?').bind(name).first();
+      // 计数放在查库之后、发信之前：存在与否都计，避免用耗时差异探测账号
+      if (ip) await rateHit(env, 'mli:' + ip, RL.mli.limit, RL.mli.win);
+      await rateHit(env, 'mls:' + name, RL.mls.limit, RL.mls.win);
+      if (!u || !u.email) return generic;
+      const code = genMailCode(), salt = rndHex(16), hash = await pbkdf2(code, salt);
+      const sent = await sendMail(env, u.email, code);
+      if (!sent.ok) return json({ err: sent.err }, 500, cors);   // 配置/服务问题要让站长看得见
+      await env.DB.prepare('UPDATE users SET mail_salt=?,mail_hash=?,mail_exp=?,mail_try=0 WHERE id=?')
+        .bind(salt, hash, Date.now() + MAIL_TTL, u.id).run();
+      return generic;
+    }
     // 用恢复码重置密码（无需登录）。成功后：旧码作废、发新码、踢掉全部会话
     if (M === 'POST' && path === '/api/account/reset') {
       const b = await body(req);
@@ -229,14 +273,32 @@ export default {
         if (name) await rateHit(env, 'rsu:' + name, RL.rst.limit, RL.rst.win);
         return json({ err: '用户名或恢复码不正确' }, 400, cors);
       };
-      if (!name || !code) return fail();
-      const u = await env.DB.prepare('SELECT id,rec_salt,rec_hash FROM users WHERE username=?').bind(name).first();
-      if (!u || !u.rec_hash) return fail();
-      if (await pbkdf2(code, u.rec_salt) !== u.rec_hash) return fail();
+      const mailCode = String(b.emailCode || '').replace(/\D/g, '');
+      if (!name || (!code && !mailCode)) return fail();
+      const u = await env.DB.prepare('SELECT id,rec_salt,rec_hash,mail_salt,mail_hash,mail_exp,mail_try FROM users WHERE username=?').bind(name).first();
+      if (!u) return fail();
+      let passed = false;
+      if (mailCode) {                                    // ① 邮箱验证码
+        if (!u.mail_hash || !u.mail_exp || Date.now() > u.mail_exp) return fail();
+        if ((u.mail_try || 0) >= MAIL_MAX_TRY) return fail();
+        if (await pbkdf2(mailCode, u.mail_salt) === u.mail_hash) passed = true;
+        else {                                           // 试错计数，满 5 次这枚码作废
+          await env.DB.prepare('UPDATE users SET mail_try=? WHERE id=?').bind((u.mail_try || 0) + 1, u.id).run();
+          return fail();
+        }
+      } else {                                           // ② 恢复码
+        if (!u.rec_hash) return fail();
+        if (await pbkdf2(code, u.rec_salt) !== u.rec_hash) return fail();
+        passed = true;
+      }
+      if (!passed) return fail();
       const salt = rndHex(16), hash = await pbkdf2(nw, salt);
       await env.DB.batch([
         env.DB.prepare('UPDATE users SET pass_salt=?,pass_hash=?,updated=? WHERE id=?').bind(salt, hash, Date.now(), u.id),
         env.DB.prepare('DELETE FROM sessions WHERE uid=?').bind(u.id), // 重置后所有设备都要重登
+        // 验证码一次性：无论走哪条通道都清掉；走邮箱通道则证明邮箱确属本人
+        env.DB.prepare('UPDATE users SET mail_hash=NULL,mail_salt=NULL,mail_exp=NULL,mail_try=0' +
+          (mailCode ? ',email_ok=1' : '') + ' WHERE id=?').bind(u.id),
       ]);
       const recovery = await setRecovery(env, u.id); // 旧码已用掉，立刻换一枚
       return json({ ok: 1, token: await newSession(env, u.id), recovery }, 200, cors);

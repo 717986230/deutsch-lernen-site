@@ -35,6 +35,12 @@ CREATE TABLE IF NOT EXISTS users (
   rec_salt    TEXT,
   rec_hash    TEXT,
   rec_at      INTEGER,              -- 最近一次生成时间
+  -- 邮箱验证码（找回密码用；同样只存哈希，10 分钟过期，限次尝试）
+  mail_salt   TEXT,
+  mail_hash   TEXT,
+  mail_exp    INTEGER,              -- 过期时间戳(ms)
+  mail_try    INTEGER DEFAULT 0,    -- 本轮已试错次数
+  email_ok    INTEGER DEFAULT 0     -- 邮箱是否已通过验证码验证归属
   -- 同步上来的学习数据（用于排行榜/徽章）
   known       INTEGER DEFAULT 0,    -- 掌握词数
   streak      INTEGER DEFAULT 0,    -- 当前连续打卡
@@ -60,6 +66,11 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_users_phone ON users(phone);
 --   ALTER TABLE users ADD COLUMN rec_salt TEXT;
 --   ALTER TABLE users ADD COLUMN rec_hash TEXT;
 --   ALTER TABLE users ADD COLUMN rec_at INTEGER;
+--   ALTER TABLE users ADD COLUMN mail_salt TEXT;
+--   ALTER TABLE users ADD COLUMN mail_hash TEXT;
+--   ALTER TABLE users ADD COLUMN mail_exp INTEGER;
+--   ALTER TABLE users ADD COLUMN mail_try INTEGER DEFAULT 0;
+--   ALTER TABLE users ADD COLUMN email_ok INTEGER DEFAULT 0;
 
 -- 登录会话（随机 token，180 天过期）
 CREATE TABLE IF NOT EXISTS sessions (
