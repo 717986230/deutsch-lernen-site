@@ -31,6 +31,10 @@ CREATE TABLE IF NOT EXISTS users (
   -- 找回密码用的联系方式（均为选填；属个人信息，收集前须在注册页告知）
   email       TEXT,                 -- 小写规范化后存储；唯一
   phone       TEXT,                 -- 仅存数字（含国家码，不含 + 与分隔符）；唯一
+  -- 恢复码：忘记密码时的唯一凭证。与密码同等待遇——只存 PBKDF2 哈希，明文仅在生成时返回一次
+  rec_salt    TEXT,
+  rec_hash    TEXT,
+  rec_at      INTEGER,              -- 最近一次生成时间
   -- 同步上来的学习数据（用于排行榜/徽章）
   known       INTEGER DEFAULT 0,    -- 掌握词数
   streak      INTEGER DEFAULT 0,    -- 当前连续打卡
@@ -53,6 +57,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_users_phone ON users(phone);
 -- 已有部署补列（新建库会因列已存在而报错，属正常，可忽略）：
 --   ALTER TABLE users ADD COLUMN email TEXT;
 --   ALTER TABLE users ADD COLUMN phone TEXT;
+--   ALTER TABLE users ADD COLUMN rec_salt TEXT;
+--   ALTER TABLE users ADD COLUMN rec_hash TEXT;
+--   ALTER TABLE users ADD COLUMN rec_at INTEGER;
 
 -- 登录会话（随机 token，180 天过期）
 CREATE TABLE IF NOT EXISTS sessions (

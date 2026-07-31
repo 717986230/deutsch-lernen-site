@@ -65,6 +65,10 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .dlg-spk{border:none;background:transparent;cursor:pointer;font-size:15px;padding:0;line-height:1}
 .dlg-zh{font-size:13px;color:var(--text-dim);margin-top:3px}
 .dlg-py{font-size:12px;color:var(--text-faint);margin-top:1px}
+/* 恢复码弹层 */
+.rec-ov{position:fixed;inset:0;z-index:1600;background:rgba(10,14,10,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}
+.rec-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px 20px;max-width:340px;width:100%;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.rec-code{font-family:'Courier New',monospace;font-size:19px;font-weight:700;letter-spacing:1px;color:var(--text);background:var(--gold-faint);border:1px dashed var(--gold);border-radius:12px;padding:14px 10px;word-break:break-all;-webkit-user-select:all;user-select:all}
 /* 触摸目标扩展：视觉尺寸与排版一律不变，用透明伪元素把可点范围补到 ~44px（Apple HIG）
    卡片上的 🔊/✓ 只有 28–30px、对话里的 🔊 只有 19×15px，手指很容易点空 */
 .speak-btn,.star-btn,.para-spk,.dlg-spk{position:relative}
@@ -1469,6 +1473,15 @@ body{padding-bottom:calc(58px + env(safe-area-inset-bottom))}
       <div id="paneLogin">
           <div class="acct-field"><label>用户名</label><input class="acct-input" id="lgUser" autocomplete="username" placeholder="小写字母/数字/下划线" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('lgPass').focus();}"></div>
           <div class="acct-field"><label>密码</label><input class="acct-input" id="lgPass" type="password" autocomplete="current-password" placeholder="至少 6 位" onkeydown="if(event.key==='Enter'){event.preventDefault();acctLogin();}"></div>
+          <div style="text-align:right;margin:-4px 0 8px"><button type="button" onclick="acctForgot()" style="background:none;border:none;color:var(--gold-text);font-size:12px;font-family:inherit;cursor:pointer;padding:4px">忘记密码？用恢复码重置</button></div>
+          <div id="lgForgot" style="display:none;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--bg)">
+            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:8px">输入注册时保存的恢复码即可重置密码。重置后所有设备需重新登录，并会发给你一枚新的恢复码。</div>
+            <input class="acct-input" id="fgUser" placeholder="用户名" autocomplete="username" style="margin-bottom:8px">
+            <input class="acct-input" id="fgCode" placeholder="恢复码，如 UUOO-XXXX-XXXX-XXXX" style="margin-bottom:8px">
+            <input class="acct-input" id="fgNew" type="password" autocomplete="new-password" placeholder="新密码（至少 6 位）" onkeydown="if(event.key==='Enter'){event.preventDefault();acctReset();}">
+            <div class="acct-err" id="fgErr"></div>
+            <button class="acct-btn" onclick="acctReset()">重置密码</button>
+          </div>
           <div class="acct-err" id="lgErr"></div>
           <button class="acct-btn" onclick="acctLogin()">登录</button>
         </div>
@@ -3763,7 +3776,7 @@ function acctClearLocal(){ACCT.token=null;ACCT.user=null;try{localStorage.remove
 function acctLogout(){try{if(ACCT.token&&API_BASE)apiFetch('/api/logout',{method:'POST'});}catch(e){}acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}
 function acctEnter(){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();var d='home';try{if(_deepSec){d=_deepSec;_deepSec=null;}}catch(e){}showSection(d);}
 function acctTab(w){var lg=w==='login';document.getElementById('tabLogin').classList.toggle('on',lg);document.getElementById('tabReg').classList.toggle('on',!lg);document.getElementById('paneLogin').style.display=lg?'':'none';document.getElementById('paneReg').style.display=lg?'none':'';}
-function acctRegister(){var u=(document.getElementById('rgUser').value||'').trim().toLowerCase();var nick=(document.getElementById('rgNick').value||'').trim();var pw=document.getElementById('rgPass').value||'';var err=document.getElementById('rgErr');err.textContent='';if(!/^[a-z0-9_]{3,20}$/.test(u)){err.textContent='用户名 3-20 位，仅小写字母/数字/下划线';return;}if(pw.length<6){err.textContent='密码至少 6 位';return;}var _em=(document.getElementById('rgEmail')||{}).value||'';var _ph=(document.getElementById('rgPhone')||{}).value||'';apiFetch('/api/register',{method:'POST',body:{username:u,nickname:nick,password:pw,email:_em,phone:_ph}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'注册失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);acctEnter();},function(){err.textContent='网络错误，请重试';});}
+function acctRegister(){var u=(document.getElementById('rgUser').value||'').trim().toLowerCase();var nick=(document.getElementById('rgNick').value||'').trim();var pw=document.getElementById('rgPass').value||'';var err=document.getElementById('rgErr');err.textContent='';if(!/^[a-z0-9_]{3,20}$/.test(u)){err.textContent='用户名 3-20 位，仅小写字母/数字/下划线';return;}if(pw.length<6){err.textContent='密码至少 6 位';return;}var _em=(document.getElementById('rgEmail')||{}).value||'';var _ph=(document.getElementById('rgPhone')||{}).value||'';apiFetch('/api/register',{method:'POST',body:{username:u,nickname:nick,password:pw,email:_em,phone:_ph}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'注册失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);if(r.data.recovery){showRecovery(r.data.recovery,true);}else{acctEnter();}},function(){err.textContent='网络错误，请重试';});}
 function acctLogin(){var u=(document.getElementById('lgUser').value||'').trim().toLowerCase();var pw=document.getElementById('lgPass').value||'';var err=document.getElementById('lgErr');err.textContent='';if(!u||!pw){err.textContent='请输入用户名和密码';return;}apiFetch('/api/login',{method:'POST',body:{username:u,password:pw}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'登录失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);acctEnter();},function(){err.textContent='网络错误，请重试';});}
 function oauthLogin(p){if(!API_BASE)return;location.href=API_BASE+'/api/oauth/'+p+'/start';}
 function acctSync(silent){if(!ACCT.token||!API_BASE)return Promise.resolve();return apiFetch('/api/sync',{method:'POST',body:collectStats()}).then(function(r){if(r&&r.status===401)acctClearLocal();else if(r&&r.ok&&r.data&&r.data.badges)badgeCelebrate(r.data.badges);return r;},function(){});}
@@ -3803,6 +3816,10 @@ function meSettingsOpen(){var u=_meUser||{};var isPw=_isPwAcct(u);var view=docum
   var h='<div class="acct-card"><h3 style="margin:0 0 14px;font-size:17px;color:var(--text)">⚙️ 账号设置</h3>';
   if(isPw){h+='<div class="set-block"><div class="set-t">修改密码</div><input class="acct-input" id="setOld" type="password" autocomplete="current-password" placeholder="当前密码" style="margin-bottom:8px" onkeydown="if(event.key===\'Enter\'){event.preventDefault();document.getElementById(\'setNew\').focus();}"><input class="acct-input" id="setNew" type="password" autocomplete="new-password" placeholder="新密码（至少 6 位）" onkeydown="if(event.key===\'Enter\'){event.preventDefault();meChangePw();}"><div class="acct-err" id="setPwErr"></div><button class="acct-btn" onclick="meChangePw()">保存新密码</button><div style="font-size:11px;color:var(--text-faint);margin-top:6px">改密后其它设备会被强制退出登录</div></div>';}
   else{h+='<div class="set-block"><div class="set-t">登录方式</div><div style="font-size:13px;color:var(--text-dim)">你通过'+(u.provider==='github'?' GitHub ':' Google ')+'登录，没有独立密码</div></div>';}
+  if(isPw){h+='<div class="set-block"><div class="set-t">恢复码</div>'
+    +'<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">忘记密码时唯一的自助入口。重新生成会<b>作废旧码</b>，新码只显示一次，请务必存好。</div>'
+    +'<input class="acct-input" id="setRecPw" type="password" autocomplete="current-password" placeholder="输入当前密码以确认" style="margin-bottom:8px">'
+    +'<div class="acct-err" id="setRecErr"></div><button class="oauth-btn" style="margin:0" onclick="meNewRecovery()">重新生成恢复码</button></div>';}
   h+='<div class="set-block"><div class="set-t">联系方式（用于找回密码）</div>'
     +'<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">选填。仅用于忘记密码时找回，不做推送、不给第三方；留空即删除，注销账号时一并永久删除。</div>'
     +'<input class="acct-input" id="setEmail" type="email" autocomplete="email" placeholder="'+(u.hasEmail?('当前：'+_esc(u.email||'')+'（留空则删除）'):'邮箱（未填写）')+'" style="margin-bottom:8px">'
@@ -3812,6 +3829,61 @@ function meSettingsOpen(){var u=_meUser||{};var isPw=_isPwAcct(u);var view=docum
   h+='<div class="set-block"><div class="set-t" style="color:#ff4b4b">注销账号</div><div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">⚠️ 永久删除账号、昵称、全部学习统计、关注与徽章，<b>不可恢复</b>（本地学习记录不受影响）</div><button class="danger-btn" onclick="meDeleteStart()">注销账号…</button></div>';
   h+='<button class="oauth-btn" style="margin-top:14px" onclick="meEditClose()">← 返回</button></div>';
   ed.innerHTML=h;view.style.display='none';ed.style.display='';}
+
+// ── 恢复码：只在生成时显示一次，库里只存哈希 ──
+function showRecovery(code,firstTime){
+  var ov=document.createElement('div');ov.className='rec-ov';
+  ov.innerHTML='<div class="rec-box"><div style="font-size:38px">🔑</div>'
+   +'<h3 style="margin:8px 0 4px;font-size:18px;color:var(--text)">'+(firstTime?'请保存你的恢复码':'新的恢复码')+'</h3>'
+   +'<div style="font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:12px">忘记密码时，用它就能重置。'
+   +'<b style="color:#ff4b4b">只显示这一次</b>，请截图或抄下来存好。'+(firstTime?'':'旧的恢复码已作废。')+'</div>'
+   +'<div class="rec-code" id="recCode">'+_esc(code)+'</div>'
+   +'<button class="acct-btn" style="margin-top:12px" onclick="recCopy(this)">📋 复制</button>'
+   +'<button class="oauth-btn" style="margin-top:8px" onclick="recDone(this)">我已保存好</button></div>';
+  document.body.appendChild(ov);ov._first=!!firstTime;
+}
+function recCopy(btn){
+  var t=(document.getElementById('recCode')||{}).textContent||'';
+  function done(){btn.textContent='✓ 已复制';setTimeout(function(){btn.innerHTML='📋 复制';},1600);}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,fallback);return;}}catch(e){}
+  fallback();
+  function fallback(){ // 微信/老内核没有 clipboard API 时的兜底
+    try{var i=document.createElement('textarea');i.value=t;i.style.cssText='position:fixed;opacity:0';
+      document.body.appendChild(i);i.select();document.execCommand('copy');document.body.removeChild(i);done();}
+    catch(e){try{_toast('请长按上方代码手动复制');}catch(e2){}}
+  }
+}
+function recDone(btn){
+  var ov=btn.closest?btn.closest('.rec-ov'):null;var first=ov&&ov._first;
+  if(ov&&ov.parentNode)ov.parentNode.removeChild(ov);
+  if(first){try{acctEnter();}catch(e){}}
+}
+// 忘记密码：用户名 + 恢复码 → 设新密码
+function acctForgot(){
+  var ed=document.getElementById('lgForgot');if(!ed)return;
+  ed.style.display=(ed.style.display==='none'||!ed.style.display)?'':'none';
+}
+function acctReset(){
+  var u=(document.getElementById('fgUser').value||'').trim().toLowerCase();
+  var c=document.getElementById('fgCode').value||'';
+  var nw=document.getElementById('fgNew').value||'';
+  var err=document.getElementById('fgErr');err.style.color='';err.textContent='';
+  if(!u||!c){err.textContent='请填写用户名与恢复码';return;}
+  if(nw.length<6){err.textContent='新密码至少 6 位';return;}
+  apiFetch('/api/account/reset',{method:'POST',body:{username:u,code:c,'new':nw}}).then(function(r){
+    if(!r||!r.ok){err.textContent=(r&&r.data&&r.data.err)||'重置失败';return;}
+    acctSetAuth(r.data.token,{username:u});acctSync(true);
+    if(r.data.recovery)showRecovery(r.data.recovery,true);else acctEnter();
+  },function(){err.textContent='网络错误，请重试';});
+}
+function meNewRecovery(){
+  var err=document.getElementById('setRecErr');err.style.color='';err.textContent='';
+  var pwEl=document.getElementById('setRecPw');
+  apiFetch('/api/account/recovery',{method:'POST',body:{password:(pwEl&&pwEl.value)||''}}).then(function(r){
+    if(!r||!r.ok){err.textContent=(r&&r.data&&r.data.err)||'生成失败';return;}
+    if(pwEl)pwEl.value='';showRecovery(r.data.recovery,false);
+  },function(){err.textContent='网络错误';});
+}
 function meSaveContact(){
   var em=document.getElementById('setEmail'),ph=document.getElementById('setPhone'),err=document.getElementById('setCtErr');
   err.style.color='';err.textContent='';

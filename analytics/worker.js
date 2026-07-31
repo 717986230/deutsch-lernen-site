@@ -27,6 +27,25 @@ function normPhone(v) {
   if (!/^\d{6,15}$/.test(s)) return { ok: false, err: '手机号格式不正确（可带国家码，如 8613812345678）' };
   return { ok: true, val: s };
 }
+// ───────── 恢复码（忘记密码的唯一凭证；不依赖任何第三方发送）─────────
+// 格式 UUOO-XXXX-XXXX-XXXX，字符集去掉易混的 0/O/1/I/L；库里只存 PBKDF2 哈希。
+const REC_ALPHA = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+function genRecovery() {
+  const a = new Uint8Array(12); crypto.getRandomValues(a);
+  let out = '';
+  for (let i = 0; i < 12; i++) { if (i && i % 4 === 0) out += '-'; out += REC_ALPHA[a[i] % REC_ALPHA.length]; }
+  return 'UUOO-' + out;
+}
+// 比对时忽略大小写/分隔符/空格，容忍用户手抄的格式差异
+const normRecovery = (v) => String(v == null ? '' : v).toUpperCase().replace(/[^0-9A-Z]/g, '');
+async function setRecovery(env, uid) {
+  const code = genRecovery(), salt = rndHex(16);
+  const hash = await pbkdf2(normRecovery(code), salt);
+  await env.DB.prepare('UPDATE users SET rec_salt=?,rec_hash=?,rec_at=? WHERE id=?')
+    .bind(salt, hash, Date.now(), uid).run();
+  return code;
+}
+
 const maskEmail = (e) => { if (!e) return ''; const i = e.indexOf('@'); const n = e.slice(0, i), d = e.slice(i); return (n.length <= 1 ? n : n[0] + '***') + d; };
 const maskPhone = (p) => { if (!p) return ''; return p.length <= 4 ? '****' : p.slice(0, 3) + '****' + p.slice(-4); };
 
@@ -35,6 +54,7 @@ const RL = {
   reg: { limit: 5, win: 3600000 },  // 注册：每 IP 1 小时 5 次（每请求计）
   lgf: { limit: 30, win: 600000 },  // 登录验密失败：每 IP 10 分钟 30 次（仅失败计）
   lgu: { limit: 10, win: 600000 },  // 验密失败：每用户名 10 分钟 10 次（login/delete/password 共用，仅失败计）
+  rst: { limit: 8, win: 3600000 },  // 恢复码校验失败：每 IP / 每用户名 1 小时各 8 次（仅失败计）
 };
 
 // 第三方登录配置（GitHub / Google 同一套 OAuth2 流程，差异抽到这里）
@@ -120,7 +140,9 @@ export default {
       const salt = rndHex(16), hash = await pbkdf2(pw, salt), now = Date.now();
       const r = await env.DB.prepare('INSERT INTO users (username,nickname,pass_salt,pass_hash,provider,avatar,av_bg,email,phone,created,updated) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
         .bind(name, nick, salt, hash, 'pw', pick(AV_EMOJI), pick(AV_BG), em.val, ph.val, now, now).run();
-      return json({ token: await newSession(env, r.meta.last_row_id), user: { username: name, nickname: nick } }, 200, cors);
+      const newUid = r.meta.last_row_id;
+      const recovery = await setRecovery(env, newUid); // 明文仅此一次返回，之后只剩哈希
+      return json({ token: await newSession(env, newUid), user: { username: name, nickname: nick }, recovery }, 200, cors);
     }
     if (M === 'POST' && path === '/api/login') {
       const b = await body(req);
@@ -173,6 +195,51 @@ export default {
         env.DB.prepare('DELETE FROM users WHERE id=?1').bind(uid),
       ]);
       return json({ ok: 1 }, 200, cors);
+    }
+    if (M === 'POST' && path === '/api/account/recovery') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const b = await body(req);
+      const u = await env.DB.prepare('SELECT username,provider,pass_salt,pass_hash FROM users WHERE id=?').bind(uid).first();
+      if (!u) return json({ err: '账号不存在' }, 404, cors);
+      // 密码账号必须验当前密码：否则借到一台已登录的手机就能换走恢复码
+      if (u.provider === 'pw' && u.pass_hash) {
+        const c = await rateCheck(env, 'lgu:' + u.username, RL.lgu.limit);
+        if (!c.ok) return tooMany(cors, c.retry);
+        if (await pbkdf2(String(b.password || ''), u.pass_salt) !== u.pass_hash) {
+          await rateHit(env, 'lgu:' + u.username, RL.lgu.limit, RL.lgu.win);
+          return json({ err: '密码错误' }, 400, cors);
+        }
+      }
+      return json({ recovery: await setRecovery(env, uid) }, 200, cors);
+    }
+    // 用恢复码重置密码（无需登录）。成功后：旧码作废、发新码、踢掉全部会话
+    if (M === 'POST' && path === '/api/account/reset') {
+      const b = await body(req);
+      const name = String(b.username || '').trim().toLowerCase();
+      const code = normRecovery(b.code);
+      const nw = String(b.new || '');
+      const ip = req.headers.get('CF-Connecting-IP') || '';
+      if (ip) { const c = await rateCheck(env, 'rst:' + ip, RL.rst.limit); if (!c.ok) return tooMany(cors, c.retry); }
+      if (name) { const c = await rateCheck(env, 'rsu:' + name, RL.rst.limit); if (!c.ok) return tooMany(cors, c.retry); }
+      if (nw.length < 6) return json({ err: '新密码至少 6 位' }, 400, cors);
+      // 失败一律返回同一句，避免暴露「用户名是否存在 / 是否设过恢复码」
+      const fail = async () => {
+        if (ip) await rateHit(env, 'rst:' + ip, RL.rst.limit, RL.rst.win);
+        if (name) await rateHit(env, 'rsu:' + name, RL.rst.limit, RL.rst.win);
+        return json({ err: '用户名或恢复码不正确' }, 400, cors);
+      };
+      if (!name || !code) return fail();
+      const u = await env.DB.prepare('SELECT id,rec_salt,rec_hash FROM users WHERE username=?').bind(name).first();
+      if (!u || !u.rec_hash) return fail();
+      if (await pbkdf2(code, u.rec_salt) !== u.rec_hash) return fail();
+      const salt = rndHex(16), hash = await pbkdf2(nw, salt);
+      await env.DB.batch([
+        env.DB.prepare('UPDATE users SET pass_salt=?,pass_hash=?,updated=? WHERE id=?').bind(salt, hash, Date.now(), u.id),
+        env.DB.prepare('DELETE FROM sessions WHERE uid=?').bind(u.id), // 重置后所有设备都要重登
+      ]);
+      const recovery = await setRecovery(env, u.id); // 旧码已用掉，立刻换一枚
+      return json({ ok: 1, token: await newSession(env, u.id), recovery }, 200, cors);
     }
     if (M === 'POST' && path === '/api/account/password') {
       const uid = await auth(req, env);

@@ -73,10 +73,18 @@ wrangler deploy                                                 # 部署新版 w
 - `GET  /api/leaderboard?by=...&scope=friends`（带 token）→ 好友榜（只含我和我关注的人）
 - `POST /api/account/password`（带 token）`{old,new}` → 修改密码（仅密码账号；成功后踢掉除当前外全部会话）
 - `POST /api/account/delete`（带 token）密码账号传 `{password}`、第三方账号传 `{confirm:自己的用户名}` → 注销账号（硬删，不可恢复）
+- `POST /api/account/recovery`（带 token）`{password}` → 重新生成恢复码（密码账号须验当前密码），返回 `{recovery}`，**旧码立即作废**
+- `POST /api/account/reset` `{username,code,new}` → 用恢复码重置密码（无需登录）；成功后踢掉全部会话、返回新 token 与**一枚新恢复码**
 - `POST /api/logout`（带 token）→ 登出当前会话（幂等）
 - `POST /api/logout_all`（带 token）→ 踢掉除当前外全部会话，返回 `{ok,revoked}`
 
-频控：注册每 IP 1 小时 5 次；登录/改密/注销的验密失败按 IP 与用户名分桶限次。超限返回 `429 {err,retry}`（retry 为建议等待秒数）。
+频控：注册每 IP 1 小时 5 次；登录/改密/注销的验密失败按 IP 与用户名分桶限次；**恢复码校验失败每 IP、每用户名各 1 小时 8 次**。超限返回 `429 {err,retry}`（retry 为建议等待秒数）。
+
+**恢复码（忘记密码的自助入口，不依赖任何第三方发送）**
+格式 `UUOO-XXXX-XXXX-XXXX`，字符集去掉易混的 `0/O/1/I/L`，熵约 59.5 bit。
+与密码同等待遇：**库里只存 PBKDF2 哈希**（`rec_salt`/`rec_hash`），明文仅在生成时返回一次。
+注册即发一枚；重置成功后旧码作废并立刻换新码。校验时忽略大小写与分隔符，容忍手抄格式差异。
+失败一律返回同一句提示，不暴露「用户名是否存在 / 是否设过恢复码」。
 
 资料字段：`nickname`(昵称) `avatar`(emoji 头像) `av_bg`(背景色) `sig`(个性签名) `email`/`phone`(选填联系方式)。
 
