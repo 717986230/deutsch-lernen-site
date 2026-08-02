@@ -185,7 +185,7 @@ export default {
         if (name) await rateHit(env, 'lgu:' + name, RL.lgu.limit, RL.lgu.win);
         return json({ err: '用户名或密码错误' }, 400, cors);
       };
-      const u = await env.DB.prepare('SELECT * FROM users WHERE username=?').bind(name).first();
+      const u = await env.DB.prepare('SELECT id,username,nickname,pass_salt,pass_hash FROM users WHERE username=?').bind(name).first();
       if (!u || !u.pass_hash) return fail();
       const hash = await pbkdf2(String(b.password || ''), u.pass_salt);
       if (hash !== u.pass_hash) return fail();
@@ -197,7 +197,7 @@ export default {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
       const b = await body(req);
-      const u = await env.DB.prepare('SELECT * FROM users WHERE id=?').bind(uid).first();
+      const u = await env.DB.prepare('SELECT id,username,pass_salt,pass_hash FROM users WHERE id=?').bind(uid).first();
       if (!u) return json({ err: '账号不存在' }, 404, cors);
       if (u.pass_hash) { // 密码账号：必须验密（不接受 confirm 绕过）
         const c = await rateCheck(env, 'lgu:' + u.username, RL.lgu.limit);
@@ -307,7 +307,7 @@ export default {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
       const b = await body(req);
-      const u = await env.DB.prepare('SELECT * FROM users WHERE id=?').bind(uid).first();
+      const u = await env.DB.prepare('SELECT id,username,provider,pass_salt,pass_hash FROM users WHERE id=?').bind(uid).first();
       if (!u) return json({ err: '账号不存在' }, 404, cors);
       if (u.provider !== 'pw' || !u.pass_hash) return json({ err: '该账号为第三方登录，无密码可改' }, 400, cors);
       const nw = String(b.new || '');
