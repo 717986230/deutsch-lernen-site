@@ -72,6 +72,7 @@ function toIdle() { state.value = 'idle'; wrongPool.value = Object.keys(getWrong
       <button class="btn" :disabled="!poolSize" @click="start('new')">开始练习</button>
       <button v-if="wrongPool" class="btn btn-plain mt" @click="start('wrong')">
         只练错题（{{ wrongPool }} 条）</button>
+      <button class="btn btn-plain mt" @click="$router.push('/quiz')">去做测验（四选一）</button>
       <button class="btn btn-plain mt sm" @click="toggleSound">{{ sound ? '🔔 音效开' : '🔕 音效关' }}</button>
     </template>
 

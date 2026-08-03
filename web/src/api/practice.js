@@ -61,3 +61,35 @@ export function buildPool(cats, { level = 'all', unit = 'word' } = {}) {
 export const isRight = (input, answer) =>
   input.trim().toLowerCase() === answer.trim().toLowerCase();
 export { shuffle };
+
+// ───────── 测验出题 ─────────
+// 词汇类三种模式共用同一个池；冠词模式从 der/die/das 前缀反推答案。
+export function quizPool(cats, level = 'all') {
+  const out = [], seen = {};
+  for (const c of cats) {
+    if (level !== 'all' && String(c.level) !== level) continue;
+    for (const p of c.phrases) {
+      const k = (p.de || '').trim();
+      if (!k || seen[k]) continue;
+      seen[k] = 1; out.push(p);
+    }
+  }
+  return out;
+}
+export function genderPool(cats, level = 'all') {
+  return quizPool(cats, level).filter((p) => /^(der|die|das)\s+\S/.test(p.de.trim()));
+}
+// 抽 1 正 3 误；干扰项去重且不与正解重复
+export function makeQuestion(pool, keyOf) {
+  if (pool.length < 4) return null;
+  const right = pool[Math.random() * pool.length | 0];
+  const rk = keyOf(right), wrong = [], used = { [rk]: 1 };
+  let guard = 0;
+  while (wrong.length < 3 && guard++ < 200) {
+    const w = pool[Math.random() * pool.length | 0], k = keyOf(w);
+    if (used[k]) continue;
+    used[k] = 1; wrong.push(w);
+  }
+  if (wrong.length < 3) return null;
+  return { right, options: shuffle([right, ...wrong]) };
+}
