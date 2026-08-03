@@ -5,25 +5,31 @@
    4. 小字（<18px）对比度 ≥4.5:1 —— 品牌绿 #58cc02 在浅底上做文字只有 2.1:1，
       浅底文字一律用 --brand-text */
 :root{
-  --brand:#58cc02; --brand-text:#3d8b00;
+  /* --brand 只做「块」（按钮底、进度条），永远不做文字色。
+     --brand-text 是浅底上的绿字：#3d8b00 实测只有 4.15:1（不够），改 #357700 = 5.35:1。
+     --on-brand 是压在 --brand 块上的文字色：白字在 #58cc02 上只有 2.09:1，必须用深色 = 7.81:1。 */
+  --brand:#58cc02; --brand-text:#357700; --on-brand:#14240a;
   --bg:#fbfbfa; --surface:#fff; --line:#ececea;
   --text:#1a1a18; --text-2:#5c5c56; --text-3:#74746d;
   /* 提示条：浅底上的强调文字必须用够深的色，--brand 本身只有 2.1:1 不能当文字 */
   --tip-bg:#fff8e6; --tip-text:#7a5c00; --text-faint:#74746d;
+  --danger:#c62828;                       /* 5.43:1 on --bg */
   --radius:14px; --gap:20px;
 }
 :root[data-theme=dark]{
-  --brand:#7ee83f; --brand-text:#9bf05f;
+  --brand:#7ee83f; --brand-text:#9bf05f; --on-brand:#14240a;
   --bg:#121211; --surface:#1c1c1a; --line:#2c2c29;
   --text:#f0efe9; --text-2:#b4b3aa; --text-3:#8d8c84;
   --tip-bg:#2b2410; --tip-text:#f0c860; --text-faint:#8d8c84;
+  --danger:#ff8a80;                       /* 8.21:1 on --bg */
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme=light]){
-    --brand:#7ee83f; --brand-text:#9bf05f;
+    --brand:#7ee83f; --brand-text:#9bf05f; --on-brand:#14240a;
     --bg:#121211; --surface:#1c1c1a; --line:#2c2c29;
     --text:#f0efe9; --text-2:#b4b3aa; --text-3:#8d8c84;
     --tip-bg:#2b2410; --tip-text:#f0c860; --text-faint:#8d8c84;
+    --danger:#ff8a80;
   }
 }
 *{box-sizing:border-box}
@@ -48,10 +54,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .group{font-size:13px;font-weight:600;color:var(--text-3);
   letter-spacing:.06em;margin:28px 0 4px;text-transform:none}
 
-/* 简约按钮 */
+/* 简约按钮：文字压在品牌绿上必须用 --on-brand（白字只有 2.09:1） */
 .btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--radius);
-  background:var(--brand);color:#fff;font-size:16px;font-weight:600;
-  font-family:inherit;cursor:pointer}
+  background:var(--brand);color:var(--on-brand);font-size:16px;font-weight:700;
+  font-family:inherit;cursor:pointer;min-height:52px}
 .btn:disabled{opacity:.5}
 .btn-plain{background:transparent;color:var(--text-2);border:1px solid var(--line)}
 
