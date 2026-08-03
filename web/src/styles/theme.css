@@ -76,3 +76,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   --van-tabs-bottom-bar-color:var(--brand);
   --van-cell-background:transparent;
 }
+
+/* 分段选择器（排行榜榜别、练习难度共用）
+   选中态不能用白字压品牌绿 —— 实测仅 2.09:1。改用深绿字，实测 7.8:1。
+   高度 ≥44px 是触摸目标要求，padding 一次给够，别让各页面各调各的。 */
+.seg{flex:1;min-width:56px;min-height:44px;padding:11px 8px;border:1px solid var(--line);
+  background:transparent;color:var(--text-2);border-radius:10px;font-size:14px;
+  font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.seg.on{background:var(--brand);color:#14240a;border-color:var(--brand);font-weight:600}
+:root[data-theme=dark] .seg.on{color:#0d1a05}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .seg.on{color:#0d1a05}}
+.segs{display:flex;gap:6px}
+.segs.wrap{flex-wrap:wrap}

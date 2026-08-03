@@ -5,6 +5,9 @@ const routes = [
   { path: '/phrases', component: () => import('../views/Phrases.vue'), meta: { title: '短语', tab: true } },
   { path: '/reading', component: () => import('../views/Reading.vue'), meta: { title: '短文', tab: true } },
   { path: '/rank', component: () => import('../views/Rank.vue'), meta: { title: '排行', tab: true } },
+  { path: '/spell', component: () => import('../views/Spell.vue'), meta: { title: '练习', tab: true } },
+  { path: '/legal', component: () => import('../views/Legal.vue'), meta: { title: '隐私政策' } },
+  { path: '/support', component: () => import('../views/Support.vue'), meta: { title: '支持作者' } },
   { path: '/me', component: () => import('../views/Me.vue'), meta: { title: '我的', tab: true } },
   // 账号相关三页各自独立：一页一件事，互相之间只用文字链跳转
   { path: '/login', component: () => import('../views/Login.vue'), meta: { title: '登录', open: true } },

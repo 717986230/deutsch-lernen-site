@@ -34,10 +34,7 @@ const val = (u) => by.value === 'known' ? `${u.known || 0} 词`
   </div>
 </template>
 <style scoped>
-.segs{display:flex;gap:6px;margin:4px 0 8px}
-.seg{flex:1;padding:9px 0;border:1px solid var(--line);background:transparent;
-  color:var(--text-2);border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer}
-.seg.on{background:var(--brand);color:var(--on-brand);border-color:var(--brand);font-weight:600}
+.segs{margin:4px 0 8px}
 .rk{display:flex;align-items:center;gap:12px}
 .no{width:22px;text-align:center;color:var(--text-3);font-size:14px;font-variant-numeric:tabular-nums}
 .no.top{color:var(--brand-text);font-weight:700}
