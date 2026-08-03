@@ -186,7 +186,13 @@ mark.sh{background:rgba(88,204,2,.32);color:inherit;border-radius:3px;padding:0 
 .recent-row .rc-lab{font-size:12px;color:var(--text-faint)}
 .recent-row .rc{font-size:12px;color:var(--text-dim);background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:4px 11px;cursor:pointer;white-space:nowrap}
 .recent-row .rc:hover{color:var(--text);border-color:var(--gold)}
-.recent-row .rc-clr{font-size:12px;color:var(--text-faint);cursor:pointer;margin-left:auto}
+.recent-row .rc-clr{font-size:12px;color:var(--text-dim);cursor:pointer;margin-left:auto;position:relative;padding:4px 2px}
+/* 触摸目标 ≥44px：视觉尺寸不动，用透明 ::after 撑开可点范围 */
+.recent-row .rc-clr::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:44px}
+.recent-row .rc{position:relative;padding-right:6px}
+.recent-row .rc-x{display:inline-block;margin-left:6px;color:var(--text-faint);font-size:13px;line-height:1;position:relative}
+.recent-row .rc-x::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px}
+.recent-row .rc-x:hover{color:#ff4b4b}
 /* CAT TABS */
 .cat-tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 0 8px;scrollbar-width:none}
 .cat-tab{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--gold-faint);background:transparent;color:var(--text-dim);cursor:pointer;font-size:12px;font-family:inherit;white-space:nowrap;transition:all .2s}
@@ -2304,7 +2310,9 @@ function artColorToggle(){var on=_artColorOn();try{localStorage.setItem('artColo
 // 最近搜索
 function _recentGet(){try{return JSON.parse(localStorage.getItem('recentSearch')||'[]');}catch(e){return [];}}
 function _recentAdd(q){q=(q||'').trim();if(q.length<2)return;try{var a=_recentGet().filter(function(x){return x!==q;});a.unshift(q);localStorage.setItem('recentSearch',JSON.stringify(a.slice(0,8)));}catch(e){}}
-function renderRecent(){var el=document.getElementById('recentSearch');if(!el)return;var a=_recentGet();if(!a.length){el.innerHTML='';return;}el.innerHTML='<span class="rc-lab">最近：</span>'+a.map(function(q){return '<span class="rc" onclick="doRecent(\''+_esc(q).replace(/'/g,'&#39;')+'\')">'+_esc(q)+'</span>';}).join('')+'<span class="rc-clr" onclick="clearRecent()">清空</span>';}
+function renderRecent(){var el=document.getElementById('recentSearch');if(!el)return;var a=_recentGet();if(!a.length){el.innerHTML='';return;}el.innerHTML='<span class="rc-lab">最近：</span>'+a.map(function(q){var e=_esc(q).replace(/'/g,'&#39;');return '<span class="rc"><span onclick="doRecent(\''+e+'\')">'+_esc(q)+'</span><span class="rc-x" title="删除这条" onclick="event.stopPropagation();removeRecent(\''+e+'\')">×</span></span>';}).join('')+'<span class="rc-clr" onclick="clearRecent()">清空全部</span>';}
+// 单条删除：只清这一条，其余保留
+function removeRecent(q){try{var a=_recentGet().filter(function(x){return x!==q;});if(a.length)localStorage.setItem('recentSearch',JSON.stringify(a));else localStorage.removeItem('recentSearch');}catch(e){}renderRecent();}
 function doRecent(q){var i=document.getElementById('searchInput');if(i){i.value=q;filterPhrases();}}
 function clearRecent(){try{localStorage.removeItem('recentSearch');}catch(e){}renderRecent();}
 var _recentT=null;
