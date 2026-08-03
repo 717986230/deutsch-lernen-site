@@ -21,6 +21,10 @@ const grouped = computed(() => {
     <template v-if="!cur">
       <h1 class="page-title">短文</h1>
       <p class="page-sub">分级阅读 · 逐句对照</p>
+      <div class="jump">
+        <button class="seg" @click="$router.push('/dialog')">情景对话</button>
+        <button class="seg" @click="$router.push('/series')">留学连载</button>
+      </div>
       <p v-if="loading" class="page-sub">加载中…</p>
       <template v-for="[lv, arr] in grouped" :key="lv">
         <div class="group">{{ lv }}</div>
@@ -45,6 +49,7 @@ const grouped = computed(() => {
   </div>
 </template>
 <style scoped>
+.jump{display:flex;gap:6px;margin:0 0 18px}
 .ti{font-size:17px;font-weight:600}
 .bar{padding:12px 0 4px;position:sticky;top:0;background:var(--bg);z-index:2}
 .back{background:none;border:none;color:var(--brand-text);font-size:15px;font-family:inherit;cursor:pointer;padding:4px 0}
