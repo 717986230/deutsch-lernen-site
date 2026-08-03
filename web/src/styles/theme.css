@@ -1,0 +1,21 @@
+/* 主题令牌：沿用旧站的调色，深浅双主题各给一份值。
+   注意 --gold-text —— 品牌绿 #58cc02 在浅色底上做文字只有 2.1:1，
+   小字必须用 --gold-text 这个加深版本才满足 4.5:1。 */
+:root{
+  --brand:#58cc02; --gold:#ffc800; --gold-text:#8a6d00; --gold-faint:#fff8e1;
+  --bg:#f7f8fa; --surface:#fff; --border:#e5e7eb;
+  --text:#1f2328; --text-dim:#57606a; --text-faint:#8b949e;
+}
+:root[data-theme=dark]{
+  --brand:#58cc02; --gold:#ffd740; --gold-text:#ffd740; --gold-faint:#2a2410;
+  --bg:#0d1117; --surface:#161b22; --border:#30363d;
+  --text:#e6edf3; --text-dim:#adbac7; --text-faint:#768390;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased}
+/* 触摸目标：视觉尺寸可以小，可点范围必须 ≥44px —— 用透明 ::after 撑开 */
+.tap44{position:relative}
+.tap44::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:44px;height:44px}
