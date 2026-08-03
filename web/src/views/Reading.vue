@@ -1,11 +1,20 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
+import { useLang } from '../store/lang';
+import LangSwitch from '../components/LangSwitch.vue';
 defineOptions({ name: 'Reading' });
+const langS = useLang();
 const list = ref([]); const loading = ref(true); const cur = ref(null);
 const LV = { '0': '入门', a1: 'A1', a2: 'A2', b1: 'B1', b2: 'B2' };
-onMounted(async () => { list.value = await loadData('readings'); loading.value = false; });
+async function load() {
+  loading.value = true; cur.value = null;
+  list.value = await loadData(langS.file('readings'));
+  loading.value = false;
+}
+onMounted(load);
+watch(() => langS.lang, load);
 // 餐厅专题单列，不混进分级列表（与旧站规则一致）
 const grouped = computed(() => {
   const g = {};
@@ -21,9 +30,10 @@ const grouped = computed(() => {
     <template v-if="!cur">
       <h1 class="page-title">短文</h1>
       <p class="page-sub">分级阅读 · 逐句对照</p>
+      <LangSwitch />
       <div class="jump">
         <button class="seg" @click="$router.push('/dialog')">情景对话</button>
-        <button class="seg" @click="$router.push('/series')">留学连载</button>
+        <button v-if="!langS.isEn" class="seg" @click="$router.push('/series')">留学连载</button>
       </div>
       <p v-if="loading" class="page-sub">加载中…</p>
       <template v-for="[lv, arr] in grouped" :key="lv">
@@ -40,7 +50,7 @@ const grouped = computed(() => {
       <h2 class="at">{{ cur.title }}</h2>
       <p class="az">{{ cur.zh }}</p>
       <!-- readings 三元素带谐音，series 两元素没有 —— p[2] 存在与否决定显示 -->
-      <div v-for="(p, i) in cur.paras" :key="i" class="item" @click="speak(p[0])">
+      <div v-for="(p, i) in cur.paras" :key="i" class="item" @click="speak(p[0], langS.isEn ? 'en-US' : 'de-DE')">
         <div class="item-de" lang="de">{{ p[0] }}</div>
         <div class="item-zh">{{ p[1] }}</div>
         <div v-if="p[2]" class="item-py">{{ p[2] }}</div>

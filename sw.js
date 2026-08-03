@@ -1,5 +1,5 @@
 // 自动生成（build.mjs），勿手改。壳网络优先；词典切片持久缓存、跨版本复用。
-const V='de-aa2a12699b',DATA='de-data',KEEP=["de.a9d535cb.dat","en.14daf11a.dat"];
+const V='de-6fc9db86e6',DATA='de-data',KEEP=["de.b3a73960.dat","en.14daf11a.dat"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['index.html','manifest.webmanifest','icon-192.png','icon-512.png'])).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{
   const ks=await caches.keys();
