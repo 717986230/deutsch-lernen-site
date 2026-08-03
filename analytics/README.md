@@ -149,3 +149,27 @@ wrangler deploy
 匿名统计 + 账号信息在国内均受《个人信息保护法》约束。建议在页面底部/支持页写明
 "本站仅记录匿名使用统计以改进功能；账号仅保存用户名、昵称与密码哈希"，需要时可删库。
 用户可自助注销（`/api/account/delete`）：注销即从 users/sessions/follows/activity 硬删，不可恢复；匿名埋点与账号无关联，不受影响。
+
+## 数据备份（必读）
+
+D1 **没有自动备份**。误删一张表、一次写错的 UPDATE，用户账号与学习进度就永久没了。
+
+```bash
+bash analytics/backup.sh                    # 导出到 ./backups，gzip 归档
+BACKUP_DIR=~/uuoo-backups bash analytics/backup.sh
+KEEP_DAYS=90 bash analytics/backup.sh       # 默认保留 30 天
+```
+
+挂 cron 每天跑一次：
+```
+0 3 * * * cd /path/to/repo && bash analytics/backup.sh >> /tmp/uuoo-backup.log 2>&1
+```
+
+脚本会做两道校验（文件非空、含 users 表），任一不过就删掉残件并以非零码退出——
+避免用一个坏文件覆盖掉好备份。
+
+恢复：
+```bash
+bash analytics/restore.sh backups/uuoo_analytics-YYYYMMDD-HHMMSS.sql.gz
+```
+恢复前会先给当前库做一次安全快照，并要求输入 YES 二次确认。
