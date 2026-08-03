@@ -1,0 +1,43 @@
+/* ── 登录 / 注册 / 重置密码 三页共用的版式 ──
+   设计约束：一屏一件事；不用卡片、不用阴影、不用 Vant 灰底 cell-group；
+   层次靠留白 + 一条 --line 细线；只有主按钮用品牌绿，其余一律中性色。
+   所有 <18px 文字实测 ≥4.5:1（浅/深双主题），辅助文字不小于 12px。 */
+
+.auth{max-width:420px;margin:0 auto;padding:44px 24px calc(40px + env(safe-area-inset-bottom))}
+
+/* 站名：一行小字即可，不做 logo 块 */
+.auth-brand{font-size:13px;line-height:20px;letter-spacing:.14em;
+  color:var(--text-3);margin:0 0 28px}
+
+/* 标题区：全页唯一的大字，替代 tab 条来交代「这一页在干什么」 */
+.auth-h1{font-size:28px;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.auth-sub{font-size:14px;color:var(--text-2);margin:0 0 32px;line-height:1.6}
+
+/* 表单：字段之间靠间距分组，不套容器 */
+.auth-form{display:block}
+.auth-actions{margin-top:32px}
+
+/* 说明 / 隐私告知：常驻可见，不折叠 */
+.auth-note{font-size:13px;line-height:1.7;color:var(--text-2);
+  margin:24px 0 0;padding:0 0 0 12px;border-left:2px solid var(--line)}
+.auth-note b{color:var(--text);font-weight:600}
+
+/* 错误：与字段同宽的一行文字，不用弹窗打断填写 */
+.auth-err{font-size:13px;line-height:1.6;color:var(--danger);margin:16px 0 0}
+
+/* 底部文字链接：视觉是文字，可点范围靠 padding 撑到 ≥44px */
+.auth-links{display:flex;justify-content:center;align-items:center;
+  gap:4px;margin-top:8px;flex-wrap:wrap}
+.link{display:inline-flex;align-items:center;min-height:44px;padding:11px 12px;
+  background:none;border:none;font-family:inherit;font-size:15px;line-height:22px;
+  color:var(--brand-text);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.link.muted{color:var(--text-2)}
+.link-sep{color:var(--text-3);font-size:13px}
+
+/* 可展开的「选填」区：一行 44px 的开关，展开后才占版面 */
+.auth-more{width:100%;display:flex;align-items:center;justify-content:space-between;
+  min-height:48px;margin-top:28px;padding:12px 0;background:none;border:none;
+  border-top:1px solid var(--line);font-family:inherit;font-size:15px;
+  color:var(--text-2);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.auth-more .chev{font-size:12px;color:var(--text-3);transition:transform .18s}
+.auth-more.open .chev{transform:rotate(180deg)}

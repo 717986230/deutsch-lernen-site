@@ -7,6 +7,8 @@ const route = useRoute();
 const router = useRouter();
 const acct = useAccount();
 const active = computed(() => route.path);
+// 登录/注册/重置是「一屏一件事」的页面，底部 tab 在这里既点不动也只是噪音
+const showTab = computed(() => !!route.meta.tab);
 onMounted(() => acct.fetchMe());
 const go = (p) => router.push(p);
 </script>
@@ -18,7 +20,7 @@ const go = (p) => router.push(p);
     <router-view v-slot="{ Component }">
       <keep-alive include="Phrases,Reading"><component :is="Component" /></keep-alive>
     </router-view>
-    <van-tabbar :model-value="active" @change="go" fixed placeholder route>
+    <van-tabbar v-if="showTab" :model-value="active" @change="go" fixed placeholder route>
       <van-tabbar-item name="/" icon="home-o" to="/">首页</van-tabbar-item>
       <van-tabbar-item name="/phrases" icon="chat-o" to="/phrases">短语</van-tabbar-item>
       <van-tabbar-item name="/reading" icon="records" to="/reading">短文</van-tabbar-item>
