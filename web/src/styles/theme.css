@@ -1,21 +1,68 @@
-/* 主题令牌：沿用旧站的调色，深浅双主题各给一份值。
-   注意 --gold-text —— 品牌绿 #58cc02 在浅色底上做文字只有 2.1:1，
-   小字必须用 --gold-text 这个加深版本才满足 4.5:1。 */
+/* ── 设计原则：一屏一件事，去装饰，留呼吸 ──
+   1. 学习内容用最大字号最高对比；辅助信息（谐音/统计）弱化但不小于 12px
+   2. 只保留一种强调色，避免注意力分散
+   3. 卡片去阴影去圆角竞赛，用留白和一条细分隔线区分层次
+   4. 小字（<18px）对比度 ≥4.5:1 —— 品牌绿 #58cc02 在浅底上做文字只有 2.1:1，
+      浅底文字一律用 --brand-text */
 :root{
-  --brand:#58cc02; --gold:#ffc800; --gold-text:#8a6d00; --gold-faint:#fff8e1;
-  --bg:#f7f8fa; --surface:#fff; --border:#e5e7eb;
-  --text:#1f2328; --text-dim:#57606a; --text-faint:#8b949e;
+  --brand:#58cc02; --brand-text:#3d8b00;
+  --bg:#fbfbfa; --surface:#fff; --line:#ececea;
+  --text:#1a1a18; --text-2:#5c5c56; --text-3:#74746d;
+  --radius:14px; --gap:20px;
 }
 :root[data-theme=dark]{
-  --brand:#58cc02; --gold:#ffd740; --gold-text:#ffd740; --gold-faint:#2a2410;
-  --bg:#0d1117; --surface:#161b22; --border:#30363d;
-  --text:#e6edf3; --text-dim:#adbac7; --text-faint:#768390;
+  --brand:#7ee83f; --brand-text:#9bf05f;
+  --bg:#121211; --surface:#1c1c1a; --line:#2c2c29;
+  --text:#f0efe9; --text-2:#b4b3aa; --text-3:#8d8c84;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --brand:#7ee83f; --brand-text:#9bf05f;
+    --bg:#121211; --surface:#1c1c1a; --line:#2c2c29;
+    --text:#f0efe9; --text-2:#b4b3aa; --text-3:#8d8c84;
+  }
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-  -webkit-font-smoothing:antialiased}
-/* 触摸目标：视觉尺寸可以小，可点范围必须 ≥44px —— 用透明 ::after 撑开 */
-.tap44{position:relative}
-.tap44::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:44px;height:44px}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.6}
+
+/* 页面容器：统一留白，内容不贴边 */
+.page{padding:8px 20px 80px;max-width:640px;margin:0 auto}
+.page-title{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:16px 0 4px}
+.page-sub{color:var(--text-3);font-size:13px;margin:0 0 24px}
+
+/* 学习条目：内容主导，分隔线而非卡片 */
+.item{padding:16px 0;border-bottom:1px solid var(--line);cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+.item:last-child{border-bottom:none}
+.item-de{font-size:19px;font-weight:600;line-height:1.4;letter-spacing:-.01em}
+.item-zh{font-size:15px;color:var(--text-2);margin-top:4px}
+.item-py{font-size:13px;color:var(--text-3);margin-top:3px;letter-spacing:.02em}
+
+/* 分组标题 */
+.group{font-size:13px;font-weight:600;color:var(--text-3);
+  letter-spacing:.06em;margin:28px 0 4px;text-transform:none}
+
+/* 简约按钮 */
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--radius);
+  background:var(--brand);color:#fff;font-size:16px;font-weight:600;
+  font-family:inherit;cursor:pointer}
+.btn:disabled{opacity:.5}
+.btn-plain{background:transparent;color:var(--text-2);border:1px solid var(--line)}
+
+/* 触摸目标 ≥44px：视觉可以小，可点范围不能小 */
+.tap{position:relative}
+.tap::after{content:"";position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);width:44px;height:44px}
+
+/* 覆盖 Vant 默认观感，使其与上面的极简语言一致 */
+:root{
+  --van-background:var(--bg); --van-background-2:var(--surface);
+  --van-text-color:var(--text); --van-text-color-2:var(--text-3);
+  --van-border-color:var(--line); --van-primary-color:var(--brand);
+  --van-tabbar-background:var(--surface);
+  --van-tabbar-item-active-color:var(--brand-text);
+  --van-tabs-bottom-bar-color:var(--brand);
+  --van-cell-background:transparent;
+}

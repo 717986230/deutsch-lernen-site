@@ -2,40 +2,56 @@
 import { ref, computed, onMounted } from 'vue';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
-defineOptions({ name: 'Phrases' });            // keep-alive 靠 name 匹配
+defineOptions({ name: 'Phrases' });
 
-const cats = ref([]);
-const level = ref('all');
-const loading = ref(true);
-const LEVELS = [['all','全部'],['0','入门'],['a1','A1'],['a2','A2'],['b1','B1'],['b2','B2']];
+const cats = ref([]); const loading = ref(true); const cur = ref(null);
 onMounted(async () => { cats.value = await loadData('categories'); loading.value = false; });
-const shown = computed(() =>
-  level.value === 'all' ? cats.value : cats.value.filter((c) => String(c.level) === level.value));
+// 按等级分组展示分类，避免一次抛出 20 个并列项
+const LV = { '0': '入门', a1: 'A1', a2: 'A2', b1: 'B1', b2: 'B2' };
+const grouped = computed(() => {
+  const g = {};
+  for (const c of cats.value) (g[String(c.level)] ||= []).push(c);
+  return Object.entries(g).sort();
+});
 </script>
 <template>
-  <div class="wrap">
-    <van-tabs v-model:active="level" sticky>
-      <van-tab v-for="[v,t] in LEVELS" :key="v" :name="v" :title="t" />
-    </van-tabs>
-    <van-loading v-if="loading" class="ld">加载中…</van-loading>
-    <van-collapse v-else v-model="openNames" accordion>
-      <van-collapse-item v-for="c in shown" :key="c.name" :name="c.name"
-        :title="`${c.icon} ${c.name}`" :value="`${c.phrases.length} 句`">
-        <div v-for="(p,i) in c.phrases" :key="i" class="row" @click="speak(p.de)">
-          <div class="de" lang="de">{{ p.de }}</div>
-          <div class="zh">{{ p.zh }}</div>
-          <div class="py">{{ p.py }}</div>
+  <div class="page">
+    <!-- 列表页：只让人选一件事 —— 学哪一类 -->
+    <template v-if="!cur">
+      <h1 class="page-title">短语</h1>
+      <p class="page-sub">按主题分类 · 点句子听发音</p>
+      <p v-if="loading" class="page-sub">加载中…</p>
+      <template v-for="[lv, list] in grouped" :key="lv">
+        <div class="group">{{ LV[lv] || lv }}</div>
+        <div v-for="c in list" :key="c.name" class="item cat" @click="cur = c">
+          <span class="icon">{{ c.icon }}</span>
+          <span class="nm">{{ c.name }}</span>
+          <span class="ct">{{ c.phrases.length }}</span>
         </div>
-      </van-collapse-item>
-    </van-collapse>
+      </template>
+    </template>
+
+    <!-- 详情页：屏幕上只剩句子，没有任何其他控件争夺注意力 -->
+    <template v-else>
+      <div class="bar">
+        <button class="back tap" @click="cur = null">‹ 返回</button>
+        <span class="bt">{{ cur.icon }} {{ cur.name }}</span>
+      </div>
+      <div v-for="(p, i) in cur.phrases" :key="i" class="item" @click="speak(p.de)">
+        <div class="item-de" lang="de">{{ p.de }}</div>
+        <div class="item-zh">{{ p.zh }}</div>
+        <div class="item-py">{{ p.py }}</div>
+      </div>
+    </template>
   </div>
 </template>
-<script>export default { data: () => ({ openNames: '' }) };</script>
 <style scoped>
-.wrap{padding-bottom:70px}
-.ld{padding:40px;text-align:center}
-.row{padding:10px 0;border-bottom:1px solid var(--border)}
-.de{font-size:16px;font-weight:600}
-.zh{font-size:13px;color:var(--text-dim);margin-top:2px}
-.py{font-size:12px;color:var(--text-faint);margin-top:1px}
+.cat{display:flex;align-items:center;gap:12px;font-size:16px}
+.icon{font-size:20px}.nm{flex:1;font-weight:500}
+.ct{color:var(--text-3);font-size:13px}
+.bar{display:flex;align-items:center;gap:10px;padding:12px 0 4px;
+  position:sticky;top:0;background:var(--bg);z-index:2}
+.back{background:none;border:none;color:var(--brand-text);font-size:15px;
+  font-family:inherit;cursor:pointer;padding:4px 0}
+.bt{font-weight:600}
 </style>
