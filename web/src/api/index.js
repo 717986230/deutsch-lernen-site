@@ -29,7 +29,8 @@ export const api = {
   me: () => request('/api/me'),
   sync: (b) => request('/api/sync', { method: 'POST', body: b }),
   profileUpdate: (b) => request('/api/profile/update', { method: 'POST', body: b }),
-  rank: () => request('/api/rank', { auth: false }),
+  // 排行榜：Worker 的接口是 /api/leaderboard?by=known|streak|total（无 /api/rank）
+  leaderboard: (by = 'known') => request('/api/leaderboard?by=' + by, { auth: false }),
   // 找回密码：恢复码与邮箱验证码双通道（见 analytics/README.md）
   emailCode: (b) => request('/api/account/email_code', { method: 'POST', body: b, auth: false }),
   reset: (b) => request('/api/account/reset', { method: 'POST', body: b, auth: false }),

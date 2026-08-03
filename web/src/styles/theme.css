@@ -8,18 +8,22 @@
   --brand:#58cc02; --brand-text:#3d8b00;
   --bg:#fbfbfa; --surface:#fff; --line:#ececea;
   --text:#1a1a18; --text-2:#5c5c56; --text-3:#74746d;
+  /* 提示条：浅底上的强调文字必须用够深的色，--brand 本身只有 2.1:1 不能当文字 */
+  --tip-bg:#fff8e6; --tip-text:#7a5c00; --text-faint:#74746d;
   --radius:14px; --gap:20px;
 }
 :root[data-theme=dark]{
   --brand:#7ee83f; --brand-text:#9bf05f;
   --bg:#121211; --surface:#1c1c1a; --line:#2c2c29;
   --text:#f0efe9; --text-2:#b4b3aa; --text-3:#8d8c84;
+  --tip-bg:#2b2410; --tip-text:#f0c860; --text-faint:#8d8c84;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme=light]){
     --brand:#7ee83f; --brand-text:#9bf05f;
     --bg:#121211; --surface:#1c1c1a; --line:#2c2c29;
     --text:#f0efe9; --text-2:#b4b3aa; --text-3:#8d8c84;
+    --tip-bg:#2b2410; --tip-text:#f0c860; --text-faint:#8d8c84;
   }
 }
 *{box-sizing:border-box}

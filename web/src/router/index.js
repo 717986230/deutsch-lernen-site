@@ -8,4 +8,17 @@ const routes = [
   { path: '/me', component: () => import('../views/Me.vue'), meta: { title: '我的', tab: true } },
   { path: '/login', component: () => import('../views/Login.vue'), meta: { title: '登录' } },
 ];
-export default createRouter({ history: createWebHashHistory(), routes });
+const router = createRouter({ history: createWebHashHistory(), routes });
+
+// 全站登录墙：与旧站行为一致。放行 /login 本身，避免自跳循环。
+// 注意别在守卫里预载词库——旧站正是靠「登录页不初始化」把 FCP 减半的。
+router.beforeEach((to) => {
+  const open = to.path === '/login';
+  let tk = '';
+  try { tk = localStorage.getItem('acct_token') || ''; } catch {}
+  if (!tk && !open) return { path: '/login', replace: true };
+  if (tk && open) return { path: '/', replace: true };
+  return true;
+});
+
+export default router;

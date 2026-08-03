@@ -1,30 +1,48 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { api } from '../api';
-const rows = ref([]); const loading = ref(true); const err = ref('');
-onMounted(async () => {
-  const r = await api.rank(); loading.value = false;
-  if (r.ok) rows.value = r.data.list || r.data.rows || [];
+const BY = [['known', '词汇'], ['streak', '连续'], ['total', '总量']];
+const by = ref('known'); const rows = ref([]); const loading = ref(true); const err = ref('');
+async function load() {
+  loading.value = true; err.value = '';
+  const r = await api.leaderboard(by.value);
+  loading.value = false;
+  if (r.ok) rows.value = r.data.list || [];
+  // 网络故障与业务失败要分开说，别都归成「加载失败」
   else err.value = r.offline ? '离线中，联网后重试' : (r.data.err || '加载失败');
-});
+}
+onMounted(load); watch(by, load);
+const val = (u) => by.value === 'known' ? `${u.known || 0} 词`
+  : by.value === 'streak' ? `${u.streak || 0} 天` : `${u.total || 0} 次`;
 </script>
 <template>
   <div class="page">
     <h1 class="page-title">排行榜</h1>
-    <p class="page-sub">按掌握词数排名</p>
+    <div class="segs">
+      <button v-for="[v, t] in BY" :key="v" class="seg" :class="{ on: by === v }"
+        @click="by = v">{{ t }}</button>
+    </div>
     <p v-if="loading" class="page-sub">加载中…</p>
     <p v-else-if="err" class="page-sub">{{ err }}</p>
+    <p v-else-if="!rows.length" class="page-sub">还没有人上榜，快去学习吧</p>
     <div v-for="(u, i) in rows" :key="i" class="item rk">
       <span class="no" :class="{ top: i < 3 }">{{ i + 1 }}</span>
+      <span class="av" :style="{ background: u.av_bg || 'var(--line)' }">{{ u.avatar || '🦊' }}</span>
       <span class="nm">{{ u.nickname || u.username }}</span>
-      <span class="kn">{{ u.known || 0 }} 词</span>
+      <span class="kn">{{ val(u) }}</span>
     </div>
   </div>
 </template>
 <style scoped>
-.rk{display:flex;align-items:center;gap:14px}
-.no{width:26px;text-align:center;color:var(--text-3);font-size:14px;font-variant-numeric:tabular-nums}
+.segs{display:flex;gap:6px;margin:4px 0 8px}
+.seg{flex:1;padding:9px 0;border:1px solid var(--line);background:transparent;
+  color:var(--text-2);border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer}
+.seg.on{background:var(--brand);color:#fff;border-color:var(--brand);font-weight:600}
+.rk{display:flex;align-items:center;gap:12px}
+.no{width:22px;text-align:center;color:var(--text-3);font-size:14px;font-variant-numeric:tabular-nums}
 .no.top{color:var(--brand-text);font-weight:700}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:17px;flex:none}
 .nm{flex:1;font-size:16px}
 .kn{color:var(--text-3);font-size:13px;font-variant-numeric:tabular-nums}
 </style>

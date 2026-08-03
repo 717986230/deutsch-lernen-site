@@ -29,6 +29,6 @@ const go = (p) => router.push(p);
 </template>
 
 <style scoped>
-.offline{background:var(--gold-faint);color:var(--gold-text);font-size:12px;
+.offline{background:var(--tip-bg);color:var(--tip-text);font-size:12px;
   text-align:center;padding:6px;position:sticky;top:0;z-index:99}
 </style>
