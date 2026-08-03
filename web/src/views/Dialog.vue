@@ -1,13 +1,18 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { loadData } from '../api';
 import { speak, canSpeak } from '../api/speak';
+import { useLang } from '../store/lang';
+import LangSwitch from '../components/LangSwitch.vue';
 defineOptions({ name: 'Dialog' });
 
+const langS = useLang();
 const list = ref([]); const cur = ref(null); const playing = ref(false); const at = ref(-1);
 const LV = { '0':'入门', a1:'A1', a2:'A2', b1:'B1', b2:'B2' };
 let timer = null;
-onMounted(async () => { list.value = await loadData('dialogs'); });
+async function load() { stop(); cur.value = null; list.value = await loadData(langS.file('dialogs')); }
+onMounted(load);
+watch(() => langS.lang, load);   // 切语言重载数据，并退回列表避免停在另一语言的详情页
 onUnmounted(stop);
 
 const grouped = computed(() => {
@@ -24,7 +29,7 @@ function playAll() {
   const turns = cur.value.turns;
   const step = (i) => {
     if (!playing.value || i >= turns.length) { stop(); return; }
-    at.value = i; speak(turns[i].de);
+    at.value = i; speak(turns[i].de, langS.isEn ? 'en-US' : 'de-DE');
     timer = setTimeout(() => step(i + 1), 900 + turns[i].de.length * 75);
   };
   step(0);
@@ -38,6 +43,7 @@ function back() { stop(); cur.value = null; }
     <template v-if="!cur">
       <h1 class="page-title">情景对话</h1>
       <p class="page-sub">按场景分组 · 点句子听发音</p>
+      <LangSwitch />
       <template v-for="[lv, arr] in grouped" :key="lv">
         <div class="group">{{ lv }}</div>
         <div v-for="d in arr" :key="d.scene" class="item dl" @click="open(d)">
@@ -60,7 +66,7 @@ function back() { stop(); cur.value = null; }
         {{ playing ? '■ 停止播放' : '▶ 连续播放' }}</button>
       <!-- A/B 两方左右分栏，一眼能看出谁在说 -->
       <div v-for="(t, i) in cur.turns" :key="i" class="turn" :class="[t.s === 'A' ? 'a' : 'b', { on: at === i }]"
-        @click="speak(t.de)">
+        @click="speak(t.de, langS.isEn ? 'en-US' : 'de-DE')">
         <div class="who">{{ t.s }}</div>
         <div class="bub">
           <div class="t-de" lang="de">{{ t.de }}</div>

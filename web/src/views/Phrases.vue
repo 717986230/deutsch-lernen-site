@@ -1,11 +1,20 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
+import { useLang } from '../store/lang';
+import LangSwitch from '../components/LangSwitch.vue';
 defineOptions({ name: 'Phrases' });
 
+const langS = useLang();
 const cats = ref([]); const loading = ref(true); const cur = ref(null);
-onMounted(async () => { cats.value = await loadData('categories'); loading.value = false; });
+async function load() {
+  loading.value = true; cur.value = null;
+  cats.value = await loadData(langS.file('categories'));
+  loading.value = false;
+}
+onMounted(load);
+watch(() => langS.lang, load);
 // 按等级分组展示分类，避免一次抛出 20 个并列项
 const LV = { '0': '入门', a1: 'A1', a2: 'A2', b1: 'B1', b2: 'B2' };
 const grouped = computed(() => {
@@ -20,6 +29,7 @@ const grouped = computed(() => {
     <template v-if="!cur">
       <h1 class="page-title">短语</h1>
       <p class="page-sub">按主题分类 · 点句子听发音</p>
+      <LangSwitch />
       <p v-if="loading" class="page-sub">加载中…</p>
       <template v-for="[lv, list] in grouped" :key="lv">
         <div class="group">{{ LV[lv] || lv }}</div>
@@ -37,7 +47,7 @@ const grouped = computed(() => {
         <button class="back tap" @click="cur = null">‹ 返回</button>
         <span class="bt">{{ cur.icon }} {{ cur.name }}</span>
       </div>
-      <div v-for="(p, i) in cur.phrases" :key="i" class="item" @click="speak(p.de)">
+      <div v-for="(p, i) in cur.phrases" :key="i" class="item" @click="speak(p.de, langS.isEn ? 'en-US' : 'de-DE')">
         <div class="item-de" lang="de">{{ p.de }}</div>
         <div class="item-zh">{{ p.zh }}</div>
         <div class="item-py">{{ p.py }}</div>
