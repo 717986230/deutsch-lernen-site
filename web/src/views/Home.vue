@@ -25,6 +25,11 @@ onMounted(async () => {
       <div class="py">{{ pick.py }}</div>
     </div>
 
+    <div class="refs">
+      <button class="seg" @click="router.push('/ref/pron')">发音</button>
+      <button class="seg" @click="router.push('/ref/numbers')">数字</button>
+      <button class="seg" @click="router.push('/ref/grammar')">语法</button>
+    </div>
     <button class="btn" @click="router.push('/phrases')">开始学习</button>
     <button class="btn btn-plain" style="margin-top:10px"
       @click="router.push(acct.logged ? '/me' : '/login')">
@@ -33,6 +38,7 @@ onMounted(async () => {
   </div>
 </template>
 <style scoped>
+.refs{display:flex;gap:6px;margin:0 0 12px}
 .today{padding:28px 0 32px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:28px}
 .label{font-size:12px;color:var(--text-3);letter-spacing:.08em;margin-bottom:12px}
 .de{font-size:28px;font-weight:700;line-height:1.35;letter-spacing:-.02em}

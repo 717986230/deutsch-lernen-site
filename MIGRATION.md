@@ -4,7 +4,7 @@
 
 | 端 | 技术栈 | 目录 | 状态 |
 |---|---|---|---|
-| 用户端 | Vue 3 + Vant | `web/` | 🟡 14 个页面（18 个版块中已迁 11 个）|
+| 用户端 | Vue 3 + Vant | `web/` | 🟡 17 个页面（18 个版块中已迁 17 个）|
 | 管理后台 | Vue 3 + Element Plus | `admin/` | 🟢 可用 |
 | 后端 | Cloudflare Worker + D1 | `analytics/` | 🟢 不变 |
 | 旧站 | 单文件 | `src.html` → `index.html` | 🟢 **仍是生产** |
@@ -22,8 +22,7 @@
 
 ## 待迁移（按建议顺序）
 
-1. 图解（body）
-2. 语法、发音、数字 + 英语版三个（纯静态，可批量搬）
+1. 图解（body，旧站里也只有 0.6KB，内容由 JS 动态生成）
 4. 徽章、打卡、学习数据同步到 /api/sync
 5. Service Worker 离线（旧站有，新站尚无）
 6. 拼写练习的 SRS 间隔复习（旧站有，本次只迁了核心闭环）
@@ -59,7 +58,9 @@ Vue 端改为：**语言是内容维度，不是全局开关**。页面自己决
 |---|---|---|
 | 短语 | ✅ | `categories.json` / `en_categories.json` |
 | 情景对话 | ✅ | `dialogs.json` / `en_dialogs.json` |
-| 短文 / 连载 | ❌ 仅德语 | 待补 `en_readings.json` / `en_series.json` |
+| 短文 | ✅ | `readings.json` / `en_readings.json` |
+| 发音 / 数字 / 语法 | ✅ | `reference.json`（含 de/en 两份）|
+| 连载 | ❌ 仅德语 | 待补 `en_series.json` |
 | 拼写 / 测验 / 排行 | ❌ 不适用 | — |
 
 朗读也跟着切（`de-DE` / `en-US`），切语言会退回列表页，避免停在另一语言的详情页上。

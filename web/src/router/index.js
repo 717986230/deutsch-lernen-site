@@ -9,6 +9,7 @@ const routes = [
   { path: '/quiz', component: () => import('../views/Quiz.vue'), meta: { title: '测验' } },
   { path: '/dialog', component: () => import('../views/Dialog.vue'), meta: { title: '情景对话' } },
   { path: '/series', component: () => import('../views/Series.vue'), meta: { title: '留学连载' } },
+  { path: '/ref/:topic', component: () => import('../views/Reference.vue'), meta: { title: '参考' } },
   // open:true —— 隐私政策必须能在注册前读到，否则「同意」不成立，不能挡在登录墙后
   { path: '/legal', component: () => import('../views/Legal.vue'), meta: { title: '隐私政策', open: true } },
   { path: '/support', component: () => import('../views/Support.vue'), meta: { title: '支持作者' } },
