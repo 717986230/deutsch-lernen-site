@@ -60,11 +60,11 @@ wrangler deploy                                                 # 部署新版 w
 ```
 
 接口一览：
-- `POST /api/register` `{username,password,nickname,email?,phone?}` → `{token,user}`（邮箱/手机号选填，仅用于找回密码）
+- `POST /api/register` `{username,password,nickname,email?}` → `{token,user,recovery}`（邮箱选填，仅用于找回密码；**手机号已下线**）
 - `POST /api/login` `{username,password}` → `{token,user}`
 - `POST /api/sync`（带 `Authorization: Bearer <token>`）`{known,streak,best,total,quiz,level}` → 更新数据、返回已点亮徽章
-- `POST /api/profile/update`（带 token）`{nickname?,avatar?,av_bg?,sig?,email?,phone?}` → 改资料与联系方式；邮箱/手机号传空字符串＝删除，服务端校验格式与唯一性
-- `GET  /api/me`（带 token）→ 自己的资料 + 排名；`email`/`phone` **只返回掩码**（如 `t***@qq.com`、`861****5678`），另有 `hasEmail`/`hasPhone` 布尔位
+- `POST /api/profile/update`（带 token）`{nickname?,avatar?,av_bg?,sig?,email?}` → 改资料与邮箱；邮箱传空字符串＝删除。**phone 字段已不再接受**
+- `GET  /api/me`（带 token）→ 自己的资料 + 排名；`email` **只返回掩码**（如 `t***@qq.com`），另有 `hasEmail` 布尔位。**不再返回 phone**
 - `GET  /api/leaderboard?by=known|streak|total` → Top 50
 - `GET  /api/profile?name=<用户名>` → 公开主页数据（带 token 时含 isFollowing/关注数）
 - `POST /api/follow` / `POST /api/unfollow`（带 token）`{name}` → 关注 / 取关
@@ -112,7 +112,7 @@ wrangler deploy
 
 资料字段：`nickname`(昵称) `avatar`(emoji 头像) `av_bg`(背景色) `sig`(个性签名) `email`/`phone`(选填联系方式)。
 
-**联系方式（邮箱/手机号）**：均为**选填**，只在用户主动填写时收集，用途仅限「忘记密码时找回」。
+**邮箱**：**选填**，只在用户主动填写时收集，用途仅限「忘记密码时找回」。
 服务端规范化后存储（邮箱转小写；手机号只留数字，去掉 `+` 与分隔符），各自建唯一索引；
 `/api/me` 一律只回掩码，明文不出服务端；注销账号时随 users 行硬删。
 > 注意：**发送验证码需要第三方短信/邮件服务**，目前尚未接入——字段与录入界面已就绪，

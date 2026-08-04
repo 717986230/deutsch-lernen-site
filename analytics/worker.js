@@ -20,13 +20,6 @@ function normEmail(v) {
   if (!/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(s)) return { ok: false, err: '邮箱格式不正确' };
   return { ok: true, val: s };
 }
-function normPhone(v) {
-  const raw = cleanText(v, 24);
-  if (!raw) return { ok: true, val: null };
-  const s = raw.replace(/[\s\-()]/g, '').replace(/^\+/, '');
-  if (!/^\d{6,15}$/.test(s)) return { ok: false, err: '手机号格式不正确（可带国家码，如 8613812345678）' };
-  return { ok: true, val: s };
-}
 // ───────── 邮箱验证码（Resend 发信）─────────
 // 密钥用 `wrangler secret put RESEND_API_KEY` 设置，切勿写进 wrangler.toml（那是明文进 git 的）。
 // 发信域名需在 Resend 后台验证过；发件人可用 MAIL_FROM 覆盖。
@@ -68,7 +61,6 @@ async function setRecovery(env, uid) {
 }
 
 const maskEmail = (e) => { if (!e) return ''; const i = e.indexOf('@'); const n = e.slice(0, i), d = e.slice(i); return (n.length <= 1 ? n : n[0] + '***') + d; };
-const maskPhone = (p) => { if (!p) return ''; return p.length <= 4 ? '****' : p.slice(0, 3) + '****' + p.slice(-4); };
 
 // 频控参数（固定窗口计数，ratelimit 表；调参改这里即可）
 const RL = {
@@ -151,18 +143,16 @@ export default {
       const pw = String(b.password || '');
       if (!/^[a-z0-9_]{3,20}$/.test(name)) return json({ err: '用户名需 3-20 位，仅小写字母/数字/下划线' }, 400, cors);
       if (pw.length < 6) return json({ err: '密码至少 6 位' }, 400, cors);
-      // 邮箱/手机号均为选填，仅用于日后找回密码
+      // 邮箱选填，仅用于日后找回密码。手机号已下线：属强监管个人信息，
+      // 而找回密码用邮箱验证码 + 恢复码已经够用，收它只增合规负担不增能力。
       const em = normEmail(b.email); if (!em.ok) return json({ err: em.err }, 400, cors);
-      const ph = normPhone(b.phone); if (!ph.ok) return json({ err: ph.err }, 400, cors);
       const exist = await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(name).first();
       if (exist) return json({ err: '用户名已被占用' }, 400, cors);
       if (em.val && await env.DB.prepare('SELECT id FROM users WHERE email=?').bind(em.val).first())
         return json({ err: '该邮箱已被使用' }, 400, cors);
-      if (ph.val && await env.DB.prepare('SELECT id FROM users WHERE phone=?').bind(ph.val).first())
-        return json({ err: '该手机号已被使用' }, 400, cors);
       const salt = rndHex(16), hash = await pbkdf2(pw, salt), now = Date.now();
-      const r = await env.DB.prepare('INSERT INTO users (username,nickname,pass_salt,pass_hash,provider,avatar,av_bg,email,phone,created,updated) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
-        .bind(name, nick, salt, hash, 'pw', pick(AV_EMOJI), pick(AV_BG), em.val, ph.val, now, now).run();
+      const r = await env.DB.prepare('INSERT INTO users (username,nickname,pass_salt,pass_hash,provider,avatar,av_bg,email,created,updated) VALUES (?,?,?,?,?,?,?,?,?,?)')
+        .bind(name, nick, salt, hash, 'pw', pick(AV_EMOJI), pick(AV_BG), em.val, now, now).run();
       const newUid = r.meta.last_row_id;
       const recovery = await setRecovery(env, newUid); // 明文仅此一次返回，之后只剩哈希
       return json({ token: await newSession(env, newUid), user: { username: name, nickname: nick }, recovery }, 200, cors);
@@ -405,11 +395,11 @@ export default {
     if (M === 'GET' && path === '/api/me') {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
-      const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created,email,phone FROM users WHERE id=?').bind(uid).first();
+      const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created,email FROM users WHERE id=?').bind(uid).first();
       if (!u) return json({ err: '账号不存在' }, 404, cors);
       // 联系方式只回掩码 + 是否已填，明文不出服务端
-      u.hasEmail = !!u.email; u.hasPhone = !!u.phone;
-      u.email = maskEmail(u.email); u.phone = maskPhone(u.phone);
+      u.hasEmail = !!u.email;
+      u.email = maskEmail(u.email);
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, uid);
       return json({ user: u, rank: rank.c, followers: fc.followers, following: fc.following }, 200, cors);
@@ -454,12 +444,6 @@ export default {
         if (em.val) { const dup = await env.DB.prepare('SELECT id FROM users WHERE email=? AND id<>?').bind(em.val, uid).first();
           if (dup) return json({ err: '该邮箱已被使用' }, 400, cors); }
         set.push('email=?'); bind.push(em.val);
-      }
-      if (b.phone != null) {
-        const ph = normPhone(b.phone); if (!ph.ok) return json({ err: ph.err }, 400, cors);
-        if (ph.val) { const dup = await env.DB.prepare('SELECT id FROM users WHERE phone=? AND id<>?').bind(ph.val, uid).first();
-          if (dup) return json({ err: '该手机号已被使用' }, 400, cors); }
-        set.push('phone=?'); bind.push(ph.val);
       }
       if (b.av_bg != null) {
         if (!AV_BG.includes(b.av_bg)) return json({ err: '背景色不在可选范围' }, 400, cors);

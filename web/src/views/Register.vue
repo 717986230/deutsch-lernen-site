@@ -10,7 +10,7 @@ import RecoveryDialog from '../components/RecoveryDialog.vue';
 
 const router = useRouter();
 const acct = useAccount();
-const f = ref({ username: '', password: '', nickname: '', email: '', phone: '' });
+const f = ref({ username: '', password: '', nickname: '', email: '' });
 const more = ref(false);
 const busy = ref(false);
 const err = ref('');
@@ -61,8 +61,6 @@ async function submit() {
           placeholder="排行榜上显示，留空则用用户名" maxlength="16" />
         <AuthField v-model="f.email" label="邮箱" optional type="email"
           inputmode="email" autocomplete="email" placeholder="用于邮箱验证码找回" />
-        <AuthField v-model="f.phone" label="手机号" optional
-          inputmode="tel" autocomplete="tel" placeholder="用于人工找回" />
       </div>
 
       <p v-if="err" class="auth-err">{{ err }}</p>

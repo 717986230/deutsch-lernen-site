@@ -5,7 +5,7 @@ import { showToast, showDialog } from 'vant';
 import { api } from '../api';
 import { useAccount } from '../store/account';
 const acct = useAccount(); const router = useRouter();
-const ct = ref({ email: '', phone: '' }); const pw = ref('');
+const ct = ref({ email: '' }); const pw = ref('');
 onMounted(() => { if (!acct.logged) router.replace('/login'); else acct.fetchMe(); });
 async function saveContact() {
   const r = await api.profileUpdate(ct.value);
@@ -37,8 +37,6 @@ function out() { acct.signOut(); router.replace('/login'); }
       <!-- 服务端只回掩码，明文不出服务端；留空即删除 -->
       <van-field v-model="ct.email" label="邮箱"
         :placeholder="acct.user.hasEmail ? `当前 ${acct.user.email}（留空则删除）` : '未填写'" />
-      <van-field v-model="ct.phone" label="手机号"
-        :placeholder="acct.user.hasPhone ? `当前 ${acct.user.phone}（留空则删除）` : '未填写'" />
     </van-cell-group>
     <div class="pad"><van-button block @click="saveContact">保存联系方式</van-button></div>
 

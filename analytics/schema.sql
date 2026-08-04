@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS users (
   sig         TEXT DEFAULT '',      -- 个性签名（≤60 字）
   -- 找回密码用的联系方式（均为选填；属个人信息，收集前须在注册页告知）
   email       TEXT,                 -- 小写规范化后存储；唯一
-  phone       TEXT,                 -- 仅存数字（含国家码，不含 + 与分隔符）；唯一
+  phone       TEXT,                 -- 【已下线】不再收集，保留空列；见 migrate-drop-phone.sql
   -- 恢复码：忘记密码时的唯一凭证。与密码同等待遇——只存 PBKDF2 哈希，明文仅在生成时返回一次
   rec_salt    TEXT,
   rec_hash    TEXT,
@@ -58,7 +58,7 @@ CREATE INDEX IF NOT EXISTS idx_users_total  ON users(total DESC);
 CREATE INDEX IF NOT EXISTS idx_users_gh     ON users(provider, provider_id);
 -- 唯一索引：SQLite 中 NULL 互不相等，故「未填」的行不会互相冲突
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_phone ON users(phone);
+-- idx_users_phone 已随手机号下线移除
 
 -- 已有部署补列（新建库会因列已存在而报错，属正常，可忽略）：
 --   ALTER TABLE users ADD COLUMN email TEXT;
