@@ -1,0 +1,41 @@
+# 部署与灰度
+
+## 现状
+
+| | 部署方式 | 地址 |
+|---|---|---|
+| 旧站 | GitHub Pages（仓库根 `index.html`） | www.uuoo.site ← **当前生产** |
+| 新端 | Cloudflare Pages（`web/dist`） | 待创建 |
+
+两者**互不影响**，这是灰度的基础：新端出问题，把域名切回旧站即可，不必回滚代码。
+
+## 首次部署（约 10 分钟）
+
+1. Cloudflare Dashboard → Workers & Pages → Create → Pages → **Direct Upload**
+   项目名填 `uuoo-web`，先手动传一次 `web/dist` 把项目建出来
+2. 拿到临时域名 `uuoo-web.pages.dev`，**先自己用几天**
+3. 配置 GitHub Actions 自动部署，在仓库 Settings → Secrets 添加：
+   - `CF_API_TOKEN`（Cloudflare → My Profile → API Tokens → 用 "Edit Cloudflare Workers" 模板）
+   - `CF_ACCOUNT_ID`（Dashboard 右侧栏可见）
+   此后推 `main` 且改动 `web/` 或 `data/` 就会自动构建部署
+
+## ⚠️ 切换域名前必读：localStorage 不跨域
+
+学习进度（`study` / `knownWords` / `badges_seen`）存在**浏览器本地**，
+而 localStorage **按域名隔离**。这意味着：
+
+- **同域名替换**（www.uuoo.site 指向新端）→ 进度自然延续，但无法灰度
+- **换域名**（如 new.uuoo.site）→ 老用户进度**不会带过去**
+
+已登录用户的 `known/streak/total/quiz` 在服务端有副本，重新登录能恢复大部分；
+但**未登录用户的本地进度会丢**。
+
+推荐路径：
+1. 用 `uuoo-web.pages.dev` 内部验证（自己用，不宣传）
+2. 确认无误后，**直接把 www.uuoo.site 指向 Cloudflare Pages**——同域名替换，
+   老用户 localStorage 原样延续，零感知
+3. 旧站 `index.html` **保留在仓库里不要删**，出问题把 DNS 切回 GitHub Pages 即可
+
+## 回退
+
+DNS 切回 GitHub Pages，5 分钟内生效。代码无需任何改动。

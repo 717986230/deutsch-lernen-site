@@ -1,0 +1,29 @@
+# 构建 Vue 用户端并部署到 Cloudflare Pages。
+# 旧站（仓库根 index.html）由 GitHub Pages 独立部署，两者互不影响 ——
+# 这正是灰度的基础：新端出问题，把域名切回旧站即可，不需要回滚代码。
+name: Deploy web
+
+on:
+  push:
+    branches: [main]
+    paths: ['web/**', 'data/**', '.github/workflows/deploy-web.yml']
+  workflow_dispatch:        # 支持手动触发，便于紧急重发
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm', cache-dependency-path: web/package-lock.json }
+      - run: npm ci
+        working-directory: web
+      - run: npm run build          # 同时生成 sw.js（gen-sw.mjs）
+        working-directory: web
+      # 内容数据体检：谐音字符集、字段完整性、同词一致性
+      - run: npm ci --ignore-scripts && npm run verify:data
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: pages deploy web/dist --project-name=uuoo-web

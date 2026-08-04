@@ -33,7 +33,7 @@ const grouped = computed(() => {
       <LangSwitch />
       <div class="jump">
         <button class="seg" @click="$router.push('/dialog')">情景对话</button>
-        <button v-if="!langS.isEn" class="seg" @click="$router.push('/series')">留学连载</button>
+        <button class="seg" @click="$router.push('/series')">留学连载</button>
       </div>
       <p v-if="loading" class="page-sub">加载中…</p>
       <template v-for="[lv, arr] in grouped" :key="lv">

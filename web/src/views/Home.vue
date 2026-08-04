@@ -29,6 +29,7 @@ onMounted(async () => {
       <button class="seg" @click="router.push('/ref/pron')">发音</button>
       <button class="seg" @click="router.push('/ref/numbers')">数字</button>
       <button class="seg" @click="router.push('/ref/grammar')">语法</button>
+      <button class="seg" @click="router.push('/boards')">图解</button>
     </div>
     <button class="btn" @click="router.push('/phrases')">开始学习</button>
     <button class="btn btn-plain" style="margin-top:10px"

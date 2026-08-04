@@ -1,10 +1,15 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
+import { useLang } from '../store/lang';
+import LangSwitch from '../components/LangSwitch.vue';
 defineOptions({ name: 'Series' });
+const langS = useLang();
 const list = ref([]); const cur = ref(null);
-onMounted(async () => { list.value = await loadData('series'); });
+async function load() { cur.value = null; list.value = await loadData(langS.file('series')); }
+onMounted(load);
+watch(() => langS.lang, load);
 const idx = computed(() => cur.value ? list.value.indexOf(cur.value) : -1);
 const go = (d) => { const i = idx.value + d; if (i >= 0 && i < list.value.length) { cur.value = list.value[i]; scrollTo(0,0); } };
 </script>
@@ -12,7 +17,8 @@ const go = (d) => { const i = idx.value + d; if (i >= 0 && i < list.value.length
   <div class="page">
     <template v-if="!cur">
       <h1 class="page-title">留学连载</h1>
-      <p class="page-sub">按顺序读 · 跟着主角在德国生活</p>
+      <p class="page-sub">按顺序读 · 跟着主角在异国生活</p>
+      <LangSwitch />
       <div v-for="(r,i) in list" :key="i" class="item ep" @click="cur = r">
         <span class="no">{{ i + 1 }}</span>
         <span class="tx"><span class="ti">{{ r.title }}</span><span class="zh">{{ r.zh }}</span></span>
@@ -23,7 +29,7 @@ const go = (d) => { const i = idx.value + d; if (i >= 0 && i < list.value.length
       <h2 class="at">{{ cur.title }}</h2>
       <p class="az">{{ cur.zh }}</p>
       <!-- series 是两元素 [de,zh]，按设计没有谐音，与 readings 的三元素区分 -->
-      <div v-for="(p,i) in cur.paras" :key="i" class="item" @click="speak(p[0])">
+      <div v-for="(p,i) in cur.paras" :key="i" class="item" @click="speak(p[0], langS.isEn ? 'en-US' : 'de-DE')">
         <div class="item-de" lang="de">{{ p[0] }}</div>
         <div class="item-zh">{{ p[1] }}</div>
       </div>

@@ -13,6 +13,7 @@ const routes = [
   { path: '/u/:name', component: () => import('../views/Profile.vue'), meta: { title: '用户主页' } },
   { path: '/feed', component: () => import('../views/Feed.vue'), meta: { title: '动态' } },
   { path: '/following', component: () => import('../views/Following.vue'), meta: { title: '我的关注' } },
+  { path: '/boards', component: () => import('../views/Boards.vue'), meta: { title: '图解词典' } },
   // open:true —— 隐私政策必须能在注册前读到，否则「同意」不成立，不能挡在登录墙后
   { path: '/legal', component: () => import('../views/Legal.vue'), meta: { title: '隐私政策', open: true } },
   { path: '/support', component: () => import('../views/Support.vue'), meta: { title: '支持作者' } },
