@@ -9,7 +9,8 @@ const routes = [
   { path: '/quiz', component: () => import('../views/Quiz.vue'), meta: { title: '测验' } },
   { path: '/dialog', component: () => import('../views/Dialog.vue'), meta: { title: '情景对话' } },
   { path: '/series', component: () => import('../views/Series.vue'), meta: { title: '留学连载' } },
-  { path: '/legal', component: () => import('../views/Legal.vue'), meta: { title: '隐私政策' } },
+  // open:true —— 隐私政策必须能在注册前读到，否则「同意」不成立，不能挡在登录墙后
+  { path: '/legal', component: () => import('../views/Legal.vue'), meta: { title: '隐私政策', open: true } },
   { path: '/support', component: () => import('../views/Support.vue'), meta: { title: '支持作者' } },
   { path: '/me', component: () => import('../views/Me.vue'), meta: { title: '我的', tab: true } },
   // 账号相关三页各自独立：一页一件事，互相之间只用文字链跳转

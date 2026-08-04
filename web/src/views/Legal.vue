@@ -1,8 +1,8 @@
 <script setup>
 // 隐私政策与用户协议。收集邮箱/手机号的合规前提，注册页在同意前必须能看到全文。
-// ⚠️ 运营主体与联系邮箱为占位符，上线前必须替换为真实信息，否则本政策不成立。
-const OWNER = import.meta.env.VITE_LEGAL_OWNER || '（待填写：个人 / 公司名称）';
-const CONTACT = import.meta.env.VITE_LEGAL_CONTACT || '（待填写：联系邮箱）';
+// 运营主体与联系邮箱为公开信息——隐私政策必须能被联系到，否则政策不成立。
+const OWNER = 'uuoo.site 站长';
+const CONTACT = 'xinglyang717@gmail.com';
 </script>
 
 <template>
@@ -52,7 +52,7 @@ const CONTACT = import.meta.env.VITE_LEGAL_CONTACT || '（待填写：联系邮�
     </ul>
 
     <h2 class="lg-h">七、联系我们</h2>
-    <p class="lg-p">对隐私或本协议有疑问，或需行使上述权利，请联系：<br><b>{{ CONTACT }}</b></p>
+    <p class="lg-p">对隐私或本协议有疑问，或需行使上述权利，请联系：<br><a :href="`mailto:${CONTACT}`" class="mail">{{ CONTACT }}</a></p>
     <p class="lg-p lg-owner">运营主体：<b>{{ OWNER }}</b></p>
   </div>
 </template>
@@ -64,4 +64,5 @@ const CONTACT = import.meta.env.VITE_LEGAL_CONTACT || '（待填写：联系邮�
 .lg-ul li{font-size:14px;color:var(--text-2);line-height:1.85;margin-bottom:8px}
 code{background:var(--line);padding:1px 5px;border-radius:4px;font-size:13px}
 .lg-owner{font-size:12px;color:var(--text-3)}
+.mail{color:var(--brand-text);font-weight:600}
 </style>
