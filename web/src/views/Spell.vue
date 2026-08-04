@@ -4,8 +4,11 @@ import { loadData } from '../api';
 import { speak } from '../api/speak';
 import { buildPool, isRight, markKnown, markWrong, clearWrong, getWrong,
          okBeep, badBeep, soundOn, setSound, touchStudy } from '../api/practice';
+import { studyTick } from '../api/study';
+import { useAccount } from '../store/account';
 defineOptions({ name: 'Spell' });
 
+const acct = useAccount();
 const LV = [['all','全部'],['0','入门'],['a1','A1'],['a2','A2'],['b1','B1'],['b2','B2']];
 const cats = ref([]); const level = ref('all'); const unit = ref('word');
 const queue = ref([]); const idx = ref(0); const input = ref(''); const state = ref('idle');
@@ -37,6 +40,8 @@ function submit() {
   if (ok) { right.value++; markKnown(cur.value.de); clearWrong(cur.value.de); okBeep(); }
   else { wrongCnt.value++; markWrong(cur.value); badBeep(); }
   touchStudy();
+  studyTick(1, false);   // 计入今日学习量与连续打卡
+  acct.syncSoon();
 }
 function next() {
   judged.value = null; input.value = '';

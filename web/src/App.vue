@@ -2,6 +2,7 @@
 import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAccount } from './store/account';
+import BadgeCelebrate from './components/BadgeCelebrate.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -9,7 +10,13 @@ const acct = useAccount();
 const active = computed(() => route.path);
 // 登录/注册/重置是「一屏一件事」的页面，底部 tab 在这里既点不动也只是噪音
 const showTab = computed(() => !!route.meta.tab);
-onMounted(() => acct.fetchMe());
+onMounted(() => {
+  acct.fetchMe(); acct.sync();
+  // 页面隐藏时补推一次，避免用户直接关掉导致最后一段进度丢失
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') acct.sync();
+  });
+});
 const go = (p) => router.push(p);
 </script>
 
@@ -27,6 +34,7 @@ const go = (p) => router.push(p);
       <van-tabbar-item name="/spell" icon="edit" to="/spell">练习</van-tabbar-item>
       <van-tabbar-item name="/me" icon="user-o" to="/me">我的</van-tabbar-item>
     </van-tabbar>
+    <BadgeCelebrate />
   </div>
 </template>
 

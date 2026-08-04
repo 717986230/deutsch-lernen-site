@@ -3,6 +3,8 @@ import { createPinia } from 'pinia';
 import './styles/theme.css';
 import './styles/auth.css';
 import App from './App.vue';
+import { registerSW } from './pwa';
 import router from './router';
 
 createApp(App).use(createPinia()).use(router).mount('#app');
+registerSW();

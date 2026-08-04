@@ -4,8 +4,11 @@ import { loadData } from '../api';
 import { speak } from '../api/speak';
 import { quizPool, genderPool, makeQuestion, okBeep, badBeep, touchStudy,
          markWrong, markKnown } from '../api/practice';
+import { studyTick } from '../api/study';
+import { useAccount } from '../store/account';
 defineOptions({ name: 'Quiz' });
 
+const acct = useAccount();
 const MODES = [
   ['phrase', '中→德', '看中文选德语'],
   ['reverse', '德→中', '看德语选中文'],
@@ -47,6 +50,8 @@ function pick(o) {
   if (ok) { score.value++; okBeep(); markKnown(q.value.right.de); }
   else { badBeep(); markWrong(q.value.right); }
   touchStudy();
+  studyTick(1, true);    // 测验计入 quiz 计数，徽章按它判定
+  acct.syncSoon();
 }
 function next() {
   if (n.value + 1 >= ROUND) { state.value = 'done'; return; }
