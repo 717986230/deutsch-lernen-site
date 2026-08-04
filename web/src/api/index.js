@@ -36,6 +36,12 @@ export const api = {
   reset: (b) => request('/api/account/reset', { method: 'POST', body: b, auth: false }),
   newRecovery: (b) => request('/api/account/recovery', { method: 'POST', body: b }),
   logout: () => request('/api/logout', { method: 'POST' }),
+  // 社交
+  profile: (name) => request('/api/profile?name=' + encodeURIComponent(name), { auth: true }),
+  follow: (name) => request('/api/follow', { method: 'POST', body: { username: name } }),
+  unfollow: (name) => request('/api/unfollow', { method: 'POST', body: { username: name } }),
+  feed: () => request('/api/feed'),
+  following: (name) => request('/api/following' + (name ? '?u=' + encodeURIComponent(name) : '')),
 };
 
 // 数据源：与旧站共用 public/data/*.json，按需加载不进 bundle

@@ -43,6 +43,11 @@ function out() { acct.signOut(); router.replace('/login'); }
       <van-cell title="累计学习" :value="stat.total + ' 次'" />
     </van-cell-group>
 
+    <div class="segs social">
+      <button class="seg" @click="$router.push('/feed')">动态</button>
+      <button class="seg" @click="$router.push('/following')">我的关注</button>
+    </div>
+
     <div class="group">徽章 {{ BADGES.filter(lit).length }} / {{ BADGES.length }}</div>
     <div class="bg">
       <div v-for="b in BADGES" :key="b.id" class="bd" :class="{ on: lit(b) }">
@@ -69,6 +74,7 @@ function out() { acct.signOut(); router.replace('/login'); }
   </div>
 </template>
 <style scoped>
+.social{margin:14px 0 4px}
 .bg{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin:6px 0 18px}
 .bd{border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;opacity:.4}
 .bd.on{opacity:1;border-color:var(--brand)}
