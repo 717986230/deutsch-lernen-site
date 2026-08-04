@@ -8,8 +8,12 @@
 
 ## 0. 一句话
 
-德语学习手册（www.uuoo.site）：**纯静态单文件前端**（GitHub Pages）+ **一个 Cloudflare Worker + 一个 D1**。
-面向中文母语者，主力场景是**手机 / 微信内置浏览器**。
+德语学习手册（www.uuoo.site）：**纯静态前端**（GitHub Pages）+ **一个 Cloudflare Worker + 一个 D1**。
+面向中文母语者，主力场景是**手机浏览器**。
+
+> **2026-08 变更**：站长决定**不再支持微信内置浏览器**，只需现代浏览器可用。
+> 这解除了下面 1.2 的 ES5 约束，也让新端（`web/`）不再产出 legacy 包（省 195KB gz）。
+> 迁移进度与新架构见 [`MIGRATION.md`](MIGRATION.md)。
 
 ---
 
@@ -33,8 +37,10 @@ npm run build        # = node build.mjs
 
 > 若 `node build.mjs` 报 `Cannot find package 'terser'`：容器/环境回收过 `node_modules`，跑 `npm install` 即可。
 
-### 1.2 微信 / 老内核兼容（ES5）
-`src.html` 里的运行时 JS 面向**微信 X5、老 iOS WKWebView**：
+### 1.2 老内核兼容（ES5）——**仅对旧站 `src.html` 仍然有效**
+> ⚠️ **新端 `web/` 不受此约束**（不再支持微信，见上）。本节只约束仍在服役的 `src.html`。
+
+`src.html` 里的运行时 JS 原本面向**微信 X5、老 iOS WKWebView**：
 - 用 `var` / `function`，避免 `let const` 之外的新语法进入热路径；**不用**可选链 `?.`、空值合并 `??`、`async/await`（构建不转译，只做 terser 压缩）
 - `build.mjs` 已注入垫片：`Array.prototype.flatMap`、`Object.values/assign`、`TextDecoder` 兜底、
   `speechSynthesis` 缺失时的 no-op 桩。**不要假设这些 API 一定存在**。

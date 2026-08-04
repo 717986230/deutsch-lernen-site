@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import legacy from '@vitejs/plugin-legacy';
 import Components from 'unplugin-vue-components/vite';
 import { VantResolver } from 'unplugin-vue-components/resolvers';
 import { cpSync, existsSync } from 'node:fs';
@@ -25,18 +24,12 @@ export default defineConfig({
     copyData(),
     vue(),
     Components({ resolvers: [VantResolver()] }),   // Vant 组件按需引入，不全量打包
-    // 微信 X5 / 老 iOS WKWebView 不一定支持 Vue 3 依赖的 Proxy 等特性，
-    // legacy 会额外产出一份 ES5 包 + polyfill，由浏览器按能力择一加载。
-    legacy({
-      targets: ['chrome >= 51', 'ios >= 10', 'android >= 5'],
-      additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
-      renderLegacyChunks: true,
-    }),
   ],
+  // 目标浏览器：现代桌面/移动浏览器。**不再支持微信内置浏览器**（站长 2026-08 决定），
+  // 因此不再产出 ES5 legacy 包 —— 那套 polyfill 有 195KB(gz)，比现代包本身还大。
   build: {
-    target: 'es2015',
+    target: 'es2020',
     minify: 'terser',
-    terserOptions: { format: { safari10: true }, mangle: { safari10: true } },
     rollupOptions: {
       output: {
         manualChunks: { vue: ['vue', 'vue-router', 'pinia'], vant: ['vant'] },
