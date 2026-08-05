@@ -1227,7 +1227,7 @@ body.lang-en .phfab{display:none}
         <li><b>账号信息</b>：用户名、昵称、密码。密码<b>不以明文存储</b>，只保存加盐哈希（PBKDF2-SHA256，10 万次迭代），任何人（包括站方）都无法反推出你的原始密码。</li>
         <li><b>邮箱（选填）</b>：<b>仅用于你忘记密码时找回账号</b>，不会用于推送、营销，也不会提供给任何第三方。你可以不填，也可以随时在「我的 → 账号设置」里修改或删除。<b>本站不收集手机号。</b></li>
         <li><b>学习数据</b>：掌握词数、连续打卡天数、答题数等，用于生成你的学习进度与排行榜。</li>
-        <li><b>匿名访问统计</b>：页面访问量、点击的功能名、浏览器类型、国家/地区。这部分<b>不与你的账号关联</b>，仅用于了解哪些功能有人用。</li>
+        <li><b>匿名访问统计</b>：页面访问量、点击的功能名、浏览器类型、<b>所在城市</b>、<b>停留时长</b>，以及<b>截断后的 IP</b>（如 <code>1.2.3.4</code> 只记为 <code>1.2.3.0</code>，IPv6 只保留前段）。截断后无法定位到具体个人，仅用于了解访客来自哪些地区、哪些功能有人用。这部分<b>不与你的账号关联</b>。<br>如需关闭，在浏览器控制台执行 <code>localStorage._noTrack='1'</code> 即可。</li>
       </ul>
       <p class="lg-p"><b>我们不收集</b>：<b>手机号</b>、真实姓名、身份证号、住址、精确位置、通讯录、相册。本站<b>不接受任何用户上传</b>（无头像上传、无评论、无图片），头像只能从预设 emoji 中选择。</p>
 
@@ -3785,11 +3785,16 @@ var TRACK_URL="https://uuoo-analytics.uuoo.workers.dev/collect";
 var _sid=Math.random().toString(36).slice(2,10),_tq=[];
 function _vid(){try{var v=localStorage.getItem('_vid');if(!v){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem('_vid',v);}return v;}catch(e){return '0';}}
 function _trackOn(){try{if(navigator.doNotTrack=='1'||localStorage.getItem('_noTrack')=='1')return false;}catch(e){}return !!TRACK_URL;}
+// 会话时长：从本次会话首次加载算起，flush 时一并上报（秒）。
+// 用 performance.now 而非 Date.now —— 后者受系统改时间影响，会算出负数或天文数字。
+var _sessT0=(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now();
+function _sessDur(){var now=(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now();
+  return Math.max(0,Math.round((now-_sessT0)/1000));}
 function track(name,props){if(!_trackOn())return;_tq.push({t:Date.now(),n:name,p:props||null});if(_tq.length>=10)_trackFlush();}
 function _trackFlush(beacon){
   if(!_trackOn()||!_tq.length)return;
   var batch=_tq.splice(0,_tq.length);
-  var body=JSON.stringify({vid:_vid(),sid:_sid,path:location.pathname,ref:document.referrer||'',ua:navigator.userAgent,events:batch});
+  var body=JSON.stringify({vid:_vid(),sid:_sid,path:location.pathname,ref:document.referrer||'',ua:navigator.userAgent,dur:_sessDur(),events:batch});
   try{
     if(beacon&&navigator.sendBeacon){navigator.sendBeacon(TRACK_URL,body);return;}
     fetch(TRACK_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:body,keepalive:true})['catch'](function(){_trackSave(batch);});

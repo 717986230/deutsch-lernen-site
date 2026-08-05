@@ -62,6 +62,21 @@ async function setRecovery(env, uid) {
 
 const maskEmail = (e) => { if (!e) return ''; const i = e.indexOf('@'); const n = e.slice(0, i), d = e.slice(i); return (n.length <= 1 ? n : n[0] + '***') + d; };
 
+
+// ───────── 埋点：IP 处理 ─────────
+// IP 在 PIPL / GDPR 下均属个人信息。默认只存**截断后**的：
+//   IPv4 末段清零（1.2.3.4 → 1.2.3.0）、IPv6 只留前 48 位。
+// 这样仍能做地域与运营商分析，但无法定位到具体个人 —— 是业界标准做法。
+// 确需完整 IP（如排查滥用）时，设 wrangler secret LOG_FULL_IP=1 显式开启，
+// 并**必须同步在隐私政策里写明**，否则属于未告知收集。
+function truncIP(ip, full) {
+  if (!ip) return '';
+  if (full) return ip.slice(0, 45);
+  if (ip.indexOf(':') >= 0) return ip.split(':').slice(0, 3).join(':') + '::';  // IPv6 /48
+  const p = ip.split('.');
+  return p.length === 4 ? p[0] + '.' + p[1] + '.' + p[2] + '.0' : '';
+}
+
 // 频控参数（固定窗口计数，ratelimit 表；调参改这里即可）
 const RL = {
   reg: { limit: 5, win: 3600000 },  // 注册：每 IP 1 小时 5 次（每请求计）
@@ -108,13 +123,19 @@ export default {
       try { d = JSON.parse(await req.text()); } catch { return new Response('bad json', { status: 400, headers: cors }); }
       const cut = (v, n) => (v == null ? '' : String(v)).slice(0, n);
       const vid = cut(d.vid, 40), sid = cut(d.sid, 20), p = cut(d.path, 200), ref = cut(d.ref, 300), ua = cut(d.ua, 300);
-      const country = (req.cf && req.cf.country) || '';
+      const cf = req.cf || {};
+      const country = cf.country || '';
+      const region = cut(cf.region || '', 40);        // 省/州
+      const city = cut(cf.city || '', 40);
+      const ip = truncIP(req.headers.get('CF-Connecting-IP') || '', env.LOG_FULL_IP === '1');
+      // 会话时长由前端在页面隐藏时上报（秒）；夹到 0–86400 防脏数据
+      const dur = Math.max(0, Math.min(86400, parseInt(d.dur, 10) || 0));
       const evs = Array.isArray(d.events) ? d.events.slice(0, 50) : [];
       if (evs.length) {
-        const stmt = env.DB.prepare('INSERT INTO events (ts,vid,sid,name,props,path,ref,ua,country) VALUES (?,?,?,?,?,?,?,?,?)');
+        const stmt = env.DB.prepare('INSERT INTO events (ts,vid,sid,name,props,path,ref,ua,country,region,city,ip,dur) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
         await env.DB.batch(evs.map(e => stmt.bind(
           e.t || Date.now(), vid, sid, cut(e.n, 40),
-          e.p ? JSON.stringify(e.p).slice(0, 500) : null, p, ref, ua, country)));
+          e.p ? JSON.stringify(e.p).slice(0, 500) : null, p, ref, ua, country, region, city, ip, dur)));
       }
       return new Response('ok', { headers: cors });
     }
@@ -127,7 +148,19 @@ export default {
       const byEvent = await env.DB.prepare('SELECT name,COUNT(*) c FROM events WHERE ts>? GROUP BY name ORDER BY c DESC LIMIT 20').bind(since).all();
       const byView = await env.DB.prepare("SELECT props,COUNT(*) c FROM events WHERE ts>? AND name='view' GROUP BY props ORDER BY c DESC LIMIT 20").bind(since).all();
       const users = await env.DB.prepare('SELECT COUNT(*) c FROM users').first();
-      return json({ days, pv: pv.c, uv: uv.c, users: users.c, byEvent: byEvent.results, byView: byView.results }, 200, cors);
+      // 会话时长：只取 dur>0 的记录（0 表示还没上报过时长），中位数比均值抗极端值
+      const durs = await env.DB.prepare(
+        'SELECT dur FROM events WHERE ts>? AND dur>0 ORDER BY dur').bind(since).all();
+      const dv = durs.results.map(r => r.dur);
+      const median = dv.length ? dv[Math.floor(dv.length / 2)] : 0;
+      const avg = dv.length ? Math.round(dv.reduce((a, b) => a + b, 0) / dv.length) : 0;
+      const byCity = await env.DB.prepare(
+        "SELECT country,region,city,COUNT(DISTINCT vid) c FROM events WHERE ts>? AND city<>'' " +
+        'GROUP BY country,region,city ORDER BY c DESC LIMIT 20').bind(since).all();
+      return json({ days, pv: pv.c, uv: uv.c, users: users.c,
+        byEvent: byEvent.results, byView: byView.results,
+        duration: { median, avg, samples: dv.length },
+        byCity: byCity.results }, 200, cors);
     }
 
     // ───────── 账号：注册 / 登录 ─────────

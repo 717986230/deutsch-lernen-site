@@ -91,6 +91,12 @@ backend() {
       | grep -v "duplicate column" || true
   fi
 
+  say "补齐 events 表地域/IP/时长列…"
+  if [ -f migrate-events-geo.sql ]; then
+    wrangler d1 execute "$DB" --remote --file=migrate-events-geo.sql 2>&1 \
+      | grep -v "duplicate column" || true
+  fi
+
   say "清空存量手机号（已下线该字段）…"
   if [ -f migrate-drop-phone.sql ]; then
     wrangler d1 execute "$DB" --remote --file=migrate-drop-phone.sql

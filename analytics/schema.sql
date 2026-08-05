@@ -10,11 +10,18 @@ CREATE TABLE IF NOT EXISTS events (
   path    TEXT,
   ref     TEXT,      -- 来源
   ua      TEXT,      -- User-Agent
-  country TEXT       -- Cloudflare 边缘识别的国家码
+  country TEXT,      -- Cloudflare 边缘识别的国家码
+  region  TEXT,      -- 省/州（Cloudflare 边缘识别）
+  city    TEXT,      -- 城市（同上）
+  -- IP 属个人信息：默认只存截断值（IPv4 末段清零 / IPv6 保留 /48）。
+  -- 完整 IP 需设 LOG_FULL_IP=1 显式开启，且必须同步写进隐私政策。
+  ip      TEXT,
+  dur     INTEGER    -- 本次会话时长（秒），前端在页面隐藏时上报
 );
 CREATE INDEX IF NOT EXISTS idx_events_ts   ON events(ts);
 CREATE INDEX IF NOT EXISTS idx_events_name ON events(name);
 CREATE INDEX IF NOT EXISTS idx_events_vid  ON events(vid);
+CREATE INDEX IF NOT EXISTS idx_events_city ON events(city);
 
 -- 账号表（用户名+密码 或 GitHub OAuth）
 CREATE TABLE IF NOT EXISTS users (
