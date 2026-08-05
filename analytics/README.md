@@ -150,6 +150,21 @@ wrangler deploy
 "本站仅记录匿名使用统计以改进功能；账号仅保存用户名、昵称与密码哈希"，需要时可删库。
 用户可自助注销（`/api/account/delete`）：注销即从 users/sessions/follows/activity 硬删，不可恢复；匿名埋点与账号无关联，不受影响。
 
+## 定时清理
+
+Worker 每天凌晨 4 点自动清理（`wrangler.toml` 的 `[triggers] crons`）：
+
+| 表 | 保留 |
+|---|---|
+| `events` 埋点 | **90 天** |
+| `activity` 动态 | 180 天 |
+| `sessions` / `oauth_state` / `ratelimit` | 过期即删 |
+
+不配这个，`events` 会一直涨到 D1 的 10GB 上限；而且埋点含个人信息
+（截断 IP、城市），无限留存本身也是合规风险。
+
+改保留期：worker.js 顶部的 `RETAIN_DAYS`。
+
 ## 数据备份（必读）
 
 D1 **没有自动备份**。误删一张表、一次写错的 UPDATE，用户账号与学习进度就永久没了。

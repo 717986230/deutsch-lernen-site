@@ -23,6 +23,10 @@ function normEmail(v) {
 // ───────── 邮箱验证码（Resend 发信）─────────
 // 密钥用 `wrangler secret put RESEND_API_KEY` 设置，切勿写进 wrangler.toml（那是明文进 git 的）。
 // 发信域名需在 Resend 后台验证过；发件人可用 MAIL_FROM 覆盖。
+// SQLite 缺列时有两种措辞：SELECT 报 "no such column"，INSERT 报 "has no column named"。
+// 只判前者会让 INSERT 的兜底永远不触发 —— 这是实测才发现的。
+const isMissingCol = (e) => /no such column|has no column named/i.test(String(e && e.message));
+
 const MAIL_TTL = 10 * 60 * 1000;   // 验证码 10 分钟有效
 const MAIL_MAX_TRY = 5;            // 同一枚码最多试 5 次
 function genMailCode() { const a = new Uint32Array(1); crypto.getRandomValues(a); return String(a[0] % 1000000).padStart(6, '0'); }
@@ -105,7 +109,27 @@ const OAUTH = {
   },
 };
 
+// 保留天数：埋点只用于看趋势，超过这个窗口的明细没有分析价值，
+// 留着只会撑大 D1（上限 10GB）并延长「个人信息」的留存期。
+const RETAIN_DAYS = 90;
+
 export default {
+  // 定时清理（wrangler.toml 里配 [triggers] crons）。
+  // 顺带清掉过期 session / oauth_state / 频控计数 —— 这些表以前只增不减。
+  async scheduled(event, env, ctx) {
+    const now = Date.now();
+    const cut = now - RETAIN_DAYS * 86400000;
+    const stmts = [
+      env.DB.prepare('DELETE FROM events WHERE ts < ?').bind(cut),
+      env.DB.prepare('DELETE FROM sessions WHERE exp < ?').bind(now),
+      env.DB.prepare('DELETE FROM oauth_state WHERE exp < ?').bind(now),
+      env.DB.prepare('DELETE FROM ratelimit WHERE exp < ?').bind(now),
+      // 动态只保留 180 天，超过的没人会翻
+      env.DB.prepare('DELETE FROM activity WHERE ts < ?').bind(now - 180 * 86400000),
+    ];
+    ctx.waitUntil(env.DB.batch(stmts));
+  },
+
   async fetch(req, env) {
     const cors = {
       'Access-Control-Allow-Origin': '*',
@@ -132,10 +156,18 @@ export default {
       const dur = Math.max(0, Math.min(86400, parseInt(d.dur, 10) || 0));
       const evs = Array.isArray(d.events) ? d.events.slice(0, 50) : [];
       if (evs.length) {
-        const stmt = env.DB.prepare('INSERT INTO events (ts,vid,sid,name,props,path,ref,ua,country,region,city,ip,dur) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        await env.DB.batch(evs.map(e => stmt.bind(
-          e.t || Date.now(), vid, sid, cut(e.n, 40),
-          e.p ? JSON.stringify(e.p).slice(0, 500) : null, p, ref, ua, country, region, city, ip, dur)));
+        const base = [e => e.t || Date.now(), () => vid, () => sid, e => cut(e.n, 40),
+          e => (e.p ? JSON.stringify(e.p).slice(0, 500) : null), () => p, () => ref, () => ua, () => country];
+        try {
+          const stmt = env.DB.prepare('INSERT INTO events (ts,vid,sid,name,props,path,ref,ua,country,region,city,ip,dur) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
+          await env.DB.batch(evs.map(e => stmt.bind(...base.map(f => f(e)), region, city, ip, dur)));
+        } catch (err) {
+          // 表结构还没补列时（先部署了 Worker、后跑迁移）回落到旧写法，
+          // 保证埋点不中断。跑过 migrate-events-geo.sql 后自动走上面的完整写法。
+          if (!isMissingCol(err)) throw err;
+          const old = env.DB.prepare('INSERT INTO events (ts,vid,sid,name,props,path,ref,ua,country) VALUES (?,?,?,?,?,?,?,?,?)');
+          await env.DB.batch(evs.map(e => old.bind(...base.map(f => f(e)))));
+        }
       }
       return new Response('ok', { headers: cors });
     }
@@ -149,17 +181,23 @@ export default {
       const byView = await env.DB.prepare("SELECT props,COUNT(*) c FROM events WHERE ts>? AND name='view' GROUP BY props ORDER BY c DESC LIMIT 20").bind(since).all();
       const users = await env.DB.prepare('SELECT COUNT(*) c FROM users').first();
       // 会话时长：只取 dur>0 的记录（0 表示还没上报过时长），中位数比均值抗极端值
-      const durs = await env.DB.prepare(
-        'SELECT dur FROM events WHERE ts>? AND dur>0 ORDER BY dur').bind(since).all();
-      const dv = durs.results.map(r => r.dur);
-      const median = dv.length ? dv[Math.floor(dv.length / 2)] : 0;
-      const avg = dv.length ? Math.round(dv.reduce((a, b) => a + b, 0) / dv.length) : 0;
-      const byCity = await env.DB.prepare(
-        "SELECT country,region,city,COUNT(DISTINCT vid) c FROM events WHERE ts>? AND city<>'' " +
-        'GROUP BY country,region,city ORDER BY c DESC LIMIT 20').bind(since).all();
+      // 下面两项依赖 migrate-events-geo.sql 补的列；未跑迁移时不让整个 /stats 挂掉
+      let median = 0, avg = 0, dv = [], byCity = { results: [] };
+      try {
+        const durs = await env.DB.prepare(
+          'SELECT dur FROM events WHERE ts>? AND dur>0 ORDER BY dur').bind(since).all();
+        dv = durs.results.map(r => r.dur);
+        median = dv.length ? dv[Math.floor(dv.length / 2)] : 0;
+        avg = dv.length ? Math.round(dv.reduce((a, b) => a + b, 0) / dv.length) : 0;
+        byCity = await env.DB.prepare(
+          "SELECT country,region,city,COUNT(DISTINCT vid) c FROM events WHERE ts>? AND city<>'' " +
+          'GROUP BY country,region,city ORDER BY c DESC LIMIT 20').bind(since).all();
+      } catch (err) {
+        if (!isMissingCol(err)) throw err;
+      }
       return json({ days, pv: pv.c, uv: uv.c, users: users.c,
         byEvent: byEvent.results, byView: byView.results,
-        duration: { median, avg, samples: dv.length },
+        duration: { median, avg, samples: dv.length },   // 未跑迁移时全为 0
         byCity: byCity.results }, 200, cors);
     }
 

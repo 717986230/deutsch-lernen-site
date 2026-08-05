@@ -17,3 +17,8 @@ SITE_URL = "https://www.uuoo.site"
 GH_CLIENT_ID = ""
 # Google OAuth Client ID（公开值）；Secret 用 `wrangler secret put GOOGLE_CLIENT_SECRET`
 GOOGLE_CLIENT_ID = ""
+
+# 定时清理：每天凌晨 4 点删过期埋点（保留 90 天）与过期会话/state/频控计数。
+# 不配这个，events 表会一直涨到 D1 的 10GB 上限。
+[triggers]
+crons = ["0 4 * * *"]
