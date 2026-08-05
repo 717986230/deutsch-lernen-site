@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-# uuoo 后端一键部署：拉取最新代码 → 建表 → 部署 Worker
-# 用法（在 ~/uuoo-analytics 目录）：bash deploy.sh
+# uuoo 后端一键部署（独立目录版）：拉取最新代码 → 建表 → 部署 Worker
+# 用法（在 ~/uuoo-analytics 这类独立目录）：bash deploy.sh
+#
+# ⚠️ 如果你是在**仓库根目录**操作，请改用根目录的 ../deploy.sh ——
+#    那个会先备份 D1、跑三项校验、并执行补列与手机号清理迁移，比本脚本安全。
+#    本脚本只做最小动作，供没有克隆完整仓库时使用。
 set -e
 BASE="https://raw.githubusercontent.com/717986230/deutsch-lernen-site/main/analytics"
 

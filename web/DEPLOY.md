@@ -39,3 +39,28 @@
 ## 回退
 
 DNS 切回 GitHub Pages，5 分钟内生效。代码无需任何改动。
+
+## 一键部署脚本
+
+仓库根目录的 `deploy.sh` 覆盖后端、Vue 端与体检：
+
+```bash
+bash deploy.sh          # 后端 + Vue 端
+bash deploy.sh backend  # 只部署后端（Worker + D1 迁移）
+bash deploy.sh web      # 只部署 Vue 端
+bash deploy.sh check    # 只体检，不部署任何东西 ← 建议先跑这个
+```
+
+**它替你挡掉的坑**（都是实际踩过的）：
+
+| 情况 | 脚本行为 |
+|---|---|
+| 在家目录运行 | 直接拒绝——wrangler 会扫 `~/.Trash`，macOS 报权限错误 |
+| wrangler 未登录 | 明确提示 `wrangler login`，而不是含糊报错 |
+| 动 D1 数据前 | **强制先备份**，备份失败就中止 |
+| 校验不通过 | 中止部署，不会把坏数据推上线 |
+| 明文词库泄漏进产物 | 中止 |
+| 迁移脚本重复执行 | `duplicate column` 视为正常，不算失败 |
+
+`analytics/deploy.sh` 是早期的独立目录版，只做最小动作、**不备份**。
+在仓库里操作请用根目录这个。
