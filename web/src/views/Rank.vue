@@ -3,16 +3,16 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { api } from '../api';
 const BY = [['known', '词汇'], ['streak', '连续'], ['total', '总量']];
 const by = ref('known'); const rows = ref([]); const loading = ref(true); const err = ref('');
-// 只完整显示前十，其余折叠 —— 榜单一屏放不下 50 条，前十才是用户真正关心的
+// 只显示前十。其余不提供展开 —— 名次靠后的具体是谁没人关心，
+// 给个总数让用户知道「榜上还有多少人」就够了。
 const TOP = 10;
-const expanded = ref(false);
-const shown = computed(() => expanded.value ? rows.value : rows.value.slice(0, TOP));
+const shown = computed(() => rows.value.slice(0, TOP));
 const restCount = computed(() => Math.max(0, rows.value.length - TOP));
 async function load() {
   loading.value = true; err.value = '';
   const r = await api.leaderboard(by.value);
   loading.value = false;
-  if (r.ok) { rows.value = r.data.list || []; expanded.value = false; }
+  if (r.ok) rows.value = r.data.list || [];
   // 网络故障与业务失败要分开说，别都归成「加载失败」
   else err.value = r.offline ? '离线中，联网后重试' : (r.data.err || '加载失败');
 }
@@ -36,14 +36,11 @@ const val = (u) => by.value === 'known' ? `${u.known || 0} 词`
       <span class="nm">{{ u.nickname || u.username }}</span>
       <span class="kn">{{ val(u) }}</span>
     </div>
-    <button v-if="!expanded && restCount" class="btn btn-plain more" @click="expanded = true">
-      展开其余 {{ restCount }} 名</button>
-    <button v-else-if="expanded && restCount" class="btn btn-plain more" @click="expanded = false">
-      只看前 {{ TOP }} 名</button>
+    <p v-if="restCount" class="more">榜上另有 {{ restCount }} 人</p>
   </div>
 </template>
 <style scoped>
-.more{margin-top:14px;font-size:14px}
+.more{margin-top:16px;text-align:center;font-size:13px;color:var(--text-3)}
 .segs{margin:4px 0 8px}
 .rk{display:flex;align-items:center;gap:12px}
 .no{width:22px;text-align:center;color:var(--text-3);font-size:14px;font-variant-numeric:tabular-nums}
