@@ -76,7 +76,18 @@ const maskEmail = (e) => { if (!e) return ''; const i = e.indexOf('@'); const n 
 function truncIP(ip, full) {
   if (!ip) return '';
   if (full) return ip.slice(0, 45);
-  if (ip.indexOf(':') >= 0) return ip.split(':').slice(0, 3).join(':') + '::';  // IPv6 /48
+  if (ip.indexOf(':') >= 0) {
+    // 必须先把 :: 展开再取前 3 组。直接按 ':' 切会把 2001:db8::1 变成
+    // 「2001:db8:::」这种非法地址，2a01::9f3:1c2 也会多留一组、超出承诺的 /48。
+    const [head, tail] = ip.split('::');
+    const h = head ? head.split(':') : [];
+    const t = tail ? tail.split(':') : [];
+    const fill = Math.max(0, 8 - h.length - t.length);
+    const groups = ip.indexOf('::') >= 0
+      ? h.concat(Array(fill).fill('0'), t)
+      : ip.split(':');
+    return groups.slice(0, 3).join(':') + '::';
+  }
   const p = ip.split('.');
   return p.length === 4 ? p[0] + '.' + p[1] + '.' + p[2] + '.0' : '';
 }
@@ -119,15 +130,22 @@ export default {
   async scheduled(event, env, ctx) {
     const now = Date.now();
     const cut = now - RETAIN_DAYS * 86400000;
-    const stmts = [
-      env.DB.prepare('DELETE FROM events WHERE ts < ?').bind(cut),
-      env.DB.prepare('DELETE FROM sessions WHERE exp < ?').bind(now),
-      env.DB.prepare('DELETE FROM oauth_state WHERE exp < ?').bind(now),
-      env.DB.prepare('DELETE FROM ratelimit WHERE exp < ?').bind(now),
-      // 动态只保留 180 天，超过的没人会翻
-      env.DB.prepare('DELETE FROM activity WHERE ts < ?').bind(now - 180 * 86400000),
+    // 逐条执行而非 batch：batch 是一个事务，events 那条一旦超出 D1 限制就整批回滚，
+    // 结果是「什么都没清」且悄无声息。拆开后一条失败不连累其余。
+    const jobs = [
+      // events 分批删：积压很久时一次性 DELETE 可能超限，每次最多 5 万行，靠每日重复跑收敛
+      ['events', 'DELETE FROM events WHERE id IN (SELECT id FROM events WHERE ts < ? LIMIT 50000)', cut],
+      ['sessions', 'DELETE FROM sessions WHERE exp < ?', now],
+      ['oauth_state', 'DELETE FROM oauth_state WHERE exp < ?', now],
+      ['ratelimit', 'DELETE FROM ratelimit WHERE exp < ?', now],
+      ['activity', 'DELETE FROM activity WHERE ts < ?', now - 180 * 86400000],
     ];
-    ctx.waitUntil(env.DB.batch(stmts));
+    ctx.waitUntil((async () => {
+      for (const [name, sql, arg] of jobs) {
+        try { await env.DB.prepare(sql).bind(arg).run(); }
+        catch (e) { console.error('cleanup ' + name + ' failed:', e && e.message); }
+      }
+    })());
   },
 
   async fetch(req, env) {
@@ -184,9 +202,13 @@ export default {
       // 下面两项依赖 migrate-events-geo.sql 补的列；未跑迁移时不让整个 /stats 挂掉
       let median = 0, avg = 0, dv = [], byCity = { results: [] };
       try {
+        // 一次会话会随每批上报重复写入累计时长，所以必须**按 sid 取最大值**再统计，
+        // 否则一个长会话会贡献几十行递增的 dur，把「会话时长」算成「上报次数分布」。
+        // 加 LIMIT：90 天窗口下不能把全表拉进内存做中位数。
         const durs = await env.DB.prepare(
-          'SELECT dur FROM events WHERE ts>? AND dur>0 ORDER BY dur').bind(since).all();
-        dv = durs.results.map(r => r.dur);
+          'SELECT MAX(dur) d FROM events WHERE ts>? AND dur>0 GROUP BY sid ORDER BY d LIMIT 5000'
+        ).bind(since).all();
+        dv = durs.results.map(r => r.d);
         median = dv.length ? dv[Math.floor(dv.length / 2)] : 0;
         avg = dv.length ? Math.round(dv.reduce((a, b) => a + b, 0) / dv.length) : 0;
         byCity = await env.DB.prepare(
@@ -197,7 +219,7 @@ export default {
       }
       return json({ days, pv: pv.c, uv: uv.c, users: users.c,
         byEvent: byEvent.results, byView: byView.results,
-        duration: { median, avg, samples: dv.length },   // 未跑迁移时全为 0
+        duration: { median, avg, samples: dv.length },   // 按会话去重后的秒数；未跑迁移时全为 0
         byCity: byCity.results }, 200, cors);
     }
 
@@ -448,7 +470,14 @@ export default {
       const list = computeBadges({ known, streak, best: Math.max(best, streak), total, quiz }, uid);
       const badges = list.join(',');
       const now = Date.now();
-      await env.DB.prepare('UPDATE users SET known=?,streak=?,best_streak=MAX(best_streak,?,?),total=?,quiz=?,level=?,badges=?,updated=? WHERE id=?')
+      // known/total/quiz 只增不减：这三个是累计量，用户不可能「忘掉」已掌握的词。
+      // 无条件覆盖会让**新设备首次登录时用本地的 0 清空服务端数据** ——
+      // 而 DEPLOY.md 承诺的正是「换设备重新登录可恢复进度」，覆盖式写入会直接打破它。
+      // 顺带也堵掉了用一次 POST 把别人挤下排行榜的路（只能往上刷，不能改低）。
+      // streak 例外：断签后本就该降回去，故保持直接赋值。
+      await env.DB.prepare(
+        'UPDATE users SET known=MAX(known,?),streak=?,best_streak=MAX(best_streak,?,?),' +
+        'total=MAX(total,?),quiz=MAX(quiz,?),level=?,badges=?,updated=? WHERE id=?')
         .bind(known, streak, best, streak, total, quiz, level, badges, now, uid).run();
       // 学习动态：纯系统事件（新徽章 / 打卡破纪录），供关注者的 Feed
       if (old) {

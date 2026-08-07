@@ -10,7 +10,13 @@ const OPT_OUT = '_noTrack';        // 用户可关闭：localStorage._noTrack = 
 const VID = '_vid';
 const QUEUE = '_tq';
 
-const on = () => { try { return localStorage.getItem(OPT_OUT) !== '1'; } catch { return false; } };
+// 尊重浏览器的 Do Not Track —— 旧站有这个判断，迁移时漏了，等于对 DNT 用户偷偷开了埋点
+const on = () => {
+  try {
+    if (navigator.doNotTrack === '1' || window.doNotTrack === '1') return false;
+    return localStorage.getItem(OPT_OUT) !== '1';
+  } catch { return false; }
+};
 const rnd = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
 function vid() {
   try {
