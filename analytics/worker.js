@@ -428,7 +428,7 @@ export default {
     if (M === 'GET' && om) {
       const prov = OAUTH[om[1]], step = om[2], site = env.SITE_URL || url.origin;
       const cid = prov.cid(env);
-      if (!cid) return new Response('该登录方式未配置', { status: 500 });
+      if (!cid) return Response.redirect(site + '/#login?err=oauth_unavailable', 302);
       const redirect = url.origin + '/api/oauth/' + om[1] + '/callback';
       if (step === 'start') {
         const state = rndHex(16);
