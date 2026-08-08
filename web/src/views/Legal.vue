@@ -62,7 +62,12 @@ const CONTACT = 'xinglyang717@gmail.com';
 .lg-p{font-size:14px;color:var(--text-2);line-height:1.85;margin:0 0 10px}
 .lg-ul{margin:0 0 10px;padding-left:20px}
 .lg-ul li{font-size:14px;color:var(--text-2);line-height:1.85;margin-bottom:8px}
-code{background:var(--line);padding:1px 5px;border-radius:4px;font-size:13px}
+/* 长串必须能断行：这段代码片段和下面的邮箱都是不可断的整词，
+   窄屏/放大到 200% 时会把整个文档撑宽，全站出现横向滚动条 */
+/* 必须显式给 color：继承 .lg-p 的 --text-2 压在 code 的浅灰底上只有 4.39:1 */
+code{background:var(--line);color:var(--text);padding:1px 5px;border-radius:4px;font-size:13px;
+  overflow-wrap:anywhere;word-break:break-all}
 .lg-owner{font-size:12px;color:var(--text-3)}
-.mail{color:var(--brand-text);font-weight:600}
+/* 邮箱是这一页唯一的可点目标，行内 16px 高远不够 44px —— 撑成块级并加内边距 */
+.mail{display:inline-block;padding:14px 0;color:var(--brand-text);font-weight:600;overflow-wrap:anywhere}
 </style>

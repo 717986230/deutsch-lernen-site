@@ -79,11 +79,11 @@ function back() { stop(); cur.value = null; }
 <style scoped>
 .dl{display:flex;align-items:center;gap:12px}
 .ic{font-size:22px}
-.nm{flex:1;display:flex;flex-direction:column}
+.nm{flex:1;min-width:0;display:flex;flex-direction:column}
 .sc{font-size:16px;font-weight:500}
 .de{font-size:12px;color:var(--text-3);margin-top:2px}
 .ct{color:var(--text-3);font-size:13px;white-space:nowrap}
-.bar{display:flex;align-items:center;gap:10px;padding:12px 0 4px;position:sticky;top:0;background:var(--bg);z-index:2}
+.bar{display:flex;align-items:center;gap:10px;padding:12px 0 4px;position:sticky;top:var(--bar-h);background:var(--bg);z-index:2}
 .back{background:none;border:none;color:var(--brand-text);font-size:15px;font-family:inherit;cursor:pointer;padding:4px 0}
 .bt{font-weight:600}
 .play{margin:8px 0 18px}

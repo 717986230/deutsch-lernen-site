@@ -16,7 +16,7 @@ onMounted(async () => {
     <h1 class="page-title">我关注的人</h1>
     <p v-if="loading" class="page-sub">加载中…</p>
     <p v-else-if="err" class="page-sub">{{ err }}</p>
-    <p v-else-if="!list.length" class="page-sub">还没关注任何人。去排行榜点头像看看别人的主页 👀</p>
+    <p v-else-if="!list.length" class="page-sub">还没关注任何人，去排行榜点头像看看</p>
     <div v-for="(u, i) in list" :key="i" class="item fw" @click="router.push('/u/' + u.username)">
       <span class="av" :style="{background: u.av_bg || 'var(--brand)'}">{{ u.avatar || '🦊' }}</span>
       <span class="tx"><span class="nm">{{ u.nickname || u.username }}</span>

@@ -17,6 +17,9 @@
   --art-der:#0f6f9e; --art-die:#c9252b; --art-das:#2f7d00;
   --lv0:#357a00; --lva1:#0b6285; --lva2:#7a5200; --lvb1:#95430f; --lvb2:#bf1e28;
   --btn-bg:rgba(88,204,2,.12);
+  /* 固定顶栏高度：44px 按钮 + 上下各 6px 外边距。页面留白和页内 sticky 条都引它，
+     改顶栏尺寸时只需改这一处，不会出现「内容被顶栏压住」或「留白对不上」 */
+  --bar-h:56px;
 }
 
 /* 语义别名。各视图里写的是语义名（--text-2/--line/--brand…），令牌值只在上面一处定。
@@ -61,11 +64,14 @@
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text)}
 body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-  -webkit-font-smoothing:antialiased;line-height:1.6}
+  -webkit-font-smoothing:antialiased;line-height:1.6;
+  /* 德语复合词很长（neunundneunzig / Wohnungssuche），不允许断行的话
+     窄屏和高倍缩放下会把文档撑宽，全站跟着出现横向滚动 */
+  overflow-wrap:break-word}
 
 /* ── 布局：与旧站一致 ── */
 .container{max-width:900px;margin:0 auto;padding:0 20px}
-.page{max-width:900px;margin:0 auto;padding:64px 20px 30px}   /* 顶栏固定，留出高度 */
+.page{max-width:900px;margin:0 auto;padding:calc(var(--bar-h) + 8px) 20px 30px}  /* 顶栏固定，留出高度 */
 .page-title{text-align:center;font-weight:400;font-size:26px;margin:8px 0 16px;letter-spacing:2px}
 .page-sub{text-align:center;font-size:13px;color:var(--text-dim);margin:0 0 18px}
 /* 旧站是 11px；本项目规定辅助文字 ≥12px，这里上调 1px（字距不变，观感几乎一致） */

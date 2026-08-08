@@ -16,7 +16,7 @@ const go = (d) => { const i = idx.value + d; if (i >= 0 && i < list.value.length
   <div class="page">
     <template v-if="!cur">
       <h1 class="page-title">留学连载</h1>
-      <p class="page-sub">按顺序读 · 跟着主角在异国生活</p>
+      <p class="page-sub">留学生活 · 按顺序读</p>
       <div v-for="(r,i) in list" :key="i" class="item ep" @click="cur = r">
         <span class="no">{{ i + 1 }}</span>
         <span class="tx"><span class="ti">{{ r.title }}</span><span class="zh">{{ r.zh }}</span></span>
@@ -41,7 +41,7 @@ const go = (d) => { const i = idx.value + d; if (i >= 0 && i < list.value.length
 <style scoped>
 .ep{display:flex;align-items:center;gap:14px}
 .no{width:26px;text-align:center;color:var(--text-3);font-size:14px;font-variant-numeric:tabular-nums}
-.tx{flex:1;display:flex;flex-direction:column}
+.tx{flex:1;min-width:0;display:flex;flex-direction:column}
 .ti{font-size:16px;font-weight:600}
 .zh{font-size:13px;color:var(--text-3);margin-top:2px}
 .bar{padding:12px 0 4px;position:sticky;top:0;background:var(--bg);z-index:2}

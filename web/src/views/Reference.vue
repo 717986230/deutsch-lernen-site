@@ -23,7 +23,6 @@ watch(key, () => scrollTo(0, 0));
   <div class="page">
     <h1 class="page-title">{{ meta[0] }}</h1>
     <p class="page-sub">{{ meta[1] }}</p>
-    <LangSwitch />
     <p v-if="!data" class="page-sub">加载中…</p>
     <div v-else class="ref" v-html="html"></div>
   </div>
@@ -70,6 +69,18 @@ watch(key, () => scrollTo(0, 0));
 /* <small> 默认 0.83em 会掉到 11.67px，低于本项目「辅助文字 ≥12px」的规定 */
 .ref :deep(small){font-size:12px;color:var(--text-3)}
 .ref :deep(code){background:var(--line);padding:1px 5px;border-radius:4px;font-size:13px}
+/* 参考页的正文是旧站传过来的 HTML 字符串，控制不到每个元素，
+   所以在容器上兜底：任何子元素都不得超过容器宽度。
+   不加这一条，语法页的输入框（固定 170px）和拼读胶囊行会把整个文档撑宽。
+   min-width:0 是配套的：grid 的 1fr 实为 minmax(auto,1fr)，flex 子项默认 min-width:auto，
+   两者都意味着「装不下也不缩」。语法页有个数据里写死的 repeat(3,1fr) 三列表格，
+   正是靠这一条才肯在窄屏收窄。 */
+.ref :deep(*){max-width:100%;min-width:0}
+/* 语法页那个动词输入框在数据里带着行内 style="min-width:170px"。
+   min-width 优先于 max-width，所以上面那条 max-width:100% 对它无效，
+   窄屏下它一个人就把文档撑到 255px。行内样式只能用 !important 压。 */
+.ref :deep(input),.ref :deep(select){box-sizing:border-box;min-width:0!important;width:100%}
+.ref :deep(.ph-row){display:flex;flex-wrap:wrap;gap:3px}
 /* 旧站的字母卡/数字卡：改成自适应网格 */
 .ref :deep(.letter-grid),.ref :deep(.num-grid){display:grid;
   grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin:0 0 16px}

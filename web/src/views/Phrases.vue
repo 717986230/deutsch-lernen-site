@@ -75,10 +75,10 @@ const grouped = computed(() => {
 </template>
 <style scoped>
 .cat{display:flex;align-items:center;gap:12px;font-size:16px}
-.icon{font-size:20px}.nm{flex:1;font-weight:500}
+.icon{font-size:20px}.nm{flex:1;min-width:0;font-weight:500}
 .ct{color:var(--text-3);font-size:13px}
 .bar{display:flex;align-items:center;gap:10px;padding:12px 0 4px;
-  position:sticky;top:0;background:var(--bg);z-index:2}
+  position:sticky;top:var(--bar-h);background:var(--bg);z-index:2}
 .back{background:none;border:none;color:var(--brand-text);font-size:15px;
   font-family:inherit;cursor:pointer;padding:4px 0}
 .bt{font-weight:600}

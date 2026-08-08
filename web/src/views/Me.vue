@@ -57,18 +57,22 @@ function out() { acct.signOut(); router.replace('/login'); }
       </div>
     </div>
 
-    <div class="grp">
+    <!-- 账号设置一年用不了两次，收进折叠区，别让它天天占着两个按钮 -->
+    <details class="acct">
+      <summary>账号设置</summary>
       <!-- 服务端只回掩码，明文不出服务端；留空即删除 -->
       <label class="fld"><span class="k">邮箱</span><input v-model="ct.email" :placeholder="acct.user.hasEmail ? `当前 ${acct.user.email}（留空则删除）` : '未填写'"></label>
-    </div>
-    <div class="pad"><button class="btn btn-block" @click="saveContact">保存联系方式</button></div>
-
-    <div class="grp">
-      <label class="fld"><span class="k">当前密码</span><input v-model="pw" type="password" placeholder="重新生成需验证密码"></label>
-    </div>
-    <div class="pad">
+      <button class="btn btn-block" @click="saveContact">保存邮箱</button>
+      <label class="fld"><span class="k">当前密码</span><input v-model="pw" type="password" placeholder="重新生成恢复码需验证"></label>
       <button class="btn btn-block btn-plain" @click="regen">重新生成恢复码</button>
-      <button class="btn btn-plain danger" @click="out">退出登录</button>
+    </details>
+
+    <div class="foot">
+      <button class="link" @click="$router.push('/support')">支持作者</button>
+      <span aria-hidden="true">·</span>
+      <button class="link" @click="$router.push('/legal')">隐私政策</button>
+      <span aria-hidden="true">·</span>
+      <button class="link danger" @click="out">退出登录</button>
     </div>
   </div>
 </template>
@@ -89,6 +93,7 @@ function out() { acct.signOut(); router.replace('/login'); }
   font-size:15px;font-family:inherit;outline:none}
 .fld input::placeholder{color:var(--text-3)}
 .danger{color:#c92a2e;border-color:#c92a2e}
+.link.danger{border:none}
 :root[data-theme=dark] .danger{color:#ff9a9d;border-color:#ff9a9d}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .danger{color:#ff9a9d;border-color:#ff9a9d}}
 .social{margin:14px 0 4px}
@@ -99,7 +104,18 @@ function out() { acct.signOut(); router.replace('/login'); }
 .bn{font-size:12px;font-weight:600;margin-top:5px}
 .bp{font-size:12px;color:var(--text-3);margin-top:2px}
 .bd.on .bp{color:var(--brand-text)}
-.pad{padding:12px 16px}
+.acct{border-top:1px solid var(--line);padding:4px 0}
+.acct summary{min-height:44px;display:flex;align-items:center;font-size:15px;
+  color:var(--text-2);cursor:pointer;list-style:none}
+.acct summary::-webkit-details-marker{display:none}
+.acct summary::after{content:"›";margin-left:auto;font-size:20px;transition:transform .2s}
+.acct[open] summary::after{transform:rotate(90deg)}
+.acct .btn{margin:10px 0 4px}
+/* 底部三个次要动作降成文字链：都是低频操作，不该和学习按钮抢视觉重量 */
+.foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;
+  margin:26px 0 10px;color:var(--text-3);font-size:13px}
+.link{background:none;border:none;font-family:inherit;font-size:13px;cursor:pointer;
+  color:var(--text-2);padding:12px 6px;text-decoration:underline}
 .av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
   justify-content:center;font-size:22px;margin-right:10px}
 </style>

@@ -57,9 +57,9 @@ const grouped = computed(() => {
   </div>
 </template>
 <style scoped>
-.jump{display:flex;gap:6px;margin:0 0 18px}
+.jump{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px}
 .ti{font-size:17px;font-weight:600}
-.bar{padding:12px 0 4px;position:sticky;top:0;background:var(--bg);z-index:2}
+.bar{padding:12px 0 4px;position:sticky;top:var(--bar-h);background:var(--bg);z-index:2}
 .back{background:none;border:none;color:var(--brand-text);font-size:15px;font-family:inherit;cursor:pointer;padding:4px 0}
 .at{font-size:22px;font-weight:700;margin:8px 0 2px;letter-spacing:-.02em}
 .az{color:var(--text-3);font-size:14px;margin:0 0 12px}

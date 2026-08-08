@@ -18,7 +18,7 @@ function pick(it) {
 <template>
   <div class="page">
     <h1 class="page-title">图解词典</h1>
-    <p class="page-sub">选主题 · 点图看德语、听发音、带谐音</p>
+    <p class="page-sub">点图听发音</p>
 
     <div class="tabs">
       <button v-for="b in boards" :key="b.id" class="tb" :class="{ on: cur && cur.id === b.id }"

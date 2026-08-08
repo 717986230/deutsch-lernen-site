@@ -25,21 +25,24 @@ onMounted(async () => {
       <div class="py">{{ pick.py }}</div>
     </div>
 
+    <button class="btn btn-block" @click="router.push('/phrases')">开始学习</button>
+
+    <!-- 查阅类入口：不是每天要点的，所以从导航移到这里 -->
     <div class="refs">
       <button class="level-tab" @click="router.push('/ref/pron')">发音</button>
       <button class="level-tab" @click="router.push('/ref/numbers')">数字</button>
       <button class="level-tab" @click="router.push('/ref/grammar')">语法</button>
       <button class="level-tab" @click="router.push('/boards')">图解</button>
     </div>
-    <button class="btn btn-block" @click="router.push('/phrases')">开始学习</button>
-    <button class="btn btn-block btn-plain" style="margin-top:10px"
-      @click="router.push(acct.logged ? '/me' : '/login')">
-      {{ acct.logged ? '我的进度' : '登录同步进度' }}
-    </button>
+    <!-- 已登录时不再放「我的进度」：导航里就有「我的」，同一去处不占两个按钮 -->
+    <button v-if="!acct.logged" class="btn btn-block btn-plain"
+      @click="router.push('/login')">登录同步进度</button>
   </div>
 </template>
 <style scoped>
-.refs{display:flex;gap:6px;margin:0 0 12px}
+/* 必须 wrap：不换行的话 4 个胶囊在窄屏（或浏览器放大到 200%）下会把整个文档撑宽，
+   全站出现横向滚动条 —— 溢出的是首页，症状却是每一页都能左右拖 */
+.refs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
 .today{padding:28px 0 32px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:28px}
 .label{font-size:12px;color:var(--text-3);letter-spacing:.08em;margin-bottom:12px}
 .de{font-size:28px;font-weight:700;line-height:1.35;letter-spacing:-.02em}

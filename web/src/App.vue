@@ -1,16 +1,10 @@
 <script setup>
-import { computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { onMounted } from 'vue';
 import { useAccount } from './store/account';
 import BadgeCelebrate from './components/BadgeCelebrate.vue';
 import TopNav from './components/TopNav.vue';
 
-const route = useRoute();
-const router = useRouter();
 const acct = useAccount();
-const active = computed(() => route.path);
-// 登录/注册/重置是「一屏一件事」的页面，底部 tab 在这里既点不动也只是噪音
-const showTab = computed(() => !!route.meta.tab);
 onMounted(() => {
   acct.fetchMe(); acct.sync();
   // 页面隐藏时补推一次，避免用户直接关掉导致最后一段进度丢失
@@ -18,7 +12,6 @@ onMounted(() => {
     if (document.visibilityState === 'hidden') acct.sync();
   });
 });
-const go = (p) => router.push(p);
 </script>
 
 <template>
@@ -34,6 +27,8 @@ const go = (p) => router.push(p);
 </template>
 
 <style scoped>
-.offline{background:var(--tip-bg);color:var(--tip-text);font-size:12px;
-  text-align:center;padding:6px;position:sticky;top:0;z-index:99}
+/* 固定在顶栏**下方**：z-index 比顶栏低、top 等于顶栏高度。
+   原来是 sticky top:0 z-index:99，会滑到固定顶栏底下，等于没有提示。 */
+.offline{position:fixed;left:0;right:0;top:56px;z-index:150;
+  background:var(--tip-bg);color:var(--tip-text);font-size:12px;text-align:center;padding:6px}
 </style>

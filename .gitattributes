@@ -1,0 +1,15 @@
+# GitHub Linguist：构建产物不该算进「语言构成」。
+# index.html 是 src.html + data/*.json 生成的 53 万字节产物，sw.js 同理，
+# *.dat 是加密词库切片。它们必须提交（GitHub Pages 直接部署这些文件），
+# 但把它们算成「我写的 HTML」会让语言条完全失真 —— 之前 HTML 87%、Vue 5%，
+# 其中 107 万字节是产物和产物的副本，真正手写的只有 src.html。
+index.html    linguist-generated=true
+sw.js         linguist-generated=true
+*.dat         linguist-generated=true binary
+
+# 词库/短文数据：Linguist 默认就把 JSON 当 data 不计入，这里显式标注意图
+data/*.json   linguist-generated=true
+dict/*.json   linguist-generated=true
+
+# 统计后台是内部工具页，不代表项目主体
+stats.html    linguist-documentation=true

@@ -36,7 +36,7 @@ async function submit() {
   <div class="auth">
     <p class="auth-brand">德语学习手册</p>
     <h1 class="auth-h1">注册</h1>
-    <p class="auth-sub">两项必填，30 秒就能开始学</p>
+    <p class="auth-sub">用户名和密码，两项必填</p>
 
     <form class="auth-form" @submit.prevent="submit">
       <AuthField v-model="f.username" label="用户名" autocomplete="username"

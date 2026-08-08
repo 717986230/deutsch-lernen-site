@@ -59,7 +59,7 @@ async function submit() {
   <div class="auth">
     <p class="auth-brand">德语学习手册</p>
     <h1 class="auth-h1">重置密码</h1>
-    <p class="auth-sub">用邮箱验证码或注册时保存的恢复码，设一个新密码</p>
+    <p class="auth-sub">用邮箱验证码或恢复码验证身份</p>
 
     <form class="auth-form" @submit.prevent="submit">
       <AuthField v-model="g.username" label="用户名" autocomplete="username" placeholder="要重置的账号" />
