@@ -285,14 +285,19 @@ mark.sh{background:rgba(88,204,2,.32);color:inherit;border-radius:3px;padding:0 
 .result-box.bad{background:rgba(255,75,75,.1);border:1px solid rgba(255,75,75,.3)}
 /* 语言切换 */
 /* 左侧一道由背景色渐隐的柔边，让横滑到边界的版块按钮"淡出"而不是被硬切 */
-.lang-switch.ls-hide{opacity:0;visibility:hidden;pointer-events:none}
+/* 用 display:none 而不是 visibility:hidden —— 后者保留布局盒子，顶栏右侧会永久
+   空出 114px（390px 宽下导航只剩 258px、装得下 3.5 个按钮），看着就是「右半边全白」。
+   注意只隐藏两个国旗按钮，主题切换必须留着：它和「这个版块有没有英语版」毫无关系，
+   一起藏掉等于在拼写/短文/连载/对话页彻底关掉深色模式入口。 */
+.lang-switch.ls-hide .lang-btn[data-lang]{display:none}
 .lang-switch{flex:0 0 auto;margin-left:6px;display:flex;background:var(--surface);border:1px solid var(--gold-faint);border-radius:14px;overflow:hidden;box-shadow:-12px 0 10px -6px var(--bg2),0 1px 4px rgba(0,0,0,.08)}
 #pwaInstall{position:fixed;top:9px;left:12px;z-index:260;border:none;background:#58cc02;color:#fff;font-size:13px;font-weight:700;font-family:inherit;padding:8px 14px;border-radius:16px;cursor:pointer;box-shadow:0 3px 12px rgba(88,204,2,.4)}
 #pwaInstall:active{transform:scale(.95)}
 .lang-btn{border:none;background:transparent;color:var(--text-dim);font-size:12px;padding:5px 11px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
 .lang-btn.active{background:#58cc02;color:#fff}
 .theme-toggle{border-left:1px solid var(--gold-faint)}
-#nav{padding-right:190px}
+/* 原有 padding-right:190px 是给右侧控件预留的，但 .lang-switch 是 flex 兄弟节点、
+   本来就不会重叠；这 190px 只会让导航滑到最后一项之后还能再滑进一段空白。 */
 body.lang-en .nav-de-only{display:none!important}
 body:not(.lang-en) .nav-en-only{display:none}
 body.lang-en .de-only-block{display:none}
@@ -423,7 +428,7 @@ body.lang-en .phfab{display:none}
 </div>
 
 <!-- ══════════════ HOME ══════════════ -->
-<div id="home" class="section active">
+<div id="home" class="section">
   <div class="hero">
     <div class="hero-label" id="heroLabel">Deutsche Sprache · 德语学习</div>
     <h1 id="heroTitle">德语学习手册</h1>
@@ -2076,6 +2081,9 @@ var _rendered={};
 // ── 版块历史：pushState 记录版块，返回键/右滑在站内后退不退站；#hash 白名单深链 ──
 var SEC_IDS='home pronunciation numbers grammar phrases reading series dialog quiz spell rank body support me account en-pron en-num en-grammar'.split(' ');
 var _histNav=false,_histInit=false,_deepSec=null;
+// 打开站点直接落在「语句」：首页是导览页，天天用的是背句子，少一次点击。
+// 首页仍在底部导航里，随时可回。改这里一处，下面三个入口都跟着走。
+var START_SEC='phrases';
 function _lk(){return document.documentElement.classList.contains('locked');}
 // 深链捕获：'account' 是登录墙自身，不算深链（否则登录后被 account→me 重定向带偏）
 try{var _h0=(location.hash||'').replace(/^#/,'');if(SEC_IDS.indexOf(_h0)>=0&&_h0!=='account')_deepSec=_h0;}catch(e){}
@@ -2089,7 +2097,7 @@ function _histPush(id){
 try{window.addEventListener('popstate',function(){
   if(_lk())return;   // 登录墙内不响应
   var id=(location.hash||'').replace(/^#/,'');
-  if(SEC_IDS.indexOf(id)<0)id='home';
+  if(SEC_IDS.indexOf(id)<0)id=START_SEC;
   _histNav=true;
   try{showSection(id);}catch(e){}
   _histNav=false;
@@ -3867,7 +3875,7 @@ function acctSetAuth(token,user){ACCT.token=token;ACCT.user=user;try{localStorag
 function _saveUser(){try{localStorage.setItem('acct_user',JSON.stringify(ACCT.user));}catch(e){}}
 function acctClearLocal(){ACCT.token=null;ACCT.user=null;try{localStorage.removeItem('acct_token');localStorage.removeItem('acct_user');}catch(e){}}
 function acctLogout(){try{if(ACCT.token&&API_BASE)apiFetch('/api/logout',{method:'POST'});}catch(e){}acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}
-function acctEnter(){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();var d='home';try{if(_deepSec){d=_deepSec;_deepSec=null;}}catch(e){}showSection(d);}
+function acctEnter(){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();var d=START_SEC;try{if(_deepSec){d=_deepSec;_deepSec=null;}}catch(e){}showSection(d);}
 function acctTab(w){var lg=w==='login';document.getElementById('tabLogin').classList.toggle('on',lg);document.getElementById('tabReg').classList.toggle('on',!lg);document.getElementById('paneLogin').style.display=lg?'':'none';document.getElementById('paneReg').style.display=lg?'none':'';}
 function acctRegister(){var u=(document.getElementById('rgUser').value||'').trim().toLowerCase();var nick=(document.getElementById('rgNick').value||'').trim();var pw=document.getElementById('rgPass').value||'';var err=document.getElementById('rgErr');err.textContent='';if(!/^[a-z0-9_]{3,20}$/.test(u)){err.textContent='用户名 3-20 位，仅小写字母/数字/下划线';return;}if(pw.length<6){err.textContent='密码至少 6 位';return;}var _em=(document.getElementById('rgEmail')||{}).value||'';apiFetch('/api/register',{method:'POST',body:{username:u,nickname:nick,password:pw,email:_em}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'注册失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);if(r.data.recovery){showRecovery(r.data.recovery,true);}else{acctEnter();}},function(){err.textContent='网络错误，请重试';});}
 function acctLogin(){var u=(document.getElementById('lgUser').value||'').trim().toLowerCase();var pw=document.getElementById('lgPass').value||'';var err=document.getElementById('lgErr');err.textContent='';if(!u||!pw){err.textContent='请输入用户名和密码';return;}apiFetch('/api/login',{method:'POST',body:{username:u,password:pw}}).then(function(r){if(!r.ok){err.textContent=(r.data&&r.data.err)||'登录失败';return;}acctSetAuth(r.data.token,r.data.user);acctSync(true);acctEnter();},function(){err.textContent='网络错误，请重试';});}
@@ -4064,8 +4072,8 @@ function renderRank(by){if(by){_rankBy=by;}var ids={known:'rkKnown',streak:'rkSt
 (function(){var justOauth=false;
 try{var m=(location.hash||'').match(/acct_token=([a-f0-9]+)/)||(location.search||'').match(/[?&]acct_token=([a-f0-9]+)/);if(m){acctSetAuth(m[1],ACCT.user||null);justOauth=true;try{history.replaceState(null,'',location.pathname);}catch(e){}}}catch(e){}
 // 门槛：有 token 先放行（乐观），无 token 锁在登录页
-if(ACCT.token){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();try{renderHomeDash();}catch(e){}try{if(_deepSec){var _ds=_deepSec;_deepSec=null;showSection(_ds);}else _histPush('home');}catch(e){}}else{document.documentElement.classList.add('locked');showSection('account');}
-if(ACCT.token&&API_BASE){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();try{renderHomeDash();}catch(e){}if(justOauth)showSection('home');}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});acctSync(true);}
+if(ACCT.token){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();try{renderHomeDash();}catch(e){}try{if(_deepSec){var _ds=_deepSec;_deepSec=null;showSection(_ds);}else showSection(START_SEC);}catch(e){}}else{document.documentElement.classList.add('locked');showSection('account');}
+if(ACCT.token&&API_BASE){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();try{renderHomeDash();}catch(e){}if(justOauth)showSection(START_SEC);}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});acctSync(true);}
 try{document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&ACCT.token)acctSync(true);});}catch(e){}
 })();
 </script>

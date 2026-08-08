@@ -1,7 +1,10 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 // hash 路由：GitHub Pages / 任意静态托管都不用配 rewrite，微信内分享链接也稳
 const routes = [
-  { path: '/', component: () => import('../views/Home.vue'), meta: { title: '首页', tab: true } },
+  // 打开站点直接落在「语句」：首页是导览页，天天用的是背句子，少一次点击。
+  // 首页仍在底部标签栏里，随时可回。
+  { path: '/', redirect: '/phrases' },
+  { path: '/home', component: () => import('../views/Home.vue'), meta: { title: '首页', tab: true } },
   { path: '/phrases', component: () => import('../views/Phrases.vue'), meta: { title: '短语', tab: true } },
   { path: '/reading', component: () => import('../views/Reading.vue'), meta: { title: '短文', tab: true } },
   { path: '/rank', component: () => import('../views/Rank.vue'), meta: { title: '排行', tab: true } },
@@ -25,7 +28,14 @@ const routes = [
   { path: '/register', component: () => import('../views/Register.vue'), meta: { title: '注册', guest: true } },
   { path: '/reset', component: () => import('../views/Reset.vue'), meta: { title: '重置密码', guest: true } },
 ];
-const router = createRouter({ history: createWebHashHistory(), routes });
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes,
+  // 换页回到顶部；浏览器前进/后退时还原原来的位置。
+  // 缺了这个，从语法页（几千行）跳到测验页会停在半空，看着像「页面被顶栏吃了一截」。
+  // 之前只有 Reference.vue 自己 watch 了一下，别的页都没管。
+  scrollBehavior(to, from, saved) { return saved || { top: 0 }; },
+});
 
 // 全站登录墙：与旧站行为一致。两个标记不是一回事，别再合并——
 //   guest  = 只给未登录用户（登录/注册/重置），已登录访问弹回首页

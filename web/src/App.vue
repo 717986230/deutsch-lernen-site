@@ -3,9 +3,13 @@ import { onMounted } from 'vue';
 import { useAccount } from './store/account';
 import BadgeCelebrate from './components/BadgeCelebrate.vue';
 import TopNav from './components/TopNav.vue';
+import BottomNav from './components/BottomNav.vue';
+import { useTheme } from './store/theme';
 
 const acct = useAccount();
+const theme = useTheme();
 onMounted(() => {
+  theme.init();
   acct.fetchMe(); acct.sync();
   // 页面隐藏时补推一次，避免用户直接关掉导致最后一段进度丢失
   document.addEventListener('visibilitychange', () => {
@@ -22,6 +26,7 @@ onMounted(() => {
     <router-view v-slot="{ Component }">
       <keep-alive include="Phrases,Reading,Spell"><component :is="Component" /></keep-alive>
     </router-view>
+    <BottomNav />
     <BadgeCelebrate />
   </div>
 </template>

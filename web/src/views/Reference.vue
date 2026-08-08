@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { loadData } from '../api';
 import { useLang } from '../store/lang';
@@ -15,8 +15,7 @@ const meta = computed(() => TITLES[key.value] || ['参考', '']);
 onMounted(async () => { data.value = await loadData('reference'); });
 // 内容是本仓库自己的静态 HTML（构建期从 src.html 抽取），无用户输入，v-html 安全
 const html = computed(() => data.value?.[key.value]?.[langS.lang] || '');
-// 切页时回到顶部，否则从长页面切过去会停在半空
-watch(key, () => scrollTo(0, 0));
+// 回到顶部已由 router 的 scrollBehavior 统一处理，这里不再重复
 </script>
 
 <template>
