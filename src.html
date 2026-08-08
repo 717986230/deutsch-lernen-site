@@ -1586,16 +1586,6 @@ body{padding-bottom:calc(58px + env(safe-area-inset-bottom))}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Leaderboard</div>
     <h2 class="page-title">🏆 学习排行榜</h2>
-    <div class="rank-tabs" id="rankScopes">
-      <button id="rsAll" class="on" onclick="rankScope('all')">🌍 全站</button>
-      <button id="rsFriends" onclick="rankScope('friends')">👥 好友</button>
-      <button id="rsFeed" onclick="rankScope('feed')">📣 动态</button>
-    </div>
-    <div class="rank-tabs" id="rankMetrics">
-      <button id="rkKnown" class="on" onclick="renderRank('known')">📖 掌握词数</button>
-      <button id="rkStreak" onclick="renderRank('streak')">🔥 连续打卡</button>
-      <button id="rkTotal" onclick="renderRank('total')">💪 累计学习</button>
-    </div>
     <div class="rank-list" id="rankList"><p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p></div>
     <p class="acct-note" id="rankHint" style="max-width:440px;margin:14px auto 0"></p>
 </div>
@@ -4057,7 +4047,7 @@ function resumeLast(){
   },80);
 }
 var _rankBy='known',_rankScope='all';
-function rankScope(s){_rankScope=s;var ids={all:'rsAll',friends:'rsFriends',feed:'rsFeed'};for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('on',k===s);}document.getElementById('rankMetrics').style.display=(s==='feed')?'none':'';if(s==='feed')renderFeed();else renderRank();}
+function rankScope(s){_rankScope=s;var ids={all:'rsAll',friends:'rsFriends',feed:'rsFeed'};for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('on',k===s);}var metrics=document.getElementById('rankMetrics');if(metrics)metrics.style.display=(s==='feed')?'none':'';if(s==='feed')renderFeed();else renderRank();}
 function _tago(ts){var d=Date.now()-ts;if(d<60000)return '刚刚';if(d<3600000)return Math.floor(d/60000)+' 分钟前';if(d<86400000)return Math.floor(d/3600000)+' 小时前';if(d<7*86400000)return Math.floor(d/86400000)+' 天前';var t=new Date(ts);return (t.getMonth()+1)+'月'+t.getDate()+'日';}
 function renderFeed(){var el=document.getElementById('rankList');if(!el)return;if(!ACCT.token){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">登录后可看关注的人的学习动态</p>';return;}el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p>';apiFetch('/api/feed').then(function(r){if(!r||!r.ok||!r.data.list){el.innerHTML='<p class="acct-err">加载失败，请稍后再试</p>';return;}var list=r.data.list;if(!list.length){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">还没有动态——去关注几个学霸，或者自己点亮一枚徽章 🏅</p>';return;}var map={};BADGES.forEach(function(b){map[b.id]=b;});el.innerHTML=list.map(function(a){var txt;if(a.type==='badge'){var b=map[a.data];txt=b?('点亮徽章 '+b.emo+'「'+b.name+'」'):'点亮了一枚徽章';}else if(a.type==='streak'){txt='连续打卡破纪录：🔥 '+_esc(a.data)+' 天';}else{txt='有了新进展';}return '<div class="rank-row" onclick="openProfile(\''+_esc(a.username)+'\')">'+_avatarHtml(a,38)+'<div class="rank-name"><div class="rank-nick">'+_esc(a.nickname||a.username)+'</div><div class="rank-meta">'+txt+'</div></div><div class="rank-meta" style="flex-shrink:0">'+_tago(a.ts)+'</div></div>';}).join('');var hint=document.getElementById('rankHint');if(hint)hint.textContent='动态来自你关注的人和你自己（点亮徽章 / 打卡破纪录）';});}
 // 排行榜只显示前十。其余不提供展开 —— 名次靠后的具体是谁没人关心，
