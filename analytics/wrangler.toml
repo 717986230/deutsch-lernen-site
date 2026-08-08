@@ -14,7 +14,7 @@ database_id = "b042a9df-2b10-4ef3-8c4e-e638ecddeffe"
 # 站点地址（GitHub 登录成功后跳回这里）
 SITE_URL = "https://www.uuoo.site"
 # GitHub OAuth App 的 Client ID（公开值，可放这里）；Secret 用 `wrangler secret put GH_CLIENT_SECRET`
-GH_CLIENT_ID = ""
+GH_CLIENT_ID = "Ov23liyrQtw2yZr6DeYg"
 # Google OAuth Client ID（公开值）；Secret 用 `wrangler secret put GOOGLE_CLIENT_SECRET`
 GOOGLE_CLIENT_ID = ""
 
