@@ -38,6 +38,7 @@ function pick(it) {
       <button v-for="(it, i) in cur.items" :key="i" class="cd"
         :class="{ on: picked === it }" @click="pick(it)">
         <span class="e">{{ it[3] }}</span>
+        <span class="d" lang="de">{{ it[0] }}</span>
         <span class="z">{{ it[1] }}</span>
       </button>
     </div>
@@ -55,11 +56,12 @@ function pick(it) {
 .o-zh{font-size:16px;color:var(--text-2);margin-top:4px}
 .o-py{font-size:14px;color:var(--text-3);margin-top:3px}
 .o-spk{width:auto;padding:10px 18px;margin:14px auto 0;font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
-.cd{min-height:84px;border:1px solid var(--line);border-radius:14px;background:transparent;
-  padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.cd{min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:8px 3px 7px;display:flex;flex-direction:column;align-items:center;gap:2px;
   font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .cd.on{border-color:var(--brand);background:var(--tip-bg)}
-.e{font-size:28px;line-height:1}
-.z{font-size:13px;color:var(--text-2)}
+.e{font-size:26px;line-height:1.15}
+.d{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;overflow-wrap:anywhere}
+.z{font-size:12px;color:var(--text-3);line-height:1.3}
 </style>

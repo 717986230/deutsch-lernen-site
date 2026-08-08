@@ -345,22 +345,28 @@ body:not(.lang-en) .en-only-block{display:none}
 /* 右侧留出「拼读查词」侧标签的宽度（实测它 left=364、宽 26px，会盖住第三列卡片）。
    FAB 隐藏时（英语模式 / hide-fab 的几个版块）不需要这段留白，故用 :has 收窄条件；
    不支持 :has 的浏览器退化成「一直留白」，也只是少 30px，不会出错。 */
-.pic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;padding-right:30px}
-body.lang-en .pic-grid,body.hide-fab .pic-grid{padding-right:0}
-.pic-cell{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px 6px 10px;text-align:center;cursor:pointer;transition:transform .12s,box-shadow .15s,border-color .15s;box-shadow:var(--shadow)}
+/* 固定 5 列。minmax(0,1fr) 里的 0 是必须的 —— 用 auto 的话德语长词
+   （die Augenbraue）会把列撑开，5 列又变回 2、3 列。 */
+.pic-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.pic-cell{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 3px 7px;text-align:center;cursor:pointer;transition:transform .12s,box-shadow .15s,border-color .15s;box-shadow:var(--shadow)}
 .pic-cell:hover{transform:translateY(-2px);border-color:var(--gold-dim);box-shadow:0 6px 16px rgba(0,0,0,.08)}
 .pic-cell.active{border-color:var(--gold);background:rgba(88,204,2,.08)}
-.pic-emoji{font-size:38px;line-height:1.1}
-.pic-de{font-size:13px;font-weight:600;color:var(--text);margin-top:6px;word-break:break-word}
-.pic-zh{font-size:11px;color:var(--text-faint);margin-top:1px}
+.pic-emoji{font-size:26px;line-height:1.15}
+.pic-de{font-size:12px;font-weight:600;color:var(--text);margin-top:4px;line-height:1.3;word-break:break-word;overflow-wrap:anywhere}
+.pic-zh{font-size:12px;color:var(--text-faint);margin-top:2px;line-height:1.3}
 /* bottom 必须避开固定底栏（58px + 安全区），否则浮条会压在底栏上，
    实测浮条 bottom=828 而底栏 top=790，重叠 38px，同时盖住最后两行共 6 张卡片。 */
+/* 浮条一出现就给 body 加 has-picbar，把回到顶部按钮再抬一层 —— 否则它正好压住
+   浮条右端的 🔊（实测浮条右边界 370，按钮占 326~370）。 */
+body.has-picbar #toTop{bottom:calc(var(--tab-h) + 108px)}
 .pic-out{position:sticky;bottom:calc(var(--tab-h) + 12px);margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
 .bp-chip{border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:14px;padding:4px 11px;font-size:12px;cursor:pointer;font-family:inherit}
 .bp-chip.active{border-color:var(--gold);background:var(--gold);color:#fff}
 /* 拼读器右侧小浮钮（约为零基础钮一半大）+ 弹窗 */
-.phfab{position:fixed;right:0;top:44%;transform:translateY(-50%);z-index:280;writing-mode:vertical-rl;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:700;font-family:inherit;padding:9px 6px;border-radius:14px 0 0 14px;cursor:pointer;box-shadow:-3px 3px 12px rgba(28,176,246,.4);letter-spacing:2px;line-height:1.15}
-.phfab:active{transform:translateY(-50%) scale(.94)}
+/* 原来是贴右边缘的竖排长条，压在网格第三列上；为它让路又要吃掉一整列。
+   改成右下角圆钮（在底栏之上、回到顶部按钮左边），彻底离开内容区。 */
+.phfab{position:fixed;right:20px;bottom:calc(var(--tab-h) + 128px);z-index:280;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:700;font-family:inherit;width:44px;height:44px;padding:0;border-radius:50%;line-height:1.1;cursor:pointer;box-shadow:-3px 3px 12px rgba(28,176,246,.4);letter-spacing:2px;line-height:1.15}
+.phfab:active{transform:scale(.94)}
 body.lang-en .phfab{display:none}
 .ph-overlay{position:fixed;inset:0;z-index:450;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:56px 14px 14px}
 .ph-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;max-width:560px;width:100%;max-height:82vh;overflow:auto;padding:14px 16px;box-shadow:0 14px 44px rgba(0,0,0,.32)}
@@ -2064,6 +2070,7 @@ function showSection(id){
   btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+navId+"'")){b.classList.add('active');b.setAttribute('aria-current','page');}});
   if(id==='phrases'&&!_rendered.phrases){renderPhrases();_rendered.phrases=true;}       // 懒渲染：首次打开才渲染长列表
   if(id==='phrases'&&typeof renderRecent==='function')renderRecent();
+  if(id!=='body')document.body.classList.remove('has-picbar');
   if(id==='body'){if(typeof renderBoardTabs==='function')renderBoardTabs();if(typeof switchBoard==='function')switchBoard(_curBoard);}
   if(id==='account'&&typeof acctToken==='function'&&acctToken()){document.getElementById(id).classList.remove('active');document.getElementById('me').classList.add('active');id='me';}
   if(id==='me'&&typeof renderMe==='function')renderMe();
@@ -2073,7 +2080,8 @@ function showSection(id){
   if(id==='dialog'&&typeof renderDialogues==='function')renderDialogues();
   var _bsec=(id==='me'||id==='account')?'account':(id==='series'||id==='dialog'?'reading':id);
   document.querySelectorAll('#bottomNav .bn-btn').forEach(function(b){var on=b.getAttribute('data-sec')===_bsec;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
-  document.body.classList.toggle('hide-fab',id==='account'||id==='me'||id==='rank'||id==='spell');
+  // 图解页(body)自己就是查词界面，再挂一个「拼读查词」既重复又和选中词浮条抢位置
+  document.body.classList.toggle('hide-fab',id==='account'||id==='me'||id==='rank'||id==='spell'||id==='body');
   try{track('view',{s:id});}catch(e){}
   if(id==='reading'&&!_rendered.reading){renderReadings();_rendered.reading=true;}
   if(id==='series'&&!_rendered.series){renderSeries();renderSeriesLinks();_rendered.series=true;}
@@ -3713,6 +3721,7 @@ function switchBoard(id){
   document.getElementById("boardBody").style.display=isBody?"":"none";
   document.getElementById("boardGrid").style.display=isBody?"none":"grid";
   document.getElementById("picOut").style.display="none";
+  document.body.classList.remove("has-picbar");
   if(isBody){renderBody();buildBoardQuiz();return;}
   var brd=null;for(var i=0;i<PIC_BOARDS.length;i++)if(PIC_BOARDS[i].id===id)brd=PIC_BOARDS[i];
   var g=document.getElementById("boardGrid");
@@ -3730,7 +3739,7 @@ function picPick(brd,i,cell){
   document.querySelectorAll("#boardGrid .pic-cell").forEach(function(c){c.classList.remove("active");});
   if(cell)cell.classList.add("active");
   var out=document.getElementById("picOut");
-  out.style.display="block";
+  out.style.display="block";document.body.classList.add("has-picbar");
   out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+it[3]+'</span> <b lang="de" style="font-size:20px;color:#46a302;vertical-align:middle">'+it[0]+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+it[0].replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+it[1]+' · <span style="color:var(--text-faint)">'+it[2]+'</span></div>';
   try{speakDE(it[0]);}catch(e){}
   try{studyTick(1,1);}catch(e){}
@@ -3776,7 +3785,7 @@ function bpPick(i){
   var p=BODY_PARTS[i];if(!p)return;
   document.querySelectorAll('#bodyChips .pic-cell').forEach(function(x,k){x.className='pic-cell'+(k===i?' active':'');});
   var out=document.getElementById('picOut');
-  out.style.display='block';
+  out.style.display='block';document.body.classList.add('has-picbar');
   out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+p.em+'</span> <b lang="de" style="font-size:20px;color:#46a302;vertical-align:middle">'+p.de+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+p.de.replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+p.zh+' · <span style="color:var(--text-faint)">'+p.py+'</span></div>';
   try{speakDE(p.de);}catch(e){}
   try{studyTick(1,1);}catch(e){}
@@ -4172,7 +4181,7 @@ function spFinish(){document.getElementById('spBar').style.width='100%';document
   <button class="bn-btn nav-de-only" data-sec="reading" onclick="showSection('reading')"><span class="bn-i">📖</span><span class="bn-t">短文</span></button>
   <button class="bn-btn" data-sec="account" onclick="showSection('account')"><span class="bn-i">👤</span><span class="bn-t">我的</span></button>
 </nav>
-<button class="phfab" type="button" onclick="phOpen()" aria-label="打开拼读器查词">🧩 拼读查词</button>
+<button class="phfab" type="button" onclick="phOpen()" aria-label="打开拼读器查词" title="拼读查词">🧩</button>
 <div class="ph-overlay" id="phModal" style="display:none" onclick="if(event.target===this)phClose()">
   <div class="ph-card" role="dialog" aria-label="拼读器">
     <div class="ph-card-head">
@@ -4199,12 +4208,14 @@ function spFinish(){document.getElementById('spBar').style.width='100%';document
 </div>
 <button id="toTop" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部" aria-label="回到顶部">↑</button>
 <style>
+/* 右下角三个浮钮从下往上依次排：#toTop → .fab-read → .phfab。
+   之前三个都写在同一高度，实测 #toTop×.fab-read、.fab-read×.phfab 两两重叠。 */
 #toTop{position:fixed;right:20px;bottom:calc(var(--tab-h) + 16px);z-index:300;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#46a302;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.12);border:1px solid var(--gold-faint);font-family:inherit;padding:0;opacity:0;visibility:hidden;transform:translateY(12px) scale(.85);transition:all .28s cubic-bezier(.34,1.56,.64,1)}
 #toTop.show{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
 #toTop:hover{background:#58cc02;color:#fff;border-color:#58cc02;box-shadow:0 8px 22px rgba(88,204,2,.38);transform:translateY(-3px)}
 #toTop:active{transform:scale(.9)}
 /* 浮动「循环朗读」按钮：固定在回到顶部上方 */
-.fab-read{position:fixed;right:16px;bottom:calc(var(--tab-h) + 22px);z-index:300;border:none;border-radius:24px;background:#58cc02;color:#fff;font-size:14px;font-weight:600;font-family:inherit;padding:11px 18px;cursor:pointer;box-shadow:0 4px 16px rgba(88,204,2,.4);white-space:nowrap;transition:transform .15s,background .2s}
+.fab-read{position:fixed;right:16px;bottom:calc(var(--tab-h) + 72px);z-index:300;border:none;border-radius:24px;background:#58cc02;color:#fff;font-size:14px;font-weight:600;font-family:inherit;padding:11px 18px;cursor:pointer;box-shadow:0 4px 16px rgba(88,204,2,.4);white-space:nowrap;transition:transform .15s,background .2s}
 .fab-read:active{transform:scale(.94)}
 .fab-read.playing,.fab-read.speaking{background:#fff;color:var(--text-dim);border:1px solid var(--gold-faint);box-shadow:0 3px 12px rgba(0,0,0,.12)}
 </style>
