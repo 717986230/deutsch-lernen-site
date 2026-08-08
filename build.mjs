@@ -1,4 +1,9 @@
-// 构建脚本：src.html（页面/样式/脚本）+ data/*.json（词库数据）→ legacy.html（加密+混淆，用于部署）
+// 构建脚本：src.html（页面/样式/脚本）+ data/*.json（词库数据）→ index.html（加密+混淆，用于部署）
+//
+// 产物名 = **当前生产上谁占着 index.html**。旧站当家（现状）就写 index.html；
+// 切到 Vue 端时由 ROLLBACK.md 的流程把旧站产物改名成 legacy.html，不是在这里改。
+// 曾经这里被改成直接产出 legacy.html，回退后就没人再生成 index.html —— 
+// 结果是改了 src.html 跑完构建、控制台一切正常，线上却纹丝不动。
 //
 // 用法：
 //   npm install          # 安装 terser（仅首次）
@@ -9,7 +14,7 @@
 //   src.html        页面结构 + 样式 + 全部脚本（数据位置是 __DATA_名字__ 占位符）
 //   data/*.json     4 个数据文件（categories / en_categories / readings / series），
 //                   一条目一行，改词/加分类只动这里，git diff 一目了然
-//   build.mjs       注入数据 → （生产）加密 + 混淆 → legacy.html
+//   build.mjs       注入数据 → （生产）加密 + 混淆 → index.html
 //
 // 反爬说明：这是客户端"混淆"，能挡住查看源码/curl/复制 JSON 等随手爬取，
 // 但无法阻止用开发者工具的定向提取——这是任何纯静态站的固有上限。
@@ -146,13 +151,13 @@ async function build() {
   }
   out += html.slice(last);
 
-  writeFileSync('legacy.html', out);
+  writeFileSync('index.html', out);
 
   // 3) 生成 Service Worker
   //    壳缓存 V 含内容哈希，每次发版换新；词典切片放独立持久缓存 DATA，跨版本保留——
   //    英语库(~600KB)文件名带内容哈希，不变则复用，变了才换名重下，激活时清掉旧切片。
   const ver = createHash('sha1').update(out).digest('hex').slice(0, 10);
-  writeFileSync('sw-legacy.js', `// 自动生成（build.mjs），勿手改。壳网络优先；词典切片持久缓存、跨版本复用。
+  writeFileSync('sw.js', `// 自动生成（build.mjs），勿手改。壳网络优先；词典切片持久缓存、跨版本复用。
 const V='de-${ver}',DATA='de-data',KEEP=${JSON.stringify([deFile, enFile])};
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['index.html','manifest.webmanifest','icon-192.png','icon-512.png'])).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{
@@ -177,9 +182,9 @@ self.addEventListener('fetch',e=>{
   e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res.ok){const cp=res.clone();caches.open(bucket).then(c=>c.put(e.request,cp));}return res;})));
 });
 `);
-  console.log(`  sw-legacy.js 版本 de-${ver}（词典切片 ${deFile} + ${enFile} 持久缓存）`);
+  console.log(`  sw.js 版本 de-${ver}（词典切片 ${deFile} + ${enFile} 持久缓存）`);
   console.log(`✓ 构建完成：加密 ${Object.keys(DATA_FILES).length} 个数组、混淆 ${count} 个脚本块`);
-  console.log(`  src.html ${(readFileSync('src.html').length / 1024 | 0)}KB + data/ → legacy.html ${(out.length / 1024 | 0)}KB`);
+  console.log(`  src.html ${(readFileSync('src.html').length / 1024 | 0)}KB + data/ → index.html ${(out.length / 1024 | 0)}KB`);
 }
 
 build().catch(e => { console.error('构建失败：', e); process.exit(1); });

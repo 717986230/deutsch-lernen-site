@@ -756,7 +756,7 @@ body.lang-en .phfab{display:none}
     <details class="gram-group" open><summary>① 入门必学 · 冠词性别 / 动词变位 / 四个格 / 基础句型</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">名词性别（冠词）</span></div>
     <div class="rule-box">
       <h3>三种性别 = 三种定冠词</h3>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:12px;margin-top:8px">
         <div style="text-align:center;padding:12px;background:rgba(28,176,246,.1);border-radius:8px;border:1px solid rgba(28,176,246,.3)">
           <div style="font-size:20px;color:#1cb0f6;font-style:italic">der</div>
           <div style="font-size:12px;color:var(--text-dim);margin-top:4px">阳性 (m)</div>
@@ -3804,7 +3804,7 @@ function _trackSave(b){try{var o=JSON.parse(localStorage.getItem('_tq')||'[]');l
 function _trackResend(){try{var o=JSON.parse(localStorage.getItem('_tq')||'[]');if(o.length&&_trackOn()){localStorage.removeItem('_tq');_tq=o.concat(_tq);_trackFlush();}}catch(e){}}
 try{document.addEventListener('visibilitychange',function(){if(document.visibilityState=='hidden')_trackFlush(true);});}catch(e){}
 try{_trackResend();}catch(e){}
-try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw-legacy.js');}catch(e){}
+try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');}catch(e){}
 // INIT：硬登录门槛下，登录页(locked)不建任何内容，解锁后再建，显著加快登录首屏
 var _appInited=false;
 function appInit(){
