@@ -30,6 +30,7 @@ async function submit() {
     <p class="auth-brand">德语学习手册</p>
     <h1 class="auth-h1">登录</h1>
     <p class="auth-sub">继续你的学习进度</p>
+    <p class="auth-note" role="status"><b>登录说明（2026 年 8 月 8 日）</b><br>今天维护时误清理了登录会话，给你带来不便，我们诚恳道歉。学习数据没有受影响，但需要重新登录；你的本地学习记录仍在。</p>
 
     <form class="auth-form" @submit.prevent="submit">
       <AuthField v-model="f.username" label="用户名" autocomplete="username"

@@ -580,15 +580,18 @@ export default {
         where += ' AND (id=? OR id IN (SELECT followee FROM follows WHERE follower=?))';
         binds = [uid, uid];
       }
-      const rows = await env.DB.prepare(
+      const [count, rows] = await Promise.all([
+        env.DB.prepare('SELECT COUNT(*) AS total FROM users WHERE ' + where).bind(...binds).first(),
+        env.DB.prepare(
         'SELECT username,nickname,avatar,av_bg,known,best_streak,total,level,badges FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
-      ).bind(...binds).all();
+        ).bind(...binds).all(),
+      ]);
       const list = rows.results.map(r => ({
         username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, level: r.level,
         known: r.known, streak: r.best_streak, total: r.total,
         badges: (r.badges || '').split(',').filter(Boolean).length,
       }));
-      return json({ by, list }, 200, cors);
+      return json({ by, total: Number(count?.total || 0), list }, 200, cors);
     }
     if (M === 'GET' && path === '/api/profile') {
       const name = String(url.searchParams.get('name') || '').trim().toLowerCase();
@@ -674,12 +677,13 @@ async function pbkdf2(pw, saltHex) {
 }
 async function newSession(env, uid) {
   const token = rndHex(24), now = Date.now();
+  const SESSION_TTL_MS = 180 * 86400000;
   // 发新会话时顺手清理过期数据，防 sessions/oauth_state 无限堆积
   await env.DB.batch([
     env.DB.prepare('DELETE FROM sessions WHERE exp<?').bind(now),
     env.DB.prepare('DELETE FROM oauth_state WHERE exp<?').bind(now),
     env.DB.prepare('DELETE FROM ratelimit WHERE exp<?').bind(now),
-    env.DB.prepare('INSERT INTO sessions (token,uid,exp) VALUES (?,?,?)').bind(token, uid, now + 180 * 86400000),
+    env.DB.prepare('INSERT INTO sessions (token,uid,exp) VALUES (?,?,?)').bind(token, uid, now + SESSION_TTL_MS),
   ]);
   return token;
 }

@@ -28,8 +28,7 @@ export default defineConfig({
   // 目标浏览器：现代桌面/移动浏览器。**不再支持微信内置浏览器**（站长 2026-08 决定），
   // 因此不再产出 ES5 legacy 包 —— 那套 polyfill 有 195KB(gz)，比现代包本身还大。
   // 产物直接输出到仓库根 —— GitHub Pages 服务的就是这里，推 main 即上线。
-  // emptyOutDir:false 是必须的：根目录还放着 legacy.html、词库 .dat、CNAME 等，
-  // 清空会把它们全删掉，回退路径也就没了。
+  // 根目录还包含仓库文档和后端目录，不能让 Vite 清空整个仓库。
   build: {
     outDir: '..',
     emptyOutDir: false,

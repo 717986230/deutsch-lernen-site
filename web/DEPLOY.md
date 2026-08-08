@@ -1,28 +1,19 @@
 # 部署与灰度
 
-## 现状（2026-08 已切换）
+## 现状（2026-08-08 已切换）
 
-**Vue 新端已成为生产**，走 GitHub Pages，无需 Cloudflare：
+**Vue 用户端是唯一生产入口**，走 GitHub Pages，无需 Cloudflare Pages：
 
 | 文件 | 谁 | 访问 |
 |---|---|---|
-| `index.html` + `assets/` + `data/` | Vue 新端 | www.uuoo.site ← **当前生产** |
-| `legacy.html` + `*.dat` | 旧站（保留） | www.uuoo.site/legacy.html |
+| `index.html` + `assets/` + `data/` + `sw.js` | Vue 用户端 | www.uuoo.site ← **当前生产** |
+| 旧站发布产物 | 已删除 | 不再公开提供 |
 
 `web/` 的 vite 配置把产物直接输出到**仓库根**（`outDir:'..'`、`emptyOutDir:false`），
 所以流程就是：`cd web && npm run build` → 提交 → 推 main → 上线。
 
-**回退见 [`../ROLLBACK.md`](../ROLLBACK.md)**，两条 cp 命令即可，不用碰 DNS。
-
-## 首次部署（约 10 分钟）
-
-1. Cloudflare Dashboard → Workers & Pages → Create → Pages → **Direct Upload**
-   项目名填 `uuoo-web`，先手动传一次 `web/dist` 把项目建出来
-2. 拿到临时域名 `uuoo-web.pages.dev`，**先自己用几天**
-3. 配置 GitHub Actions 自动部署，在仓库 Settings → Secrets 添加：
-   - `CF_API_TOKEN`（Cloudflare → My Profile → API Tokens → 用 "Edit Cloudflare Workers" 模板）
-   - `CF_ACCOUNT_ID`（Dashboard 右侧栏可见）
-   此后推 `main` 且改动 `web/` 或 `data/` 就会自动构建部署
+推送 `main` 后，GitHub Pages 会从根目录自动发布；`.github/workflows/deploy-web.yml`
+只负责构建一致性和内容校验，不再尝试上传不存在的 `web/dist`。
 
 ## ⚠️ 切换域名前必读：localStorage 不跨域
 
@@ -35,15 +26,8 @@
 已登录用户的 `known/streak/total/quiz` 在服务端有副本，重新登录能恢复大部分；
 但**未登录用户的本地进度会丢**。
 
-推荐路径：
-1. 用 `uuoo-web.pages.dev` 内部验证（自己用，不宣传）
-2. 确认无误后，**直接把 www.uuoo.site 指向 Cloudflare Pages**——同域名替换，
-   老用户 localStorage 原样延续，零感知
-3. 旧站 `index.html` **保留在仓库里不要删**，出问题把 DNS 切回 GitHub Pages 即可
-
-## 回退
-
-DNS 切回 GitHub Pages，5 分钟内生效。代码无需任何改动。
+同域名替换后，老用户的 localStorage 原样延续。旧站发布产物已删除；如需回退，
+使用 Git 历史恢复上一版根目录产物，再推送 `main`。
 
 ## 一键部署脚本
 
@@ -52,7 +36,7 @@ DNS 切回 GitHub Pages，5 分钟内生效。代码无需任何改动。
 ```bash
 bash deploy.sh          # 后端 + Vue 端
 bash deploy.sh backend  # 只部署后端（Worker + D1 迁移）
-bash deploy.sh web      # 只部署 Vue 端
+bash deploy.sh web      # 构建 Vue 根产物，推 main 后上线
 bash deploy.sh check    # 只体检，不部署任何东西 ← 建议先跑这个
 ```
 

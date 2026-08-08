@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# uuoo 一键部署：后端（Worker + D1）、Vue 用户端、旧站。
+# uuoo 一键部署：后端（Worker + D1）与 Vue 用户端。
 #
 # 用法（在仓库根目录）：
 #   bash deploy.sh              # 全部
@@ -58,7 +58,7 @@ preflight() {
 check() {
   step "② 体检（构建 + 校验）"
   [ -d node_modules ] || { say "安装根依赖…"; npm ci --silent 2>/dev/null || npm install --silent; }
-  say "构建旧站…"; node build.mjs >/dev/null
+  say "构建 Vue 用户端…"; (cd web && npm run build >/dev/null)
   say "校验构建产物 / schema / 内容数据…"
   npm run verify || die "校验未通过，已中止部署"
 
@@ -126,13 +126,7 @@ web() {
   local size; size=$(du -sh dist | cut -f1)
   say "产物 $size（含 Service Worker）"
 
-  if command -v wrangler >/dev/null && wrangler whoami >/dev/null 2>&1; then
-    say "部署到 Cloudflare Pages…"
-    wrangler pages deploy dist --project-name=uuoo-web \
-      || warn "部署失败。若项目不存在，先在 Dashboard 建一个名为 uuoo-web 的 Pages 项目"
-  else
-    warn "跳过 Pages 部署（wrangler 不可用）。产物在 web/dist，可手动上传"
-  fi
+  say "Vue 产物已写入仓库根目录；推送 main 后由 GitHub Pages 自动发布。"
   cd "$REPO"
 }
 
@@ -149,9 +143,8 @@ main() {
   esac
 
   step "完成"
-  echo "  旧站：推送 main 后 GitHub Pages 自动部署 → https://www.uuoo.site"
+  echo "  Vue 用户端：推送 main 后 GitHub Pages 自动部署 → https://www.uuoo.site"
   echo "  后端：https://uuoo-analytics.uuoo.workers.dev"
-  echo "  新端：https://uuoo-web.pages.dev"
   echo
   echo "${DIM}  备份在 ${BACKUP_DIR:-$REPO/backups}/，恢复用 bash analytics/restore.sh <文件>${OFF}"
 }

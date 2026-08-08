@@ -44,11 +44,11 @@ flowchart TB
 
 | 层 | 技术 | 职责 |
 |---|---|---|
-| 表现层 | `src.html` → `build.mjs` → `index.html` + 数据切片 | 页面/交互/本地学习闭环，离线可跑 |
+| 表现层 | `web/src/` → Vite → 根 `index.html` + `assets/` + `data/` | Vue 页面/交互/本地学习闭环，离线可跑 |
 | 构建层 | `build.mjs`（Node + terser） | 注入小数据 → 大词库切成 `de.<hash>.dat` / `en.<hash>.dat` → XOR/Base64 加密 + 懒解密 + 混淆 → 生成 `index.html` + `sw.js` |
 | 边缘服务层 | Cloudflare Worker（ES Module） | 账号鉴权、学习数据同步、徽章判定、社交、匿名埋点 |
 | 数据层 | Cloudflare D1（SQLite） | 用户/会话/关注/事件持久化 |
-| 托管/部署 | GitHub Pages（前端）+ wrangler（后端） | push main 自动发前端；`deploy.sh` 一键发后端 |
+| 托管/部署 | GitHub Pages（Vue 根产物）+ wrangler（后端） | push main 自动发前端；`deploy.sh` 一键发后端 |
 
 ---
 
@@ -209,6 +209,6 @@ flowchart LR
 
 ## 9. 部署
 
-- **前端**：改 `src.html` 或 `data/*` → `npm run build` → `npm run verify` → 提交 `index.html`、`sw.js`，以及本次构建生成/更新的 `de.<hash>.dat` / `en.<hash>.dat` → push `main` → GitHub Pages 自动上线。
+- **前端**：改 `web/src/*` 或 `data/*` → `cd web && npm run build` → `npm run verify` → 提交根 `index.html`、`assets/`、`data/`、`sw.js` → push `main` → GitHub Pages 自动上线。
 - **后端**：改 `analytics/*` → 用户侧 `bash deploy.sh`（拉最新代码 → `d1 execute schema.sql --remote` 建/补表 → `wrangler deploy`）。
 - **密钥**：`STATS_KEY` / `GH_CLIENT_SECRET` / `GOOGLE_CLIENT_SECRET` 用 `wrangler secret put <NAME>` 设置，不入库不入仓；若历史提交泄露过密钥，必须轮换远端 secret。
