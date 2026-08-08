@@ -1,4 +1,4 @@
-// 后端沿用现有 Cloudflare Worker（analytics/worker.js），接口契约完全不变。
+// 后端沿用现有 Cloudflare Worker（analytics/worker.js），排行榜响应包含 list 与 total。
 // 这样前端可以独立迁移、灰度切换，后端零改动。
 export const API_BASE = import.meta.env.VITE_API_BASE || 'https://uuoo-analytics.uuoo.workers.dev';
 

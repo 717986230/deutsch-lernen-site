@@ -158,7 +158,8 @@ Worker 每天凌晨 4 点自动清理（`wrangler.toml` 的 `[triggers] crons`�
 |---|---|
 | `events` 埋点 | **90 天** |
 | `activity` 动态 | 180 天 |
-| `sessions` / `oauth_state` / `ratelimit` | 过期即删 |
+| `sessions` 登录会话 | **180 天** |
+| `oauth_state` / `ratelimit` | 过期即删 |
 
 不配这个，`events` 会一直涨到 D1 的 10GB 上限；而且埋点含个人信息
 （截断 IP、城市），无限留存本身也是合规风险。

@@ -1,7 +1,5 @@
-# 构建 Vue 用户端并部署到 Cloudflare Pages。
-# 旧站（仓库根 index.html）由 GitHub Pages 独立部署，两者互不影响 ——
-# 这正是灰度的基础：新端出问题，把域名切回旧站即可，不需要回滚代码。
-name: Deploy web
+# 构建并校验 Vue 用户端。GitHub Pages 从 main 根目录自动发布。
+name: Validate web
 
 on:
   push:
@@ -20,10 +18,7 @@ jobs:
         working-directory: web
       - run: npm run build          # 同时生成 sw.js（gen-sw.mjs）
         working-directory: web
+      # 确认构建产物已提交，避免 GitHub Pages 发布旧文件
+      - run: git diff --exit-code -- index.html sw.js assets data
       # 内容数据体检：谐音字符集、字段完整性、同词一致性
       - run: npm ci --ignore-scripts && npm run verify:data
-      - uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: pages deploy web/dist --project-name=uuoo-web

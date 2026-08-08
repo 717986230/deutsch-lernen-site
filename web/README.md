@@ -1,16 +1,16 @@
 # 用户端（Vue 3 + Vant）
 
-面向手机 / 微信内置浏览器。**与旧站 `index.html` 并存**，未切流量前旧站仍是生产。
+面向现代桌面和移动浏览器。Vue 用户端现在是根目录唯一生产入口，旧站发布产物已下线。
 
 ```bash
 cd web && npm install
 npm run dev      # 本地开发
-npm run build    # 产物在 dist/
+  npm run build    # 产物写入仓库根目录，供 GitHub Pages 发布
 ```
 
 ## 关键决策
 
-- **后端不动**：沿用 `analytics/worker.js`，接口契约完全一致（见 `analytics/README.md`）。
+- **后端复用**：沿用 `analytics/worker.js`，排行榜响应包含 `list` 与 `total`（见 `analytics/README.md`）。
   前端可以独立迁移、灰度切换，后端零改动。
 - **微信老内核**：`@vitejs/plugin-legacy` 额外产出一份 ES5 包 + polyfill，
   浏览器按能力择一加载。Vue 3 依赖 `Proxy`，老 X5 / 老 WKWebView 不一定有，这层不能省。

@@ -79,7 +79,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email);
 --   ALTER TABLE users ADD COLUMN mail_try INTEGER DEFAULT 0;
 --   ALTER TABLE users ADD COLUMN email_ok INTEGER DEFAULT 0;
 
--- 登录会话（随机 token，180 天过期）
+-- 登录会话（随机 token，180 天过期；实际到期时间写入 exp）
 CREATE TABLE IF NOT EXISTS sessions (
   token TEXT PRIMARY KEY,
   uid   INTEGER,

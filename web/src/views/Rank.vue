@@ -2,17 +2,20 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { api } from '../api';
 const BY = [['known', '词汇'], ['streak', '连续'], ['total', '总量']];
-const by = ref('known'); const rows = ref([]); const loading = ref(true); const err = ref('');
+const by = ref('known'); const rows = ref([]); const total = ref(0); const loading = ref(true); const err = ref('');
 // 只显示前十。其余不提供展开 —— 名次靠后的具体是谁没人关心，
 // 给个总数让用户知道「榜上还有多少人」就够了。
 const TOP = 10;
 const shown = computed(() => rows.value.slice(0, TOP));
-const restCount = computed(() => Math.max(0, rows.value.length - TOP));
+const restCount = computed(() => Math.max(0, total.value - TOP));
 async function load() {
   loading.value = true; err.value = '';
   const r = await api.leaderboard(by.value);
   loading.value = false;
-  if (r.ok) rows.value = r.data.list || [];
+  if (r.ok) {
+    rows.value = r.data.list || [];
+    total.value = Number.isFinite(Number(r.data.total)) ? Number(r.data.total) : rows.value.length;
+  }
   // 网络故障与业务失败要分开说，别都归成「加载失败」
   else err.value = r.offline ? '离线中，联网后重试' : (r.data.err || '加载失败');
 }
