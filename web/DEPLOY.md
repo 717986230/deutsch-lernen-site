@@ -1,18 +1,21 @@
 # 部署与灰度
 
-## 现状（2026-08 已切换）
+## 现状（2026-08）
 
-**Vue 新端已成为生产**，走 GitHub Pages，无需 Cloudflare：
+**生产仍是旧站。** 曾在 2026-08 切到 Vue 新端，当天回退（界面被重新设计过，
+不是站长要的）；新端已按旧站结构重做，等重新切。
 
 | 文件 | 谁 | 访问 |
 |---|---|---|
-| `index.html` + `assets/` + `data/` | Vue 新端 | www.uuoo.site ← **当前生产** |
-| `legacy.html` + `*.dat` | 旧站（保留） | www.uuoo.site/legacy.html |
+| `index.html` + `*.dat` | 旧站 | www.uuoo.site ← **当前生产** |
+| `web/dist/` | Vue 新端产物 | 未上线（`.gitignore` 中）|
 
-`web/` 的 vite 配置把产物直接输出到**仓库根**（`outDir:'..'`、`emptyOutDir:false`），
-所以流程就是：`cd web && npm run build` → 提交 → 推 main → 上线。
+`web/` 的 vite 产物输出到 `web/dist`，每次构建自清。
+**不要**再把 `outDir` 指回仓库根——文件名带内容哈希，那样每构建一次就留一批孤儿，
+一度在根目录堆了 300 多个没人引用的 `assets/*.js`。上线时由 `deploy.sh` 或手工
+把 `web/dist/.` 整份拷到根。
 
-**回退见 [`../ROLLBACK.md`](../ROLLBACK.md)**，两条 cp 命令即可，不用碰 DNS。
+**切换与回退的完整命令见 [`../ROLLBACK.md`](../ROLLBACK.md)**，不用碰 DNS。
 
 ## 首次部署（约 10 分钟）
 

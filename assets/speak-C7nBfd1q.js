@@ -1,1 +1,0 @@
-const e="undefined"!=typeof window&&"speechSynthesis"in window,n=e;function s(n,s="de-DE",t=.9){if(!e)return!1;try{speechSynthesis.cancel();const e=new SpeechSynthesisUtterance(n);return e.lang=s,e.rate=t,speechSynthesis.speak(e),!0}catch{return!1}}export{n as c,s};

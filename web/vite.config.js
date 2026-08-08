@@ -27,12 +27,13 @@ export default defineConfig({
   ],
   // 目标浏览器：现代桌面/移动浏览器。**不再支持微信内置浏览器**（站长 2026-08 决定），
   // 因此不再产出 ES5 legacy 包 —— 那套 polyfill 有 195KB(gz)，比现代包本身还大。
-  // 产物直接输出到仓库根 —— GitHub Pages 服务的就是这里，推 main 即上线。
-  // emptyOutDir:false 是必须的：根目录还放着 legacy.html、词库 .dat、CNAME 等，
-  // 清空会把它们全删掉，回退路径也就没了。
+  // 产物输出到 web/dist（已在 .gitignore 里），**不再直接落到仓库根**。
+  // 之前 outDir:'..' 会把仓库根当构建目录，而文件名带内容哈希：每构建一次就留一批
+  // 上一版的孤儿文件，仓库根很快堆了几百个没人引用的 assets/*.js，还得手工分辨哪些是死的。
+  // emptyOutDir 保持默认(true)，每次构建自清，从源头杜绝孤儿。
+  // 上线由 deploy.sh 把 dist/ 拷到仓库根（它本来就按 web/dist 写的，这下两边终于一致）。
   build: {
-    outDir: '..',
-    emptyOutDir: false,
+    outDir: 'dist',
     target: 'es2020',
     minify: 'terser',
     rollupOptions: {

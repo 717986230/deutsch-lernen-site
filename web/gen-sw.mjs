@@ -4,12 +4,11 @@ import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 
-const DIST = '..';   // 与 vite 的 outDir 保持一致（仓库根）
+const DIST = 'dist';   // 与 vite 的 outDir 保持一致
 const walk = (dir, base = '') => readdirSync(join(DIST, dir), { withFileTypes: true })
   .flatMap((e) => e.isDirectory() ? walk(join(dir, e.name), base) : [join(dir, e.name)]);
 
-// 只收 Vue 自己的产物：根目录还有旧站的 legacy.html、词库 .dat、node_modules 等，
-// 全量遍历既慢又会把无关文件灌进缓存
+// 白名单保留：dist 现在是干净的，但万一以后往里塞别的东西，缓存清单不该跟着膨胀
 const KEEP = /^(assets\/|data\/|index\.html$|support-qr\.png$)/;
 const files = walk('.').map((f) => f.replace(/^\.\//, '')).filter((f) => KEEP.test(f) && f !== 'sw.js');
 const hash = createHash('sha256');
