@@ -29,7 +29,10 @@
 <meta name="apple-mobile-web-app-title" content="德语手册">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
-:root{--gold:#58cc02;--gold-dim:#58cc0266;--gold-faint:#58cc0222;--bg:#f7f9f8;--bg2:#ffffff;--bg3:#ffffff;--surface:#ffffff;--surface-2:#ffffff;--nav-bg:rgba(255,255,255,.9);--border:rgba(0,0,0,.08);--shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);--text:#33383d;--text-dim:#63696f;--text-faint:#6b7278;--red:#ff4b4b;--green:#58cc02;--blue:#1cb0f6;--stripe:rgba(0,0,0,.02);--art-der:#0f6f9e;--art-die:#c9252b;--art-das:#2f7d00;--gold-text:#357a00;--lv0:#357a00;--lva1:#0b6285;--lva2:#7a5200;--lvb1:#95430f;--lvb2:#bf1e28;--lvc1:#6b21b8;--lvc2:#4043bd;}:root[data-theme="dark"]{--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#8b939b;--gold-text:#58cc02;--lv0:#58cc02;--lva1:#1cb0f6;--lva2:#f0b429;--lvb1:#ff7a4d;--lvb2:#ff8a8a;--lvc1:#c9a4ff;--lvc2:#9ea1ff;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#8b939b;--gold-text:#58cc02;--lv0:#58cc02;--lva1:#1cb0f6;--lva2:#f0b429;--lvb1:#ff7a4d;--lvb2:#ff8a8a;--lvc1:#c9a4ff;--lvc2:#9ea1ff;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}}
+:root{
+  /* 底部标签栏占用的高度（含 iPhone 安全区）。所有 fixed/sticky 贴底的浮动元素
+     一律从它算起 —— 以前各写各的（24/80/84px），底栏一加就有好几个压在上面。 */
+  --tab-h:calc(58px + env(safe-area-inset-bottom));--gold:#58cc02;--gold-dim:#58cc0266;--gold-faint:#58cc0222;--bg:#f7f9f8;--bg2:#ffffff;--bg3:#ffffff;--surface:#ffffff;--surface-2:#ffffff;--nav-bg:rgba(255,255,255,.9);--border:rgba(0,0,0,.08);--shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);--text:#33383d;--text-dim:#63696f;--text-faint:#6b7278;--red:#ff4b4b;--green:#58cc02;--blue:#1cb0f6;--stripe:rgba(0,0,0,.02);--art-der:#0f6f9e;--art-die:#c9252b;--art-das:#2f7d00;--gold-text:#357a00;--lv0:#357a00;--lva1:#0b6285;--lva2:#7a5200;--lvb1:#95430f;--lvb2:#bf1e28;--lvc1:#6b21b8;--lvc2:#4043bd;}:root[data-theme="dark"]{--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#8b939b;--gold-text:#58cc02;--lv0:#58cc02;--lva1:#1cb0f6;--lva2:#f0b429;--lvb1:#ff7a4d;--lvb2:#ff8a8a;--lvc1:#c9a4ff;--lvc2:#9ea1ff;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111417;--bg2:#191d22;--bg3:#191d22;--surface:#1d2228;--surface-2:#232931;--nav-bg:rgba(17,20,23,.88);--border:rgba(255,255,255,.12);--shadow:0 2px 10px rgba(0,0,0,.5);--text:#e6eaee;--text-dim:#a4abb2;--text-faint:#8b939b;--gold-text:#58cc02;--lv0:#58cc02;--lva1:#1cb0f6;--lva2:#f0b429;--lvb1:#ff7a4d;--lvb2:#ff8a8a;--lvc1:#c9a4ff;--lvc2:#9ea1ff;--gold-faint:#58cc0230;--gold-dim:#58cc0288;--stripe:rgba(255,255,255,.035);--art-der:#4cc2ff;--art-die:#ff6b6b;--art-das:#7bd938;}}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-height:100vh;overflow-x:hidden}
 /* der/die/das 词性颜色记忆（蓝/红/绿，与语法版块一致）*/
@@ -136,7 +139,7 @@ body.lang-en .flag-strip{display:none}
 .rd-word rt{font-size:10px;color:var(--text-faint);font-weight:400;user-select:none;text-align:center;ruby-align:center}
 body.no-gloss .rd-word rt{display:none}
 .rd-word:hover{background:rgba(88,204,2,.18)}
-.rd-toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(10px);z-index:400;background:rgba(40,40,40,.92);color:#fff;font-size:13px;padding:9px 16px;border-radius:20px;opacity:0;visibility:hidden;transition:all .2s;max-width:88%;text-align:center}
+.rd-toast{position:fixed;left:50%;bottom:calc(var(--tab-h) + 26px);transform:translateX(-50%) translateY(10px);z-index:400;background:rgba(40,40,40,.92);color:#fff;font-size:13px;padding:9px 16px;border-radius:20px;opacity:0;visibility:hidden;transition:all .2s;max-width:88%;text-align:center}
 .rd-toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
 .speak-btn.speaking{background:#58cc02;color:#fff;animation:pulse .7s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(88,204,2,.4)}50%{box-shadow:0 0 0 6px rgba(88,204,2,0)}}
@@ -339,14 +342,20 @@ body:not(.lang-en) .en-only-block{display:none}
 .board-tabs::-webkit-scrollbar{display:none}
 .board-tab{flex-shrink:0;padding:7px 15px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-size:13px;font-family:inherit;white-space:nowrap;transition:all .15s}
 .board-tab.active{border-color:var(--gold);background:var(--gold);color:#fff;font-weight:700}
-.pic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+/* 右侧留出「拼读查词」侧标签的宽度（实测它 left=364、宽 26px，会盖住第三列卡片）。
+   FAB 隐藏时（英语模式 / hide-fab 的几个版块）不需要这段留白，故用 :has 收窄条件；
+   不支持 :has 的浏览器退化成「一直留白」，也只是少 30px，不会出错。 */
+.pic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;padding-right:30px}
+body.lang-en .pic-grid,body.hide-fab .pic-grid{padding-right:0}
 .pic-cell{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px 6px 10px;text-align:center;cursor:pointer;transition:transform .12s,box-shadow .15s,border-color .15s;box-shadow:var(--shadow)}
 .pic-cell:hover{transform:translateY(-2px);border-color:var(--gold-dim);box-shadow:0 6px 16px rgba(0,0,0,.08)}
 .pic-cell.active{border-color:var(--gold);background:rgba(88,204,2,.08)}
 .pic-emoji{font-size:38px;line-height:1.1}
 .pic-de{font-size:13px;font-weight:600;color:var(--text);margin-top:6px;word-break:break-word}
 .pic-zh{font-size:11px;color:var(--text-faint);margin-top:1px}
-.pic-out{position:sticky;bottom:16px;margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
+/* bottom 必须避开固定底栏（58px + 安全区），否则浮条会压在底栏上，
+   实测浮条 bottom=828 而底栏 top=790，重叠 38px，同时盖住最后两行共 6 张卡片。 */
+.pic-out{position:sticky;bottom:calc(var(--tab-h) + 12px);margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
 .bp-chip{border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:14px;padding:4px 11px;font-size:12px;cursor:pointer;font-family:inherit}
 .bp-chip.active{border-color:var(--gold);background:var(--gold);color:#fff}
 /* 拼读器右侧小浮钮（约为零基础钮一半大）+ 弹窗 */
@@ -746,6 +755,8 @@ body.lang-en .phfab{display:none}
     <div id="bodyChips" class="pic-grid"></div>
     </div>
     <div id="boardGrid" class="pic-grid" style="display:none"></div>
+    <!-- 底部留白：让最后一行卡片能滚到「选中词」浮条之上，而不是永远压在它下面 -->
+    <div style="height:96px" aria-hidden="true"></div>
     <div id="picOut" class="pic-out" style="display:none"></div>
     <div id="boardQuiz" class="gq-box" style="margin-top:20px"></div>
   </div>
@@ -1516,7 +1527,7 @@ body.lang-en .phfab{display:none}
 #bottomNav .bn-btn.on{color:var(--gold)}
 #bottomNav .bn-btn.on .bn-t{font-weight:700}
 #bottomNav .bn-btn:active{transform:translateY(1px)}
-body{padding-bottom:calc(58px + env(safe-area-inset-bottom))}
+body{padding-bottom:var(--tab-h)}
 :root.locked #bottomNav{display:none}
 :root.locked body{padding-bottom:0}
 .glass-title{position:relative;z-index:1;text-align:center;font-size:25px;font-weight:800;letter-spacing:.5px;margin:0 0 5px;color:var(--text)}
@@ -2666,7 +2677,7 @@ if('speechSynthesis' in window){ pickGermanVoice(); speechSynthesis.onvoiceschan
 function tgtLang(){return LANG==='en'?'en-US':'de-DE';}
 function tgtVoice(){return LANG==='en'?_enVoice:_deVoice;}
 // 通用轻提示条（TTS 提示 / 目标达成共用一个元素）
-function _toast(msg,ms){try{var d=document.getElementById('__ttsh');if(!d){d=document.createElement('div');d.id='__ttsh';d.style.cssText='position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:600;background:rgba(40,40,40,.94);color:#fff;font-size:13px;line-height:1.5;padding:10px 16px;border-radius:12px;max-width:86%;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.3)';(document.body||document.documentElement).appendChild(d);}d.textContent=msg;d.style.display='block';clearTimeout(window.__ttshT);window.__ttshT=setTimeout(function(){d.style.display='none';},ms||3000);}catch(e){}}
+function _toast(msg,ms){try{var d=document.getElementById('__ttsh');if(!d){d=document.createElement('div');d.id='__ttsh';d.style.cssText='position:fixed;left:50%;bottom:calc(var(--tab-h) + 26px);transform:translateX(-50%);z-index:600;background:rgba(40,40,40,.94);color:#fff;font-size:13px;line-height:1.5;padding:10px 16px;border-radius:12px;max-width:86%;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.3)';(document.body||document.documentElement).appendChild(d);}d.textContent=msg;d.style.display='block';clearTimeout(window.__ttshT);window.__ttshT=setTimeout(function(){d.style.display='none';},ms||3000);}catch(e){}}
 function _ttsHint(){_toast('此浏览器内核不支持朗读 🔇 点右上角「⋯」→「在浏览器打开」即可发音',4000);}
 function speakDE(text,btn){
   if(window.__noTTS||!('speechSynthesis' in window)){_ttsHint();return;}
@@ -4195,12 +4206,12 @@ function spFinish(){document.getElementById('spBar').style.width='100%';document
 </div>
 <button id="toTop" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部" aria-label="回到顶部">↑</button>
 <style>
-#toTop{position:fixed;right:20px;bottom:24px;z-index:300;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#46a302;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.12);border:1px solid var(--gold-faint);font-family:inherit;padding:0;opacity:0;visibility:hidden;transform:translateY(12px) scale(.85);transition:all .28s cubic-bezier(.34,1.56,.64,1)}
+#toTop{position:fixed;right:20px;bottom:calc(var(--tab-h) + 16px);z-index:300;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#46a302;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.12);border:1px solid var(--gold-faint);font-family:inherit;padding:0;opacity:0;visibility:hidden;transform:translateY(12px) scale(.85);transition:all .28s cubic-bezier(.34,1.56,.64,1)}
 #toTop.show{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
 #toTop:hover{background:#58cc02;color:#fff;border-color:#58cc02;box-shadow:0 8px 22px rgba(88,204,2,.38);transform:translateY(-3px)}
 #toTop:active{transform:scale(.9)}
 /* 浮动「循环朗读」按钮：固定在回到顶部上方 */
-.fab-read{position:fixed;right:16px;bottom:80px;z-index:300;border:none;border-radius:24px;background:#58cc02;color:#fff;font-size:14px;font-weight:600;font-family:inherit;padding:11px 18px;cursor:pointer;box-shadow:0 4px 16px rgba(88,204,2,.4);white-space:nowrap;transition:transform .15s,background .2s}
+.fab-read{position:fixed;right:16px;bottom:calc(var(--tab-h) + 22px);z-index:300;border:none;border-radius:24px;background:#58cc02;color:#fff;font-size:14px;font-weight:600;font-family:inherit;padding:11px 18px;cursor:pointer;box-shadow:0 4px 16px rgba(88,204,2,.4);white-space:nowrap;transition:transform .15s,background .2s}
 .fab-read:active{transform:scale(.94)}
 .fab-read.playing,.fab-read.speaking{background:#fff;color:var(--text-dim);border:1px solid var(--gold-faint);box-shadow:0 3px 12px rgba(0,0,0,.12)}
 </style>

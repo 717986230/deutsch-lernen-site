@@ -44,7 +44,7 @@ const go = (d) => { const i = idx.value + d; if (i >= 0 && i < list.value.length
 .tx{flex:1;min-width:0;display:flex;flex-direction:column}
 .ti{font-size:16px;font-weight:600}
 .zh{font-size:13px;color:var(--text-3);margin-top:2px}
-.bar{padding:12px 0 4px;position:sticky;top:0;background:var(--bg);z-index:2}
+.bar{padding:12px 0 4px;position:sticky;top:var(--bar-h);background:var(--bg);z-index:2}
 .back{background:none;border:none;color:var(--brand-text);font-size:15px;font-family:inherit;cursor:pointer;padding:4px 0}
 .at{font-size:22px;font-weight:700;margin:8px 0 2px;letter-spacing:-.02em}
 .az{color:var(--text-3);font-size:14px;margin:0 0 12px}

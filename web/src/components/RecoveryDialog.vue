@@ -48,7 +48,8 @@ function copy(code) {
 </template>
 
 <style scoped>
-.mask{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
+/* 必须高于固定顶栏(200) 和底部标签栏(300)，否则底栏会压在遮罩上面 */
+.mask{position:fixed;inset:0;z-index:1500;display:flex;align-items:center;justify-content:center;
   padding:24px;background:rgba(0,0,0,.5)}
 .panel{width:100%;max-width:380px;background:var(--surface);border-radius:var(--radius);
   padding:28px 24px 24px}

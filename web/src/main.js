@@ -1,5 +1,11 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+// Vant 的**函数式**组件（showToast / showDialog）不是写在模板里的，
+// unplugin-vue-components 扫不到，也就不会自动注入它们的样式 ——
+// 实测后果：恢复码弹窗的 .van-overlay 高度是 0，弹窗没有遮罩、位置也不对。
+// 这两行必须手动写，且要在自己的样式之前，好让 vant-override.css 还能盖过它们。
+import 'vant/es/toast/style';
+import 'vant/es/dialog/style';
 import './styles/theme.css';
 import './styles/vant-override.css';   // 必须在最后：要盖过按需引入的 Vant 组件 CSS
 import './styles/auth.css';
