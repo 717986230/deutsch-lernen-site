@@ -1,24 +1,31 @@
-// 自动生成（build.mjs），勿手改。壳网络优先；词典切片持久缓存、跨版本复用。
-const V='de-7a7f616b76',DATA='de-data',KEEP=["de.b3a73960.dat","en.6723bc5b.dat"];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['index.html','manifest.webmanifest','icon-192.png','icon-512.png'])).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',e=>{e.waitUntil((async()=>{
-  const ks=await caches.keys();
-  await Promise.all(ks.filter(k=>k!==V&&k!==DATA).map(k=>caches.delete(k)));
-  // 清掉旧版词典切片，只保留当前 de/en 文件（内容不变则文件名不变，天然复用）
-  const dc=await caches.open(DATA),reqs=await dc.keys();
-  await Promise.all(reqs.map(rq=>{const p=new URL(rq.url).pathname;if(p.endsWith('.dat')&&!KEEP.some(f=>p.endsWith(f)))return dc.delete(rq);}));
-  await self.clients.claim();
-})())});
-self.addEventListener('fetch',e=>{
-  const u=new URL(e.request.url);
-  if(u.origin!==location.origin||e.request.method!=='GET')return;
-  if(e.request.mode==='navigate'||u.pathname==='/'||u.pathname.endsWith('/index.html')){
-    // 页面：网络优先（保证更新），断网回退缓存
-    e.respondWith(fetch(e.request).then(r=>{const cp=r.clone();caches.open(V).then(c=>c.put(e.request,cp));return r;})
-      .catch(()=>caches.match(e.request).then(r=>r||caches.match('index.html'))));
+// 自动生成（gen-sw.mjs），勿手改。版本 abdd17f304
+const V = 'uuoo-abdd17f304';
+const SHELL = ["/assets/AuthField-BbTHxM9-.js","/assets/AuthField-C3RVTu6M.js","/assets/AuthField-CoZvIidE.js","/assets/AuthField-CvgWkYKn.js","/assets/AuthField-D5FdBAA1.css","/assets/AuthField-DHqW_7-c.js","/assets/AuthField-H80og1ze.js","/assets/AuthField-toiBP7UW.js","/assets/Boards-06q8Xkkb.js","/assets/Boards-CYiaITan.js","/assets/Boards-Chp8il99.js","/assets/Boards-DHgdD5Hh.js","/assets/Boards-DfzJwJsS.css","/assets/Boards-Dlr-_C4Q.js","/assets/Boards-Sw3x0W1O.js","/assets/Boards-hdwspbHV.js","/assets/Dialog-74xrll1h.js","/assets/Dialog-9t6rlduY.js","/assets/Dialog-BbsPCBDB.js","/assets/Dialog-CEnDcNT0.js","/assets/Dialog-CpU8cJu7.js","/assets/Dialog-DB-4AGY6.css","/assets/Dialog-DhYMBuq-.js","/assets/Dialog-GBFbhIsu.js","/assets/Feed-BIjQ_j_C.js","/assets/Feed-BWXYUFIo.js","/assets/Feed-Br8mOPbG.js","/assets/Feed-CSOnwGnT.js","/assets/Feed-Dei24sOE.js","/assets/Feed-DtGtdHsi.js","/assets/Feed-Uc7Qm_Z4.js","/assets/Feed-wGpJ3LfI.css","/assets/Following-B59wmVYf.js","/assets/Following-BmbubxeA.js","/assets/Following-C7vGHYc3.js","/assets/Following-CXxe6D-M.js","/assets/Following-CpuIUjjW.js","/assets/Following-DYiHcnVI.css","/assets/Following-DcOFjZLN.js","/assets/Following-Z6rqpeAn.js","/assets/Home-56vpXcBA.js","/assets/Home-BBkzY9_O.js","/assets/Home-BhwnB4M4.js","/assets/Home-C3gnYOO-.js","/assets/Home-C_h30suG.js","/assets/Home-Cp6CUe3Q.js","/assets/Home-SsD9wDBE.js","/assets/Home-VksvBgcp.css","/assets/LangSwitch-1lVV5d53.css","/assets/LangSwitch-49c0EBNc.js","/assets/LangSwitch-BNPh_ImG.js","/assets/LangSwitch-B_qKdIZd.js","/assets/LangSwitch-Ci-afUmz.js","/assets/LangSwitch-LfL1ms0r.js","/assets/LangSwitch-_-tgg1xZ.js","/assets/LangSwitch-qrMBLetw.js","/assets/Legal-CSjVA0kc.js","/assets/Legal-Cc5SA2Hi.js","/assets/Legal-Cfbw2JyK.js","/assets/Legal-DRqt4ssG.js","/assets/Legal-DUeBVYff.js","/assets/Legal-JI2jw7d3.js","/assets/Legal-XxnNa49y.css","/assets/Legal-ypmaG4dY.js","/assets/Login-B25lc7w4.js","/assets/Login-B7IFf85D.js","/assets/Login-BC25ansa.js","/assets/Login-BJahMaP9.js","/assets/Login-C4yEou9-.js","/assets/Login-CtoaxXr_.js","/assets/Login-DrC-aeEX.js","/assets/Me-BBRZKeue.js","/assets/Me-BDVX9NKG.css","/assets/Me-Bdv5H0UX.js","/assets/Me-CEoGI9NW.js","/assets/Me-CO--6KfZ.css","/assets/Me-CddQ1ZUP.js","/assets/Me-Cp5CQtxP.js","/assets/Me-Cy2b4X1l.css","/assets/Me-DIF-k0g5.js","/assets/Me-XCO856io.js","/assets/Phrases-B7nAWk5h.js","/assets/Phrases-BGKXnQSs.js","/assets/Phrases-BtkYGIk3.js","/assets/Phrases-C6oyyNLI.js","/assets/Phrases-COzpTwLd.js","/assets/Phrases-CjL1m2WM.css","/assets/Phrases-JI3HgWOD.js","/assets/Phrases-S-8ZeH1w.js","/assets/Profile-BMRlEBZA.js","/assets/Profile-BSUMzJ7U.css","/assets/Profile-BlNt1qkN.js","/assets/Profile-CN1hYuny.js","/assets/Profile-CwazmjaO.js","/assets/Profile-D-Xg94RH.js","/assets/Profile-cnJYtSZj.js","/assets/Profile-uPpZ8O8j.js","/assets/Quiz-BD046wbB.js","/assets/Quiz-CIckDY4E.js","/assets/Quiz-CgrugSUI.js","/assets/Quiz-CqI3pVGu.js","/assets/Quiz-D-657z87.css","/assets/Quiz-DdcNGlYh.js","/assets/Quiz-DjKy-xKg.js","/assets/Quiz-hIPn1iZM.js","/assets/Rank-Boc8XKOI.js","/assets/Rank-CFV4Rkkx.js","/assets/Rank-CYE8WgF2.js","/assets/Rank-CYmTjzl0.js","/assets/Rank-D1PqiGQz.css","/assets/Rank-DCYHZxwZ.js","/assets/Rank-D_bp3cXy.js","/assets/Rank-Dpo7ePRs.js","/assets/Reading-5vpNBX6w.js","/assets/Reading-C0IjZCr0.js","/assets/Reading-CU-Gj7QL.js","/assets/Reading-Ckn1DNJn.js","/assets/Reading-Dh4llgik.js","/assets/Reading-HxQt0OKH.js","/assets/Reading-Z3V9ZrdJ.js","/assets/Reading-ngSZB_zb.css","/assets/RecoveryDialog-Be9VNc0S.js","/assets/RecoveryDialog-C-KMAFQu.js","/assets/RecoveryDialog-C7doF5Cz.js","/assets/RecoveryDialog-CaFPU1j1.css","/assets/RecoveryDialog-Ce8P7y6d.js","/assets/RecoveryDialog-DLXxonDT.js","/assets/RecoveryDialog-DnfwvuhV.js","/assets/RecoveryDialog-aOUA816T.js","/assets/Reference-CHK0HPld.js","/assets/Reference-CJrkyiap.css","/assets/Reference-CMGYuclz.js","/assets/Reference-ChIideyA.js","/assets/Reference-CoWT2qbP.js","/assets/Reference-DoKJB2iN.js","/assets/Reference-Dy6vTthr.js","/assets/Reference-ykessenV.js","/assets/Register-BqdKGvBh.js","/assets/Register-C58mSCQt.js","/assets/Register-Ce28AH-N.js","/assets/Register-Dagn7N_I.js","/assets/Register-HGi69xFY.js","/assets/Register-UKaZxTV7.js","/assets/Register-eIYjT4KM.js","/assets/Reset-B2UnXZa8.js","/assets/Reset-B6kVkxy3.js","/assets/Reset-BXdzUISh.js","/assets/Reset-BaXcnhAC.css","/assets/Reset-BvgVZyax.js","/assets/Reset-D8oSO6Xy.js","/assets/Reset-Da8LcZHl.js","/assets/Reset-DwiW8p7b.js","/assets/Series-BMzpyOOR.js","/assets/Series-ByC21xiU.css","/assets/Series-C2ikN8Aa.js","/assets/Series-C6ptXpwK.js","/assets/Series-CdGOfF7B.js","/assets/Series-CmIA0t3m.js","/assets/Series-K2t2bu-T.js","/assets/Series-khgmX0JI.js","/assets/Spell-BDOhRApI.js","/assets/Spell-BTzlewai.js","/assets/Spell-C9IY_qjO.js","/assets/Spell-D51nR7ZR.js","/assets/Spell-DAaKL-FG.js","/assets/Spell-es1K4BVX.js","/assets/Spell-gpklsjpW.js","/assets/Spell-jLleO5Py.css","/assets/Support-7tkSz_XG.js","/assets/Support-CT2tIfHv.js","/assets/Support-DCU2JZRC.js","/assets/Support-DDvkCCZj.js","/assets/Support-DO1LbUbU.js","/assets/Support-DhgJP_lS.js","/assets/Support-Dt1BlCVs.css","/assets/Support-wRUIQ5T1.js","/assets/index-B0OCv-As.css","/assets/index-B8BuluTl.js","/assets/index-BPU47RnM.js","/assets/index-C6_GjleG.js","/assets/index-CICQlhzF.css","/assets/index-CgHXla1m.js","/assets/index-CvrLcUPm.css","/assets/index-D5etuCjU.js","/assets/index-DlHUwdav.css","/assets/index-Do1PtbJB.js","/assets/index-F2p91AVn.js","/assets/index-xDeh5dAu.css","/assets/speak-C7nBfd1q.js","/assets/vant-CXwf4Qkt.js","/assets/vant-Dii0QV-T.js","/assets/vue--IEmFKDW.js","/assets/vue-BEXKDZn0.js","/index.html","/support-qr.png"];
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(V).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+});
+self.addEventListener('activate', (e) => {
+  // 清掉旧版本缓存，避免无限增长
+  e.waitUntil(caches.keys().then((ks) => Promise.all(
+    ks.filter((k) => k.startsWith('uuoo-') && k !== V).map((k) => caches.delete(k))
+  )).then(() => self.clients.claim()));
+});
+self.addEventListener('fetch', (e) => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== location.origin) return;            // 后端接口不缓存，始终走网络
+  // 词库/短文等数据：缓存优先，命中就不再请求（内容变了文件名也会变）
+  if (url.pathname.includes('/data/')) {
+    e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => {
+      if (res.ok) { const c = res.clone(); caches.open(V).then((cc) => cc.put(req, c)); }
+      return res;
+    })));
     return;
   }
-  // 词典切片进持久缓存 DATA，其余静态资源进 V；均缓存优先，未命中回源写缓存
-  const bucket=u.pathname.endsWith('.dat')?DATA:V;
-  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res.ok){const cp=res.clone();caches.open(bucket).then(c=>c.put(e.request,cp));}return res;})));
+  // 其余：网络优先，失败回落缓存 —— 保证发版后能拿到新代码，断网时仍可用
+  e.respondWith(fetch(req).then((res) => {
+    if (res.ok) { const c = res.clone(); caches.open(V).then((cc) => cc.put(req, c)); }
+    return res;
+  }).catch(() => caches.match(req).then((hit) => hit || caches.match('/index.html'))));
 });

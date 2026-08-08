@@ -3804,7 +3804,7 @@ function _trackSave(b){try{var o=JSON.parse(localStorage.getItem('_tq')||'[]');l
 function _trackResend(){try{var o=JSON.parse(localStorage.getItem('_tq')||'[]');if(o.length&&_trackOn()){localStorage.removeItem('_tq');_tq=o.concat(_tq);_trackFlush();}}catch(e){}}
 try{document.addEventListener('visibilitychange',function(){if(document.visibilityState=='hidden')_trackFlush(true);});}catch(e){}
 try{_trackResend();}catch(e){}
-try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');}catch(e){}
+try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'))navigator.serviceWorker.register('sw-legacy.js');}catch(e){}
 // INIT：硬登录门槛下，登录页(locked)不建任何内容，解锁后再建，显著加快登录首屏
 var _appInited=false;
 function appInit(){

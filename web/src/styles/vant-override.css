@@ -1,0 +1,26 @@
+/* Vant 观感修正。
+   为什么不用 --van-* 令牌：那些组件 CSS 是 unplugin-vue-components 在**运行时**
+   按需注入的，永远晚于任何静态 import，令牌覆盖会被它盖掉
+   （实测 --van-text-color-2 仍是 Vant 默认 #969799）。
+   故直接用选择器覆盖，并加 :root 提高优先级。
+
+   起因：Vant 默认灰在浅底上只有 2.8–3.5:1，小字不达标；
+   此前检测只看 .page 内部，底栏与 cell 副文本一直漏检。 */
+/* 底栏容器的底色也必须一起接管：只改文字色会让深色主题下
+   浅色文字压在 Vant 默认的浅色底上（实测 1.40:1，基本看不见）。 */
+:root .van-tabbar{background:var(--surface);border-top:1px solid var(--line)}
+:root .van-tabbar--fixed{background:var(--surface)}
+:root .van-tabbar-item{background:transparent;color:var(--text-2)}
+:root .van-tabbar-item--active,
+:root .van-tabbar-item--active .van-tabbar-item__text{color:var(--brand-text)}
+:root .van-cell,
+:root .van-cell-group,
+:root .van-cell-group--inset{background:var(--surface);color:var(--text)}
+:root .van-field__control{color:var(--text)}
+:root .van-field__control::placeholder{color:var(--text-3)}
+:root .van-cell__label,
+:root .van-cell__value,
+:root .van-cell-group__title{color:var(--text-2)}
+:root .van-button--default{color:var(--text)}
+:root .van-hairline--top-bottom::after,
+:root .van-cell::after{border-color:var(--line)}

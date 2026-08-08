@@ -29,19 +29,19 @@ async function regen() {
 function out() { acct.signOut(); router.replace('/login'); }
 </script>
 <template>
-  <div class="wrap" v-if="acct.user">
-    <van-cell-group inset>
-      <van-cell :title="acct.user.nickname || acct.user.username" :label="'@' + acct.user.username">
-        <template #icon>
-          <span class="av" :style="{background: acct.user.av_bg || '#58cc02'}">{{ acct.user.avatar || '🦊' }}</span>
-        </template>
-      </van-cell>
-      <van-cell title="掌握词数" :value="acct.user.known || 0" />
-      <van-cell title="连续打卡" :value="(acct.user.streak || 0) + ' 天'" />
-      <van-cell title="排名" :value="'第 ' + acct.rank + ' 名'" />
-      <van-cell title="今日已学" :value="(study.n || 0) + ' / ' + (study.goal || 20)" />
-      <van-cell title="累计学习" :value="stat.total + ' 次'" />
-    </van-cell-group>
+  <div class="page" v-if="acct.user">
+    <div class="grp">
+      <div class="hd">
+        <span class="av" :style="{background: acct.user.av_bg || 'var(--brand)'}">{{ acct.user.avatar || '🦊' }}</span>
+        <span class="who"><span class="nk">{{ acct.user.nickname || acct.user.username }}</span>
+          <span class="un">@{{ acct.user.username }}</span></span>
+      </div>
+      <div class="row"><span class="k">掌握词数</span><span class="v">{{ acct.user.known || 0 }}</span></div>
+      <div class="row"><span class="k">连续打卡</span><span class="v">{{ (acct.user.streak || 0) + ' 天' }}</span></div>
+      <div class="row"><span class="k">排名</span><span class="v">{{ '第 ' + acct.rank + ' 名' }}</span></div>
+      <div class="row"><span class="k">今日已学</span><span class="v">{{ (study.n || 0) + ' / ' + (study.goal || 20) }}</span></div>
+      <div class="row"><span class="k">累计学习</span><span class="v">{{ stat.total + ' 次' }}</span></div>
+    </div>
 
     <div class="segs social">
       <button class="seg" @click="$router.push('/feed')">动态</button>
@@ -57,23 +57,40 @@ function out() { acct.signOut(); router.replace('/login'); }
       </div>
     </div>
 
-    <van-cell-group inset title="联系方式（用于找回密码）" style="margin-top:12px">
+    <div class="grp">
       <!-- 服务端只回掩码，明文不出服务端；留空即删除 -->
-      <van-field v-model="ct.email" label="邮箱"
-        :placeholder="acct.user.hasEmail ? `当前 ${acct.user.email}（留空则删除）` : '未填写'" />
-    </van-cell-group>
-    <div class="pad"><van-button block @click="saveContact">保存联系方式</van-button></div>
+      <label class="fld"><span class="k">邮箱</span><input v-model="ct.email" :placeholder="acct.user.hasEmail ? `当前 ${acct.user.email}（留空则删除）` : '未填写'"></label>
+    </div>
+    <div class="pad"><button class="btn" @click="saveContact">保存联系方式</button></div>
 
-    <van-cell-group inset title="恢复码">
-      <van-field v-model="pw" type="password" label="当前密码" placeholder="重新生成需验证密码" />
-    </van-cell-group>
+    <div class="grp">
+      <label class="fld"><span class="k">当前密码</span><input v-model="pw" type="password" placeholder="重新生成需验证密码"></label>
+    </div>
     <div class="pad">
-      <van-button block plain @click="regen">重新生成恢复码</van-button>
-      <van-button block type="danger" plain style="margin-top:8px" @click="out">退出登录</van-button>
+      <button class="btn btn-plain" @click="regen">重新生成恢复码</button>
+      <button class="btn btn-plain danger" @click="out">退出登录</button>
     </div>
   </div>
 </template>
 <style scoped>
+.grp{border-top:1px solid var(--line);padding:4px 0;margin-bottom:6px}
+.grp:first-of-type{border-top:none}
+.row{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.k{color:var(--text-2);font-size:15px}
+.v{margin-left:auto;color:var(--text);font-size:15px;font-variant-numeric:tabular-nums}
+.hd{display:flex;align-items:center;gap:12px;padding:14px 0 16px}
+.who{display:flex;flex-direction:column}
+.nk{font-size:18px;font-weight:700}
+.un{font-size:13px;color:var(--text-3);margin-top:2px}
+.fld{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.fld .k{flex:0 0 88px}
+.fld input{flex:1;min-height:44px;border:none;background:transparent;color:var(--text);
+  font-size:15px;font-family:inherit;outline:none}
+.fld input::placeholder{color:var(--text-3)}
+.danger{color:#c92a2e;border-color:#c92a2e}
+:root[data-theme=dark] .danger{color:#ff9a9d;border-color:#ff9a9d}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .danger{color:#ff9a9d;border-color:#ff9a9d}}
 .social{margin:14px 0 4px}
 .bg{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin:6px 0 18px}
 .bd{border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;opacity:.4}
@@ -82,7 +99,7 @@ function out() { acct.signOut(); router.replace('/login'); }
 .bn{font-size:12px;font-weight:600;margin-top:5px}
 .bp{font-size:12px;color:var(--text-3);margin-top:2px}
 .bd.on .bp{color:var(--brand-text)}
-.wrap{padding-bottom:70px}.pad{padding:12px 16px}
+.pad{padding:12px 16px}
 .av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
   justify-content:center;font-size:22px;margin-right:10px}
 </style>

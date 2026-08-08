@@ -1,7 +1,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 
-const requiredFiles = ['index.html', 'sw.js'];
+// 切换后 index.html 是 Vue 产物、不引用 .dat；词库切片由旧站 legacy.html 使用
+const requiredFiles = ['legacy.html', 'sw-legacy.js'];
 const refs = new Set();
 const refPattern = /\b(?:de|en)\.[a-f0-9]{8}\.dat\b/g;
 
@@ -13,7 +14,7 @@ for (const file of requiredFiles) {
 
 for (const expectedPrefix of ['de.', 'en.']) {
   if (![...refs].some((ref) => ref.startsWith(expectedPrefix))) {
-    fail(`No ${expectedPrefix}<hash>.dat reference found in index.html or sw.js.`);
+    fail(`No ${expectedPrefix}<hash>.dat reference found in legacy.html or sw-legacy.js.`);
   }
 }
 

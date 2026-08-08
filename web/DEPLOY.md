@@ -1,13 +1,18 @@
 # 部署与灰度
 
-## 现状
+## 现状（2026-08 已切换）
 
-| | 部署方式 | 地址 |
+**Vue 新端已成为生产**，走 GitHub Pages，无需 Cloudflare：
+
+| 文件 | 谁 | 访问 |
 |---|---|---|
-| 旧站 | GitHub Pages（仓库根 `index.html`） | www.uuoo.site ← **当前生产** |
-| 新端 | Cloudflare Pages（`web/dist`） | 待创建 |
+| `index.html` + `assets/` + `data/` | Vue 新端 | www.uuoo.site ← **当前生产** |
+| `legacy.html` + `*.dat` | 旧站（保留） | www.uuoo.site/legacy.html |
 
-两者**互不影响**，这是灰度的基础：新端出问题，把域名切回旧站即可，不必回滚代码。
+`web/` 的 vite 配置把产物直接输出到**仓库根**（`outDir:'..'`、`emptyOutDir:false`），
+所以流程就是：`cd web && npm run build` → 提交 → 推 main → 上线。
+
+**回退见 [`../ROLLBACK.md`](../ROLLBACK.md)**，两条 cp 命令即可，不用碰 DNS。
 
 ## 首次部署（约 10 分钟）
 
