@@ -1,90 +1,137 @@
-/* ── 设计原则：一屏一件事，去装饰，留呼吸 ──
-   1. 学习内容用最大字号最高对比；辅助信息（谐音/统计）弱化但不小于 12px
-   2. 只保留一种强调色，避免注意力分散
-   3. 卡片去阴影去圆角竞赛，用留白和一条细分隔线区分层次
-   4. 小字（<18px）对比度 ≥4.5:1 —— 品牌绿 #58cc02 在浅底上做文字只有 2.1:1，
-      浅底文字一律用 --brand-text */
+/* 设计语言：**对齐旧站**（src.html），让用户察觉不到换了技术栈。
+   令牌名与旧站保持一致，便于两边对照与后续删旧站。
+
+   唯一的偏离：修掉旧站已实测出的可读性缺陷 ——
+   - 旧站小字大量用 --gold(#58cc02) 当文字色，浅底仅 2.1:1；这里凡是文字一律用 --gold-text
+   - 触摸目标补到 44px（视觉尺寸不变，用透明 ::after 撑开）
+   - 辅助文字不小于 12px
+   这些是「照旧」里唯一不照搬的部分，因为照搬等于把缺陷一起搬过来。 */
 :root{
-  /* --brand 只做「块」（按钮底、进度条），永远不做文字色。
-     --brand-text 是浅底上的绿字：#3d8b00 实测只有 4.15:1（不够），改 #357700 = 5.35:1。
-     --on-brand 是压在 --brand 块上的文字色：白字在 #58cc02 上只有 2.09:1，必须用深色 = 7.81:1。 */
-  --brand:#58cc02; --brand-text:#357700; --on-brand:#14240a;
-  --bg:#fbfbfa; --surface:#fff; --line:#ececea;
-  --text:#1a1a18; --text-2:#5c5c56; --text-3:#74746d;
-  /* 提示条：浅底上的强调文字必须用够深的色，--brand 本身只有 2.1:1 不能当文字 */
-  --tip-bg:#fff8e6; --tip-text:#7a5c00; --text-faint:#74746d;
-  --danger:#c62828;                       /* 5.43:1 on --bg */
-  --radius:14px; --gap:20px;
+  --gold:#58cc02; --gold-dim:#58cc0266; --gold-faint:#58cc0222; --gold-text:#357a00;
+  --bg:#f7f9f8; --bg2:#ffffff; --surface:#ffffff; --surface-2:#ffffff;
+  --nav-bg:rgba(255,255,255,.9);
+  --border:rgba(0,0,0,.08);
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);
+  --text:#33383d; --text-dim:#63696f; --text-faint:#6b7278;
+  --red:#ff4b4b; --blue:#1cb0f6; --stripe:rgba(0,0,0,.02);
+  --art-der:#0f6f9e; --art-die:#c9252b; --art-das:#2f7d00;
+  --lv0:#357a00; --lva1:#0b6285; --lva2:#7a5200; --lvb1:#95430f; --lvb2:#bf1e28;
+  --btn-bg:rgba(88,204,2,.12);
+}
+
+/* 语义别名。各视图里写的是语义名（--text-2/--line/--brand…），令牌值只在上面一处定。
+   自定义属性是**用时求值**的，所以别名只需写一份，深浅两套会各自解析到对的值。 */
+:root{
+  --brand:var(--gold); --brand-text:var(--gold-text);
+  --text-2:var(--text-dim); --text-3:var(--text-faint);
+  --line:var(--border);
+  --tip-bg:var(--gold-faint); --tip-text:var(--gold-text); --info-text:var(--gold-text);
+  --danger:var(--red);
+  --radius:14px;
 }
 :root[data-theme=dark]{
-  --brand:#7ee83f; --brand-text:#9bf05f; --on-brand:#14240a;
-  --bg:#121211; --surface:#1c1c1a; --line:#2c2c29;
-  --text:#f0efe9; --text-2:#b4b3aa; --text-3:#8d8c84;
-  --tip-bg:#2b2410; --tip-text:#f0c860; --text-faint:#8d8c84;
-  --danger:#ff8a80;                       /* 8.21:1 on --bg */
+  --gold-faint:#58cc0230; --gold-dim:#58cc0288;
+  /* 深色下按钮文字不能用 #58cc02 —— 它压在同色系的 --btn-bg 上只有 1.00:1。
+     旧站没这个问题是因为旧站按钮少且多在浅底上。这里提亮到可读。 */
+  --gold-text:#8ce84a;
+  --bg:#111417; --bg2:#191d22; --surface:#1d2228; --surface-2:#232931;
+  --nav-bg:rgba(17,20,23,.88);
+  --border:rgba(255,255,255,.12);
+  --shadow:0 2px 10px rgba(0,0,0,.5);
+  --text:#e6eaee; --text-dim:#a4abb2; --text-faint:#8b939b;
+  --stripe:rgba(255,255,255,.035);
+  --art-der:#4cc2ff; --art-die:#ff6b6b; --art-das:#7bd938;
+  --lv0:#58cc02; --lva1:#1cb0f6; --lva2:#f0b429; --lvb1:#ff7a4d; --lvb2:#ff8a8a;
+  --btn-bg:rgba(88,204,2,.10);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme=light]){
-    --brand:#7ee83f; --brand-text:#9bf05f; --on-brand:#14240a;
-    --bg:#121211; --surface:#1c1c1a; --line:#2c2c29;
-    --text:#f0efe9; --text-2:#b4b3aa; --text-3:#8d8c84;
-    --tip-bg:#2b2410; --tip-text:#f0c860; --text-faint:#8d8c84;
-    --danger:#ff8a80;
-  }
+    --gold-faint:#58cc0230; --gold-dim:#58cc0288; --gold-text:#8ce84a;
+    --bg:#111417; --bg2:#191d22; --surface:#1d2228; --surface-2:#232931;
+    --nav-bg:rgba(17,20,23,.88);
+    --border:rgba(255,255,255,.12);
+    --shadow:0 2px 10px rgba(0,0,0,.5);
+    --text:#e6eaee; --text-dim:#a4abb2; --text-faint:#8b939b;
+    --stripe:rgba(255,255,255,.035);
+    --art-der:#4cc2ff; --art-die:#ff6b6b; --art-das:#7bd938;
+    --lv0:#58cc02; --lva1:#1cb0f6; --lva2:#f0b429; --lvb1:#ff7a4d; --lvb2:#ff8a8a;
+      --btn-bg:rgba(88,204,2,.10);
+}
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text)}
 body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
   -webkit-font-smoothing:antialiased;line-height:1.6}
 
-/* 页面容器：统一留白，内容不贴边 */
-.page{padding:8px 20px 80px;max-width:640px;margin:0 auto}
-.page-title{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:16px 0 4px}
-.page-sub{color:var(--text-3);font-size:13px;margin:0 0 24px}
+/* ── 布局：与旧站一致 ── */
+.container{max-width:900px;margin:0 auto;padding:0 20px}
+.page{max-width:900px;margin:0 auto;padding:64px 20px 30px}   /* 顶栏固定，留出高度 */
+.page-title{text-align:center;font-weight:400;font-size:26px;margin:8px 0 16px;letter-spacing:2px}
+.page-sub{text-align:center;font-size:13px;color:var(--text-dim);margin:0 0 18px}
+/* 旧站是 11px；本项目规定辅助文字 ≥12px，这里上调 1px（字距不变，观感几乎一致） */
+.hero-label{text-align:center;font-size:12px;letter-spacing:8px;color:var(--gold-text);
+  text-transform:uppercase;margin-bottom:12px;padding-top:20px}
 
-/* 学习条目：内容主导，分隔线而非卡片 */
-.item{padding:16px 0;border-bottom:1px solid var(--line);cursor:pointer;
-  -webkit-tap-highlight-color:transparent}
-.item:last-child{border-bottom:none}
-.item-de{font-size:19px;font-weight:600;line-height:1.4;letter-spacing:-.01em}
-.item-zh{font-size:15px;color:var(--text-2);margin-top:4px}
-.item-py{font-size:13px;color:var(--text-3);margin-top:3px;letter-spacing:.02em}
+/* ── 卡片：旧站的主要内容容器 ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:17px 16px;margin-bottom:10px;box-shadow:var(--shadow)}
 
-/* 分组标题 */
-.group{font-size:13px;font-weight:600;color:var(--text-3);
-  letter-spacing:.06em;margin:28px 0 4px;text-transform:none}
+/* ── 条目：短语/短文/连载共用的内容卡，等同旧站的 .card（含正文三行的排版） ──
+   各视图模板里写的是 .item / .item-de / .item-zh / .item-py，这里统一给样式，
+   免得每个视图各自复制一份、日后改一处漏三处。 */
+.item{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:17px 16px;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer;
+  transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.item:hover{background:var(--gold-faint);border-color:var(--gold-dim);transform:translateY(-2px)}
+.item.flipped{background:var(--gold-faint);border-color:var(--gold-dim)}
+.item-de-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.item-de{font-size:16px;color:var(--text);font-style:italic}
+.item-zh{font-size:14px;color:var(--text-dim)}
+/* 谐音默认收起，点卡片翻开 —— 与旧站一致：先回想，再对答案 */
+.item-py{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--gold-faint);
+  font-size:13px;color:var(--gold-text)}
+.item.flipped .item-py{display:block}
+/* 分组标题（按级别/主题切段） */
+.group{margin:26px 0 10px;font-size:13px;font-weight:600;letter-spacing:1px;color:var(--text-faint)}
+.group:first-of-type{margin-top:14px}
 
-/* 简约按钮：文字压在品牌绿上必须用 --on-brand（白字只有 2.09:1） */
-.btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--radius);
-  background:var(--brand);color:var(--on-brand);font-size:16px;font-weight:700;
-  font-family:inherit;cursor:pointer;min-height:52px}
+/* 圆形小按钮：朗读 / 标记已学会。视觉 30px，可点范围用 ::after 撑到 44px */
+.icon-btn{flex-shrink:0;width:30px;height:30px;border:none;border-radius:50%;
+  background:var(--gold-faint);color:var(--gold-text);font-size:15px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0;
+  position:relative;font-family:inherit}
+.icon-btn::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:44px;height:44px}
+.icon-btn:active{transform:scale(.88)}
+/* 已学会的「亮起」态用实心绿 + 深绿字（4.5:1 以上），未标记态是灰幽灵 —— 一眼能分清 */
+.icon-btn.know{background:var(--gold);color:#14240a}
+.icon-btn.off{background:transparent;color:var(--text-faint);border:1px solid var(--border)}
+.icon-btn.speaking{background:var(--gold);color:#14240a}
+
+/* ── 小节标题 ── */
+.sec-title{display:flex;align-items:center;gap:10px;margin:38px 0 16px;font-size:15px;font-weight:600}
+.sec-title-icon{font-size:18px}
+.sec-title-count{margin-left:auto;font-size:12px;color:var(--text-faint);font-weight:400}
+
+/* ── 按钮：胶囊形，与旧站一致 ── */
+.btn{padding:12px 24px;border-radius:24px;border:1px solid var(--gold-dim);
+  background:var(--btn-bg);color:var(--gold-text);font-size:14px;font-weight:600;
+  font-family:inherit;cursor:pointer;min-height:44px}
+.btn-block{display:block;width:100%}
+.btn-plain{background:transparent;border-color:var(--border);color:var(--text-dim)}
 .btn:disabled{opacity:.5}
-.btn-plain{background:transparent;color:var(--text-2);border:1px solid var(--line)}
 
-/* 触摸目标 ≥44px：视觉可以小，可点范围不能小 */
+/* ── 级别标签 ── */
+.level-tab{flex-shrink:0;padding:10px 16px;min-height:44px;border-radius:22px;
+  border:1px solid var(--gold-faint);background:transparent;color:var(--text-dim);
+  cursor:pointer;font-size:13px;font-family:inherit}
+.level-tab.active{background:var(--gold);color:#14240a;border-color:var(--gold);font-weight:700}
+.level-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.level-tabs::-webkit-scrollbar{display:none}
+
+/* 触摸目标 ≥44px：视觉可小，可点范围不能小 */
+/* 本项目规定辅助文字不小于 12px；旧站有几处 11px，这里统一兜底 */
+small,.m-d,.hint{font-size:12px}
 .tap{position:relative}
-.tap::after{content:"";position:absolute;left:50%;top:50%;
-  transform:translate(-50%,-50%);width:44px;height:44px}
-
-/* 覆盖 Vant 默认观感，使其与上面的极简语言一致 */
-:root{
-  --van-background:var(--bg); --van-background-2:var(--surface);
-  --van-text-color:var(--text); --van-text-color-2:var(--text-3);
-  --van-border-color:var(--line); --van-primary-color:var(--brand);
-  --van-tabbar-background:var(--surface);
-  --van-tabbar-item-active-color:var(--brand-text);
-  --van-tabs-bottom-bar-color:var(--brand);
-  --van-cell-background:transparent;
-}
-
-/* 分段选择器（排行榜榜别、练习难度共用）
-   选中态不能用白字压品牌绿 —— 实测仅 2.09:1。改用深绿字，实测 7.8:1。
-   高度 ≥44px 是触摸目标要求，padding 一次给够，别让各页面各调各的。 */
-.seg{flex:1;min-width:56px;min-height:44px;padding:11px 8px;border:1px solid var(--line);
-  background:transparent;color:var(--text-2);border-radius:10px;font-size:14px;
-  font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.seg.on{background:var(--brand);color:#14240a;border-color:var(--brand);font-weight:600}
-:root[data-theme=dark] .seg.on{color:#0d1a05}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .seg.on{color:#0d1a05}}
-.segs{display:flex;gap:6px}
-.segs.wrap{flex-wrap:wrap}
+.tap::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:44px;height:44px}

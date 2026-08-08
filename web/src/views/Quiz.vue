@@ -78,11 +78,11 @@ const cls = (o) => !picked.value ? ''
         </button>
       </div>
       <div class="group">难度</div>
-      <div class="segs wrap">
-        <button v-for="[v,t] in LV" :key="v" class="seg" :class="{on:level===v}" @click="level=v">{{ t }}</button>
+      <div class="level-tabs">
+        <button v-for="[v,t] in LV" :key="v" class="level-tab" :class="{ active: level===v }" @click="level=v">{{ t }}</button>
       </div>
       <p class="page-sub pool">题库 {{ pool.length }} 条</p>
-      <button class="btn" :disabled="pool.length < 4" @click="start">开始测验</button>
+      <button class="btn btn-block" :disabled="pool.length < 4" @click="start">开始测验</button>
       <p v-if="pool.length < 4" class="page-sub">该范围题目不足，换个难度试试</p>
     </template>
 
@@ -120,7 +120,7 @@ const cls = (o) => !picked.value ? ''
           <span lang="de">{{ q.right.de }}</span> — {{ q.right.zh }}
           <div class="ex-py">{{ q.right.py }}</div>
         </div>
-        <button class="btn" @click="next">{{ n + 1 >= ROUND ? '看结果' : '下一题' }}</button>
+        <button class="btn btn-block" @click="next">{{ n + 1 >= ROUND ? '看结果' : '下一题' }}</button>
         <button class="btn btn-plain mt" @click="speak(q.right.de)">🔊 听一遍</button>
       </template>
     </template>
@@ -129,14 +129,13 @@ const cls = (o) => !picked.value ? ''
       <h1 class="page-title">本轮完成</h1>
       <div class="res"><div class="res-n">{{ score }} / {{ ROUND }}</div>
         <div class="res-l">{{ score === ROUND ? '全对，厉害' : (ROUND - score) + ' 题答错，已记入错题本' }}</div></div>
-      <button class="btn" @click="start">再来一轮</button>
+      <button class="btn btn-block" @click="start">再来一轮</button>
       <button class="btn btn-plain mt" @click="state='idle'">换个题型</button>
     </template>
   </div>
 </template>
 
 <style scoped>
-.segs{margin:6px 0 14px}
 .modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 14px}
 .mode{display:flex;flex-direction:column;gap:2px;padding:12px 10px;min-height:44px;
   border:1px solid var(--line);background:transparent;border-radius:12px;

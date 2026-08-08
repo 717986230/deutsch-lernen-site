@@ -26,13 +26,13 @@ onMounted(async () => {
     </div>
 
     <div class="refs">
-      <button class="seg" @click="router.push('/ref/pron')">发音</button>
-      <button class="seg" @click="router.push('/ref/numbers')">数字</button>
-      <button class="seg" @click="router.push('/ref/grammar')">语法</button>
-      <button class="seg" @click="router.push('/boards')">图解</button>
+      <button class="level-tab" @click="router.push('/ref/pron')">发音</button>
+      <button class="level-tab" @click="router.push('/ref/numbers')">数字</button>
+      <button class="level-tab" @click="router.push('/ref/grammar')">语法</button>
+      <button class="level-tab" @click="router.push('/boards')">图解</button>
     </div>
-    <button class="btn" @click="router.push('/phrases')">开始学习</button>
-    <button class="btn btn-plain" style="margin-top:10px"
+    <button class="btn btn-block" @click="router.push('/phrases')">开始学习</button>
+    <button class="btn btn-block btn-plain" style="margin-top:10px"
       @click="router.push(acct.logged ? '/me' : '/login')">
       {{ acct.logged ? '我的进度' : '登录同步进度' }}
     </button>

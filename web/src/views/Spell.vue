@@ -64,17 +64,17 @@ function toIdle() { state.value = 'idle'; wrongPool.value = Object.keys(getWrong
       <p class="page-sub">看中文默写德语 · 每轮 20 题</p>
 
       <div class="group">练什么</div>
-      <div class="segs">
+      <div class="level-tabs">
         <button v-for="[v,t] in [['word','单词'],['sent','句子']]" :key="v"
-          class="seg" :class="{on:unit===v}" @click="unit=v">{{ t }}</button>
+          class="level-tab" :class="{ active: unit===v }" @click="unit=v">{{ t }}</button>
       </div>
       <div class="group">难度</div>
-      <div class="segs wrap">
-        <button v-for="[v,t] in LV" :key="v" class="seg" :class="{on:level===v}"
+      <div class="level-tabs">
+        <button v-for="[v,t] in LV" :key="v" class="level-tab" :class="{ active: level===v }"
           @click="level=v">{{ t }}</button>
       </div>
       <p class="page-sub pool">可练 {{ poolSize }} 条（已掌握的自动跳过）</p>
-      <button class="btn" :disabled="!poolSize" @click="start('new')">开始练习</button>
+      <button class="btn btn-block" :disabled="!poolSize" @click="start('new')">开始练习</button>
       <button v-if="wrongPool" class="btn btn-plain mt" @click="start('wrong')">
         只练错题（{{ wrongPool }} 条）</button>
       <button class="btn btn-plain mt" @click="$router.push('/quiz')">去做测验（四选一）</button>
@@ -104,9 +104,9 @@ function toIdle() { state.value = 'idle'; wrongPool.value = Object.keys(getWrong
         <div class="fb-de" lang="de">{{ cur.de }}</div>
       </div>
 
-      <button v-if="!judged" class="btn" @click="submit">检查</button>
+      <button v-if="!judged" class="btn btn-block" @click="submit">检查</button>
       <template v-else>
-        <button class="btn" @click="next">{{ idx + 1 >= total ? '看结果' : '下一题' }}</button>
+        <button class="btn btn-block" @click="next">{{ idx + 1 >= total ? '看结果' : '下一题' }}</button>
         <button class="btn btn-plain mt" @click="speak(cur.de)">🔊 听一遍</button>
       </template>
     </template>
@@ -118,7 +118,7 @@ function toIdle() { state.value = 'idle'; wrongPool.value = Object.keys(getWrong
         <div class="res-n">{{ right }} / {{ total }}</div>
         <div class="res-l">{{ right === total ? '全对，厉害' : wrongCnt + ' 题需要再练' }}</div>
       </div>
-      <button class="btn" @click="start('new')">再来一轮</button>
+      <button class="btn btn-block" @click="start('new')">再来一轮</button>
       <button v-if="wrongPool" class="btn btn-plain mt" @click="start('wrong')">
         练错题（{{ wrongPool }} 条）</button>
       <button class="btn btn-plain mt" @click="toIdle">返回设置</button>
@@ -127,7 +127,6 @@ function toIdle() { state.value = 'idle'; wrongPool.value = Object.keys(getWrong
 </template>
 
 <style scoped>
-.segs{margin:6px 0 14px}
 .pool{margin:0 0 16px}
 .mt{margin-top:10px}.sm{font-size:14px}
 .bar{display:flex;align-items:center;padding:12px 0 6px}

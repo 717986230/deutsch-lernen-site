@@ -66,7 +66,7 @@ async function submit() {
       <p v-if="err" class="auth-err">{{ err }}</p>
 
       <div class="auth-actions">
-        <button class="btn" type="submit" :disabled="busy">{{ busy ? '注册中…' : '注册' }}</button>
+        <button class="btn btn-block" type="submit" :disabled="busy">{{ busy ? '注册中…' : '注册' }}</button>
       </div>
     </form>
 

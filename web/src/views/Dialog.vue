@@ -3,7 +3,6 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { loadData } from '../api';
 import { speak, canSpeak } from '../api/speak';
 import { useLang } from '../store/lang';
-import LangSwitch from '../components/LangSwitch.vue';
 defineOptions({ name: 'Dialog' });
 
 const langS = useLang();
@@ -43,7 +42,6 @@ function back() { stop(); cur.value = null; }
     <template v-if="!cur">
       <h1 class="page-title">情景对话</h1>
       <p class="page-sub">按场景分组 · 点句子听发音</p>
-      <LangSwitch />
       <template v-for="[lv, arr] in grouped" :key="lv">
         <div class="group">{{ lv }}</div>
         <div v-for="d in arr" :key="d.scene" class="item dl" @click="open(d)">
@@ -92,7 +90,8 @@ function back() { stop(); cur.value = null; }
 .turn{display:flex;gap:8px;margin-bottom:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .turn.b{flex-direction:row-reverse}
 .who{width:26px;height:26px;flex:none;border-radius:50%;background:var(--line);
-  display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-2);margin-top:4px}
+  /* 说话人字母压在浅灰底上，用 --text-2 只有 4.39:1，差一点点，这里用正文色 */
+  display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text);margin-top:4px}
 .turn.b .who{background:var(--brand);color:#14240a}
 .bub{flex:1;padding:11px 13px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
 .turn.b .bub{border-color:var(--brand)}

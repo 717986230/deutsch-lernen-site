@@ -48,7 +48,7 @@ const lit = (u, b) => earned(u).includes(b.id);
       </div>
       <div class="rk">第 {{ d.rank }} 名 · {{ d.user.level || 'A1' }}</div>
 
-      <button v-if="!d.isMe" class="btn" :class="{ 'btn-plain': d.isFollowing }"
+      <button v-if="!d.isMe" class="btn btn-block" :class="{ 'btn-plain': d.isFollowing }"
         :disabled="busy" @click="toggle">{{ d.isFollowing ? '已关注 · 取消' : '关注 TA' }}</button>
 
       <div class="group">徽章 {{ earned(d.user).length }} / {{ BADGES.length }}</div>

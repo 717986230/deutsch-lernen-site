@@ -3,7 +3,6 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { loadData } from '../api';
 import { useLang } from '../store/lang';
-import LangSwitch from '../components/LangSwitch.vue';
 defineOptions({ name: 'Reference' });
 
 const route = useRoute();

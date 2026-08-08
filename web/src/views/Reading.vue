@@ -3,7 +3,6 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
 import { useLang } from '../store/lang';
-import LangSwitch from '../components/LangSwitch.vue';
 defineOptions({ name: 'Reading' });
 const langS = useLang();
 const list = ref([]); const loading = ref(true); const cur = ref(null);
@@ -30,10 +29,9 @@ const grouped = computed(() => {
     <template v-if="!cur">
       <h1 class="page-title">短文</h1>
       <p class="page-sub">分级阅读 · 逐句对照</p>
-      <LangSwitch />
       <div class="jump">
-        <button class="seg" @click="$router.push('/dialog')">情景对话</button>
-        <button class="seg" @click="$router.push('/series')">留学连载</button>
+        <button class="level-tab" @click="$router.push('/dialog')">情景对话</button>
+        <button class="level-tab" @click="$router.push('/series')">留学连载</button>
       </div>
       <p v-if="loading" class="page-sub">加载中…</p>
       <template v-for="[lv, arr] in grouped" :key="lv">
@@ -65,4 +63,6 @@ const grouped = computed(() => {
 .back{background:none;border:none;color:var(--brand-text);font-size:15px;font-family:inherit;cursor:pointer;padding:4px 0}
 .at{font-size:22px;font-weight:700;margin:8px 0 2px;letter-spacing:-.02em}
 .az{color:var(--text-3);font-size:14px;margin:0 0 12px}
+/* 短语卡是「先回想再翻面」，短文是「跟读对照」—— 谐音常驻，不做翻面 */
+.item-py{display:block}
 </style>

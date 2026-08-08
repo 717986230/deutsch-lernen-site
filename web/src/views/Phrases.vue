@@ -3,14 +3,23 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
 import { useLang } from '../store/lang';
-import LangSwitch from '../components/LangSwitch.vue';
+import { getKnown, markKnown, unmarkKnown, touchStudy } from '../api/practice';
 defineOptions({ name: 'Phrases' });
 
 const langS = useLang();
 const cats = ref([]); const loading = ref(true); const cur = ref(null);
+// 翻面状态按句子文本记，切分类不残留
+const flipped = ref({});
+// 已学会集合复制一份进 ref，才能驱动重渲染（localStorage 本身不是响应式的）
+const known = ref(getKnown());
+function toggleKnown(de) {
+  if (known.value[de]) { unmarkKnown(de); } else { markKnown(de); touchStudy(); }
+  known.value = { ...getKnown() };
+}
 async function load() {
-  loading.value = true; cur.value = null;
+  loading.value = true; cur.value = null; flipped.value = {};
   cats.value = await loadData(langS.file('categories'));
+  known.value = { ...getKnown() };
   loading.value = false;
 }
 onMounted(load);
@@ -29,7 +38,6 @@ const grouped = computed(() => {
     <template v-if="!cur">
       <h1 class="page-title">短语</h1>
       <p class="page-sub">按主题分类 · 点句子听发音</p>
-      <LangSwitch />
       <p v-if="loading" class="page-sub">加载中…</p>
       <template v-for="[lv, list] in grouped" :key="lv">
         <div class="group">{{ LV[lv] || lv }}</div>
@@ -47,8 +55,18 @@ const grouped = computed(() => {
         <button class="back tap" @click="cur = null">‹ 返回</button>
         <span class="bt">{{ cur.icon }} {{ cur.name }}</span>
       </div>
-      <div v-for="(p, i) in cur.phrases" :key="i" class="item" @click="speak(p.de, langS.isEn ? 'en-US' : 'de-DE')">
-        <div class="item-de" lang="de">{{ p.de }}</div>
+      <!-- 与旧站同构：🔊 朗读 / 句子 / ✓ 已学会；点卡片翻开谐音 -->
+      <div v-for="(p, i) in cur.phrases" :key="i" class="item"
+        :class="{ flipped: flipped[p.de] }" @click="flipped[p.de] = !flipped[p.de]">
+        <div class="item-de-row">
+          <button class="icon-btn" type="button" :aria-label="'朗读 ' + p.de"
+            @click.stop="speak(p.de, langS.isEn ? 'en-US' : 'de-DE')">🔊</button>
+          <div class="item-de" lang="de">{{ p.de }}</div>
+          <button class="icon-btn know" type="button" :class="{ off: !known[p.de] }"
+            :aria-label="known[p.de] ? '取消已学会' : '标记为已学会'"
+            :title="known[p.de] ? '已学会（点击取消）' : '标记为已学会'"
+            @click.stop="toggleKnown(p.de)">✓</button>
+        </div>
         <div class="item-zh">{{ p.zh }}</div>
         <div class="item-py">{{ p.py }}</div>
       </div>
@@ -64,4 +82,6 @@ const grouped = computed(() => {
 .back{background:none;border:none;color:var(--brand-text);font-size:15px;
   font-family:inherit;cursor:pointer;padding:4px 0}
 .bt{font-weight:600}
+.item-de{flex:1}
+.know.off{opacity:.55}
 </style>

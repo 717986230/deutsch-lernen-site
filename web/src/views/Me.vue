@@ -43,9 +43,9 @@ function out() { acct.signOut(); router.replace('/login'); }
       <div class="row"><span class="k">累计学习</span><span class="v">{{ stat.total + ' 次' }}</span></div>
     </div>
 
-    <div class="segs social">
-      <button class="seg" @click="$router.push('/feed')">动态</button>
-      <button class="seg" @click="$router.push('/following')">我的关注</button>
+    <div class="level-tabs social">
+      <button class="level-tab" @click="$router.push('/feed')">动态</button>
+      <button class="level-tab" @click="$router.push('/following')">我的关注</button>
     </div>
 
     <div class="group">徽章 {{ BADGES.filter(lit).length }} / {{ BADGES.length }}</div>
@@ -61,13 +61,13 @@ function out() { acct.signOut(); router.replace('/login'); }
       <!-- 服务端只回掩码，明文不出服务端；留空即删除 -->
       <label class="fld"><span class="k">邮箱</span><input v-model="ct.email" :placeholder="acct.user.hasEmail ? `当前 ${acct.user.email}（留空则删除）` : '未填写'"></label>
     </div>
-    <div class="pad"><button class="btn" @click="saveContact">保存联系方式</button></div>
+    <div class="pad"><button class="btn btn-block" @click="saveContact">保存联系方式</button></div>
 
     <div class="grp">
       <label class="fld"><span class="k">当前密码</span><input v-model="pw" type="password" placeholder="重新生成需验证密码"></label>
     </div>
     <div class="pad">
-      <button class="btn btn-plain" @click="regen">重新生成恢复码</button>
+      <button class="btn btn-block btn-plain" @click="regen">重新生成恢复码</button>
       <button class="btn btn-plain danger" @click="out">退出登录</button>
     </div>
   </div>

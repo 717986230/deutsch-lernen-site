@@ -3,7 +3,6 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
 import { useLang } from '../store/lang';
-import LangSwitch from '../components/LangSwitch.vue';
 defineOptions({ name: 'Series' });
 const langS = useLang();
 const list = ref([]); const cur = ref(null);
@@ -18,7 +17,6 @@ const go = (d) => { const i = idx.value + d; if (i >= 0 && i < list.value.length
     <template v-if="!cur">
       <h1 class="page-title">留学连载</h1>
       <p class="page-sub">按顺序读 · 跟着主角在异国生活</p>
-      <LangSwitch />
       <div v-for="(r,i) in list" :key="i" class="item ep" @click="cur = r">
         <span class="no">{{ i + 1 }}</span>
         <span class="tx"><span class="ti">{{ r.title }}</span><span class="zh">{{ r.zh }}</span></span>
@@ -34,8 +32,8 @@ const go = (d) => { const i = idx.value + d; if (i >= 0 && i < list.value.length
         <div class="item-zh">{{ p[1] }}</div>
       </div>
       <div class="nav">
-        <button class="btn btn-plain" :disabled="idx <= 0" @click="go(-1)">‹ 上一集</button>
-        <button class="btn btn-plain" :disabled="idx >= list.length - 1" @click="go(1)">下一集 ›</button>
+        <button class="btn btn-block btn-plain" :disabled="idx <= 0" @click="go(-1)">‹ 上一集</button>
+        <button class="btn btn-block btn-plain" :disabled="idx >= list.length - 1" @click="go(1)">下一集 ›</button>
       </div>
     </template>
   </div>

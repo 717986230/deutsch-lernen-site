@@ -23,8 +23,8 @@ const val = (u) => by.value === 'known' ? `${u.known || 0} 词`
 <template>
   <div class="page">
     <h1 class="page-title">排行榜</h1>
-    <div class="segs">
-      <button v-for="[v, t] in BY" :key="v" class="seg" :class="{ on: by === v }"
+    <div class="level-tabs">
+      <button v-for="[v, t] in BY" :key="v" class="level-tab" :class="{ active: by === v  }"
         @click="by = v">{{ t }}</button>
     </div>
     <p v-if="loading" class="page-sub">加载中…</p>
@@ -41,7 +41,6 @@ const val = (u) => by.value === 'known' ? `${u.known || 0} 词`
 </template>
 <style scoped>
 .more{margin-top:16px;text-align:center;font-size:13px;color:var(--text-3)}
-.segs{margin:4px 0 8px}
 .rk{display:flex;align-items:center;gap:12px}
 .no{width:22px;text-align:center;color:var(--text-3);font-size:14px;font-variant-numeric:tabular-nums}
 .no.top{color:var(--brand-text);font-weight:700}

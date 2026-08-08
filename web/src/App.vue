@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAccount } from './store/account';
 import BadgeCelebrate from './components/BadgeCelebrate.vue';
+import TopNav from './components/TopNav.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -22,18 +23,12 @@ const go = (p) => router.push(p);
 
 <template>
   <div class="app">
+    <TopNav />
     <!-- 离线提示：只在确实是网络故障时出现，业务错误不复用这个位置 -->
     <div v-if="acct.offline" class="offline">离线中，联网后自动同步</div>
     <router-view v-slot="{ Component }">
       <keep-alive include="Phrases,Reading,Spell"><component :is="Component" /></keep-alive>
     </router-view>
-    <van-tabbar v-if="showTab" :model-value="active" @change="go" fixed placeholder route>
-      <van-tabbar-item name="/" icon="home-o" to="/">首页</van-tabbar-item>
-      <van-tabbar-item name="/phrases" icon="chat-o" to="/phrases">短语</van-tabbar-item>
-      <van-tabbar-item name="/reading" icon="records" to="/reading">短文</van-tabbar-item>
-      <van-tabbar-item name="/spell" icon="edit" to="/spell">练习</van-tabbar-item>
-      <van-tabbar-item name="/me" icon="user-o" to="/me">我的</van-tabbar-item>
-    </van-tabbar>
     <BadgeCelebrate />
   </div>
 </template>

@@ -5,6 +5,8 @@ const wr = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch
 
 export const getKnown = () => rd(K_KNOWN, {});
 export function markKnown(de) { const m = getKnown(); m[de] = Date.now(); wr(K_KNOWN, m); }
+// 取消标记：旧站的 ✓ 按钮是可反悔的，点错了要能撤回
+export function unmarkKnown(de) { const m = getKnown(); delete m[de]; wr(K_KNOWN, m); }
 export const getWrong = () => rd(K_WRONG, {});
 export function markWrong(item) { const m = getWrong(); m[item.de] = { zh: item.zh, py: item.py, t: Date.now() }; wr(K_WRONG, m); }
 export function clearWrong(de) { const m = getWrong(); delete m[de]; wr(K_WRONG, m); }
