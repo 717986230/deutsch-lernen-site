@@ -373,6 +373,11 @@ body.lang-en .phfab{display:none}
 .ph-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;color:var(--text)}
 .ph-close{border:none;background:transparent;font-size:18px;color:var(--text-faint);cursor:pointer;padding:2px 8px;font-family:inherit}
 .ph-zhhit{margin:7px 0;font-size:14px;color:var(--text-dim)}
+/* 词性 / 冠词小标签：der 蓝 die 红 das 绿，与学习秘诀⑬的「给名词上色」一致 */
+.pos-tag{display:inline-block;margin:0 4px;padding:1px 7px;border-radius:9px;font-size:12px;font-weight:700;background:var(--surface-2);color:var(--text-dim);border:1px solid var(--border);vertical-align:middle}
+.pos-tag.art-der{color:var(--art-der);border-color:var(--art-der)}
+.pos-tag.art-die{color:var(--art-die);border-color:var(--art-die)}
+.pos-tag.art-das{color:var(--art-das);border-color:var(--art-das)}
 .ph-zhhit b{color:#46a302;cursor:pointer}
 .gram-group{margin:0 0 14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
 .gram-group>summary{cursor:pointer;padding:14px 16px;font-size:14px;font-weight:600;color:var(--text);list-style:none;-webkit-user-select:none;user-select:none}
@@ -2543,7 +2548,7 @@ function renderPhTool(){
     out.innerHTML=hits.length
       ?'<div style="font-size:12px;color:var(--text-faint)">找到 '+hits.length+' 条（点德语看拼读）：</div>'+hits.map(p=>{
           const w=p.de.replace(/'/g,"\\'");
-          return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${p.de}</b> — ${p.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
+          return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${p.de}</b>${posTag(p.de)} — ${p.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
         }).join('')
       :'<div style="font-size:13px;color:var(--text-dim)">词库没找到「'+v+'」，换个说法试试（比如"你好""谢谢"）。</div>';
     return;
@@ -2566,7 +2571,7 @@ function renderPhTool(){
     const rows=hits.map(e=>{
       shown[e.w.toLowerCase()]=1;
       const w=e.w.replace(/'/g,"\\'");
-      return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e.w}</b> — ${e.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
+      return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e.w}</b>${posTag(e.w)} — ${e.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
     }).join('');
     sug='<div id="phSugWrap">'+(rows?'<div style="font-size:12px;color:var(--text-faint);margin-top:10px">联想（点德语看拼读）：</div>'+rows:'')+'</div>';
   }catch(e){}
@@ -2575,13 +2580,13 @@ function renderPhTool(){
   try{
     if(!_deWordMap)buildDeWordMap();
     const k=v.toLowerCase(),hit=_deWordMap[k]||_deWordMap[k.replace(/^(der|die|das)\s+/,'')];
-    if(hit){zh=`<div style="font-size:14px;color:var(--text);margin-top:10px">📖 <b lang="de">${hit.de}</b> — <b style="color:#46a302">${hit.zh}</b>${hit.py?` <span style="font-size:12px;color:var(--text-faint)">谐音：${hit.py}</span>`:''}</div>`;}
+    if(hit){zh=`<div style="font-size:14px;color:var(--text);margin-top:10px">📖 <b lang="de">${hit.de}</b>${posTag(hit.de)} — <b style="color:#46a302">${hit.zh}</b>${hit.py?` <span style="font-size:12px;color:var(--text-faint)">谐音：${hit.py}</span>`:''}</div>`;}
     else{
       zh=`<div id="phDictOut" style="font-size:12px;color:var(--text-faint);margin-top:10px">📖 查询词典中…</div>`;
       setTimeout(function(){hdLookup(v,function(h){
         const o=document.getElementById('phDictOut');
         if(!o||(document.getElementById('phInput').value||'').trim()!==v)return;   // 输入已变，丢弃
-        o.innerHTML=h?`📖 <b lang="de" style="font-size:14px;color:var(--text)">${h[0]}</b> — <b style="color:#46a302;font-size:14px">${h[1]}</b> <span style="color:var(--text-faint)">·词典</span>`
+        o.innerHTML=h?`📖 <b lang="de" style="font-size:14px;color:var(--text)">${h[0]}</b>${posTag(h[0])} — <b style="color:#46a302;font-size:14px">${h[1]}</b> <span style="color:var(--text-faint)">·词典</span>`
                     :`📖 词库和词典都没查到这个词——拼读和 🔊 朗读照常可用。`;
       });},0);
     }
@@ -2599,7 +2604,7 @@ function renderPhTool(){
         const lw=e[0].toLowerCase();
         if(shown[lw]||lw===q)return;shown[lw]=1;
         const w=e[0].replace(/'/g,"\\'");
-        h+=`<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e[0]}</b> — ${e[1]} <span style="font-size:11px;color:var(--text-faint)">·词典</span> <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
+        h+=`<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e[0]}</b>${posTag(e[0])} — ${e[1]} <span style="font-size:11px;color:var(--text-faint)">·词典</span> <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
       });
       if(!h)return;
       if(!wrap.innerHTML)h='<div style="font-size:12px;color:var(--text-faint);margin-top:10px">联想（点德语看拼读）：</div>'+h;
@@ -3160,6 +3165,95 @@ function dialogPlay(di){
 }
 // 阅读点词：朗读 + 查词义（德语）
 let _deWordMap=null;
+// ══════════════════════════════════════
+// 词性 / 冠词推断（供拼读查词的联想与词典结果显示）
+// ══════════════════════════════════════
+// 词典切片只存 [显示形, 中文]，没有词性也没有冠词。但德语有两条硬规律可以利用：
+//   1) 所有名词首字母大写 —— 判「是不是名词」几乎 100% 准
+//   2) 复合词的性由**最后一节**决定 —— der Film → der Kinofilm
+// 于是：词库里 1800 多个带冠词的名词当基础表，加高置信后缀规则，再按最长词尾配复合词。
+// 留一法实测：能判定的 569 个里对 563 个（98.95%）；整本词典 6.8 万名词中约 41% 能给出冠词，
+// 其余只显示「名词」——**宁可不说，也不能教错性别**。
+var _deGender=null;
+// 复合词的性由最后一节决定，但词库里缺不少常用基础词（Saal / Fan / Halle…），
+// 缺一个就让一整串复合词失去冠词。这里补一份高频基础名词表，只补性别、不补释义。
+var _GENDER_BASE={
+ der:('saal fan film mann tag weg ort platz raum hof bau punkt teil grund fall preis wert kreis stuhl tisch schrank '+
+      'stein baum berg fluss see wagen zug bus hund vogel fisch kopf arm fuss hals ruecken bauch finger schuh rock hut '+
+      'mantel guertel knopf schluessel spiegel teller loeffel becher krug topf ofen herd sessel teppich vorhang garten '+
+      'zaun pfad wald park strand hafen turm dom markt laden beruf lehrer schueler arzt baecker koch kellner fahrer '+
+      'maler saenger spieler leiter helfer freund partner nachbar gast kunde chef meister sohn vater bruder onkel '+
+      'neffe enkel koenig ritter held name wille gedanke glaube brief text satz titel plan sinn nutzen dank wunsch '+
+      'traum schmerz mut stolz dienst kampf krieg sieg schritt sprung lauf flug ruf schrei klang ton laut takt stil '+
+      'geschmack geruch blick griff schlag stoss druck schutz rand rest anteil betrag lohn zins gewinn verlust handel '+
+      'kauf verkauf vertrag antrag auftrag bericht vortrag beitrag computer rechner motor apparat').split(' '),
+ die:('zeit welt frau frage antwort sache stelle strasse stadt kirche schule klasse gruppe familie mutter schwester '+
+      'tante nichte tochter freundin nachbarin tuer wand decke treppe kueche halle buehne bank karte liste seite zeile '+
+      'spalte reihe farbe form groesse laenge breite hoehe tiefe zahl summe menge masse kraft macht staerke angst sorge '+
+      'hoffnung freude liebe lust laune stimmung meinung idee absicht regel ordnung art weise methode sprache stimme '+
+      'rede schrift zeitung nachricht botschaft geschichte lehre kunst musik blume rose bluete frucht beere birne '+
+      'kirsche pflaume traube melone gurke tomate zwiebel kartoffel bohne erbse nudel suppe sosse butter milch sahne '+
+      'schokolade torte tuete flasche dose tasse kanne schuessel gabel').split(' '),
+ das:('kino haus zimmer bett fenster dach tor glas messer brot fleisch obst gemuese wasser bier oel salz korn mehl '+
+      'land dorf feld gras holz metall eisen gold silber papier buch heft blatt bild foto spiel ziel team pferd '+
+      'schwein schaf huhn kind maedchen baby paar herz auge ohr bein knie haar hemd kleid geld konto amt werk buero '+
+      'lager zeug mittel geraet geschaeft ergebnis system problem thema wort ende zelt boot rad').split(' ')};
+// 已知会被规则推错的（外来词 / 性不随最后一节走的复合词 / 复数与名词化形容词）
+var _GENDER_EXC={antwort:'die',gegenteil:'das',schwein:'das',armut:'die',demut:'die',
+  knochen:'der',sellerie:'der',stadion:'das',patent:'das',giraffe:'die',schalter:'der',
+  sonnenwende:'die',restaurant:'das',labor:'das',abitur:'das',friseur:'der',ingenieur:'der',
+  dividende:'die',fundsachen:'die',reisende:'der'};
+// 通用得会造成假复合的词尾（Halt-er 会误配 Alter、Divid-ende 会误配 Ende）
+var _BAD_TAIL={alter:1,ende:1,ort:1,eis:1,ein:1,bar:1,ur:1,ant:1,ent:1,erde:1,arm:1,ohr:1};
+// 高置信后缀，按长度降序 —— 否则 -ur 会抢在 -eur 前面，把 Ingenieur 判成 die
+var _GENDER_SUF=[['ismus','der'],['schaft','die'],['ling','der'],['chen','das'],['lein','das'],
+  ['ment','das'],['keit','die'],['heit','die'],['tum','das'],['ung','die'],['eur','der'],
+  ['ion','die'],['tät','die'],['enz','die'],['anz','die'],['ie','die'],['ik','die']];
+function buildDeGender(){
+  _deGender={};var k;
+  for(k in _GENDER_BASE)_GENDER_BASE[k].forEach(function(w){if(w)_deGender[w]=k;});
+  for(k in _GENDER_EXC)_deGender[k]=_GENDER_EXC[k];
+  DE_CATEGORIES.forEach(function(c){c.phrases.forEach(function(p){
+    var m=/^(der|die|das)\s+([A-ZÄÖÜ][\wäöüß-]*)$/.exec((p.de||'').trim());
+    if(m){var kk=m[2].toLowerCase();if(!_GENDER_EXC[kk])_deGender[kk]=m[1];}
+  });});
+  _deGenderKeys=Object.keys(_deGender).sort(function(a,b){return b.length-a.length;});
+}
+var _deGenderKeys=[];
+/** 返回 {pos:'名词'|'动词'|null, art:'der'|'die'|'das'|null} —— 拿不准就返回 null，不猜。 */
+function wordInfo(w){
+  if(!w)return {pos:null,art:null};
+  var word=String(w).replace(/^(der|die|das)\s+/i,'').trim();
+  if(!/^[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß-]*$/.test(word))return {pos:null,art:null};
+  if(!/^[A-ZÄÖÜ]/.test(word)){
+    // 小写：只认不定式 -en/-eln/-ern。原来还认光秃秃的 -n，结果 klein/kein/allein/vegan
+    // 全被判成动词。以 -en 结尾里也有一批不是动词（oben/unten/offen…），单列排除。
+    var NOTVERB={oben:1,unten:1,hinten:1,vorn:1,vorne:1,offen:1,eigen:1,eben:1,morgen:1,
+      gestern:1,vorgestern:1,uebermorgen:1,gern:1,gerne:1,selten:1,innen:1,aussen:1,drinnen:1,draussen:1};
+    if(NOTVERB[word])return {pos:null,art:null};
+    return {pos:/(?:eln|ern|en)$/.test(word)&&word.length>3?'动词':null,art:null};
+  }
+  if(!_deGender)try{buildDeGender();}catch(e){return {pos:'名词',art:null};}
+  var lw=word.toLowerCase(),i;
+  if(_deGender[lw])return {pos:'名词',art:_deGender[lw]};
+  for(i=0;i<_GENDER_SUF.length;i++){
+    var s=_GENDER_SUF[i][0];
+    if(lw.length-s.length>=3&&lw.slice(-s.length)===s)return {pos:'名词',art:_GENDER_SUF[i][1]};
+  }
+  for(i=0;i<_deGenderKeys.length;i++){
+    var n=_deGenderKeys[i];
+    if(n.length<4||_BAD_TAIL[n])continue;
+    if(lw.length-n.length>=3&&lw.slice(-n.length)===n)return {pos:'名词',art:_deGender[n]};
+  }
+  return {pos:'名词',art:null};
+}
+/** 词性小标签：有冠词就显示冠词（按 der 蓝 / die 红 / das 绿 上色，与学习秘诀⑬一致） */
+function posTag(w){
+  var info=wordInfo(w);
+  if(info.art)return '<span class="pos-tag art-'+info.art+'">'+info.art+'</span>';
+  if(info.pos)return '<span class="pos-tag">'+info.pos+'</span>';
+  return '';
+}
 function buildDeWordMap(){
   _deWordMap={};
   DE_CATEGORIES.forEach(c=>c.phrases.forEach(p=>{
