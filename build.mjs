@@ -36,6 +36,12 @@ const DATA_FILES = {
   RD_GLOSS: 'data/read_gloss.json',
 };
 
+// 不加密的数据：加密是为了挡住随手爬词库，激励文案没有这个需求，
+// 明文注入既省一次解密、也方便直接在 data/boosts.json 里改文案。
+const PLAIN_FILES = {
+  BOOSTS: 'data/boosts.json',
+};
+
 function xorB64(text) {
   const bytes = Buffer.from(text, 'utf8');
   const out = Buffer.allocUnsafe(bytes.length);
@@ -69,6 +75,14 @@ const DECODER =
 async function build() {
   let html = readFileSync('src.html', 'utf8');
   let enFile = 'en.dat'; // 英语词典切片文件名（生产带内容哈希，便于跨版本复用缓存）
+
+  // 0) 明文注入（不加密的小数据）
+  for (const [name, path] of Object.entries(PLAIN_FILES)) {
+    const json = JSON.stringify(JSON.parse(readFileSync(path, 'utf8')));
+    const ph = `__DATA_${name}__`;
+    if (!html.includes(ph)) throw new Error(`src.html 缺少占位符 ${ph}`);
+    html = html.split(ph).join(json);
+  }
 
   // 1) 注入数据数组（校验 JSON 合法；生产加密，dev 明文）
   //    categories 首屏可能即用 → 立即解密；其余 4 个用到才解密（懒加载），

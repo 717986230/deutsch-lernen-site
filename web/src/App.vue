@@ -4,6 +4,7 @@ import { useAccount } from './store/account';
 import BadgeCelebrate from './components/BadgeCelebrate.vue';
 import TopNav from './components/TopNav.vue';
 import BottomNav from './components/BottomNav.vue';
+import DailyBoost from './components/DailyBoost.vue';
 import { useTheme } from './store/theme';
 
 const acct = useAccount();
@@ -27,6 +28,7 @@ onMounted(() => {
       <keep-alive include="Phrases,Reading,Spell"><component :is="Component" /></keep-alive>
     </router-view>
     <BottomNav />
+    <DailyBoost />
     <BadgeCelebrate />
   </div>
 </template>
