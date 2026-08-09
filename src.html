@@ -377,9 +377,15 @@ body.lang-en .phfab{display:none}
 .boost-card{background:var(--surface);border:1px solid var(--gold-dim);border-radius:20px;
   max-width:400px;width:100%;padding:26px 22px 20px;text-align:center;
   box-shadow:0 18px 50px rgba(0,0,0,.34)}
-.boost-emo{font-size:40px;line-height:1;margin-bottom:12px}
-.boost-h{font-size:19px;font-weight:800;color:var(--text);margin-bottom:10px;line-height:1.4}
-.boost-p{font-size:14px;color:var(--text-dim);line-height:1.9;margin-bottom:20px}
+.boost-label{font-size:12px;letter-spacing:3px;color:var(--gold-text);margin-bottom:14px}
+.boost-de{font-size:22px;font-weight:700;color:var(--text);line-height:1.45;margin-bottom:12px;font-style:italic}
+.boost-spk{min-height:44px;padding:8px 20px;margin-bottom:12px;border-radius:22px;
+  border:1px solid var(--gold-dim);background:var(--btn-bg);color:var(--gold-text);
+  font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+.boost-spk:active{transform:scale(.96)}
+.boost-spk.speaking{background:var(--gold);color:#14240a}
+.boost-zh{font-size:16px;color:var(--text-dim);line-height:1.7;margin-bottom:6px}
+.boost-py{font-size:13px;color:var(--gold-text);line-height:1.7;margin-bottom:20px}
 .boost-go{width:100%;min-height:48px;border:none;border-radius:24px;background:var(--gold);
   color:#14240a;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;
   box-shadow:0 4px 14px var(--gold-dim)}
@@ -2556,8 +2562,27 @@ function buildPhSug(){ // 联想表：单词（去标点、去重）+ 日常短�
 // 文案在 data/boosts.json，构建时明文注入（不是词库，无需加密）。
 // 频率：**每次打开站点弹一次**（sessionStorage 标记，同一次浏览里切版块不再弹）；
 // 点「今天不再提示」则按自然日静音，避免变成每次都要手动关的骚扰。
-var BOOSTS = __DATA_BOOSTS__;
 function _boostToday(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+// 从词库里挑「完整的日常句」：多词、首字母大写、以 . ! ? 收尾、有谐音、长度适中。
+// 实测 4016 条词条里有 779 条合格，覆盖入门/A1/A2/B1。
+function _boostPool(cats){
+  var out=[],i,j;
+  for(i=0;i<cats.length;i++){
+    var ps=cats[i].phrases||[];
+    for(j=0;j<ps.length;j++){
+      var de=(ps[j].de||'').trim(),zh=(ps[j].zh||'').trim(),py=(ps[j].py||'').trim();
+      if(!py||de.indexOf('↔')>=0||zh.indexOf('↔')>=0)continue;
+      if(de.indexOf(' ')<0)continue;
+      if(!/^[A-ZÄÖÜ]/.test(de))continue;
+      if(!/[.!?]$/.test(de))continue;
+      if(de.length<10||de.length>46)continue;
+      out.push({de:de,zh:zh,py:py});
+    }
+  }
+  // 按德语文本排序，保证「第几天取第几条」在所有设备上一致
+  out.sort(function(a,b){return a.de<b.de?-1:(a.de>b.de?1:0);});
+  return out;
+}
 function boostClose(muteToday){
   var m=document.getElementById('boostModal');if(m)m.style.display='none';
   try{if(muteToday)localStorage.setItem('boostMute',_boostToday());}catch(e){}
@@ -2567,14 +2592,28 @@ function boostShow(){
     if(sessionStorage.getItem('boostSeen'))return;        // 本次会话已经弹过
     if(localStorage.getItem('boostMute')===_boostToday())return;  // 今天被静音
   }catch(e){}
-  if(!BOOSTS||!BOOSTS.length)return;
-  // 按天轮换：同一天进来看到的是同一条，换天才换，免得刷新一次换一句显得随机
-  var d=Math.floor(Date.now()/864e5),it=BOOSTS[d%BOOSTS.length];
-  var h=document.getElementById('boostH'),p=document.getElementById('boostP'),m=document.getElementById('boostModal');
-  if(!h||!p||!m)return;
-  h.textContent=it[0];p.textContent=it[1];m.style.display='flex';
-  try{sessionStorage.setItem('boostSeen','1');}catch(e){}
-  try{track('boost',{i:d%BOOSTS.length});}catch(e){}
+  // 词库是懒加载的（de.<hash>.dat），到货后才挑句
+  var go=function(cats){
+    var pool=_boostPool(cats||[]);
+    if(!pool.length)return;
+    // 按天取：同一天所有人看到同一句，换天才换 —— 刷新一次换一句会显得很随机
+    var d=Math.floor(Date.now()/864e5),it=pool[d%pool.length];
+    var de=document.getElementById('boostDe'),zh=document.getElementById('boostZh'),
+        py=document.getElementById('boostPy'),m=document.getElementById('boostModal'),
+        spk=document.getElementById('boostSpk');
+    if(!de||!m)return;
+    de.textContent=it.de;zh.textContent=it.zh;py.textContent='谐音：'+it.py;
+    if(spk)spk.onclick=function(){try{speakDE(it.de,spk);}catch(e){}};
+    m.style.display='flex';
+    try{sessionStorage.setItem('boostSeen','1');}catch(e){}
+    try{track('boost',{i:d%pool.length});}catch(e){}
+    // 弹出即朗读一遍：这是「每日一句」，听到才算数
+    try{setTimeout(function(){speakDE(it.de,spk);},350);}catch(e){}
+  };
+  try{
+    if(window._DEC)go(window._DEC);
+    else if(typeof _loadDE==='function')_loadDE().then(go)["catch"](function(){});
+  }catch(e){}
 }
 function phOpen(){var m=document.getElementById('phModal');if(m){m.style.display='flex';var i=document.getElementById('phInput');if(i)setTimeout(function(){i.focus();},50);}}
 function phClose(){var m=document.getElementById('phModal');if(m)m.style.display='none';}
@@ -4342,9 +4381,11 @@ function spFinish(){document.getElementById('spBar').style.width='100%';document
 <button class="phfab" type="button" onclick="phOpen()" aria-label="打开拼读器查词" title="拼读查词">🧩</button>
 <div class="boost-overlay" id="boostModal" style="display:none" role="dialog" aria-label="今日激励" onclick="if(event.target===this)boostClose()">
   <div class="boost-card">
-    <div class="boost-emo">🇩🇪</div>
-    <div class="boost-h" id="boostH"></div>
-    <div class="boost-p" id="boostP"></div>
+    <div class="boost-label">每日一句 · Satz des Tages</div>
+    <div class="boost-de" id="boostDe" lang="de"></div>
+    <button class="boost-spk" id="boostSpk" type="button" aria-label="朗读这句" title="朗读">🔊 朗读</button>
+    <div class="boost-zh" id="boostZh"></div>
+    <div class="boost-py" id="boostPy"></div>
     <button class="boost-go" type="button" onclick="boostClose()">开始今天的学习</button>
     <button class="boost-skip" type="button" onclick="boostClose(true)">今天不再提示</button>
   </div>
