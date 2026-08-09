@@ -2611,7 +2611,9 @@ function renderPhTool(){
       wrap.innerHTML+=h;
     };
     try{hdPrefix(q,3,addRows);}catch(e){}
-    try{hdPhrase(q,3,addRows);}catch(e){}
+    // 这里不再叫 hdPhrase：分片里的多词条目几乎全是人名地名（Hai He 海河 /
+    // Hai Rui 海瑞 / Hai jin 海禁），点进去做拼读也没有意义。
+    // 真德语短句的联想来自本地词库（_phSugP），是人工整理的，不受影响。
   },0);
 }
 function phTry(w){const el=document.getElementById('phInput');if(el){el.value=w;renderPhTool();speakDE(w);}}
@@ -3323,12 +3325,28 @@ function _hdLoad(pre,ch,cb){ // 通用分片加载：pre='de_'单词 / 'ph_'短�
   };
   try{x.send();}catch(e){_hd[key]={};cb();}
 }
+// 这本词典里混着大量中文音译专名（海尔 / 海法 / 海口市 / 海港区）。
+// 两个信号把它们压到后面：
+//   1) 中文释义带行政区划或人名标记 —— 这本词典里精度很高
+//   2) 推不出冠词 —— 说明词尾不是已知德语名词也不是德语后缀
+// 只降权不删除：万一误判，用户往下翻仍看得到。
+var _PROPER_ZH=/[区市县省镇村州郡]$|街道|自治|群岛|半岛|海峡|山脉|王朝|公司|集团/;
+function _deLike(e){
+  var w=e[0],zh=e[1]||'';
+  if(_PROPER_ZH.test(zh))return -1;
+  try{var i=wordInfo(w);return i&&i.art?1:0;}catch(e2){return 0;}
+}
 function hdPrefix(q,limit,cb){ // 单词分片前缀联想
   var ch=_hdShard(q);
   _hdLoad('de_',ch,function(){
     var d=_hd['de_'+ch]||{},out=[];
     for(var k in d){if(k.length>q.length&&k.indexOf(q)===0)out.push(d[k]);}
-    out.sort(function(a,b){return a[0].length-b[0].length;});
+    // 原来只按词长升序，结果查 Hai 给出的全是音译地名，真正该学的 Haifisch 反被挤掉
+    out.sort(function(a,b){
+      var da=_deLike(a),db=_deLike(b);
+      if(da!==db)return db-da;
+      return a[0].length-b[0].length;
+    });
     cb(out.slice(0,limit));
   });
 }
@@ -3338,6 +3356,10 @@ function hdPhrase(q,limit,cb){ // 短语分片联想：短语中任一词以 q �
     var d=_hd['ph_'+ch]||{},out=[];
     for(var k in d){
       var ws=k.split(' ');
+      // 后段大写的多词条目基本是人名/地名（Hai He 海河、Hai Rui 海瑞），不是德语短语
+      var proper=false,j;
+      for(j=1;j<ws.length;j++)if(/^[A-ZÄÖÜ]/.test((d[k][0].split(' ')[j]||'')))proper=true;
+      if(proper)continue;
       for(var i=0;i<ws.length;i++){if(ws[i].indexOf(q)===0){out.push(d[k]);break;}}
       if(out.length>=limit*6)break;
     }
