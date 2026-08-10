@@ -15,6 +15,27 @@
 <meta property="og:description" content="3900+ 词句含中文谐音、点词即听真人朗读、语法全例句拆解、分级阅读+留学连载、互动测验。完全免费、无广告、离线可用。">
 <meta property="og:url" content="https://www.uuoo.site/">
 <meta property="og:image" content="https://www.uuoo.site/og-cover.png">
+<!-- canonical：站点同时能从 uuoo.site / www.uuoo.site 打开，不指定的话搜索引擎会当成
+     两个站、权重对半分。统一到 www 这个实际在用的。 -->
+<link rel="canonical" href="https://www.uuoo.site/">
+<!-- 结构化数据：让搜索结果能显示成「学习资源」而不是一条干巴巴的蓝链接。
+     只声明确实成立的事实（免费、中文、教德语），不写评分之类查无实据的字段。 -->
+<script type="application/ld+json">{
+ "@context":"https://schema.org",
+ "@graph":[
+  {"@type":"WebSite","@id":"https://www.uuoo.site/#website",
+   "url":"https://www.uuoo.site/","name":"德语学习手册",
+   "description":"面向中文母语者的免费德语自学网站：3900+ 词句含中文谐音、真人朗读、发音与语法速查、拼写与测验。",
+   "inLanguage":"zh-CN"},
+  {"@type":"LearningResource","@id":"https://www.uuoo.site/#course",
+   "name":"德语学习手册","url":"https://www.uuoo.site/",
+   "description":"从零基础到 B1 的德语自学资料：分级词句、分级短文、情景对话、发音与语法速查、拼写记忆与互动测验。每句配中文谐音，全部免费、可离线使用。",
+   "inLanguage":"zh-CN","teaches":"德语",
+   "learningResourceType":["词汇表","阅读材料","练习"],
+   "educationalLevel":["A1","A2","B1"],
+   "isAccessibleForFree":true,
+   "isFamilyFriendly":true}
+ ]}</script>
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="zh_CN">
@@ -2768,6 +2789,31 @@ function tgtVoice(){return LANG==='en'?_enVoice:_deVoice;}
 // 通用轻提示条（TTS 提示 / 目标达成共用一个元素）
 function _toast(msg,ms){try{var d=document.getElementById('__ttsh');if(!d){d=document.createElement('div');d.id='__ttsh';d.style.cssText='position:fixed;left:50%;bottom:calc(var(--tab-h) + 26px);transform:translateX(-50%);z-index:600;background:rgba(40,40,40,.94);color:#fff;font-size:13px;line-height:1.5;padding:10px 16px;border-radius:12px;max-width:86%;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.3)';(document.body||document.documentElement).appendChild(d);}d.textContent=msg;d.style.display='block';clearTimeout(window.__ttshT);window.__ttshT=setTimeout(function(){d.style.display='none';},ms||3000);}catch(e){}}
 function _ttsHint(){_toast('此浏览器内核不支持朗读 🔇 点右上角「⋯」→「在浏览器打开」即可发音',4000);}
+// ── 站内浏览器（TikTok / 微信 / 微博…）的朗读探测 ──
+// 这些 webview 里 speechSynthesis **对象是存在的**，只是调了没声音。
+// 所以「'speechSynthesis' in window」这条判断永远为真，用户点了 🔊 什么也没发生、
+// 也没有任何解释 —— 从短视频点进来的人会直接认为网站是坏的。
+// window.__noTTS 原本被 6 处读取，却从来没有地方给它赋值，等于这条兜底从未生效。
+// 这里按**行为**判定（不猜 UA）：第一次朗读后 1.5 秒内既没 start 也没 end/error，
+// 就认定这个内核发不出声，置位并提示「在浏览器打开」。
+var _ttsProbed=false;
+function _ttsProbe(u){
+  if(_ttsProbed)return;
+  _ttsProbed=true;
+  var fired=false;
+  var mark=function(){fired=true;};
+  var os=u.onstart,oe=u.onend,oer=u.onerror;
+  u.onstart=function(e){mark();if(os)os.call(this,e);};
+  u.onend=function(e){mark();if(oe)oe.call(this,e);};
+  u.onerror=function(e){mark();if(oer)oer.call(this,e);};
+  setTimeout(function(){
+    if(fired)return;
+    // 有的内核连 speaking 标记都不置位，双保险
+    try{if(speechSynthesis.speaking||speechSynthesis.pending)return;}catch(e){}
+    window.__noTTS=true;
+    try{_ttsHint();}catch(e){}
+  },1500);
+}
 function speakDE(text,btn){
   if(window.__noTTS||!('speechSynthesis' in window)){_ttsHint();return;}
   speechSynthesis.cancel();
@@ -2781,6 +2827,7 @@ function speakDE(text,btn){
     btn.classList.add('speaking');
     u.onend=u.onerror=()=>btn.classList.remove('speaking');
   }
+  _ttsProbe(u);
   speechSynthesis.speak(u);
 }
 

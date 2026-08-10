@@ -1,0 +1,8 @@
+# 全站允许收录。这是一份公开的德语学习资料，没有需要藏起来的路径。
+User-agent: *
+Allow: /
+
+# 后台统计页不进索引（内容对访客无意义，且会分散权重）
+Disallow: /stats.html
+
+Sitemap: https://www.uuoo.site/sitemap.xml
