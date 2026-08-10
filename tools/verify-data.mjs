@@ -67,7 +67,7 @@ checkPhrases('data/categories.json');
 checkPhrases('data/en_categories.json');
 checkArticles('data/readings.json', true);
 checkArticles('data/en_readings.json', true);
-checkArticles('data/series.json', false);
+checkArticles('data/series.json', true);   // 2026-08 起连载也全量带谐音
 checkDialogs('data/dialogs.json');
 checkDialogs('data/en_dialogs.json');
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }

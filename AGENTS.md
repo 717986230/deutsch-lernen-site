@@ -114,12 +114,12 @@ await p.waitForFunction(() => window._DEC);               // 等德语词库到�
 | 文件 | 结构 |
 |---|---|
 | `data/categories.json` | `[{name, level, icon, phrases:[{de, zh, py}]}]`，level ∈ `0/a1/a2/b1/b2` |
-| `data/readings.json` | `[{level, title, zh, topic?, paras:[[de, zh, py]]}]` — **三元素**，全部 637 句已有谐音 |
-| `data/series.json` | `[{level, title, zh, paras:[[de, zh]]}]` — **两元素**（留学连载，尚无谐音） |
+| `data/readings.json` | `[{level, title, zh, topic?, paras:[[de, zh, py]]}]` — **三元素**，全部 673 句已有谐音 |
+| `data/series.json` | 同上 **三元素**（留学连载，96 句已于 2026-08 全部补齐谐音） |
 | `data/read_gloss.json` | `{小写词: [显示形, 中文]}`，逐词小注兜底表 |
 
-- 短文渲染层以 `p[2]` 是否存在为条件，所以 `readings`（三元素）和 `series`（两元素）
-  共用同一套渲染代码而互不影响。**往 `readings.json` 加新短文时请一并补谐音**。
+- 短文渲染层以 `p[2]` 是否存在为条件（历史上 `series` 只有两元素）。现在两份数据都是三元素，
+  `tools/verify-data.mjs` 对二者都强制校验谐音，**加新短文/新连载时必须一并补谐音**，否则 `npm run verify` 直接失败。
 - `topic:"restaurant"` 的短文归入「🍽️ 餐厅」标签，且**不出现在**分级短文列表里。
 - 谐音风格：逐词以空格分隔、标点用全角（例：`古腾 阿本特！瓦斯 麦希腾 齐 特林肯？`）。
 
