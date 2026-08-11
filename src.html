@@ -510,8 +510,9 @@ body.lang-en .phfab{display:none}
      设置 → 辅助功能 → 朗读内容 → 声音 → <b>德语</b>（选 Anna/Petra/Markus）下载；中文选「普通话」。
      <div style="font-weight:600;color:#46a302;margin:10px 0 4px">💻 Mac</div>
      系统设置 → 辅助功能 → 朗读内容 → 系统声音 → 管理声音 → 勾选<b>德语 Anna/Petra</b> + <b>中文 婷婷</b> 下载。
-     <div style="font-weight:600;color:#46a302;margin:10px 0 4px">🤖 安卓</div>
-     设置 → 搜索"文字转语音/TTS" → 选 Google 语音引擎 → 安装语音数据 → 下载<b>德语 + 中文</b>。
+     <div style="font-weight:600;color:#46a302;margin:10px 0 4px">🤖 安卓（小米/红米/华为等国产系统要多做一步）</div>
+     设置 → 搜索"文字转语音 / TTS" → ①<b>把「首选引擎」切成 Google 语音服务</b>（只是装了 App 不算，系统默认还是小米/华为自带引擎，那个引擎<b>只有中文</b>，所以别的网页读中文正常、本站读德语就是静音）→ ② 点引擎右边的 ⚙️ → 安装语音数据 → 下载 <b>Deutsch（德语）</b>。
+     <div style="font-size:12px;color:var(--text-faint);margin-top:4px">国行手机若下载不动，多半是没有 Google Play 服务：可改用 <b>讯飞语音+</b> 等支持德语的引擎，同样在「首选引擎」里切换；或直接换用电脑 / iPhone。</div>
      <div style="font-weight:600;color:#46a302;margin:10px 0 4px">🌐 电脑 Chrome / Edge</div>
      自带在线德语/中文语音（Google/Microsoft），通常无需额外安装，音质已很好。
      <div style="font-size:12px;color:var(--text-faint);margin-top:10px">装好后回到本页刷新，🔊 会自动选用新语音。</div>
@@ -2787,8 +2788,48 @@ if('speechSynthesis' in window){ pickGermanVoice(); speechSynthesis.onvoiceschan
 function tgtLang(){return LANG==='en'?'en-US':'de-DE';}
 function tgtVoice(){return LANG==='en'?_enVoice:_deVoice;}
 // 通用轻提示条（TTS 提示 / 目标达成共用一个元素）
-function _toast(msg,ms){try{var d=document.getElementById('__ttsh');if(!d){d=document.createElement('div');d.id='__ttsh';d.style.cssText='position:fixed;left:50%;bottom:calc(var(--tab-h) + 26px);transform:translateX(-50%);z-index:600;background:rgba(40,40,40,.94);color:#fff;font-size:13px;line-height:1.5;padding:10px 16px;border-radius:12px;max-width:86%;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.3)';(document.body||document.documentElement).appendChild(d);}d.textContent=msg;d.style.display='block';clearTimeout(window.__ttshT);window.__ttshT=setTimeout(function(){d.style.display='none';},ms||3000);}catch(e){}}
+function _toast(msg,ms,onTap){try{var d=document.getElementById('__ttsh');if(!d){d=document.createElement('div');d.id='__ttsh';d.style.cssText='position:fixed;left:50%;bottom:calc(var(--tab-h) + 26px);transform:translateX(-50%);z-index:600;background:rgba(40,40,40,.94);color:#fff;font-size:13px;line-height:1.5;padding:10px 16px;border-radius:12px;max-width:86%;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.3)';(document.body||document.documentElement).appendChild(d);}d.textContent=msg;d.style.display='block';
+  // 可点的提示条：文案里写了「怎么办」，就得真能点过去，否则等于没说
+  d.onclick=onTap?function(){d.style.display='none';try{onTap();}catch(e){}}:null;
+  d.style.cursor=onTap?'pointer':'';d.style.minHeight=onTap?'44px':'';d.style.boxSizing='border-box';
+  clearTimeout(window.__ttshT);window.__ttshT=setTimeout(function(){d.style.display='none';},ms||3000);}catch(e){}}
 function _ttsHint(){_toast('此浏览器内核不支持朗读 🔇 点右上角「⋯」→「在浏览器打开」即可发音',4000);}
+// 跳到首页的「语音包安装指引」并展开
+function _ttsGuide(){try{showSection('home');var g=document.getElementById('voiceGuide');if(g){g.style.display='block';setTimeout(function(){g.scrollIntoView({behavior:'smooth',block:'center'});},60);}}catch(e){}}
+// ── 「装了引擎却还是没声音」的真正原因：系统里没有德语语音数据 ──
+// 安卓（尤其国产 ROM）默认的 TTS 引擎只带中文，网页读中文/英文正常，
+// 一读德语就静音 —— 用户会以为是网站坏了。这里在开口前先查一遍有没有德语嗓子。
+// 注意 getVoices() 在安卓 Chrome 首次调用常返回空数组（要等 voiceschanged），
+// 空数组时**不能**下结论，只有「拿到了语音列表但里面没有 de-*」才是真缺。
+function _noTgtVoice(){
+  try{
+    if(!window.speechSynthesis||!speechSynthesis.getVoices)return false;
+    var vs=speechSynthesis.getVoices();
+    if(!vs||!vs.length)return false;                 // 列表还没到货，别误报
+    var want=(typeof LANG!=='undefined'&&LANG==='en')?'en':'de';
+    for(var i=0;i<vs.length;i++){
+      var l=(vs[i].lang||'').replace('_','-').toLowerCase();
+      if(l.indexOf(want)===0)return false;
+    }
+    return true;
+  }catch(e){return false;}
+}
+var _voiceHinted=false;
+function _ttsVoiceHint(){
+  if(_voiceHinted)return;_voiceHinted=true;
+  var n=(typeof LANG!=='undefined'&&LANG==='en')?'英语':'德语';
+  _toast('手机里没装'+n+'语音包 🔇 点这里看安装步骤（免费·离线·一次搞定）',6000,_ttsGuide);
+}
+// utterance 的 error 事件带原因，以前被直接丢掉，用户只看到「点了没反应」。
+// language-unavailable / synthesis-failed 基本都是缺语音数据；
+// not-allowed 是浏览器要求先有用户手势。
+function _ttsErr(e){
+  try{
+    var k=(e&&e.error)||'';
+    if(k==='not-allowed'){_toast('浏览器拦住了自动朗读，请手动点一下 🔊',3500);return;}
+    if(k==='language-unavailable'||k==='voice-unavailable'||k==='synthesis-failed'||_noTgtVoice())_ttsVoiceHint();
+  }catch(x){}
+}
 // ── 站内浏览器（TikTok / 微信 / 微博…）的朗读探测 ──
 // 这些 webview 里 speechSynthesis **对象是存在的**，只是调了没声音。
 // 所以「'speechSynthesis' in window」这条判断永远为真，用户点了 🔊 什么也没发生、
@@ -2825,8 +2866,11 @@ function speakDE(text,btn){
   if(btn){
     document.querySelectorAll('.speak-btn.speaking').forEach(b=>b.classList.remove('speaking'));
     btn.classList.add('speaking');
-    u.onend=u.onerror=()=>btn.classList.remove('speaking');
-  }
+    u.onend=()=>btn.classList.remove('speaking');
+    u.onerror=e=>{btn.classList.remove('speaking');_ttsErr(e);};
+  }else u.onerror=_ttsErr;
+  // 手势路径上先查一次：有语音列表但没有目标语言的嗓子 = 必然静音，提前说清楚
+  if(_noTgtVoice())_ttsVoiceHint();
   _ttsProbe(u);
   speechSynthesis.speak(u);
 }
@@ -3652,7 +3696,9 @@ function _playNext(){
   const u=new SpeechSynthesisUtterance(para[0]);
   u.lang='de-DE';if(_deVoice)u.voice=_deVoice;u.rate=_spk.rate;u.pitch=1;
   u.onend=()=>{if(_rqU!==u||!_rq||_rq.paused)return;q.pi++;_playNext();};   // 暂停时不前进，继续后重读本句
-  u.onerror=()=>{if(_rqU!==u||!_rq||_rq.paused)return;q.pi++;_playNext();};
+  // 没装德语语音包时每句都会瞬间 error，若照旧「出错就下一句」，整篇会在一秒内
+  // 无声地跑完 —— 用户看到高亮飞快闪过却听不到声音。所以先解释原因，再停下来。
+  u.onerror=e=>{if(_rqU!==u||!_rq||_rq.paused)return;_ttsErr(e);if(_noTgtVoice()){stopReading();return;}q.pi++;_playNext();};
   _rqU=u;
   speechSynthesis.speak(u);
 }
@@ -3734,7 +3780,7 @@ function _playSeriesNext(){
   const u=new SpeechSynthesisUtterance(para[0]);
   u.lang='de-DE';if(_deVoice)u.voice=_deVoice;u.rate=_spk.rate;u.pitch=1;
   u.onend=()=>{if(_sqU!==u||!_sq||_sq.paused)return;q.j++;_playSeriesNext();};
-  u.onerror=()=>{if(_sqU!==u||!_sq||_sq.paused)return;q.j++;_playSeriesNext();};
+  u.onerror=e=>{if(_sqU!==u||!_sq||_sq.paused)return;_ttsErr(e);if(_noTgtVoice()){stopSeries();return;}q.j++;_playSeriesNext();};
   _sqU=u;
   speechSynthesis.speak(u);
 }
