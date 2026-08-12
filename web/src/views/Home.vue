@@ -6,7 +6,8 @@ import { useRouter } from 'vue-router';
 import { useAccount } from '../store/account';
 import { useLang } from '../store/lang';
 import { getStudy, BADGES } from '../api/study';
-import { getKnown } from '../api/practice';
+import { getKnown, dailyPlan, dailyDone } from '../api/practice';
+import { loadData } from '../api';
 defineOptions({ name: 'Home' });
 
 const router = useRouter(); const acct = useAccount(); const lang = useLang();
@@ -19,9 +20,12 @@ const day = (t) => { const d = new Date(t); return d.getFullYear() + '-' + (d.ge
 const today = () => day(Date.now());
 const yday = () => day(Date.now() - 864e5);
 
-onMounted(() => {
+onMounted(async () => {
   study.value = getStudy();
   try { known.value = Object.keys(getKnown()).length; } catch { known.value = 0; }
+  try { daily.value = { ...dailyPlan(), done: dailyDone() }; } catch { /* 看板降级即可 */ }
+  // 阶段卡上的「N个词句 · M个分类」由词库现算，避免像旧站那样写死后跟数据脱节
+  try { cats.value = await loadData(lang.file('categories')); } catch { cats.value = []; }
 });
 
 const todayN = computed(() => (study.value.d === today() ? (study.value.n || 0) : 0));
@@ -71,7 +75,22 @@ const EN_CARDS = [
 ];
 const cards = computed(() => lang.isEn ? EN_CARDS : CARDS);
 
-// 学习方法：旧站 home-more 里的十三条，原文照搬
+// 按阶段学习的五张卡（文案照搬旧站，颜色走可作正文的令牌）
+const STAGES = [
+  { lv: '0', stage: '🌱 零基础 · 第1天', title: '打招呼就能开口', desc: '问候、道别、礼貌用语', color: 'var(--lv0)' },
+  { lv: 'a1', stage: '⭐ A1 初级 · 第1-2周', title: '简单日常交流', desc: '自我介绍、时间、天气、家庭、高频词', color: 'var(--lva1)' },
+  { lv: 'a2', stage: '⭐⭐ A2 基础 · 第1-2月', title: '熟悉场景顺畅沟通', desc: '购物、餐厅、交通、旅行、菜单', color: 'var(--brand-text)' },
+  { lv: 'b1', stage: '🔥 B1 中级 · 第3-6月', title: '理解生活主要内容', desc: '情感、医疗、银行、社会、抽象词汇', color: 'var(--lvb1)' },
+  { lv: 'b2', stage: '💎 B2 中高级 · 第6月+', title: '接近流利交流', desc: '政府、科技、经济、历史、学术', color: 'var(--lvb2)' },
+];
+const cats = ref([]);
+const count = (lv) => {
+  const list = cats.value.filter((c) => String(c.level) === lv);
+  return { c: list.length, n: list.reduce((a, c) => a + c.phrases.length, 0) };
+};
+const daily = ref({ total: 0, rev: 0, neu: 0, done: false });
+
+// 学习方法：旧站 home-more 里的十七条，原文照搬（之前只搬了十三条，⑭⑮⑯⑱ 漏了）
 const TIPS = [
   ['① 发音先行，规则极强', '德语「所见即所读」，1-2 天拿下字母表 + 变音(ä ö ü) + 组合音(ei/ie/ch/sch)，看词就能拼读。谐音只是拐杖，能拼读后就扔掉。'],
   ['② 名词永远连冠词一起背', 'der/die/das 决定格与词尾。背单词 = 冠词 + 名词 + 复数三件套。规律：-ung/-heit/-ion→die；-er/-ling→der；-chen/-lein→das。'],
@@ -86,6 +105,14 @@ const TIPS = [
   ['⑪ 长词是「拼」出来的，会拆就会懂', '德语复合词从右往左读，最后一节是核心：Handschuh = Hand(手) + Schuh(鞋) → 手套。'],
   ['⑫ 句中大写的词，基本就是名词', '德语所有名词首字母大写。这不是麻烦，是阅读路标——一眼挑出名词、快速抓住句子主干。'],
   ['⑬ 给名词「上色」记性别', '背单词时脑内给冠词上色：der 蓝 / die 红 / das 绿。视觉记忆比死记「阳性阴性中性」牢得多。'],
+  ['⑭ 可分动词：前缀甩到句尾',
+   'aufstehen(起床)→「Ich stehe um 7 Uhr auf」。听句子别急着下结论——前缀常在最后才蹦出来，它能彻底改变词义(stehen 站 / aufstehen 起床)。'],
+  ['⑮ 把手机系统语言切成德语',
+   '制造被动沉浸：每天自然接触几十个高频词(Einstellungen 设置、Senden 发送、Löschen 删除…)。零成本、全天候磨语感。'],
+  ['⑯ 称呼先分清 du / Sie',
+   '朋友家人用 du，陌生人·长辈·正式场合用 Sie(动词跟着变)。用错比语法错更扎眼——这是礼貌问题，优先记牢。'],
+  ['⑱ 别怕开口犯错',
+   '德国人欣赏"敢说"。说错→被纠正→记住，正是进步最快的循环。沉默才是最大的障碍，每天逼自己开口几句。'],
 ];
 </script>
 
@@ -104,6 +131,11 @@ const TIPS = [
       <div class="dash-top">
         <span class="avatar" :style="{ background: acct.user?.av_bg || '#58cc02' }">{{ acct.user?.avatar || '🦉' }}</span>
         <div class="dash-hi">Hallo, {{ nick }}！<small>{{ hi }}</small></div>
+      </div>
+      <div v-if="daily.done" class="dash-daily done">✅ 今日课程已完成，明天见！</div>
+      <div v-else class="dash-daily" @click="router.push('/spell')">
+        <div class="dd-txt"><b>📅 今日课程</b><span>{{ daily.total }} 词 · {{ daily.rev }} 复习 + {{ daily.neu }} 新词</span></div>
+        <span class="dd-go">▶ 开始</span>
       </div>
       <div class="dash-stats">
         <div class="dash-stat" @click="router.push('/me')"><b>{{ streak }}</b><span>🔥 连续打卡</span></div>
@@ -168,6 +200,20 @@ const TIPS = [
         </div>
         <div class="ft">{{ c.t }}</div>
         <div class="fs">{{ c.s }}</div>
+      </div>
+    </div>
+
+    <!-- 按阶段学习：五个级别各一张卡，点进语句页对应级别 -->
+    <div v-if="!lang.isEn" class="sec-title" style="margin-top:36px">
+      <span class="sec-title-icon">🎯</span><span class="sec-title-text">按阶段学习 · 点击进入</span>
+    </div>
+    <div v-if="!lang.isEn" class="lgrid">
+      <div v-for="s in STAGES" :key="s.lv" class="level-card" @click="router.push('/phrases?level=' + s.lv)">
+        <div class="lc-stage" :style="{ color: s.color }">{{ s.stage }}</div>
+        <div class="lc-title">{{ s.title }}</div>
+        <!-- 词句数/分类数从 categories.json 现算，不写死 —— 旧站是硬编码的，加词就对不上了 -->
+        <div class="lc-desc">{{ s.desc }}<br>{{ count(s.lv).n }}个词句 · {{ count(s.lv).c }}个分类</div>
+        <div class="lc-arrow">→</div>
       </div>
     </div>
 
@@ -258,13 +304,13 @@ const TIPS = [
 .fic{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;
   justify-content:center;margin:0 auto 10px}
 .fic svg{width:28px;height:28px;display:block}
-.fic-green{background:linear-gradient(135deg,#6fdb1e,#46a302);box-shadow:0 6px 14px rgba(88,204,2,.32)}
-.fic-blue{background:linear-gradient(135deg,#3ec2ff,#0e8fd0);box-shadow:0 6px 14px rgba(28,176,246,.32)}
-.fic-orange{background:linear-gradient(135deg,#ffb340,#e07f00);box-shadow:0 6px 14px rgba(255,150,0,.32)}
+.fic-green{background:linear-gradient(135deg,#54a616,#357b01);box-shadow:0 6px 14px rgba(88,204,2,.32)}
+.fic-blue{background:linear-gradient(135deg,#329dce,#0b73a8);box-shadow:0 6px 14px rgba(28,176,246,.32)}
+.fic-orange{background:linear-gradient(135deg,#d97e06,#a85400);box-shadow:0 6px 14px rgba(255,150,0,.32)}
 .fic-purple{background:linear-gradient(135deg,#a878ff,#6f3fd6);box-shadow:0 6px 14px rgba(142,92,246,.32)}
-.fic-teal{background:linear-gradient(135deg,#2fd4b2,#0d9488);box-shadow:0 6px 14px rgba(20,184,166,.32)}
-.fic-red{background:linear-gradient(135deg,#ff7a6e,#e03131);box-shadow:0 6px 14px rgba(255,75,75,.32)}
-.fic-pink{background:linear-gradient(135deg,#ff8fb5,#e0447e);box-shadow:0 6px 14px rgba(224,68,126,.32)}
+.fic-teal{background:linear-gradient(135deg,#24a58a,#0a736a);box-shadow:0 6px 14px rgba(20,184,166,.32)}
+.fic-red{background:linear-gradient(135deg,#e56d62,#c92c2c);box-shadow:0 6px 14px rgba(255,75,75,.32)}
+.fic-pink{background:linear-gradient(135deg,#d37696,#b93868);box-shadow:0 6px 14px rgba(224,68,126,.32)}
 .ft{font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px}
 .fs{font-size:12px;color:var(--text-dim)}
 
@@ -281,4 +327,26 @@ const TIPS = [
 .tip{font-size:13px;color:var(--text-dim);line-height:1.85;margin:0 0 12px}
 .tip b{color:var(--text)}
 .sup{margin-top:24px}
+
+/* 按阶段学习的五张卡（旧站 .level-card 同名同构） */
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));gap:12px;margin-bottom:8px}
+.level-card{position:relative;overflow:hidden;cursor:pointer;border-radius:14px;
+  padding:18px 18px 34px;border:1px solid var(--gold-faint);background:var(--surface);transition:all .25s}
+.level-card:active{transform:scale(.99)}
+.lc-stage{font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:6px}
+.lc-title{font-size:17px;color:var(--text);margin-bottom:8px;font-weight:600}
+.lc-desc{font-size:12px;color:var(--text-dim);line-height:1.6}
+/* 旧站这个箭头是 opacity:.6 的品牌绿，实测 2.09:1；这里用可作正文的绿并去掉半透明 */
+.lc-arrow{position:absolute;right:16px;bottom:14px;font-size:18px;color:var(--gold-text)}
+/* 今日课程卡 */
+.dash-daily{display:flex;align-items:center;gap:10px;margin:10px 0;padding:13px 16px;
+  border-radius:14px;background:linear-gradient(135deg,#3a8200,#2f6b00);color:#fff;
+  cursor:pointer;box-shadow:0 4px 14px var(--gold-dim);min-height:44px}
+.dash-daily.done{background:var(--gold-faint);color:var(--gold-text);box-shadow:none;
+  justify-content:center;font-weight:700;cursor:default}
+.dd-txt{display:flex;flex-direction:column;min-width:0}
+.dd-txt b{font-size:15px}
+.dd-txt span{font-size:12px;opacity:.92}
+.dd-go{margin-left:auto;font-weight:800;font-size:15px;white-space:nowrap;
+  background:rgba(0,0,0,.28);padding:7px 14px;border-radius:999px}
 </style>

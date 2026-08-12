@@ -103,3 +103,30 @@ export function makeQuestion(pool, keyOf) {
   if (wrong.length < 3) return null;
   return { right, options: shuffle([right, ...wrong]) };
 }
+
+// ── Leitner 间隔复习：与旧站 SRS_IV / srsInfo / srsDueList 逐字对齐 ──
+// 掌握的词按盒级 3/7/16/35 天到期回炉；老数据（值直接是 1）视为立即到期。
+const SRS_IV = [0, 3, 7, 16, 35];
+export function srsInfo(v) {
+  if (v === 1 || v === true) return { b: 1, t: 0 };
+  if (v && typeof v === 'object') return { b: Math.min(v.b || 1, 4), t: v.t || 0 };
+  return null;
+}
+export function srsDueList() {
+  const m = getKnown(), out = [], now = Date.now();
+  for (const k in m) {
+    const s = srsInfo(m[k]);
+    if (s && now - s.t >= SRS_IV[s.b] * 864e5) out.push(k);
+  }
+  return out;
+}
+// 今日课程：到期复习词最多 8 个，其余补新词，凑满 15
+export function dailyPlan() {
+  const rev = Math.min(srsDueList().length, 8);
+  const neu = Math.max(0, 15 - rev);
+  return { rev, neu, total: rev + neu };
+}
+// 今日课程是否已完成（与旧站同键 dailyLesson）
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
+export function dailyDone() { const d = rd('dailyLesson', {}); return d.date === today() && !!d.done; }
+export function markDailyDone() { wr('dailyLesson', { date: today(), done: true }); }

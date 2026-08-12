@@ -24,7 +24,11 @@ function arr(name) {
   return i < 0 ? '' : s.slice(i, s.indexOf('];', i));
 }
 const txt = section('pronunciation') + section('numbers')
-  + arr('const LETTERS =') + arr('const nums0') + arr('const numsBig');
+  + arr('const LETTERS =') + arr('const nums0') + arr('const numsBig')
+  // 数字测验的题库也带谐音，之前漏了——里面 4 条一直是旧写法
+  + arr('function nextNumQ()')
+  // 内嵌小测（GQ_DATA）也带谐音，同样漏过一次
+  + arr('var GQ_DATA=');
 
 // ① 同词多谐音：匹配「德语词 = 谐音」/「德语词（中文）＝ 谐音」
 const pairs = [...txt.matchAll(/([A-Za-zÄÖÜäöüß]{2,})\s*(?:（[^）]*）)?\s*[=＝]\s*([一-鿿·]+)/g)];
@@ -51,6 +55,8 @@ const RULES = [
     ['葩乌泽']],
   ['Straße：词首 st 读「施特」，词尾 -e 读 [ə]「瑟」',
     ['斯特拉斯']],
+  ['复合数词里的 und 读 [ʊnt]「温特」，不能吞掉 t，也不能把 zwanzig 的 z 写成卷舌的「楚」',
+    ['温楚万齐希', '菲因夫温德莱西希', '诺伊因温诺伊因齐希']],
 ];
 for (const [desc, pats] of RULES) {
   const hit = pats.filter((p) => txt.includes(p));

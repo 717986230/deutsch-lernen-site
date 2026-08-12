@@ -2227,9 +2227,9 @@ function startNumQuiz(mode){
 function nextNumQ(){
   const pool=[...nums0,...[
     {n:13,de:'dreizehn',py:'德莱岑'},{n:20,de:'zwanzig',py:'茨万齐希'},
-    {n:30,de:'dreißig',py:'德莱西希'},{n:50,de:'fünfzig',py:'菲因夫齐希'},
-    {n:100,de:'hundert',py:'洪德特'},{n:21,de:'einundzwanzig',py:'艾因温楚万齐希'},
-    {n:35,de:'fünfunddreißig',py:'菲因夫温德莱西希'},{n:99,de:'neunundneunzig',py:'诺伊因温诺伊因齐希'},
+    {n:30,de:'dreißig',py:'德莱西希'},{n:50,de:'fünfzig',py:'芬夫齐希'},
+    {n:100,de:'hundert',py:'洪德特'},{n:21,de:'einundzwanzig',py:'艾因温特茨万齐希'},
+    {n:35,de:'fünfunddreißig',py:'芬夫温特德莱西希'},{n:99,de:'neunundneunzig',py:'诺伊因温特诺伊因齐希'},
   ]];
   const idx=Math.floor(Math.random()*pool.length);
   numQ.current=pool[idx];
@@ -3867,7 +3867,7 @@ var GQ_DATA={
 p1:[
  {q:'Wasser（水）的 W 读哪个音？',o:['英语 w「窝」','v「瓦」','f「夫」'],a:1,w:'德语 W 一律发 v 音：Wasser＝瓦瑟。而字母 V 大多发 f 音（Vater＝法特尔）。'},
  {q:'ja（是的）怎么读？',o:['贾','雅','夏'],a:1,w:'J 发 y 音：ja＝雅。德语里没有汉语「鸡」那个 j 音。'},
- {q:'zu（去 / 太）的 z 读什么？',o:['兹 z','楚 ts','苏 s'],a:1,w:'Z 永远读 ts（近似「茨 / 楚」的声母）：zu＝楚，Zeit＝采特。'},
+ {q:'zu（去 / 太）的 z 读什么？',o:['兹 z','粗 ts','苏 s'],a:1,w:'Z 永远读 ts（对应汉语 c / z 的声母，不是卷舌）：zu＝粗，Zeit＝采特。'},
  {q:'sch 组合读什么？',o:['s、c、h 分开读','「施」','「斯克」'],a:1,w:'sch 固定读「施」：Schule＝施乌勒，schön＝舍恩。'},
  {q:'ei 组合读什么？',o:['艾','诶','伊'],a:0,w:'ei 读「艾」：Wein＝魏因，nein＝奈因。别和 ie（长音「伊」）搞混。'},
  {q:'ie 组合读什么？',o:['艾','长音「伊」','耶'],a:1,w:'ie 读长「伊」：viel＝菲尔，Liebe＝利贝。和 ei 正好相反。'},
