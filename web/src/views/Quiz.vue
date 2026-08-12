@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
-import { quizPool, genderPool, makeQuestion, okBeep, badBeep, touchStudy,
+import { quizPool, genderPool, makeQuestion, okBeep, badBeep, setLastStudy,
          markWrong, markKnown } from '../api/practice';
 import { studyTick } from '../api/study';
 import { useAccount } from '../store/account';
@@ -42,14 +42,17 @@ function draw() {
   picked.value = null;
   if (mode.value === 'listen' && q.value) setTimeout(() => speak(q.value.right.de), 250);
 }
-function start() { if (pool.value.length < 4) return; state.value = 'run'; n.value = 0; score.value = 0; draw(); }
+function start() {
+  if (pool.value.length < 4) return;
+  setLastStudy({ level: level.value, name: '练习测验 · ' + (mode.value === 'gender' ? '词性' : '词义') });
+  state.value = 'run'; n.value = 0; score.value = 0; draw();
+}
 function pick(o) {
   if (picked.value) return;
   picked.value = o;
   const ok = keyOf(o) === keyOf(q.value.right);
   if (ok) { score.value++; okBeep(); markKnown(q.value.right.de); }
   else { badBeep(); markWrong(q.value.right); }
-  touchStudy();
   studyTick(1, true);    // 测验计入 quiz 计数，徽章按它判定
   acct.syncSoon();
 }

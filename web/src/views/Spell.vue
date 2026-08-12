@@ -3,7 +3,7 @@ import { ref, computed, onMounted, nextTick } from 'vue';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
 import { buildPool, isRight, markKnown, markWrong, clearWrong, getWrong,
-         okBeep, badBeep, soundOn, setSound, touchStudy } from '../api/practice';
+         okBeep, badBeep, soundOn, setSound, setLastStudy } from '../api/practice';
 import { studyTick } from '../api/study';
 import { useAccount } from '../store/account';
 defineOptions({ name: 'Spell' });
@@ -29,6 +29,8 @@ function start(src) {
     : buildPool(cats.value, { level: level.value, unit: unit.value });
   if (!pool.length) return;
   queue.value = pool.slice(0, 20);
+  // 与旧站同构：记一条「继续上次」，首页那张卡直接读 name
+  setLastStudy({ spell: 1, level: level.value, name: '拼写记忆 · ' + ((LV.find(x => x[0] === level.value) || [, '全部'])[1]) });
   idx.value = 0; right.value = 0; wrongCnt.value = 0;
   input.value = ''; judged.value = null; state.value = 'run';
   nextTick(() => box.value && box.value.focus());
@@ -39,7 +41,6 @@ function submit() {
   judged.value = ok ? 'ok' : 'bad';
   if (ok) { right.value++; markKnown(cur.value.de); clearWrong(cur.value.de); okBeep(); }
   else { wrongCnt.value++; markWrong(cur.value); badBeep(); }
-  touchStudy();
   studyTick(1, false);   // 计入今日学习量与连续打卡
   acct.syncSoon();
 }

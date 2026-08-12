@@ -1,10 +1,17 @@
 // 学习进度：与旧站共用同一批 localStorage 键，两端数据互通，迁移期不丢进度。
-const K_KNOWN = 'knownWords', K_WRONG = 'spWrong', K_SOUND = 'spSound', K_LAST = 'lastStudy';
+//
+// ⚠️ 这三个键必须跟 src.html 一字不差，改之前先 grep 旧站：
+//   known      —— 掌握词。**不是 knownWords**（曾经写错，等于两端各存各的、进度不互通）
+//   lastStudy  —— 「继续上次」，值是对象 {level,cat,name,t}；写成时间戳会让旧站首页那张卡渲染不出来
+//   study      —— 打卡/连续天数，见 study.js
+const K_KNOWN = 'known', K_WRONG = 'spWrong', K_SOUND = 'spSound', K_LAST = 'lastStudy';
 const rd = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
 const wr = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 
 export const getKnown = () => rd(K_KNOWN, {});
-export function markKnown(de) { const m = getKnown(); m[de] = Date.now(); wr(K_KNOWN, m); }
+// 值的形状也得跟旧站一致：{b:盒级, t:时间戳}。旧站的 Leitner 复习按 b 算到期日，
+// 写成裸时间戳会被 srsInfo 当成非法值丢掉，标了的词永远不进复习队列。
+export function markKnown(de) { const m = getKnown(); m[de] = { b: 1, t: Date.now() }; wr(K_KNOWN, m); }
 // 取消标记：旧站的 ✓ 按钮是可反悔的，点错了要能撤回
 export function unmarkKnown(de) { const m = getKnown(); delete m[de]; wr(K_KNOWN, m); }
 export const getWrong = () => rd(K_WRONG, {});
@@ -12,7 +19,8 @@ export function markWrong(item) { const m = getWrong(); m[item.de] = { zh: item.
 export function clearWrong(de) { const m = getWrong(); delete m[de]; wr(K_WRONG, m); }
 export const soundOn = () => localStorage.getItem(K_SOUND) !== '0';
 export const setSound = (v) => { try { localStorage.setItem(K_SOUND, v ? '1' : '0'); } catch {} };
-export function touchStudy() { try { localStorage.setItem(K_LAST, String(Date.now())); } catch {} }
+// 旧站 _lastStudySet 存的是 {level,cat,name,t}，首页「▶ 继续上次：xxx」直接读 .name
+export function setLastStudy(o) { wr(K_LAST, { ...o, t: Date.now() }); }
 
 // 音效：用 WebAudio 直接合成，不引入任何音频文件（全站离线可用的前提）
 let ac = null;
