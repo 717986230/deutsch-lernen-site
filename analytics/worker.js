@@ -500,6 +500,7 @@ export default {
       // 联系方式只回掩码 + 是否已填，明文不出服务端
       u.hasEmail = !!u.email;
       u.email = maskEmail(u.email);
+      u.badges = badgeList(u.badges, uid).join(',');   // 没同步过也要看得到创始人
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, uid);
       return json({ user: u, rank: rank.c, followers: fc.followers, following: fc.following }, 200, cors);
@@ -520,8 +521,9 @@ export default {
     if (M === 'GET' && path === '/api/following') {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
-      const rows = await env.DB.prepare('SELECT u.username,u.nickname,u.avatar,u.av_bg,u.known,u.best_streak,u.level,u.badges FROM follows f JOIN users u ON u.id=f.followee WHERE f.follower=? ORDER BY u.known DESC LIMIT 100').bind(uid).all();
-      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: (r.badges || '').split(',').filter(Boolean).length }));
+      // 多查一列 u.id 只为算创始人，不外泄（下面构造返回对象时不带它）
+      const rows = await env.DB.prepare('SELECT u.id,u.username,u.nickname,u.avatar,u.av_bg,u.known,u.best_streak,u.level,u.badges FROM follows f JOIN users u ON u.id=f.followee WHERE f.follower=? ORDER BY u.known DESC LIMIT 100').bind(uid).all();
+      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: badgeList(r.badges, r.id).length }));
       return json({ list }, 200, cors);
     }
     // 修改资料：昵称 / 头像 / 背景色 / 个性签名（需登录，服务端校验）
@@ -583,13 +585,13 @@ export default {
       const [count, rows] = await Promise.all([
         env.DB.prepare('SELECT COUNT(*) AS total FROM users WHERE ' + where).bind(...binds).first(),
         env.DB.prepare(
-        'SELECT username,nickname,avatar,av_bg,known,best_streak,total,level,badges FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
+        'SELECT id,username,nickname,avatar,av_bg,known,best_streak,total,level,badges FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
         ).bind(...binds).all(),
       ]);
       const list = rows.results.map(r => ({
         username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, level: r.level,
         known: r.known, streak: r.best_streak, total: r.total,
-        badges: (r.badges || '').split(',').filter(Boolean).length,
+        badges: badgeList(r.badges, r.id).length,     // id 只用来算创始人，不进返回体
       }));
       return json({ by, total: Number(count?.total || 0), list }, 200, cors);
     }
@@ -598,6 +600,7 @@ export default {
       const u = await env.DB.prepare('SELECT id,username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created FROM users WHERE username=?').bind(name).first();
       if (!u) return json({ err: '用户不存在' }, 404, cors);
       const pid = u.id; delete u.id;
+      u.badges = badgeList(u.badges, pid).join(',');   // 同上：别人看别人的资料页
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, pid);
       let isFollowing = false;
@@ -619,11 +622,27 @@ async function followCounts(env, uid) {
   return { followers: a.c, following: b.c };
 }
 
+// FOUNDER_MAX：创始人 = 前 N 个注册账号（按自增 id）。
+// 注意 users.id 是 AUTOINCREMENT，注销的账号会永久占掉号段、不会有人补位。
+const FOUNDER_MAX = 100;
+
+// 读取时补齐"派生徽章"。
+// 起因：users.badges 这一列**只有 POST /api/sync 会回写**，而注册/OAuth 建号的
+// 两条 INSERT 都不写它（默认空串）。于是一个前 100 号但还没同步过一次的账号，
+// 在别人看到的公开资料页、关注列表、排行榜计数里统统没有创始人徽章。
+// 创始人跟学习进度无关、纯由 id 决定，没理由让它取决于"有没有同步过"——
+// 读的时候直接算出来，badges 列退化成缓存，历史数据也就不用迁移了。
+function badgeList(stored, uid) {
+  const set = new Set(String(stored || '').split(',').filter(Boolean));
+  if (uid && uid <= FOUNDER_MAX) set.add('founder');
+  return [...set];
+}
+
 // 徽章判定（服务端唯一真值；前端 BADGES 用同一套门槛渲染灰/亮，两边必须一致）
 // 没有"注册就送"的徽章——全部要靠学习/资历挣。创始人=前 100 个注册账号（按自增 id）。
 function computeBadges(s, uid) {
   const b = [];
-  if (uid && uid <= 100) b.push('founder');
+  if (uid && uid <= FOUNDER_MAX) b.push('founder');
   [[7, 'streak7'], [30, 'streak30'], [100, 'streak100'], [365, 'streak365']].forEach(([n, id]) => { if (s.best >= n) b.push(id); });
   [[100, 'word100'], [500, 'word500'], [1000, 'word1000'], [2000, 'word2000']].forEach(([n, id]) => { if (s.known >= n) b.push(id); });
   [[500, 'study500'], [2000, 'study2000'], [10000, 'study10000']].forEach(([n, id]) => { if (s.total >= n) b.push(id); });

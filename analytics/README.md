@@ -65,7 +65,7 @@ wrangler deploy                                                 # 部署新版 w
 - `POST /api/sync`（带 `Authorization: Bearer <token>`）`{known,streak,best,total,quiz,level}` → 更新数据、返回已点亮徽章
 - `POST /api/profile/update`（带 token）`{nickname?,avatar?,av_bg?,sig?,email?}` → 改资料与邮箱；邮箱传空字符串＝删除。**phone 字段已不再接受**
 - `GET  /api/me`（带 token）→ 自己的资料 + 排名；`email` **只返回掩码**（如 `t***@qq.com`），另有 `hasEmail` 布尔位。**不再返回 phone**
-- `GET  /api/leaderboard?by=known|streak|total` → Top 50
+- `GET  /api/leaderboard?by=known|streak|total` → Top 50（`badges` 是**数量**，不是列表）
 - `GET  /api/profile?name=<用户名>` → 公开主页数据（带 token 时含 isFollowing/关注数）
 - `POST /api/follow` / `POST /api/unfollow`（带 token）`{name}` → 关注 / 取关
 - `GET  /api/following`（带 token）→ 我关注的人列表
@@ -78,6 +78,22 @@ wrangler deploy                                                 # 部署新版 w
 - `POST /api/account/reset` `{username,new,code?|emailCode?}` → 重置密码（无需登录）。**恢复码与邮箱验证码二选一**；成功后踢掉全部会话、返回新 token 与**一枚新恢复码**；走邮箱通道会顺带标记 `email_ok=1`
 - `POST /api/logout`（带 token）→ 登出当前会话（幂等）
 - `POST /api/logout_all`（带 token）→ 踢掉除当前外全部会话，返回 `{ok,revoked}`
+
+### 徽章：存量列 vs 读时派生
+
+`users.badges`（逗号分隔）**只有 `POST /api/sync` 会回写**；`/api/register` 与 OAuth 建号的
+INSERT 都不写它，默认空串。所以这一列不能当唯一真值——一个注册后还没同步过的账号，
+它是空的。
+
+`creator/founder` 这类**只由 `users.id` 决定、与学习进度无关**的徽章，因此在四个读接口里
+统一由 `badgeList(stored, uid)` 在返回前补齐（`/api/me`、`/api/profile`、
+`/api/leaderboard`、`/api/following`）。`badges` 列退化为缓存，历史数据无需迁移。
+
+> 创始人 = `users.id <= FOUNDER_MAX`（当前 100）。`users.id` 是 AUTOINCREMENT，
+> **注销的账号会永久占掉号段、不会有人补位**——想调整名额改 `FOUNDER_MAX` 常量。
+
+`/api/leaderboard` 与 `/api/following` 为此多查了一列 `id`，仅用于本地计算，
+**不进返回体**（有回归用例守着）。
 
 频控：注册每 IP 1 小时 5 次；登录/改密/注销的验密失败按 IP 与用户名分桶限次；**恢复码校验失败每 IP、每用户名各 1 小时 8 次**。超限返回 `429 {err,retry}`（retry 为建议等待秒数）。
 
