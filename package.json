@@ -6,9 +6,10 @@
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs --dev",
-    "verify": "node tools/verify-build-artifacts.mjs && node --no-warnings tools/verify-schema.mjs && node tools/verify-data.mjs",
+    "verify": "node tools/verify-build-artifacts.mjs && node --no-warnings tools/verify-schema.mjs && node tools/verify-data.mjs && node tools/verify-pron.mjs",
     "verify:schema": "node --no-warnings tools/verify-schema.mjs",
-    "verify:data": "node tools/verify-data.mjs"
+    "verify:data": "node tools/verify-data.mjs",
+    "verify:pron": "node tools/verify-pron.mjs"
   },
   "devDependencies": {
     "terser": "^5.48.0"
