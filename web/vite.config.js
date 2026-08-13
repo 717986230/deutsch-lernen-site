@@ -10,6 +10,17 @@ function copyData() {
   return {
     name: 'copy-data',
     buildStart() {
+      // ⚠️ 顺序要紧：这一步在 buildStart，把 ../data 整个覆盖到 public/data。
+      // 而 tools/gen-web-data.mjs 的产出（reference/letters/numbers/quizzes/links.json）
+      // 也写在 public/data —— ../data 里一旦出现同名文件，就会把刚生成的盖成陈旧版本。
+      // 曾经就有一份手工产出的 data/reference.json 被提交进仓库，导致生成脚本白跑：
+      // 校正过的 22 处发音谐音里有 9 处在 Vue 端一直是旧写法，且无人报警。
+      const generated = ['reference.json', 'letters.json', 'numbers.json', 'quizzes.json', 'links.json'];
+      for (const f of generated) {
+        if (existsSync('../data/' + f)) {
+          throw new Error(`../data/${f} 与 tools/gen-web-data.mjs 的产出同名，会覆盖生成结果——请删掉仓库里的那一份`);
+        }
+      }
       if (existsSync('../data')) cpSync('../data', 'public/data', { recursive: true });
       // 旧站的静态资源（打赏二维码等）也一并带过来，避免两处各存一份
       for (const f of ['support-qr.png']) {
