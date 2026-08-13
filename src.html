@@ -2244,12 +2244,12 @@ const EN_LETTERS=[
 function renderLetterGrid(){
   const g=document.getElementById('letterGrid');
   if(!g)return;
-  g.innerHTML=LETTERS.map(x=>`<div class="letter-card${x.sp?' special':''}"><div class="lc-letter">${x.l}</div><div class="lc-name">名称：<b>${x.name}</b></div><div class="lc-sound">${x.sound}</div><button class="speak-btn" type="button" title="朗读字母" aria-label="朗读字母 ${x.l}" onclick="speakLetter('${x.l.charAt(0)}',this)">🔊</button></div>`).join('');
+  g.innerHTML=LETTERS.map(x=>`<div class="letter-card${x.sp?' special':''}"><div class="lc-letter">${x.l}</div><div class="lc-name">名称：<b>${x.name}</b></div><div class="lc-sound">${x.sound}</div><button class="speak-btn" type="button" title="朗读字母" aria-label="朗读字母 ${x.l}" onclick="speakLetter('${x.l.charAt(0).toLowerCase()}',this)">🔊</button></div>`).join('');
 }
 renderLetterGrid();
 function renderEnglishLetterGrid(){
   var g=document.getElementById('enLetterGrid');if(!g)return;
-  g.innerHTML=EN_LETTERS.map(function(x){return '<div class="letter-card"><div class="lc-letter">'+x.l+'</div><div class="lc-name">名称：<b>'+x.name+'</b></div><div class="lc-sound">'+x.sound+'</div><button class="speak-btn" type="button" title="朗读字母" aria-label="朗读英语字母 '+x.l+'" onclick="speakEnglishLetter(\''+x.l+'\',this)">🔊</button></div>';}).join('');
+  g.innerHTML=EN_LETTERS.map(function(x){return '<div class="letter-card"><div class="lc-letter">'+x.l+'</div><div class="lc-name">名称：<b>'+x.name+'</b></div><div class="lc-sound">'+x.sound+'</div><button class="speak-btn" type="button" title="朗读字母" aria-label="朗读英语字母 '+x.l+'" onclick="speakEnglishLetter(\''+x.l.toLowerCase()+'\',this)">🔊</button></div>';}).join('');
 }
 renderEnglishLetterGrid();
 
@@ -3003,8 +3003,8 @@ function _playBareLetterList(key,items,lang,btn){
   _stopPageRead();var i=0;_pageRead={key:key,items:items,i:0,btn:btn,lang:lang};btn.textContent='⏹ 停止';btn.classList.add('playing');
   (function next(){if(_pageRead.key!==key)return;if(i>=items.length){_stopPageRead();return;}_speakBareLetter(items[i++],lang,null,next);})();
 }
-function toggleLetterAll(){_playBareLetterList('letters',LETTERS.map(function(x){return x.l.charAt(0);}), 'de',document.getElementById('letterAllBtn'));}
-function toggleEnglishLetterAll(){_playBareLetterList('en-letters',EN_LETTERS.map(function(x){return x.l;}), 'en',document.getElementById('enLetterAllBtn'));}
+function toggleLetterAll(){_playBareLetterList('letters',LETTERS.map(function(x){return x.l.charAt(0).toLowerCase();}), 'de',document.getElementById('letterAllBtn'));}
+function toggleEnglishLetterAll(){_playBareLetterList('en-letters',EN_LETTERS.map(function(x){return x.l.toLowerCase();}), 'en',document.getElementById('enLetterAllBtn'));}
 function toggleNumberAll(lang){
   var all=lang==='en'?[].concat(enNums1,enNums2,enNums3,enNums4,[{de:'twenty-one'},{de:'one hundred'},{de:'one thousand'},{de:'one million'}]):NUM_POOL.concat(numsBig);
   var seen={},words=all.map(function(x){return x.de;}).filter(function(w){if(seen[w])return false;seen[w]=1;return true;});
