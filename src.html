@@ -2093,7 +2093,7 @@ function setLang(lang){
   applyLangData();
   if(typeof stopAutoPlay==='function')stopAutoPlay();
   if(typeof stopReading==='function')stopReading();
-  if(typeof stopLetterAudio==='function')stopLetterAudio();
+  if(typeof stopPageNarration==='function')stopPageNarration();
   // 切换语言相关 UI
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===LANG));
   document.body.classList.toggle('lang-en',LANG==='en');
@@ -2157,7 +2157,7 @@ function showSection(id){
   if(typeof stopReading==='function')stopReading();
   if(typeof stopSeries==='function')stopSeries();
   if(typeof dialogStop==='function')dialogStop();
-  if(typeof stopLetterAudio==='function')stopLetterAudio();
+  if(typeof stopPageNarration==='function')stopPageNarration();
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current');});
   document.getElementById(id).classList.add('active');
@@ -2221,7 +2221,7 @@ function renderNumGrid(containerId, data, lang){
     const d=document.createElement('div');
     d.className='num-card';
     d.innerHTML=`<div class="num-big">${item.n}</div><div class="num-de" lang="${lang||'de'}">${item.de}</div><div class="num-py">${item.py}</div><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${item.de}" style="margin-top:6px">🔊</button>`;
-    d.querySelector('.speak-btn').addEventListener('click',(e)=>{e.stopPropagation();speakWithLocale(item.de,lang||'de',e.currentTarget);});
+    d.querySelector('.speak-btn').addEventListener('click',(e)=>{e.stopPropagation();speakNumber(item.de,lang||'de',e.currentTarget);});
     g.appendChild(d);
   });
 }
@@ -2956,8 +2956,9 @@ function speakWithLocale(text,lang,btn){
   _ttsProbe(u);speechSynthesis.speak(u);
 }
 
-var _pageRead={key:'',items:[],i:0,btn:null,lang:'de'};
+var _pageRead={key:'',items:[],i:0,btn:null,lang:'de'},_pageReadRun=0;
 function _stopPageRead(){
+  _pageReadRun++;
   if(!_pageRead.key)return;
   try{speechSynthesis.cancel();}catch(e){}
   if(_pageRead.btn){_pageRead.btn.textContent='🔊 全部朗读';_pageRead.btn.classList.remove('playing');}
@@ -2965,50 +2966,55 @@ function _stopPageRead(){
 }
 function _startPageRead(key,items,lang,btn){
   if(_pageRead.key===key){_stopPageRead();return;}
+  if(typeof stopLetterAudio==='function')stopLetterAudio();
   _stopPageRead();
   if(!items.length)return;
+  var run=_pageReadRun;
   _pageRead={key:key,items:items,i:0,btn:btn,lang:lang};
   btn.textContent='⏹ 停止';btn.classList.add('playing');
   (function next(){
-    if(_pageRead.key!==key)return;
+    if(run!==_pageReadRun||_pageRead.key!==key)return;
     if(_pageRead.i>=_pageRead.items.length){_stopPageRead();return;}
     var u=new SpeechSynthesisUtterance(_pageRead.items[_pageRead.i++]);
     u.lang=lang==='en'?'en-US':'de-DE';
     var v=lang==='en'?_enVoice:_deVoice;if(v)u.voice=v;
     u.rate=_spk.rate;u.pitch=1;
-    u.onend=next;u.onerror=function(){_stopPageRead();_ttsErr();};
+    u.onend=function(){if(run===_pageReadRun)next();};u.onerror=function(){if(run===_pageReadRun){_stopPageRead();_ttsErr();}};
     _ttsProbe(u);speechSynthesis.speak(u);
   })();
 }
-// 字母专用朗读：只给引擎一个字符，且在 cancel 后稍等一拍，避开 Safari 续播残留上一段文字。
-var _letterRun=0;
+function speakNumber(text,lang,btn){stopLetterAudio();_stopPageRead();speakWithLocale(text,lang,btn);}
+// 字母专用播放器：批量与单项共用同一运行编号。任何新的操作都会使旧回调失效。
+var _letterPlayer={run:0,key:'',button:null,timer:0};
 function stopLetterAudio(){
-  _letterRun++;
+  var p=_letterPlayer;p.run++;
+  if(p.timer)clearTimeout(p.timer);
+  if(p.button){p.button.textContent='🔊 全部朗读';p.button.classList.remove('playing');}
+  p.key='';p.button=null;p.timer=0;
   try{speechSynthesis.cancel();}catch(e){}
-  if(typeof _stopPageRead==='function')_stopPageRead();
 }
-function _speakBareLetter(letter,lang,btn,done){
-  var run=++_letterRun;
-  try{speechSynthesis.cancel();}catch(e){}
-  setTimeout(function(){
-    if(run!==_letterRun)return;
-    if(window.__noTTS||!('speechSynthesis' in window)){_ttsHint();return;}
+function _playLetter(letter,lang,run,btn,next){
+  var p=_letterPlayer;
+  p.timer=setTimeout(function(){
+    if(run!==p.run)return;
+    if(window.__noTTS||!('speechSynthesis' in window)){stopLetterAudio();_ttsHint();return;}
     var u=new SpeechSynthesisUtterance(String(letter).charAt(0));
     u.lang=lang==='en'?'en-US':'de-DE';
     var v=lang==='en'?_enVoice:_deVoice;if(v)u.voice=v;
     u.rate=.82;u.pitch=1;
     if(btn){document.querySelectorAll('.speak-btn.speaking').forEach(function(b){b.classList.remove('speaking');});btn.classList.add('speaking');}
-    u.onend=function(){if(btn)btn.classList.remove('speaking');if(done)done();};
-    u.onerror=function(e){if(btn)btn.classList.remove('speaking');_ttsErr(e);if(done)done();};
+    u.onend=function(){if(run!==p.run)return;if(btn)btn.classList.remove('speaking');if(next)next();};
+    u.onerror=function(e){if(run!==p.run)return;if(btn)btn.classList.remove('speaking');stopLetterAudio();_ttsErr(e);};
     _ttsProbe(u);speechSynthesis.speak(u);
   },80);
 }
-function speakLetter(letter,btn){_speakBareLetter(letter,'de',btn);}
-function speakEnglishLetter(letter,btn){_speakBareLetter(letter,'en',btn);}
+function stopPageNarration(){stopLetterAudio();_stopPageRead();}
+function speakLetter(letter,btn){stopPageNarration();var run=_letterPlayer.run;_letterPlayer.key='single';_playLetter(letter,'de',run,btn);}
+function speakEnglishLetter(letter,btn){stopPageNarration();var run=_letterPlayer.run;_letterPlayer.key='single';_playLetter(letter,'en',run,btn);}
 function _playBareLetterList(key,items,lang,btn){
-  if(_pageRead.key===key){_stopPageRead();_letterRun++;return;}
-  _stopPageRead();var i=0;_pageRead={key:key,items:items,i:0,btn:btn,lang:lang};btn.textContent='⏹ 停止';btn.classList.add('playing');
-  (function next(){if(_pageRead.key!==key)return;if(i>=items.length){_stopPageRead();return;}_speakBareLetter(items[i++],lang,null,next);})();
+  if(_letterPlayer.key===key){stopLetterAudio();return;}
+  stopPageNarration();var run=_letterPlayer.run,i=0;_letterPlayer.key=key;_letterPlayer.button=btn;btn.textContent='⏹ 停止';btn.classList.add('playing');
+  (function next(){if(run!==_letterPlayer.run||_letterPlayer.key!==key)return;if(i>=items.length){stopLetterAudio();return;}_playLetter(items[i++],lang,run,null,next);})();
 }
 function toggleLetterAll(){_playBareLetterList('letters',LETTERS.map(function(x){return x.l.charAt(0).toLowerCase();}), 'de',document.getElementById('letterAllBtn'));}
 function toggleEnglishLetterAll(){_playBareLetterList('en-letters',EN_LETTERS.map(function(x){return x.l.toLowerCase();}), 'en',document.getElementById('enLetterAllBtn'));}
