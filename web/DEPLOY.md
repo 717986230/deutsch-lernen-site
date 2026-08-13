@@ -2,55 +2,26 @@
 
 ## 现状（2026-08）
 
-**生产仍是旧站。** 曾在 2026-08 切到 Vue 新端，当天回退（界面被重新设计过，
-不是站长要的）；新端已按旧站结构重做，等重新切。
+**生产已切到 Vue 新端。** 旧站保留为同域回退文件；Vue 页面以旧站为视觉和交互基准。
 
 > **方向决策（2026-08-13）**：后续只维护 Vue 端；旧站作为视觉和交互基准以及回退
-> 方案。Vue 不再引入新的页面风格，先完成与旧站的逐页一致性验收。此决定不等同于授权
-> 立刻部署或切换域名。
+> 方案。Vue 不再引入新的页面风格，逐页一致性验收后直接发布到同域 GitHub Pages。
 
 | 文件 | 谁 | 访问 |
 |---|---|---|
-| `index.html` + `*.dat` | 旧站 | www.uuoo.site ← **当前生产** |
-| `web/dist/` | Vue 新端产物 | 未上线（`.gitignore` 中）|
+| `index.html` + `assets/` + `data/` | Vue 新端 | www.uuoo.site ← **当前生产** |
+| `legacy.html` + `sw-legacy.js` + `*.dat` | 旧站 | 同域回退文件 |
+| `web/dist/` | Vue 构建中间产物 | `.gitignore` 中 |
 
 `web/` 的 vite 产物输出到 `web/dist`，每次构建自清。
-**不要**再把 `outDir` 指回仓库根——文件名带内容哈希，那样每构建一次就留一批孤儿，
-一度在根目录堆了 300 多个没人引用的 `assets/*.js`。上线时由 `deploy.sh` 或手工
-把 `web/dist/.` 整份拷到根。
+**不要**把 Vite 的 `outDir` 指回仓库根——文件名带内容哈希，那样每构建一次会留孤儿文件。
+上线时由 `deploy.sh web` 或手工将 `web/dist/.` 整份覆盖到根；旧站回退文件必须保留。
 
 **切换与回退的完整命令见 [`../ROLLBACK.md`](../ROLLBACK.md)**，不用碰 DNS。
 
-## 首次部署（约 10 分钟）
-
-1. Cloudflare Dashboard → Workers & Pages → Create → Pages → **Direct Upload**
-   项目名填 `uuoo-web`，先手动传一次 `web/dist` 把项目建出来
-2. 拿到临时域名 `uuoo-web.pages.dev`，**先自己用几天**
-3. 配置 GitHub Actions 自动部署，在仓库 Settings → Secrets 添加：
-   - `CF_API_TOKEN`（Cloudflare → My Profile → API Tokens → 用 "Edit Cloudflare Workers" 模板）
-   - `CF_ACCOUNT_ID`（Dashboard 右侧栏可见）
-   此后推 `main` 且改动 `web/` 或 `data/` 就会自动构建部署
-
-## ⚠️ 切换域名前必读：localStorage 不跨域
-
-学习进度（`study` / `knownWords` / `badges_seen`）存在**浏览器本地**，
-而 localStorage **按域名隔离**。这意味着：
-
-- **同域名替换**（www.uuoo.site 指向新端）→ 进度自然延续，但无法灰度
-- **换域名**（如 new.uuoo.site）→ 老用户进度**不会带过去**
-
-已登录用户的 `known/streak/total/quiz` 在服务端有副本，重新登录能恢复大部分；
-但**未登录用户的本地进度会丢**。
-
-推荐路径：
-1. 用 `uuoo-web.pages.dev` 内部验证（自己用，不宣传）
-2. 确认无误后，**直接把 www.uuoo.site 指向 Cloudflare Pages**——同域名替换，
-   老用户 localStorage 原样延续，零感知
-3. 旧站 `index.html` **保留在仓库里不要删**，出问题把 DNS 切回 GitHub Pages 即可
-
 ## 回退
 
-DNS 切回 GitHub Pages，5 分钟内生效。代码无需任何改动。
+按 [`../ROLLBACK.md`](../ROLLBACK.md) 恢复 `legacy.html` 和 `sw-legacy.js`，推送 `main` 后 GitHub Pages 会自动发布。
 
 ## 一键部署脚本
 

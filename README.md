@@ -18,26 +18,28 @@ data/
 dict/                  HanDeDict 兜底词典分片：de_* 单词 8.2万 / ph_* 短语 4万（按需加载）
 tools/make_dict.py     从 HanDeDict 源数据再生成 dict/ 分片
 tools/make_readgloss.py 为阅读/连载预生成小注词表 data/read_gloss.json（内联加密）
-src.html               页面结构 + 样式 + 全部脚本（数据处为 __DATA_名字__ 占位符）
-build.mjs              构建：注入数据 →（生产）XOR+Base64 加密 + terser 混淆 → index.html + sw.js + de/en 数据切片
-index.html             部署产物（勿手改）
-de.<hash>.dat          德语词库切片（构建产物，需随 index.html 提交）
-en.<hash>.dat          英语词库切片（构建产物，需随 index.html 提交）
+web/                   当前 Vue 用户端源码（生产页面）
+web/dist/              Vue 构建中间产物（不提交）
+index.html + assets/   当前 Vue 部署产物，由 GitHub Pages 发布
+legacy.html            旧端回退入口；仅在紧急回退时恢复为 index.html
+src.html + build.mjs   旧端源码与构建器，作为回退来源保留
+de/en.<hash>.dat       旧端词库切片，随回退文件保留
 manifest.webmanifest   PWA 清单
 ```
 
 ## 日常维护
 
 ```bash
-npm install     # 首次
-npm run build   # 生成部署用 index.html、sw.js、de.<hash>.dat、en.<hash>.dat
-npm run verify  # 校验 index.html / sw.js 引用的数据切片存在且已纳入 git
-npm run dev     # 生成 dev.html（明文未混淆，本地打开调试；已 gitignore）
+cd web && npm install       # 首次
+npm run build               # 生成 web/dist
+cd .. && bash deploy.sh web # 同步 Vue 产物到站点根目录
+npm run verify              # 校验生产与旧端回退文件
 ```
 
-- **加词/改词/加分类**：只改 `data/*.json`（每条目一行，diff 清晰），然后 `npm run build`
-- **改页面/样式/功能**：改 `src.html`，然后 `npm run build`
-- **部署**：提交 `src.html`、`data/`、`index.html`、`sw.js`，以及本次构建生成/更新的 `de.<hash>.dat`、`en.<hash>.dat`，推到 `main`，GitHub Pages 自动发布
+- **加词/改词/加分类**：改 `data/*.json`，然后构建 Vue 端。
+- **改页面/样式/功能**：改 `web/src/`，然后执行 `bash deploy.sh web`。
+- **发布**：提交同步后的根目录 `index.html`、`assets/`、`data/`、`sw.js`，推到 `main`；GitHub Pages 自动发布。
+- **旧端维护或紧急回退**：参见 [ROLLBACK.md](ROLLBACK.md)。不要对生产根目录直接执行 `npm run build`，它会生成旧端产物。
 
 ## 词典兜底
 
