@@ -2,15 +2,15 @@
 
 ## 现状（2026-08）
 
-**生产已切到 Vue 新端。** 旧站保留为同域回退文件；Vue 页面以旧站为视觉和交互基准。
+**生产仍是旧站。** Vue 端已按旧站结构构建，待再次发布。
 
 > **方向决策（2026-08-13）**：后续只维护 Vue 端；旧站作为视觉和交互基准以及回退
-> 方案。Vue 不再引入新的页面风格，逐页一致性验收后直接发布到同域 GitHub Pages。
+> 方案。Vue 不再引入新的页面风格，逐页一致性验收后才发布到同域 GitHub Pages。
 
 | 文件 | 谁 | 访问 |
 |---|---|---|
-| `index.html` + `assets/` + `data/` | Vue 新端 | www.uuoo.site ← **当前生产** |
-| `legacy.html` + `sw-legacy.js` + `*.dat` | 旧站 | 同域回退文件 |
+| `index.html` + `*.dat` | 旧站 | www.uuoo.site ← **当前生产** |
+| `web/` | Vue 新端源码 | 未上线 |
 | `web/dist/` | Vue 构建中间产物 | `.gitignore` 中 |
 
 `web/` 的 vite 产物输出到 `web/dist`，每次构建自清。
@@ -21,7 +21,7 @@
 
 ## 回退
 
-按 [`../ROLLBACK.md`](../ROLLBACK.md) 恢复 `legacy.html` 和 `sw-legacy.js`，推送 `main` 后 GitHub Pages 会自动发布。
+按 [`../ROLLBACK.md`](../ROLLBACK.md) 的切换命令恢复旧站或再次发布 Vue，推送 `main` 后 GitHub Pages 会自动发布。
 
 ## 一键部署脚本
 
