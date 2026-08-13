@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs --dev",
-    "verify": "node tools/verify-build-artifacts.mjs && node --no-warnings tools/verify-schema.mjs && node tools/verify-data.mjs && node tools/verify-pron.mjs && node tools/verify-web-data.mjs",
+    "verify": "node tools/verify-build-artifacts.mjs && node --no-warnings tools/verify-schema.mjs && node tools/verify-data.mjs && node tools/verify-pron.mjs && node tools/verify-web-data.mjs && node tools/verify-css-position.mjs",
     "verify:schema": "node --no-warnings tools/verify-schema.mjs",
     "verify:data": "node tools/verify-data.mjs",
     "verify:pron": "node tools/verify-pron.mjs",

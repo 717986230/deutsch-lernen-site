@@ -335,6 +335,11 @@ body:not(.lang-en) .en-only-block{display:none}
 .home-more-body{padding:6px 16px 14px}
 /* 零基础竖排侧边浮动入口（仅首页显示：藏在 #home 内，切走随版块隐藏） */
 .beginner-fab{position:fixed;left:0;top:44%;transform:translateY(-50%);z-index:280;writing-mode:vertical-rl;border:none;background:#58cc02;color:var(--on-brand);font-size:14px;font-weight:700;font-family:inherit;padding:15px 9px;border-radius:0 14px 14px 0;cursor:pointer;box-shadow:3px 3px 14px rgba(88,204,2,.4);letter-spacing:4px;line-height:1.15}
+/* 窄屏上这条竖排侧栏会永久压住内容列左边缘（实测吃掉 14px：容器左内边距只有 20px，
+   而侧栏宽 34px），首页每张卡的第一个字/emoji 都被它盖住。
+   收进 20px 的装订线里即可，纵向可读性不受影响；热区仍由 ::after 撑到 44px。 */
+@media (max-width:520px){.beginner-fab{font-size:12px;padding:14px 3px;letter-spacing:2px;
+  box-shadow:2px 2px 10px rgba(88,204,2,.35)}}
 .beginner-fab:hover{background:#4cb302}
 .beginner-fab:active{transform:translateY(-50%) scale(.94)}
 /* 功能卡图标徽章：渐变底 + 白色线性图标，跨机型一致 */
@@ -454,7 +459,11 @@ body.lang-en .phfab{display:none}
 /* 触摸热区：视觉尺寸不动，透明 ::after 撑到 ≥44×44（iOS HIG / WCAG 2.5.8 AAA）。
    横向用 width:100% 保持原宽，只在本来就窄于 44 时才横向撑开，
    免得热区盖住并排的相邻按钮，把邻居变成点不动。 */
-.level-tab,.gq-opt,.read-art-btn,.dlg-play,.dlg-drill,.gloss-btn,.art-toggle,.btn,.acct-btn,.subnav-chip,.board-tab,.cat-tab,.oauth-btn,.sp-levels button,.dash-cta button,.fab-read,.beginner-fab,.foot .link,.voice-tip,.spk-panel button,#support p button,#support>.container>div>button{position:relative}
+.level-tab,.gq-opt,.read-art-btn,.dlg-play,.dlg-drill,.gloss-btn,.art-toggle,.btn,.acct-btn,.subnav-chip,.board-tab,.cat-tab,.oauth-btn,.sp-levels button,.dash-cta button,.foot .link,.voice-tip,.spk-panel button,#support p button,#support>.container>div>button{position:relative}
+/* ⚠️ .fab-read 与 .beginner-fab 本来就是 position:fixed，**不能**写进上面那条 —— 
+   同特异性下后写的 relative 会把它们从固定浮层打回文档流（曾经就这么把
+   「循环朗读」和「零基础入门」两个悬浮按钮变成了行内元素）。
+   固定定位本身就是绝对定位子元素的包含块，::after 热区照样生效，无需 relative。 */
 .level-tab::after,.gq-opt::after,.read-art-btn::after,.dlg-play::after,.dlg-drill::after,.gloss-btn::after,.art-toggle::after,.btn::after,.acct-btn::after,.subnav-chip::after,.board-tab::after,.cat-tab::after,.oauth-btn::after,.sp-levels button::after,.dash-cta button::after,.fab-read::after,.beginner-fab::after,.foot .link::after,.voice-tip::after,.spk-panel button::after,#support p button::after,#support>.container>div>button::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:100%;min-width:44px;min-height:44px;pointer-events:none}
 
 /* 替换元素（input）不支持伪元素热区，只能直接给高度；滑块把「可拖的高度」
