@@ -8,7 +8,8 @@
 // 产出三个文件：
 //   reference.json  发音/数字/语法三页的静态 HTML（de/en 两份）
 //   letters.json    字母表 30 张卡的数据（旧站由 JS 从 LETTERS 数组渲染，抽 HTML 抽不到）
-//   numbers.json    0–12 与大数两组卡片的数据（同上，来自 nums0 / numsBig）
+//   numbers.json    数字卡：德语两组（nums0/numsBig）+ 英语四组（enNums1..4）
+//                   —— 英语数字页的卡片组数和德语不同（4 vs 2），按语言分开存
 //   quizzes.json    发音/语法页里的「即学即练」题池（来自 GQ_DATA，同样是运行时渲染）
 //   links.json      连载页底部的「正版视频资源」导航（来自 SERIES_LINKS）
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -75,7 +76,13 @@ function jsArray(decl) {
   return Function(`"use strict";return (${src.slice(s, end)})`)();
 }
 const letters = jsArray('const LETTERS =');
-const numbers = { small: jsArray('const nums0'), big: jsArray('const numsBig') };
+// ⚠️ 德语页两组（0–12 / 大数），英语页四组（1–12 / 13–19 / 整十 / 序数词）。
+// 组数不同，所以按语言存成数组的数组，渲染时按顺序一一对应占位坑，
+// 不能笼统地「第一个用 small、其余用 big」—— 那会把德语数字铺到英语页上。
+const numbers = {
+  de: [jsArray('const nums0'), jsArray('const numsBig')],
+  en: [jsArray('const enNums1='), jsArray('const enNums2='), jsArray('const enNums3='), jsArray('const enNums4=')],
+};
 // 内嵌小测：页面里是 <div class="gq-box" data-gq="p1"> 这样的空壳，题目全在 GQ_DATA 里
 const quizzes = jsArrayObj('var GQ_DATA=');
 const links = jsArray('const SERIES_LINKS=');
@@ -90,6 +97,6 @@ write('letters.json', letters);
 write('numbers.json', numbers);
 write('quizzes.json', quizzes);
 write('links.json', links);
-console.log(`  字母 ${letters.length} 个 · 数字 ${numbers.small.length} + ${numbers.big.length} 张卡`
+console.log(`  字母 ${letters.length} 个 · 数字卡 德 ${numbers.de.map((a) => a.length).join('+')} / 英 ${numbers.en.map((a) => a.length).join('+')}`
   + ` · 小测 ${Object.keys(quizzes).length} 组共 ${Object.values(quizzes).reduce((a, v) => a + v.length, 0)} 题`
   + ` · 视频资源 ${links.length} 条`);

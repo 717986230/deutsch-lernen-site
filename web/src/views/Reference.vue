@@ -62,9 +62,13 @@ const html = computed(() => {
   if (!h) return '';
   if (letters.value.length) h = h.replace('<div class="letter-grid"></div>', `<div class="letter-grid">${letterCards()}</div>`);
   if (numbers.value) {
+    // 德语页两组（0–12 / 大数），英语页四组（1–12 / 13–19 / 整十 / 序数词）——
+    // 按当前语言取对应那批，逐个占位坑一一对应。之前笼统地「第一个 small、其余 big」，
+    // 结果英语数字页铺的全是德语数字（null / eins / zwei…）。
+    const groups = numbers.value[langS.lang] || numbers.value.de || [];
     let i = 0;
     h = h.replace(/<div class="num-grid"><\/div>/g,
-      () => `<div class="num-grid">${numCards(i++ === 0 ? numbers.value.small : numbers.value.big)}</div>`);
+      () => `<div class="num-grid">${numCards(groups[i++] || [])}</div>`);
   }
   if (quizzes.value) {
     h = h.replace(/<div class="gq-box" data-gq="([^"]+)"><\/div>/g,
