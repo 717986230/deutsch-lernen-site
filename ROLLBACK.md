@@ -2,28 +2,29 @@
 
 ## 现状（2026-08）
 
-**生产是 Vue 新端。** 旧站已在仓库根目录保留为同域回退文件。
+**生产是旧站。** Vue 新端保留在 `web/`，等待再次发布。
 
 | 文件 | 谁 | 状态 |
 |---|---|---|
-| `index.html` + `assets/` + `data/` | Vue 新端 | **当前生产** |
-| `sw.js` | Vue Service Worker | 当前生产 |
-| `legacy.html` + `sw-legacy.js` + `*.dat` | 旧站 | 回退来源 |
+| `index.html` + `*.dat` | 旧站 | **当前生产** |
+| `sw.js` | 旧站 Service Worker | 当前生产 |
+| `web/dist/` | Vue 新端构建产物 | 未上线，`.gitignore` 中 |
 | `web/dist/` | Vue 构建产物 | 构建中间产物，`.gitignore` 中 |
 
 > Vue 产物**不再直接写进仓库根**。以前 `outDir:'..'` 每构建一次就在根目录留一批
 > 带哈希的孤儿文件（一度堆了 300 多个没人引用的 `assets/*.js`），现在输出到
 > `web/dist` 并每次自清，上线时再整份拷到根。
 
-## 更新 Vue 新端
+## 切到 Vue 新端
 
 ```bash
 cd web && npm run build          # 产物在 web/dist
-cd .. && cp -r web/dist/. .      # 新端产物覆盖到根
-git add -A && git commit -m "发布 Vue 用户端" && git push
+cd .. && cp index.html legacy.html && cp sw.js sw-legacy.js
+cp -r web/dist/. .               # 新端产物覆盖到根
+git add -A && git commit -m "切到 Vue 新端" && git push
 ```
 
-推 main 后 GitHub Pages 一两分钟生效。旧站文件只用于回退，不作为日常入口。
+推 main 后 GitHub Pages 一两分钟生效。旧站由 `legacy.html` 与 `sw-legacy.js` 保留作回退。
 
 ## 回退到旧站
 

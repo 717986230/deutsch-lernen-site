@@ -18,12 +18,12 @@ data/
 dict/                  HanDeDict 兜底词典分片：de_* 单词 8.2万 / ph_* 短语 4万（按需加载）
 tools/make_dict.py     从 HanDeDict 源数据再生成 dict/ 分片
 tools/make_readgloss.py 为阅读/连载预生成小注词表 data/read_gloss.json（内联加密）
-web/                   当前 Vue 用户端源码（生产页面）
+web/                   Vue 用户端源码（待再次发布）
 web/dist/              Vue 构建中间产物（不提交）
-index.html + assets/   当前 Vue 部署产物，由 GitHub Pages 发布
-legacy.html            旧端回退入口；仅在紧急回退时恢复为 index.html
-src.html + build.mjs   旧端源码与构建器，作为回退来源保留
-de/en.<hash>.dat       旧端词库切片，随回退文件保留
+index.html + sw.js     当前旧端部署产物，由 GitHub Pages 发布
+legacy.html            旧端备用入口；再次切换 Vue 前用于同域回退
+src.html + build.mjs   旧端源码与构建器
+de/en.<hash>.dat       旧端词库切片
 manifest.webmanifest   PWA 清单
 ```
 
@@ -38,8 +38,8 @@ npm run verify              # 校验生产与旧端回退文件
 
 - **加词/改词/加分类**：改 `data/*.json`，然后构建 Vue 端。
 - **改页面/样式/功能**：改 `web/src/`，然后执行 `bash deploy.sh web`。
-- **发布**：提交同步后的根目录 `index.html`、`assets/`、`data/`、`sw.js`，推到 `main`；GitHub Pages 自动发布。
-- **旧端维护或紧急回退**：参见 [ROLLBACK.md](ROLLBACK.md)。不要对生产根目录直接执行 `npm run build`，它会生成旧端产物。
+- **发布 Vue**：提交同步后的根目录 `index.html`、`assets/`、`data/`、`sw.js`，推到 `main`；GitHub Pages 自动发布。
+- **旧端维护或切换**：参见 [ROLLBACK.md](ROLLBACK.md)。
 
 ## 词典兜底
 
