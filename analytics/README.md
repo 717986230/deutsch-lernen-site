@@ -55,14 +55,17 @@ https://uuoo-analytics.<你的子域>.workers.dev/stats?key=你的密钥&days=7
 已有部署要**更新代码 + 补建表**（在 analytics 目录）：
 
 ```bash
-wrangler d1 execute uuoo_analytics --file=schema.sql --remote   # 新增 users/sessions/oauth_state 表（IF NOT EXISTS，安全重跑）
+wrangler d1 execute uuoo_analytics --file=migrate-progress-documents.sql --remote # 已有库：增加学习明细表
+wrangler d1 execute uuoo_analytics --file=schema.sql --remote   # 新库建表 / 已有表安全跳过
 wrangler deploy                                                 # 部署新版 worker.js
 ```
 
 接口一览：
 - `POST /api/register` `{username,password,nickname,email?}` → `{token,user,recovery}`（邮箱选填，仅用于找回密码；**手机号已下线**）
 - `POST /api/login` `{username,password}` → `{token,user}`
-- `POST /api/sync`（带 `Authorization: Bearer <token>`）`{known,streak,best,total,quiz,level}` → 更新数据、返回已点亮徽章
+- `GET /api/progress?lang=de|en`（带 token）→ 取得该语言的词汇掌握、复习、错词、日课与最近学习明细
+- `PUT /api/progress`（带 token）`{lang,rev,document}` → 写入该语言学习明细；版本冲突返回 `409` 及服务端版本，客户端合并后重试
+- `POST /api/sync`（带 token）`{lang,known,streak,best,total,quiz,level}` → 更新排行榜/徽章用的摘要，明细由 `/api/progress` 单独恢复
 - `POST /api/profile/update`（带 token）`{nickname?,avatar?,av_bg?,sig?,email?}` → 改资料与邮箱；邮箱传空字符串＝删除。**phone 字段已不再接受**
 - `GET  /api/me`（带 token）→ 自己的资料 + 排名；`email` **只返回掩码**（如 `t***@qq.com`），另有 `hasEmail` 布尔位。**不再返回 phone**
 - `GET  /api/leaderboard?by=known|streak|total` → Top 50（`badges` 是**数量**，不是列表）

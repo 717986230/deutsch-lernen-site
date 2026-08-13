@@ -107,6 +107,11 @@ backend() {
     wrangler d1 execute "$DB" --remote --file=migrate-language-profiles.sql
   fi
 
+  say "迁移双语学习明细…"
+  if [ -f migrate-progress-documents.sql ]; then
+    wrangler d1 execute "$DB" --remote --file=migrate-progress-documents.sql
+  fi
+
   say "应用表结构（新表会建，已存在的跳过）…"
   wrangler d1 execute "$DB" --remote --file=schema.sql 2>&1 \
     | grep -viE "already exists|duplicate column" || true

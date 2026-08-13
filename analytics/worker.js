@@ -463,7 +463,45 @@ export default {
       return Response.redirect(site + '/#acct_token=' + (await newSession(env, uid)), 302);
     }
 
-    // ───────── 同步学习数据（需登录） ─────────
+    // ───────── 学习明细（需登录；按目标语言分开、带 revision 防止新设备覆盖旧设备） ─────────
+    if (M === 'GET' && path === '/api/progress') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const lang = url.searchParams.get('lang') === 'en' ? 'en' : 'de';
+      const row = await env.DB.prepare('SELECT rev,document,updated FROM user_progress_documents WHERE uid=? AND lang=?').bind(uid, lang).first();
+      if (!row) return json({ lang, rev: 0, document: null }, 200, cors);
+      let document;
+      try { document = JSON.parse(row.document); } catch (_) { document = {}; }
+      return json({ lang, rev: row.rev, document, updated: row.updated }, 200, cors);
+    }
+    if (M === 'PUT' && path === '/api/progress') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const progressRate = await rateHit(env, 'progress:' + uid, 30, 60000);
+      if (!progressRate.ok) return tooMany(cors, progressRate.retry);
+      const b = await body(req);
+      const lang = b.lang === 'en' ? 'en' : 'de';
+      const rev = Number.isInteger(b.rev) && b.rev >= 0 ? b.rev : -1;
+      if (!b.document || typeof b.document !== 'object' || Array.isArray(b.document)) return json({ err: '学习数据格式错误' }, 400, cors);
+      const encoded = JSON.stringify(b.document);
+      if (encoded.length > 900000) return json({ err: '学习数据过大' }, 413, cors);
+      const now = Date.now();
+      if (rev === 0) {
+        const inserted = await env.DB.prepare('INSERT OR IGNORE INTO user_progress_documents (uid,lang,rev,document,updated) VALUES (?,?,?,?,?)')
+          .bind(uid, lang, 1, encoded, now).run();
+        if (inserted.meta && inserted.meta.changes) return json({ ok: 1, rev: 1 }, 200, cors);
+      } else {
+        const updated = await env.DB.prepare('UPDATE user_progress_documents SET document=?,rev=rev+1,updated=? WHERE uid=? AND lang=? AND rev=?')
+          .bind(encoded, now, uid, lang, rev).run();
+        if (updated.meta && updated.meta.changes) return json({ ok: 1, rev: rev + 1 }, 200, cors);
+      }
+      const current = await env.DB.prepare('SELECT rev,document,updated FROM user_progress_documents WHERE uid=? AND lang=?').bind(uid, lang).first();
+      let document = {};
+      try { document = current && JSON.parse(current.document); } catch (_) {}
+      return json({ err: '同步冲突', rev: current ? current.rev : 0, document, updated: current && current.updated }, 409, cors);
+    }
+
+    // ───────── 同步学习摘要（需登录） ─────────
     if (M === 'POST' && path === '/api/sync') {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);

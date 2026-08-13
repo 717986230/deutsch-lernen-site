@@ -8,9 +8,10 @@
 set -e
 BASE="https://raw.githubusercontent.com/717986230/deutsch-lernen-site/main/analytics"
 
-echo "① 拉取最新 worker.js / schema.sql ..."
+echo "① 拉取最新 worker.js / schema.sql / 迁移文件 ..."
 curl -fsSL "$BASE/worker.js"  -o worker.js
 curl -fsSL "$BASE/schema.sql" -o schema.sql
+curl -fsSL "$BASE/migrate-progress-documents.sql" -o migrate-progress-documents.sql
 
 if [ ! -f wrangler.toml ]; then
   echo "   未发现 wrangler.toml，下载默认配置（记得填 GH_CLIENT_ID / GOOGLE_CLIENT_ID）"
@@ -20,6 +21,7 @@ else
 fi
 
 echo "② 建表（D1 远程，若表已存在会自动跳过）..."
+wrangler d1 execute uuoo_analytics --file=migrate-progress-documents.sql --remote
 wrangler d1 execute uuoo_analytics --file=schema.sql --remote
 
 echo "③ 部署 Worker ..."

@@ -101,6 +101,18 @@ CREATE TABLE IF NOT EXISTS user_language_profiles (
   FOREIGN KEY (uid) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- 学习明细：每种语言一份版本化文档。它保存掌握词的 Leitner 时间、错词、日课和最近学习，
+-- 不能只靠上面的汇总数字，否则换设备无法恢复真正的学习状态。
+CREATE TABLE IF NOT EXISTS user_progress_documents (
+  uid INTEGER NOT NULL,
+  lang TEXT NOT NULL CHECK (lang IN ('de','en')),
+  rev INTEGER NOT NULL DEFAULT 0,
+  document TEXT NOT NULL DEFAULT '{}',
+  updated INTEGER NOT NULL,
+  PRIMARY KEY (uid, lang),
+  FOREIGN KEY (uid) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- GitHub OAuth 临时 state（防 CSRF，10 分钟过期）
 CREATE TABLE IF NOT EXISTS oauth_state (
   state TEXT PRIMARY KEY,
