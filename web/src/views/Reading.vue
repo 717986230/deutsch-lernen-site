@@ -3,17 +3,18 @@
 //   四个入口标签（短文/餐厅/连载/对话）→ 循环朗读 + 语速 → 隐藏词义
 //   → 级别标签 → 篇数 → 每篇一张卡（标题+级别徽章+中文+▶朗读，下面逐句 🔊/德语/中文/谐音）
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
 import { useLang } from '../store/lang';
 import { loadGloss, splitWords, useLoopRead, glossVisible, toggleGloss } from '../api/reader';
 defineOptions({ name: 'Reading' });
 
-const router = useRouter();
+const route = useRoute(); const router = useRouter();
 const langS = useLang();
 const list = ref([]); const loading = ref(true);
-const topic = ref('');          // '' = 分级短文；'restaurant' = 餐厅专题
+const routeTopic = () => route.query.topic === 'restaurant' ? 'restaurant' : '';
+const topic = ref(routeTopic()); // '' = 分级短文；'restaurant' = 餐厅专题
 const level = ref('all');
 const rate = ref(0.62);
 try { rate.value = JSON.parse(localStorage.getItem('spkCfg') || '{}').rate || 0.62; } catch { /* 用默认 */ }
@@ -27,11 +28,18 @@ async function load() {
   loading.value = true;
   list.value = await loadData(langS.file('readings'));
   // 小注索引用词库现建，词库本来就要给别的页用，这里只是复用
-  try { await loadGloss(await loadData(langS.file('categories'))); } catch { /* 没有小注也能读 */ }
+  try { await loadGloss(langS.lang, await loadData(langS.file('categories'))); } catch { /* 没有小注也能读 */ }
   loading.value = false;
 }
 onMounted(load);
-watch(() => langS.lang, () => { level.value = 'all'; topic.value = ''; load(); });
+watch(() => langS.lang, () => { level.value = 'all'; topic.value = routeTopic(); load(); });
+watch(() => route.query.topic, () => { topic.value = routeTopic(); });
+function setTopic(next) {
+  const query = { ...route.query };
+  if (next) query.topic = next;
+  else delete query.topic;
+  router.replace({ path: '/reading', query });
+}
 
 // 餐厅专题单列，不混进分级列表（与旧站 setReadTopic 规则一致）
 const shown = computed(() => list.value.filter((r) => (
@@ -84,12 +92,12 @@ const say = (t) => { stop(); loopMode.value = ''; speak(t, langS.isEn ? 'en-US' 
     <h1 class="page-title">阅读 · 连载</h1>
 
     <div class="jump">
-      <button class="level-tab" :class="{ active: topic === '' }" type="button" @click="topic = ''">📖 短文</button>
-      <button class="level-tab" :class="{ active: topic === 'restaurant' }" type="button" @click="topic = 'restaurant'">🍽️ 餐厅</button>
+      <button class="level-tab" :class="{ active: topic === '' }" type="button" @click="setTopic('')">📖 短文</button>
+      <button class="level-tab" :class="{ active: topic === 'restaurant' }" type="button" @click="setTopic('restaurant')">🍽️ 餐厅</button>
       <button class="level-tab" type="button" @click="router.push('/series')">🎬 连载</button>
       <button class="level-tab" type="button" @click="router.push('/dialog')">💬 对话</button>
     </div>
-    <p class="page-sub">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
+    <p class="page-sub">{{ langS.isEn ? '0基础 → B2 循序渐进 · 中英对照 · 🔊 慢速朗读' : '0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读' }}</p>
 
     <div class="row">
       <button class="fab-read" :class="{ speaking: playing && loopMode === 'all' }" type="button"
@@ -101,7 +109,7 @@ const say = (t) => { stop(); loopMode.value = ''; speak(t, langS.isEn ? 'en-US' 
       <input type="range" min="0.35" max="1.6" step="0.05" :value="rate" @input="setRate($event.target.value)">
       <span class="rv">{{ rate }}</span> 🐇
     </div>
-    <p class="hint">▶ 整篇朗读 · 点句即听 · <b>德语词上方是词义</b>
+    <p class="hint">▶ 整篇朗读 · 点句即听 · <b>{{ langS.isEn ? '英文词上方是词义' : '德语词上方是词义' }}</b>
       <button class="btn gloss-btn" type="button" @click="toggleGloss">{{ glossVisible ? '隐藏词义' : '显示词义' }}</button>
     </p>
 
@@ -114,7 +122,7 @@ const say = (t) => { stop(); loopMode.value = ''; speak(t, langS.isEn ? 'en-US' 
     <p v-if="loading" class="page-sub">加载中…</p>
     <div v-for="(r, ri) in visible" :key="ri" class="card art">
       <div class="art-head">
-        <span class="art-title" lang="de">{{ r.title }}</span>
+        <span class="art-title" :lang="langS.isEn ? 'en' : 'de'">{{ r.title }}</span>
         <span class="level-badge" :class="LB[r.level]">{{ LN[r.level] || r.level }}</span>
         <span class="art-zh">{{ r.zh }}</span>
         <button class="read-art-btn" :class="{ speaking: artPlaying(r) }" type="button"
@@ -126,7 +134,7 @@ const say = (t) => { stop(); loopMode.value = ''; speak(t, langS.isEn ? 'en-US' 
         :class="{ 'rp-on': artPlaying(r) && at === pi }">
         <button class="para-spk" type="button" aria-label="朗读本句" @click="say(p[0])">🔊</button>
         <div class="pbody">
-          <div class="de" lang="de"><span v-for="(t, ti) in splitWords(p[0])" :key="ti">
+          <div class="de" :lang="langS.isEn ? 'en' : 'de'"><span v-for="(t, ti) in splitWords(p[0])" :key="ti">
             <template v-if="t.sp">{{ t.sp }}</template>
             <ruby v-else-if="t.g && glossVisible">{{ t.w }}<rt>{{ t.g }}</rt></ruby>
             <template v-else>{{ t.w }}</template>

@@ -7,11 +7,16 @@ import { loadData } from './index';
 // 旧站的 rdLookup 会查加密词库（_deWordMap），Vue 端没有那份 .dat，
 // 所以退一步：read_gloss.json（508 条兜底表）+ 已加载的 categories.json 现建索引。
 // 覆盖不到的词就不注 —— 与旧站一致：查不到或释义太长都返回 null，宁可不注也不注错。
+const glossMaps = new Map();
 let glossMap = null;
-export async function loadGloss(cats) {
-  if (glossMap) return glossMap;
+export async function loadGloss(lang, cats) {
+  if (glossMaps.has(lang)) {
+    glossMap = glossMaps.get(lang);
+    return glossMap;
+  }
   const m = Object.create(null);
-  try {
+  // read_gloss 只收德语兜底词，不能混进英语索引。
+  if (lang === 'de') try {
     const tbl = await loadData('read_gloss');
     for (const k in tbl) m[k] = tbl[k][1];
   } catch { /* 兜底表缺失就只用词库 */ }
@@ -24,6 +29,7 @@ export async function loadGloss(cats) {
       if (!m[k]) m[k] = p.zh;
     }
   }
+  glossMaps.set(lang, m);
   glossMap = m;
   return m;
 }

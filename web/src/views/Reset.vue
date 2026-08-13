@@ -83,7 +83,7 @@ async function submit() {
       <AuthField v-model="g.new" label="新密码" type="password"
         autocomplete="new-password" placeholder="至少 6 位" />
 
-      <p v-if="err" class="auth-err">{{ err }}</p>
+      <p v-if="err" class="auth-err" role="alert">{{ err }}</p>
 
       <div class="auth-actions">
         <button class="btn btn-block" type="submit" :disabled="busy">{{ busy ? '提交中…' : '重置密码' }}</button>

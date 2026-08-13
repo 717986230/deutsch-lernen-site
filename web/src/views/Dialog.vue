@@ -54,7 +54,7 @@ onBeforeUnmount(stop);
 
     <div class="jump">
       <button class="level-tab" type="button" @click="router.push('/reading')">📖 短文</button>
-      <button class="level-tab" type="button" @click="router.push('/reading')">🍽️ 餐厅</button>
+      <button class="level-tab" type="button" @click="router.push({ path: '/reading', query: { topic: 'restaurant' } })">🍽️ 餐厅</button>
       <button class="level-tab" type="button" @click="router.push('/series')">🎬 连载</button>
       <button class="level-tab active" type="button">💬 对话</button>
     </div>
@@ -69,7 +69,7 @@ onBeforeUnmount(stop);
         <button type="button" class="dlg-play" :class="{ on: playing && cur === i }" @click="play(i)">
           {{ playing && cur === i ? '⏹ 停止' : '▶ 播放全部' }}
         </button>
-        <button type="button" class="dlg-drill" @click="drill(i)">⌨️ 练这段</button>
+        <button v-if="!langS.isEn" type="button" class="dlg-drill" @click="drill(i)">⌨️ 练这段</button>
       </div>
       <div class="dlg-body">
         <div v-for="(t, k) in d.turns" :key="k" class="dlg-turn"

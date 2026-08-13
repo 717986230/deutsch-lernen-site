@@ -71,7 +71,7 @@ const EN_CARDS = [
   { to: '/ref/numbers', ic: 'fic-blue', t: '英语数字', s: 'teen/ty·大数·序数词' },
   { to: '/ref/grammar', ic: 'fic-orange', t: '英语语法', s: 'be动词·冠词·时态·语序' },
   { to: '/phrases', ic: 'fic-purple', t: '词句大全', s: '常用英语·含中文谐音' },
-  { to: '/quiz', ic: 'fic-red', t: '练习测验', s: '看中文·选英语' },
+  { to: '/reading', ic: 'fic-teal', t: '英语短文', s: '分级短文·中英对照' },
 ];
 const cards = computed(() => lang.isEn ? EN_CARDS : CARDS);
 

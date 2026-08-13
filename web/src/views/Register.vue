@@ -1,5 +1,5 @@
 <script setup>
-// 一页只做一件事：注册。必填只有 2 个；昵称/邮箱/手机号收进「选填」区，
+// 一页只做一件事：注册。必填只有 2 个；昵称/邮箱收进「选填」区，
 // 但隐私告知常驻在选填区外 —— 折叠起来的告知不成立为「同意」。
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -46,13 +46,13 @@ async function submit() {
 
       <!-- 隐私告知：常驻可见，不随选填区折叠 -->
       <p class="auth-note">
-        下面的<b>邮箱 / 手机号仅用于找回密码</b>：不推送、不提供给第三方；
+        <b>邮箱仅用于找回密码</b>：不推送、不提供给第三方；
         可以留空，之后也能随时在「我的」里增删，注销账号时永久删除。
       </p>
 
       <button type="button" class="auth-more" :class="{ open: more }"
         :aria-expanded="more ? 'true' : 'false'" @click="more = !more">
-        <span>选填：昵称、邮箱、手机号</span>
+        <span>选填：昵称、邮箱</span>
         <span class="chev" aria-hidden="true">▾</span>
       </button>
 
@@ -63,7 +63,7 @@ async function submit() {
           inputmode="email" autocomplete="email" placeholder="用于邮箱验证码找回" />
       </div>
 
-      <p v-if="err" class="auth-err">{{ err }}</p>
+      <p v-if="err" class="auth-err" role="alert">{{ err }}</p>
 
       <div class="auth-actions">
         <button class="btn btn-block" type="submit" :disabled="busy">{{ busy ? '注册中…' : '注册' }}</button>

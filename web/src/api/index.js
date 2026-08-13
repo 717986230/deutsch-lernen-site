@@ -45,11 +45,20 @@ export const api = {
   following: () => request('/api/following'),
 };
 
-// 数据源：与旧站共用 public/data/*.json，按需加载不进 bundle
-const cache = {};
+// 数据源：与旧站共用 public/data/*.json，按需加载不进 bundle。
+// 缓存 Promise 本身而不仅是最终 JSON：首页、短语页与每日一句并发进入时，同一份
+// 内容只发一次请求；请求失败会移除缓存，用户恢复网络后可以正常重试。
+const cache = new Map();
 export async function loadData(name) {
-  if (cache[name]) return cache[name];
-  const r = await fetch(import.meta.env.BASE_URL + 'data/' + name + '.json');
-  if (!r.ok) throw new Error('数据加载失败: ' + name);
-  return (cache[name] = await r.json());
+  if (!/^[a-z0-9_]+$/i.test(name)) throw new Error('非法数据名称');
+  if (!cache.has(name)) {
+    const task = fetch(import.meta.env.BASE_URL + 'data/' + name + '.json')
+      .then((r) => {
+        if (!r.ok) throw new Error('数据加载失败: ' + name);
+        return r.json();
+      })
+      .catch((error) => { cache.delete(name); throw error; });
+    cache.set(name, task);
+  }
+  return cache.get(name);
 }

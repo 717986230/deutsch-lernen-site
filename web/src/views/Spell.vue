@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue';
+import { useRoute } from 'vue-router';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
 import { buildPool, isRight, markKnown, markWrong, clearWrong, getWrong,
@@ -9,6 +10,7 @@ import { useAccount } from '../store/account';
 defineOptions({ name: 'Spell' });
 
 const acct = useAccount();
+const route = useRoute();
 const LV = [['all','全部'],['0','入门'],['a1','A1'],['a2','A2'],['b1','B1'],['b2','B2']];
 const cats = ref([]); const level = ref('all'); const unit = ref('word');
 const queue = ref([]); const idx = ref(0); const input = ref(''); const state = ref('idle');
@@ -16,24 +18,34 @@ const judged = ref(null); const right = ref(0); const wrongCnt = ref(0);
 const sound = ref(soundOn()); const box = ref(null);
 const wrongPool = ref(0);
 
-onMounted(async () => { cats.value = await loadData('categories'); wrongPool.value = Object.keys(getWrong()).length; });
+onMounted(async () => {
+  cats.value = await loadData('categories');
+  wrongPool.value = Object.keys(getWrong()).length;
+  if (route.query.from !== 'dialog') return;
+  try {
+    const turns = JSON.parse(localStorage.getItem('spDialog') || '[]');
+    if (Array.isArray(turns) && turns.length) begin(turns, '情景对话跟练');
+  } catch { /* 隐私模式或损坏缓存时保留普通练习入口 */ }
+});
 
 const cur = computed(() => queue.value[idx.value] || null);
 const total = computed(() => queue.value.length);
 const poolSize = computed(() => cats.value.length
   ? buildPool(cats.value, { level: level.value, unit: unit.value }).length : 0);
 
+function begin(pool, name) {
+  if (!pool.length) return;
+  queue.value = pool.slice(0, 20);
+  setLastStudy({ spell: 1, level: level.value, name });
+  idx.value = 0; right.value = 0; wrongCnt.value = 0;
+  input.value = ''; judged.value = null; state.value = 'run';
+  nextTick(() => box.value && box.value.focus());
+}
 function start(src) {
   const pool = src === 'wrong'
     ? Object.entries(getWrong()).map(([de, v]) => ({ de, zh: v.zh, py: v.py }))
     : buildPool(cats.value, { level: level.value, unit: unit.value });
-  if (!pool.length) return;
-  queue.value = pool.slice(0, 20);
-  // 与旧站同构：记一条「继续上次」，首页那张卡直接读 name
-  setLastStudy({ spell: 1, level: level.value, name: '拼写记忆 · ' + ((LV.find(x => x[0] === level.value) || [, '全部'])[1]) });
-  idx.value = 0; right.value = 0; wrongCnt.value = 0;
-  input.value = ''; judged.value = null; state.value = 'run';
-  nextTick(() => box.value && box.value.focus());
+  begin(pool, '拼写记忆 · ' + ((LV.find(x => x[0] === level.value) || [, '全部'])[1]));
 }
 function submit() {
   if (!cur.value || judged.value) return;
