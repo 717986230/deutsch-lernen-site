@@ -115,7 +115,7 @@ backend() {
 }
 
 # ─────────────────────────────────────────────
-# 3. Vue 用户端 → Cloudflare Pages
+# 3. Vue 用户端 → GitHub Pages 根目录
 # ─────────────────────────────────────────────
 web() {
   step "④ Vue 用户端"
@@ -126,8 +126,11 @@ web() {
   local size; size=$(du -sh dist | cut -f1)
   say "产物 $size（含 Service Worker）"
 
-  say "Vue 产物已写入仓库根目录；推送 main 后由 GitHub Pages 自动发布。"
   cd "$REPO"
+  [ -f legacy.html ] || cp index.html legacy.html
+  [ -f sw-legacy.js ] || cp sw.js sw-legacy.js
+  cp -R web/dist/. .
+  say "Vue 产物已同步到仓库根目录；提交并推送 main 后由 GitHub Pages 自动发布。"
 }
 
 # ─────────────────────────────────────────────
