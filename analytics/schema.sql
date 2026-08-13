@@ -86,6 +86,21 @@ CREATE TABLE IF NOT EXISTS sessions (
   exp   INTEGER
 );
 
+-- 每位用户在每种目标语言中拥有独立的学习档案；德语/英语不得共用掌握词、连击或等级。
+CREATE TABLE IF NOT EXISTS user_language_profiles (
+  uid INTEGER NOT NULL,
+  lang TEXT NOT NULL CHECK (lang IN ('de','en')),
+  known INTEGER NOT NULL DEFAULT 0,
+  streak INTEGER NOT NULL DEFAULT 0,
+  best_streak INTEGER NOT NULL DEFAULT 0,
+  total INTEGER NOT NULL DEFAULT 0,
+  quiz INTEGER NOT NULL DEFAULT 0,
+  level TEXT NOT NULL DEFAULT 'A1',
+  updated INTEGER NOT NULL,
+  PRIMARY KEY (uid, lang),
+  FOREIGN KEY (uid) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- GitHub OAuth 临时 state（防 CSRF，10 分钟过期）
 CREATE TABLE IF NOT EXISTS oauth_state (
   state TEXT PRIMARY KEY,

@@ -161,6 +161,9 @@ export default {
 
     // ───────── 匿名埋点 ─────────
     if (M === 'POST' && path === '/collect') {
+      const ipKey = truncIP(req.headers.get('CF-Connecting-IP') || '', false) || 'unknown';
+      const rl = await rateHit(env, 'collect:' + ipKey, 120, 60000);
+      if (!rl.ok) return tooMany(cors, rl.retry);
       let d;
       try { d = JSON.parse(await req.text()); } catch { return new Response('bad json', { status: 400, headers: cors }); }
       const cut = (v, n) => (v == null ? '' : String(v)).slice(0, n);
@@ -174,7 +177,9 @@ export default {
       const dur = Math.max(0, Math.min(86400, parseInt(d.dur, 10) || 0));
       const evs = Array.isArray(d.events) ? d.events.slice(0, 50) : [];
       if (evs.length) {
-        const base = [e => e.t || Date.now(), () => vid, () => sid, e => cut(e.n, 40),
+        const receivedAt = Date.now();
+        // 事件时间不再相信客户端输入，避免伪造未来时间绕过数据保留策略。
+        const base = [() => receivedAt, () => vid, () => sid, e => cut(e.n, 40),
           e => (e.p ? JSON.stringify(e.p).slice(0, 500) : null), () => p, () => ref, () => ua, () => country];
         try {
           const stmt = env.DB.prepare('INSERT INTO events (ts,vid,sid,name,props,path,ref,ua,country,region,city,ip,dur) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
@@ -462,20 +467,30 @@ export default {
     if (M === 'POST' && path === '/api/sync') {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
+      const syncRate = await rateHit(env, 'sync:' + uid, 30, 60000);
+      if (!syncRate.ok) return tooMany(cors, syncRate.retry);
       const b = await body(req);
+      const lang = b.lang === 'en' ? 'en' : 'de';
       const clamp = (v) => Math.max(0, Math.min(1e7, v | 0));
       const known = clamp(b.known), streak = clamp(b.streak), best = clamp(b.best), total = clamp(b.total), quiz = clamp(b.quiz);
       const level = String(b.level || 'A1').slice(0, 4);
       const old = await env.DB.prepare('SELECT badges,known,best_streak,total,quiz FROM users WHERE id=?').bind(uid).first();
       if (!old) return json({ err: '账号不存在' }, 404, cors);
+      // 语言档案是同步与恢复的权威边界；旧 users 字段保留为全站德语兼容/排行榜汇总。
+      let profile = await env.DB.prepare('SELECT known,streak,best_streak,total,quiz,level FROM user_language_profiles WHERE uid=? AND lang=?').bind(uid, lang).first();
+      if (!profile) {
+        await env.DB.prepare('INSERT OR IGNORE INTO user_language_profiles (uid,lang,known,streak,best_streak,total,quiz,level,updated) VALUES (?,?,?,?,?,?,?,?,?)')
+          .bind(uid, lang, lang === 'de' ? (old.known || 0) : 0, lang === 'de' ? (old.streak || 0) : 0, lang === 'de' ? (old.best_streak || 0) : 0, lang === 'de' ? (old.total || 0) : 0, lang === 'de' ? (old.quiz || 0) : 0, lang === 'de' ? (old.level || 'A1') : 'A1', Date.now()).run();
+        profile = await env.DB.prepare('SELECT known,streak,best_streak,total,quiz,level FROM user_language_profiles WHERE uid=? AND lang=?').bind(uid, lang).first();
+      }
       // 客户端是离线优先，换设备时它的累计值可能比云端低。用于徽章的必须是
       // 实际会写入的合并结果，不能用请求体的较小值，否则一次同步会把已解锁徽章抹掉。
       const merged = {
-        known: Math.max(old.known || 0, known),
+        known: Math.max(profile.known || 0, known),
         streak,
-        best: Math.max(old.best_streak || 0, best, streak),
-        total: Math.max(old.total || 0, total),
-        quiz: Math.max(old.quiz || 0, quiz),
+        best: Math.max(profile.best_streak || 0, best, streak),
+        total: Math.max(profile.total || 0, total),
+        quiz: Math.max(profile.quiz || 0, quiz),
       };
       const list = computeBadges(merged, uid);
       const badges = list.join(',');
@@ -486,6 +501,10 @@ export default {
       // 顺带也堵掉了用一次 POST 把别人挤下排行榜的路（只能往上刷，不能改低）。
       // streak 例外：断签后本就该降回去，故保持直接赋值。
       await env.DB.prepare(
+        'UPDATE user_language_profiles SET known=?,streak=?,best_streak=?,total=?,quiz=?,level=?,updated=? WHERE uid=? AND lang=?')
+        .bind(merged.known, merged.streak, merged.best, merged.total, merged.quiz, level, now, uid, lang).run();
+      // 德语保留旧排行榜/徽章兼容；英语统计绝不能覆盖德语的全站公开档案。
+      if (lang === 'de') await env.DB.prepare(
         'UPDATE users SET known=MAX(known,?),streak=?,best_streak=MAX(best_streak,?,?),' +
         'total=MAX(total,?),quiz=MAX(quiz,?),level=?,badges=?,updated=? WHERE id=?')
         .bind(merged.known, merged.streak, merged.best, merged.streak, merged.total, merged.quiz, level, badges, now, uid).run();
@@ -507,13 +526,14 @@ export default {
       if (!uid) return json({ err: '未登录' }, 401, cors);
       const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig,provider,known,streak,best_streak,total,quiz,level,badges,created,email FROM users WHERE id=?').bind(uid).first();
       if (!u) return json({ err: '账号不存在' }, 404, cors);
+      const profiles = await env.DB.prepare('SELECT lang,known,streak,best_streak,total,quiz,level,updated FROM user_language_profiles WHERE uid=? ORDER BY lang').bind(uid).all();
       // 联系方式只回掩码 + 是否已填，明文不出服务端
       u.hasEmail = !!u.email;
       u.email = maskEmail(u.email);
       u.badges = badgeList(u.badges, uid).join(',');   // 没同步过也要看得到创始人
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, uid);
-      return json({ user: u, rank: rank.c, followers: fc.followers, following: fc.following }, 200, cors);
+      return json({ user: u, profiles: profiles.results || [], rank: rank.c, followers: fc.followers, following: fc.following }, 200, cors);
     }
     // ───────── 社交：关注 / 取关 / 关注列表 ─────────
     if (M === 'POST' && (path === '/api/follow' || path === '/api/unfollow')) {

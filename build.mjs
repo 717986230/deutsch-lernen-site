@@ -32,7 +32,10 @@ const DATA_FILES = {
   categories: 'data/categories.json',
   EN_CATEGORIES: 'data/en_categories.json',
   READINGS: 'data/readings.json',
+  EN_READINGS: 'data/en_readings.json',
   SERIES: 'data/series.json',
+  EN_SERIES: 'data/en_series.json',
+  EN_DIALOGUES: 'data/en_dialogs.json',
   RD_GLOSS: 'data/read_gloss.json',
 };
 
