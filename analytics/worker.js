@@ -151,7 +151,7 @@ export default {
   async fetch(req, env) {
     const cors = {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST,GET,OPTIONS',
+      'Access-Control-Allow-Methods': 'POST,GET,PUT,OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     };
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
