@@ -1716,6 +1716,10 @@ body{padding-bottom:var(--tab-h)}
     <div class="subnav" id="enPronSubnav"></div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">英语<b>不像德语"所见即所读"</b>——同样字母常有多种读法。下面是中国人最该先掌握的规律 + 谐音示例。</p>
 
+    <div class="sec-title"><span class="sec-title-icon">🔡</span><span class="sec-title-text">26 个英文字母卡</span><button id="enLetterAllBtn" class="btn" type="button" style="margin-left:auto;padding:7px 12px;font-size:12px" onclick="toggleEnglishLetterAll()">🔊 全部朗读</button></div>
+    <p style="margin:0 0 10px;font-size:12px;color:var(--text-dim)">点喇叭只朗读该字母的英语名称；字母在单词中的实际读音请看下面的元音和组合规则。</p>
+    <div class="letter-grid" id="enLetterGrid"></div>
+
     <div class="sec-title"><span class="sec-title-icon">🔤</span><span class="sec-title-text">5个元音字母：长音 vs 短音</span></div>
     <table class="pron-table">
       <tr><th>字母</th><th>短音</th><th>长音（字母本名）</th></tr>
@@ -2232,6 +2236,10 @@ renderNumGrid('enNum3',enNums3,'en');
 renderNumGrid('enNum4',enNums4,'en');
 const EN_NUM_POOL=[...enNums1,...enNums2,...enNums3]; // 英语数字测验池
 
+const EN_LETTERS=[
+  ['A','诶','/eɪ/'],['B','比','/biː/'],['C','西','/siː/'],['D','迪','/diː/'],['E','伊','/iː/'],['F','艾夫','/ef/'],['G','吉','/dʒiː/'],['H','艾尺','/eɪtʃ/'],['I','艾','/aɪ/'],['J','杰','/dʒeɪ/'],['K','凯','/keɪ/'],['L','艾尔','/el/'],['M','艾姆','/em/'],['N','艾恩','/en/'],['O','欧','/oʊ/'],['P','皮','/piː/'],['Q','丘','/kjuː/'],['R','阿尔','/ɑːr/'],['S','艾斯','/es/'],['T','提','/tiː/'],['U','优','/juː/'],['V','维','/viː/'],['W','达不流','/ˈdʌbəljuː/'],['X','艾克斯','/eks/'],['Y','外','/waɪ/'],['Z','泽德 / 齐','BrE /zed/ · AmE /ziː/']
+].map(function(x){return {l:x[0],name:x[1],sound:x[2]};});
+
 // 字母表渲染（含🔊朗读）
 function renderLetterGrid(){
   const g=document.getElementById('letterGrid');
@@ -2239,6 +2247,11 @@ function renderLetterGrid(){
   g.innerHTML=LETTERS.map(x=>`<div class="letter-card${x.sp?' special':''}"><div class="lc-letter">${x.l}</div><div class="lc-name">名称：<b>${x.name}</b></div><div class="lc-sound">${x.sound}</div><button class="speak-btn" type="button" title="朗读字母" aria-label="朗读字母 ${x.l}" onclick="speakLetter('${x.l.charAt(0)}',this)">🔊</button></div>`).join('');
 }
 renderLetterGrid();
+function renderEnglishLetterGrid(){
+  var g=document.getElementById('enLetterGrid');if(!g)return;
+  g.innerHTML=EN_LETTERS.map(function(x){return '<div class="letter-card"><div class="lc-letter">'+x.l+'</div><div class="lc-name">名称：<b>'+x.name+'</b></div><div class="lc-sound">'+x.sound+'</div><button class="speak-btn" type="button" title="朗读字母" aria-label="朗读英语字母 '+x.l+'" onclick="speakWithLocale(\''+x.l+'\',\'en\',this)">🔊</button></div>';}).join('');
+}
+renderEnglishLetterGrid();
 
 // Number quiz
 let numQ={score:0,total:0,mode:'de2zh',current:null};
@@ -2929,7 +2942,7 @@ function speakWithLocale(text,lang,btn){
   speechSynthesis.cancel();
   var u=new SpeechSynthesisUtterance(text);
   u.lang=lang==='en'?'en-US':'de-DE';
-  var voice=lang==='en'?_enVoice():_deVoice();
+  var voice=lang==='en'?_enVoice:_deVoice;
   if(voice)u.voice=voice;
   u.rate=_spk.rate;u.pitch=1;
   if(btn){
@@ -2959,7 +2972,7 @@ function _startPageRead(key,items,lang,btn){
     if(_pageRead.i>=_pageRead.items.length){_stopPageRead();return;}
     var u=new SpeechSynthesisUtterance(_pageRead.items[_pageRead.i++]);
     u.lang=lang==='en'?'en-US':'de-DE';
-    var v=lang==='en'?_enVoice():_deVoice();if(v)u.voice=v;
+    var v=lang==='en'?_enVoice:_deVoice;if(v)u.voice=v;
     u.rate=_spk.rate;u.pitch=1;
     u.onend=next;u.onerror=function(){_stopPageRead();_ttsErr();};
     _ttsProbe(u);speechSynthesis.speak(u);
@@ -2967,6 +2980,7 @@ function _startPageRead(key,items,lang,btn){
 }
 function speakLetter(letter,btn){speakWithLocale(letter,'de',btn);}
 function toggleLetterAll(){_startPageRead('letters',LETTERS.map(function(x){return x.l.charAt(0);}),'de',document.getElementById('letterAllBtn'));}
+function toggleEnglishLetterAll(){_startPageRead('en-letters',EN_LETTERS.map(function(x){return x.l;}),'en',document.getElementById('enLetterAllBtn'));}
 function toggleNumberAll(lang){
   var all=lang==='en'?[].concat(enNums1,enNums2,enNums3,enNums4,[{de:'twenty-one'},{de:'one hundred'},{de:'one thousand'},{de:'one million'}]):NUM_POOL.concat(numsBig);
   var seen={},words=all.map(function(x){return x.de;}).filter(function(w){if(seen[w])return false;seen[w]=1;return true;});
