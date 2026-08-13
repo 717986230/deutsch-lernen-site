@@ -466,8 +466,18 @@ export default {
       const clamp = (v) => Math.max(0, Math.min(1e7, v | 0));
       const known = clamp(b.known), streak = clamp(b.streak), best = clamp(b.best), total = clamp(b.total), quiz = clamp(b.quiz);
       const level = String(b.level || 'A1').slice(0, 4);
-      const old = await env.DB.prepare('SELECT badges,best_streak FROM users WHERE id=?').bind(uid).first();
-      const list = computeBadges({ known, streak, best: Math.max(best, streak), total, quiz }, uid);
+      const old = await env.DB.prepare('SELECT badges,known,best_streak,total,quiz FROM users WHERE id=?').bind(uid).first();
+      if (!old) return json({ err: '账号不存在' }, 404, cors);
+      // 客户端是离线优先，换设备时它的累计值可能比云端低。用于徽章的必须是
+      // 实际会写入的合并结果，不能用请求体的较小值，否则一次同步会把已解锁徽章抹掉。
+      const merged = {
+        known: Math.max(old.known || 0, known),
+        streak,
+        best: Math.max(old.best_streak || 0, best, streak),
+        total: Math.max(old.total || 0, total),
+        quiz: Math.max(old.quiz || 0, quiz),
+      };
+      const list = computeBadges(merged, uid);
       const badges = list.join(',');
       const now = Date.now();
       // known/total/quiz 只增不减：这三个是累计量，用户不可能「忘掉」已掌握的词。
@@ -478,12 +488,12 @@ export default {
       await env.DB.prepare(
         'UPDATE users SET known=MAX(known,?),streak=?,best_streak=MAX(best_streak,?,?),' +
         'total=MAX(total,?),quiz=MAX(quiz,?),level=?,badges=?,updated=? WHERE id=?')
-        .bind(known, streak, best, streak, total, quiz, level, badges, now, uid).run();
+        .bind(merged.known, merged.streak, merged.best, merged.streak, merged.total, merged.quiz, level, badges, now, uid).run();
       // 学习动态：纯系统事件（新徽章 / 打卡破纪录），供关注者的 Feed
       if (old) {
         const had = new Set((old.badges || '').split(',').filter(Boolean));
         const acts = list.filter(id => !had.has(id)).map(id => ['badge', id]);
-        const newBest = Math.max(best, streak);
+        const newBest = merged.best;
         if (newBest > (old.best_streak || 0) && newBest >= 3) acts.push(['streak', String(newBest)]);
         if (acts.length) {
           const st = env.DB.prepare('INSERT INTO activity (uid,type,data,ts) VALUES (?,?,?,?)');
@@ -612,7 +622,8 @@ export default {
       return json({ user: u, rank: rank.c, followers: fc.followers, following: fc.following, isFollowing, isMe: viewer === pid }, 200, cors);
     }
 
-    return new Response('uuoo app');
+    if (path.startsWith('/api/')) return json({ err: '接口不存在' }, 404, cors);
+    return new Response('uuoo app', { headers: cors });
   },
 };
 
@@ -706,10 +717,10 @@ async function newSession(env, uid) {
   ]);
   return token;
 }
-// 提取当前请求的 token 原文（与 auth 同一取法：Bearer 头，兜底 ?token=）
+// 只接受 Authorization: Bearer，避免 token 出现在 URL、Referer 或访问日志中。
 function getToken(req) {
   const h = req.headers.get('Authorization') || '';
-  return h.replace(/^Bearer\s+/i, '') || new URL(req.url).searchParams.get('token') || '';
+  return h.replace(/^Bearer\s+/i, '');
 }
 async function auth(req, env) {
   const t = getToken(req);

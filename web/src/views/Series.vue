@@ -24,7 +24,7 @@ async function load() {
   loading.value = true;
   list.value = await loadData(langS.file('series'));
   try { links.value = await loadData('links'); } catch { links.value = []; }
-  try { await loadGloss(await loadData(langS.file('categories'))); } catch { /* 没小注也能读 */ }
+  try { await loadGloss(langS.lang, await loadData(langS.file('categories'))); } catch { /* 没小注也能读 */ }
   loading.value = false;
 }
 onMounted(load);
@@ -32,6 +32,7 @@ watch(() => langS.lang, () => { level.value = 'all'; load(); });
 
 const shown = computed(() => list.value.filter((r) => level.value === 'all' || r.level === level.value));
 const levelTabs = computed(() => TABS.filter(([k]) => k === 'all' || list.value.some((r) => r.level === k)));
+const hasPinyin = computed(() => list.value.some((r) => r.paras.some((p) => p[2])));
 
 const { playing, at, start, stop } = useLoopRead(() => (langS.isEn ? 'en-US' : 'de-DE'));
 const mode = ref('');
@@ -58,16 +59,16 @@ onBeforeUnmount(stop);
 
 <template>
   <div class="page">
-    <div class="hero-label">Serie</div>
+    <div class="hero-label">{{ langS.isEn ? 'Series' : 'Serie' }}</div>
     <h1 class="page-title">留学连载</h1>
 
     <div class="jump">
       <button class="level-tab" type="button" @click="router.push('/reading')">📖 短文</button>
-      <button class="level-tab" type="button" @click="router.push('/reading')">🍽️ 餐厅</button>
+      <button class="level-tab" type="button" @click="router.push({ path: '/reading', query: { topic: 'restaurant' } })">🍽️ 餐厅</button>
       <button class="level-tab active" type="button">🎬 连载</button>
       <button class="level-tab" type="button" @click="router.push('/dialog')">💬 对话</button>
     </div>
-    <p class="page-sub">原创连续剧 · 中德对照 · 🔊 慢速朗读 · 每句带谐音</p>
+    <p class="page-sub">{{ langS.isEn ? '原创连续剧 · 中英对照 · 🔊 慢速朗读' : '原创连续剧 · 中德对照 · 🔊 慢速朗读 · 每句带谐音' }}</p>
 
     <div class="row">
       <button class="fab-read" :class="{ speaking: playing && mode === 'all' }" type="button"
@@ -84,7 +85,7 @@ onBeforeUnmount(stop);
       <span class="sec-title-icon">🎬</span><span class="sec-title-text">原创连载 · 留学生活</span>
       <span class="sec-title-count">共 {{ shown.length }} 集</span>
     </div>
-    <p class="hint">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听 · <b>德语词上方是词义</b>
+    <p class="hint">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听 · <b>{{ langS.isEn ? '英文词上方是词义' : '德语词上方是词义' }}</b>
       <button class="btn gloss-btn" type="button" @click="toggleGloss">{{ glossVisible ? '隐藏词义' : '显示词义' }}</button>
     </p>
 
@@ -96,7 +97,7 @@ onBeforeUnmount(stop);
     <p v-if="loading" class="page-sub">加载中…</p>
     <div v-for="(r, ri) in shown" :key="ri" class="card art">
       <div class="art-head">
-        <span class="art-title" lang="de">{{ r.title }}</span>
+        <span class="art-title" :lang="langS.isEn ? 'en' : 'de'">{{ r.title }}</span>
         <span class="level-badge" :class="LB[r.level]">{{ LN[r.level] || r.level }}</span>
         <span class="art-zh">{{ r.zh }}</span>
         <button class="read-art-btn" :class="{ speaking: epPlaying(r) }" type="button"
@@ -107,13 +108,13 @@ onBeforeUnmount(stop);
       <div v-for="(p, pi) in r.paras" :key="pi" class="read-para" :class="{ 'rp-on': epPlaying(r) && at === pi }">
         <button class="para-spk" type="button" aria-label="朗读本句" @click="say(p[0])">🔊</button>
         <div class="pbody">
-          <div class="de" lang="de"><span v-for="(t, ti) in splitWords(p[0])" :key="ti">
+          <div class="de" :lang="langS.isEn ? 'en' : 'de'"><span v-for="(t, ti) in splitWords(p[0])" :key="ti">
             <template v-if="t.sp">{{ t.sp }}</template>
             <ruby v-else-if="t.g && glossVisible">{{ t.w }}<rt>{{ t.g }}</rt></ruby>
             <template v-else>{{ t.w }}</template>
           </span></div>
           <div class="zh">{{ p[1] }}</div>
-          <div v-if="p[2]" class="py">{{ p[2] }}</div>
+          <div v-if="hasPinyin && p[2]" class="py">{{ p[2] }}</div>
         </div>
       </div>
     </div>

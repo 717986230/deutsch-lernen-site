@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { useAccount } from './store/account';
 import BadgeCelebrate from './components/BadgeCelebrate.vue';
 import TopNav from './components/TopNav.vue';
@@ -9,6 +10,10 @@ import { useTheme } from './store/theme';
 
 const acct = useAccount();
 const theme = useTheme();
+const route = useRoute();
+// 与旧站的 locked 状态一致：登录、注册、找回密码时只呈现账号流程，
+// 不让学习导航抢走注意力，也避免看起来像「登录页嵌在学习页里」。
+const isAuthFlow = computed(() => route.meta.guest === true);
 onMounted(() => {
   theme.init();
   acct.fetchMe(); acct.sync();
@@ -21,15 +26,17 @@ onMounted(() => {
 
 <template>
   <div class="app">
-    <TopNav />
+    <TopNav v-if="!isAuthFlow" />
     <!-- 离线提示：只在确实是网络故障时出现，业务错误不复用这个位置 -->
-    <div v-if="acct.offline" class="offline">离线中，联网后自动同步</div>
-    <router-view v-slot="{ Component }">
-      <keep-alive include="Phrases,Reading,Spell"><component :is="Component" /></keep-alive>
-    </router-view>
+    <div v-if="acct.offline && !isAuthFlow" class="offline">离线中，联网后自动同步</div>
+    <main id="main-content">
+      <router-view v-slot="{ Component }">
+        <keep-alive include="Phrases,Reading,Spell"><component :is="Component" /></keep-alive>
+      </router-view>
+    </main>
     <BottomNav />
-    <DailyBoost />
-    <BadgeCelebrate />
+    <DailyBoost v-if="!isAuthFlow" />
+    <BadgeCelebrate v-if="!isAuthFlow" />
   </div>
 </template>
 

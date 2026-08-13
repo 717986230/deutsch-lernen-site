@@ -1630,8 +1630,6 @@ body{padding-bottom:var(--tab-h)}
 .glass-card .acct-btn{box-shadow:0 6px 18px rgba(88,204,2,.4)}
 .glass-card .acct-div{color:var(--text-dim)}
 .glass-card .acct-note{color:var(--text-dim)}
-.acct-notice{margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,150,0,.3);border-radius:10px;background:rgba(255,150,0,.08);color:var(--text-dim);font-size:12px;line-height:1.7}
-.acct-notice b{color:var(--text)}
 </style>
 
 <!-- 登录 / 注册（动态玻璃 · Apple UI） -->
@@ -1644,7 +1642,6 @@ body{padding-bottom:var(--tab-h)}
         <button id="tabReg" onclick="acctTab('reg')">注册</button>
       </div>
       <div id="paneLogin">
-          <div class="acct-notice" role="status"><b>登录说明（2026 年 8 月 8 日）</b><br>今天维护时误清理了登录会话，给你带来不便，我们诚恳道歉。学习数据没有受影响，但需要重新登录；你的本地学习记录仍在。</div>
           <div class="acct-field"><label>用户名</label><input class="acct-input" id="lgUser" autocomplete="username" placeholder="小写字母/数字/下划线" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('lgPass').focus();}"></div>
           <div class="acct-field"><label>密码</label><input class="acct-input" id="lgPass" type="password" autocomplete="current-password" placeholder="至少 6 位" onkeydown="if(event.key==='Enter'){event.preventDefault();acctLogin();}"></div>
           <div style="text-align:right;margin:-4px 0 8px"><button type="button" onclick="acctForgot()" style="background:none;border:none;color:var(--gold-text);font-size:12px;font-family:inherit;cursor:pointer;padding:4px">忘记密码？用恢复码重置</button></div>
@@ -4429,7 +4426,7 @@ function renderFeed(){var el=document.getElementById('rankList');if(!el)return;i
 function renderRank(by){if(by){_rankBy=by;}var ids={known:'rkKnown',streak:'rkStreak',total:'rkTotal'};for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('on',k===_rankBy);}var el=document.getElementById('rankList');if(!el)return;el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p>';if(!API_BASE){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">排行榜暂未开放</p>';return;}if(_rankScope==='friends'&&!ACCT.token){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">登录后可看好友榜</p>';return;}apiFetch('/api/leaderboard?by='+_rankBy+(_rankScope==='friends'?'&scope=friends':'')).then(function(r){if(!r||!r.ok||!r.data.list){el.innerHTML='<p class="acct-err">加载失败，请稍后再试</p>';return;}var list=r.data.list,total=Number(r.data.total);if(!isFinite(total))total=list.length;var myname=ACCT.user&&ACCT.user.username;var unit=_rankBy==='streak'?'天':(_rankBy==='total'?'次':'词');if(!list.length){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">还没有人上榜，快去学习成为第一名 🎉</p>';}else{var _shown=list.slice(0,10);var _rest=Math.max(0,total-10);el.innerHTML=_shown.map(function(u,i){var no=i+1;var medal=no===1?'🥇':no===2?'🥈':no===3?'🥉':no;return '<div class="rank-row'+(u.username===myname?' me':'')+'" onclick="openProfile(\''+_esc(u.username)+'\')"><div class="rank-no'+(no<=3?' top':'')+'">'+medal+'</div>'+_avatarHtml(u,38)+'<div class="rank-name"><div class="rank-nick">'+_esc(u.nickname||u.username)+'</div><div class="rank-meta">'+_esc(u.level||'A1')+' · 🏅'+(u.badges||0)+'</div></div><div class="rank-val">'+(u[_rankBy]||0)+'<small>'+unit+'</small></div></div>';}).join('')+(_rest>0?'<p style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-dim)">榜上另有 '+_rest+' 人</p>':'');}var hint=document.getElementById('rankHint');if(hint)hint.innerHTML=ACCT.token?'点头像看主页 · 你的学习数据会自动同步上榜':'还没登录？<a href="javascript:showSection(\'account\')" style="color:var(--gold-text)">登录</a>后即可上榜';});}
 // 初始化：接住 OAuth 回跳的 token、拉取自己的资料、离开页面时同步
 (function(){var justOauth=false;
-try{var m=(location.hash||'').match(/acct_token=([a-f0-9]+)/)||(location.search||'').match(/[?&]acct_token=([a-f0-9]+)/);if(m){acctSetAuth(m[1],ACCT.user||null);justOauth=true;try{history.replaceState(null,'',location.pathname);}catch(e){}}}catch(e){}
+try{var m=(location.hash||'').match(/acct_token=([a-f0-9]+)/);if(m){acctSetAuth(m[1],ACCT.user||null);justOauth=true;try{history.replaceState(null,'',location.pathname);}catch(e){}}}catch(e){}
 // 门槛：有 token 先放行（乐观），无 token 锁在登录页
 if(ACCT.token){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();try{renderHomeDash();}catch(e){}try{setTimeout(boostShow,400);}catch(e){}try{if(_deepSec){var _ds=_deepSec;_deepSec=null;showSection(_ds);}else showSection(START_SEC);}catch(e){}}else{document.documentElement.classList.add('locked');showSection('account');}
 if(ACCT.token&&API_BASE){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();try{renderHomeDash();}catch(e){}if(justOauth)showSection(START_SEC);}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});acctSync(true);}

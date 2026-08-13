@@ -17,16 +17,21 @@
   --art-der:#0f6f9e; --art-die:#c9252b; --art-das:#2f7d00;
   --lv0:#357a00; --lva1:#0b6285; --lva2:#7a5200; --lvb1:#95430f; --lvb2:#bf1e28;
   --btn-bg:rgba(88,204,2,.12);
+  /* 设计系统基础：所有新增布局优先从 4px / 8px 节奏中取值，避免页面各自发明间距。
+     旧站已有的像素值保持不动，迁移时才逐步收敛，视觉不会突变。 */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:14px; --radius-pill:999px;
+  --motion-fast:150ms; --motion-base:200ms;
+  --layer-content:1; --layer-sticky:100; --layer-nav:200; --layer-bottom-nav:300; --layer-modal:400;
   /* 固定顶栏高度：44px 按钮 + 上下各 6px 外边距。页面留白和页内 sticky 条都引它，
      改顶栏尺寸时只需改这一处，不会出现「内容被顶栏压住」或「留白对不上」 */
   --bar-h:56px;
   /* 底部标签栏高度（含 iPhone 安全区）。页面下留白引它，避免最后一项被盖住点不到 */
   --tab-h:calc(56px + env(safe-area-inset-bottom));
-}
 
-/* 语义别名。各视图里写的是语义名（--text-2/--line/--brand…），令牌值只在上面一处定。
-   自定义属性是**用时求值**的，所以别名只需写一份，深浅两套会各自解析到对的值。 */
-:root{
+  /* 语义别名。各视图里写的是语义名（--text-2/--line/--brand…），令牌值只在这里定义。
+     自定义属性是**用时求值**的，所以深浅两套会自动解析到正确的值。 */
   --brand:var(--gold); --brand-text:var(--gold-text);
   --text-2:var(--text-dim); --text-3:var(--text-faint);
   --line:var(--border);
@@ -70,6 +75,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   /* 德语复合词很长（neunundneunzig / Wohnungssuche），不允许断行的话
      窄屏和高倍缩放下会把文档撑宽，全站跟着出现横向滚动 */
   overflow-wrap:break-word}
+button,input,select,textarea{font:inherit}
+/* 键盘路径不能依赖颜色或鼠标 hover；焦点只在键盘操作时出现，避免影响触摸界面。 */
+:focus-visible{outline:2px solid var(--gold-text);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;
+    animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
 
 /* ── 布局：与旧站一致 ── */
 .container{max-width:900px;margin:0 auto;padding:0 20px}

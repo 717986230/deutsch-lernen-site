@@ -27,6 +27,7 @@ const routes = [
   { path: '/login', component: () => import('../views/Login.vue'), meta: { title: '登录', guest: true } },
   { path: '/register', component: () => import('../views/Register.vue'), meta: { title: '注册', guest: true } },
   { path: '/reset', component: () => import('../views/Reset.vue'), meta: { title: '重置密码', guest: true } },
+  { path: '/:pathMatch(.*)*', component: () => import('../views/NotFound.vue'), meta: { title: '页面不存在' } },
 ];
 const router = createRouter({
   history: createWebHashHistory(),

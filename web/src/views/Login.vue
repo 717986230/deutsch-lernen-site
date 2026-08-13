@@ -37,8 +37,6 @@ async function submit() {
   <div class="auth">
     <p class="auth-brand">德语学习手册</p>
     <h1 class="auth-h1">登录</h1>
-    <!-- 「继续你的学习进度」这类副标题是废话，删掉；下面这条公告是真信息，保留 -->
-    <p class="auth-note" role="status"><b>登录说明（2026 年 8 月 8 日）</b><br>今天维护时误清理了登录会话，给你带来不便，我们诚恳道歉。学习数据没有受影响，但需要重新登录；你的本地学习记录仍在。</p>
 
     <form class="auth-form" @submit.prevent="submit">
       <AuthField v-model="f.username" label="用户名" autocomplete="username"
@@ -46,7 +44,7 @@ async function submit() {
       <AuthField v-model="f.password" label="密码" type="password" autocomplete="current-password"
         placeholder="至少 6 位" />
 
-      <p v-if="err" class="auth-err">{{ err }}</p>
+      <p v-if="err" class="auth-err" role="alert">{{ err }}</p>
 
       <div class="auth-actions">
         <button class="btn btn-block" type="submit" :disabled="busy">{{ busy ? '登录中…' : '登录' }}</button>
