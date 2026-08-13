@@ -1,102 +1,125 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+// 「情景对话」——照旧站 #dialog 重做：10 段对话一页铺开（原来那版是列表点进单段）。
+// 每段：场景标题 + 级别徽章 + ▶播放全部 + ⌨️练这段；下面是左右分列的气泡，
+// 每条气泡带 德语 / 🔊 / 中文 / 谐音。
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { loadData } from '../api';
-import { speak, canSpeak } from '../api/speak';
+import { speak } from '../api/speak';
 import { useLang } from '../store/lang';
+import { useLoopRead } from '../api/reader';
 defineOptions({ name: 'Dialog' });
 
+const router = useRouter();
 const langS = useLang();
-const list = ref([]); const cur = ref(null); const playing = ref(false); const at = ref(-1);
-const LV = { '0':'入门', a1:'A1', a2:'A2', b1:'B1', b2:'B2' };
-let timer = null;
-async function load() { stop(); cur.value = null; list.value = await loadData(langS.file('dialogs')); }
-onMounted(load);
-watch(() => langS.lang, load);   // 切语言重载数据，并退回列表避免停在另一语言的详情页
-onUnmounted(stop);
+const list = ref([]); const loading = ref(true);
+const rate = ref(0.62);
+try { rate.value = JSON.parse(localStorage.getItem('spkCfg') || '{}').rate || 0.62; } catch { /* 默认 */ }
 
-const grouped = computed(() => {
-  const g = {};
-  for (const d of list.value) (g[LV[String(d.lv)] || d.lv] ||= []).push(d);
-  return Object.entries(g);
-});
+const LB = { '0': 'lb-0', a1: 'lb-a1', a2: 'lb-a2', b1: 'lb-b1', b2: 'lb-b2' };
+const LN = { '0': '零基础', a1: 'A1', a2: 'A2', b1: 'B1', b2: 'B2' };
 
-function stop() { playing.value = false; at.value = -1; if (timer) { clearTimeout(timer); timer = null; } }
-// 逐句连播：按句长估时，说完再排下一句。没有 speechSynthesis 时直接退化为不可播。
-function playAll() {
-  if (!cur.value || !canSpeak) return;
-  stop(); playing.value = true;
-  const turns = cur.value.turns;
-  const step = (i) => {
-    if (!playing.value || i >= turns.length) { stop(); return; }
-    at.value = i; speak(turns[i].de, langS.isEn ? 'en-US' : 'de-DE');
-    timer = setTimeout(() => step(i + 1), 900 + turns[i].de.length * 75);
-  };
-  step(0);
+async function load() {
+  loading.value = true;
+  list.value = await loadData(langS.file('dialogs'));
+  loading.value = false;
 }
-function open(d) { stop(); cur.value = d; }
-function back() { stop(); cur.value = null; }
+onMounted(load);
+watch(() => langS.lang, load);
+
+const { playing, at, start, stop } = useLoopRead(() => (langS.isEn ? 'en-US' : 'de-DE'));
+const cur = ref(-1);
+function play(i) {
+  if (playing.value && cur.value === i) return void (stop(), cur.value = -1);
+  cur.value = i;
+  start(list.value[i].turns.map((t) => t.de), rate.value);
+}
+const say = (t) => { stop(); cur.value = -1; speak(t, langS.isEn ? 'en-US' : 'de-DE', rate.value); };
+// 「练这段」：把这段对话的句子塞进拼写页的队列（与旧站 spStartDialog 同意图）
+function drill(i) {
+  const d = list.value[i];
+  try {
+    localStorage.setItem('spDialog', JSON.stringify(d.turns.map((t) => ({ de: t.de, zh: t.zh, py: t.py }))));
+    localStorage.setItem('lastStudy', JSON.stringify({ name: '对话 · ' + d.scene, t: Date.now() }));
+  } catch { /* 隐私模式下就只是跳转 */ }
+  router.push('/spell?from=dialog');
+}
+onBeforeUnmount(stop);
 </script>
 
 <template>
   <div class="page">
-    <template v-if="!cur">
-      <h1 class="page-title">情景对话</h1>
-      <p class="page-sub">按场景分组 · 点句子听发音</p>
-      <template v-for="[lv, arr] in grouped" :key="lv">
-        <div class="group">{{ lv }}</div>
-        <div v-for="d in arr" :key="d.scene" class="item dl" @click="open(d)">
-          <span class="ic">{{ d.icon }}</span>
-          <span class="nm">
-            <span class="sc">{{ d.scene }}</span>
-            <span class="de" lang="de">{{ d.de }}</span>
-          </span>
-          <span class="ct">{{ d.turns.length }} 轮</span>
-        </div>
-      </template>
-    </template>
+    <div class="hero-label">Dialoge</div>
+    <h1 class="page-title">情景对话</h1>
 
-    <template v-else>
-      <div class="bar">
-        <button class="back tap" @click="back">‹ 返回</button>
-        <span class="bt">{{ cur.icon }} {{ cur.scene }}</span>
+    <div class="jump">
+      <button class="level-tab" type="button" @click="router.push('/reading')">📖 短文</button>
+      <button class="level-tab" type="button" @click="router.push('/reading')">🍽️ 餐厅</button>
+      <button class="level-tab" type="button" @click="router.push('/series')">🎬 连载</button>
+      <button class="level-tab active" type="button">💬 对话</button>
+    </div>
+    <p class="page-sub">真实场景 · 一问一答 · 🔊 逐句朗读 · 每句带谐音</p>
+
+    <p v-if="loading" class="page-sub">加载中…</p>
+    <div v-for="(d, i) in list" :key="i" class="card dlg">
+      <div class="dlg-head">
+        <span class="dlg-scene">{{ d.icon }} {{ d.scene }}
+          <span v-if="d.lv" class="level-badge" :class="LB[d.lv]">{{ LN[d.lv] || d.lv }}</span>
+        </span>
+        <button type="button" class="dlg-play" :class="{ on: playing && cur === i }" @click="play(i)">
+          {{ playing && cur === i ? '⏹ 停止' : '▶ 播放全部' }}
+        </button>
+        <button type="button" class="dlg-drill" @click="drill(i)">⌨️ 练这段</button>
       </div>
-      <button v-if="canSpeak" class="btn btn-plain play" @click="playing ? stop() : playAll()">
-        {{ playing ? '■ 停止播放' : '▶ 连续播放' }}</button>
-      <!-- A/B 两方左右分栏，一眼能看出谁在说 -->
-      <div v-for="(t, i) in cur.turns" :key="i" class="turn" :class="[t.s === 'A' ? 'a' : 'b', { on: at === i }]"
-        @click="speak(t.de, langS.isEn ? 'en-US' : 'de-DE')">
-        <div class="who">{{ t.s }}</div>
-        <div class="bub">
-          <div class="t-de" lang="de">{{ t.de }}</div>
-          <div class="t-zh">{{ t.zh }}</div>
-          <div class="t-py">{{ t.py }}</div>
+      <div class="dlg-body">
+        <div v-for="(t, k) in d.turns" :key="k" class="dlg-turn"
+          :class="[t.s === 'B' ? 'b' : 'a', { on: playing && cur === i && at === k }]">
+          <div class="dlg-bubble">
+            <div class="dlg-de-row">
+              <span class="dlg-de" lang="de">{{ t.de }}</span>
+              <button type="button" class="dlg-spk" aria-label="朗读这句" @click="say(t.de)">🔊</button>
+            </div>
+            <div class="dlg-zh">{{ t.zh }}</div>
+            <div class="dlg-py">{{ t.py }}</div>
+          </div>
         </div>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.dl{display:flex;align-items:center;gap:12px}
-.ic{font-size:22px}
-.nm{flex:1;min-width:0;display:flex;flex-direction:column}
-.sc{font-size:16px;font-weight:500}
-.de{font-size:12px;color:var(--text-3);margin-top:2px}
-.ct{color:var(--text-3);font-size:13px;white-space:nowrap}
-.bar{display:flex;align-items:center;gap:10px;padding:12px 0 4px;position:sticky;top:var(--bar-h);background:var(--bg);z-index:2}
-.back{background:none;border:none;color:var(--brand-text);font-size:15px;font-family:inherit;cursor:pointer;padding:4px 0}
-.bt{font-weight:600}
-.play{margin:8px 0 18px}
-.turn{display:flex;gap:8px;margin-bottom:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.turn.b{flex-direction:row-reverse}
-.who{width:26px;height:26px;flex:none;border-radius:50%;background:var(--line);
-  /* 说话人字母压在浅灰底上，用 --text-2 只有 4.39:1，差一点点，这里用正文色 */
-  display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text);margin-top:4px}
-.turn.b .who{background:var(--brand);color:#14240a}
-.bub{flex:1;padding:11px 13px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
-.turn.b .bub{border-color:var(--brand)}
-.turn.on .bub{background:var(--tip-bg);border-color:var(--brand)}
-.t-de{font-size:16px;font-weight:600;line-height:1.5}
-.t-zh{font-size:14px;color:var(--text-2);margin-top:3px}
-.t-py{font-size:13px;color:var(--text-3);margin-top:2px}
+.jump{display:flex;gap:8px;justify-content:center;margin:2px 0 10px;flex-wrap:wrap}
+.dlg{margin-bottom:14px;cursor:default}
+.dlg-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.dlg-scene{min-width:0;font-size:16px;font-weight:600;color:var(--text)}
+.level-badge{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:8px;
+  font-size:12px;font-weight:600;background:var(--surface-2);border:1px solid var(--border);
+  color:var(--gold-text)}
+.lb-0{color:var(--lv0)}.lb-a1{color:var(--lva1)}.lb-a2{color:var(--lva2)}
+.lb-b1{color:var(--lvb1)}.lb-b2{color:var(--lvb2)}
+.dlg-play{position:relative;margin-left:auto;min-height:44px;border:1px solid var(--gold-dim);
+  color:var(--gold-text);background:transparent;border-radius:999px;padding:4px 12px;
+  font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.dlg-play.on{background:#c9252b;border-color:#c9252b;color:#fff}
+.dlg-drill{position:relative;min-height:44px;border:none;background:var(--gold);color:#14240a;
+  border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:inherit;white-space:nowrap}
+.dlg-body{display:flex;flex-direction:column;gap:8px}
+.dlg-turn{display:flex}
+.dlg-turn.b{justify-content:flex-end}
+.dlg-bubble{max-width:86%;background:var(--bg);border:1px solid var(--border);
+  border-radius:14px;padding:9px 12px}
+.dlg-turn.b .dlg-bubble{background:var(--gold-faint);border-color:var(--gold-dim)}
+.dlg-turn.on .dlg-bubble{outline:2px solid var(--gold);outline-offset:1px}
+.dlg-de-row{display:flex;align-items:center;gap:6px}
+.dlg-de{flex:1;min-width:0;font-size:15px;color:var(--text);font-style:italic}
+.dlg-spk{position:relative;flex-shrink:0;width:26px;height:26px;border:none;border-radius:50%;
+  background:transparent;color:var(--gold-text);font-size:14px;cursor:pointer;padding:0;
+  display:inline-flex;align-items:center;justify-content:center;font-family:inherit}
+.dlg-spk::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:44px;height:44px}
+.dlg-zh{font-size:13px;color:var(--text-dim);margin-top:2px}
+/* 旧站这行用 --text-faint，压在浅绿气泡上只有 4.41:1，这里抬到 --text-dim */
+.dlg-py{font-size:12px;color:var(--text-dim);margin-top:1px}
 </style>

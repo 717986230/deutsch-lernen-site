@@ -10,6 +10,7 @@
 //   letters.json    字母表 30 张卡的数据（旧站由 JS 从 LETTERS 数组渲染，抽 HTML 抽不到）
 //   numbers.json    0–12 与大数两组卡片的数据（同上，来自 nums0 / numsBig）
 //   quizzes.json    发音/语法页里的「即学即练」题池（来自 GQ_DATA，同样是运行时渲染）
+//   links.json      连载页底部的「正版视频资源」导航（来自 SERIES_LINKS）
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -77,6 +78,7 @@ const letters = jsArray('const LETTERS =');
 const numbers = { small: jsArray('const nums0'), big: jsArray('const numsBig') };
 // 内嵌小测：页面里是 <div class="gq-box" data-gq="p1"> 这样的空壳，题目全在 GQ_DATA 里
 const quizzes = jsArrayObj('var GQ_DATA=');
+const links = jsArray('const SERIES_LINKS=');
 
 const write = (name, obj) => {
   writeFileSync(OUT + name, JSON.stringify(obj));
@@ -87,5 +89,7 @@ write('reference.json', reference);
 write('letters.json', letters);
 write('numbers.json', numbers);
 write('quizzes.json', quizzes);
+write('links.json', links);
 console.log(`  字母 ${letters.length} 个 · 数字 ${numbers.small.length} + ${numbers.big.length} 张卡`
-  + ` · 小测 ${Object.keys(quizzes).length} 组共 ${Object.values(quizzes).reduce((a, v) => a + v.length, 0)} 题`);
+  + ` · 小测 ${Object.keys(quizzes).length} 组共 ${Object.values(quizzes).reduce((a, v) => a + v.length, 0)} 题`
+  + ` · 视频资源 ${links.length} 条`);
