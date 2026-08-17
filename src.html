@@ -4111,7 +4111,11 @@ function gqReset(btn){
   var box=_up(btn,'gq-box');
   renderGqBox(box);   // 重练＝重新随机抽题
 }
-// ── 人体图解：原创SVG + 16个部位点读 ──
+// ── 人体部位：emoji 图卡点读（renderBody 铺卡片，bpPick 朗读）──
+// xp/yp 是早年那版「在人形图上定位热点」留下的坐标，现在的渲染完全不读它们，
+// 所以新加的词不再编造坐标。真要做回定位图时，这 40 个点都得重新量一遍。
+// data/boards.json 的 koerper 是本数组的镜像（给 Vue 端用），
+// 由 tools/verify-body-sync.mjs 把关，改这里就必须同步改那边。
 var BODY_PARTS=[
  {de:"das Haar",zh:"头发",py:"达斯 哈尔",xp:49,yp:3,em:"💇"},
  {de:"die Stirn",zh:"额头",py:"迪 施提恩",xp:49,yp:8,em:"🧑"},
@@ -4122,22 +4126,36 @@ var BODY_PARTS=[
  {de:"das Ohr",zh:"耳朵",py:"达斯 奥尔",xp:57,yp:11,em:"👂"},
  {de:"das Kinn",zh:"下巴",py:"达斯 金",xp:49,yp:17,em:"🧔"},
  {de:"der Hals",zh:"脖子",py:"德尔 哈尔斯",xp:49,yp:20,em:"🧣"},
+ {de:"der Nacken",zh:"后颈",py:"德尔 纳肯",em:"💆"},
  {de:"die Schulter",zh:"肩膀",py:"迪 舒尔特",xp:35,yp:23,em:"💪"},
  {de:"die Achsel",zh:"腋窝",py:"迪 阿克塞尔",xp:34,yp:28,em:"🙋"},
+ // Achsel 与 Achselhöhle 是同一处的两个词（前者偏「腋下」、后者偏「腋窝腔」）。
+ // 图卡测验只显示中文，两条中文必须不一样，否则四选一会出现两个都对的选项。
+ {de:"die Achselhöhle",zh:"胳肢窝",py:"迪 阿克塞尔霍勒",em:"🧴"},
  {de:"die Brust",zh:"胸",py:"迪 布鲁斯特",xp:43,yp:29,em:"👕"},
+ {de:"die Brustwarze",zh:"乳头",py:"迪 布鲁斯特瓦尔泽",em:"⚪"},
  {de:"der Oberarm",zh:"上臂",py:"德尔 奥伯阿姆",xp:30,yp:33,em:"💪"},
  {de:"der Bauch",zh:"肚子",py:"德尔 包赫",xp:50,yp:36,em:"🫃"},
  {de:"der Nabel",zh:"肚脐",py:"德尔 纳贝尔",xp:50,yp:40,em:"🔵"},
  {de:"die Taille",zh:"腰",py:"迪 塔耶",xp:38,yp:38,em:"📏"},
+ // das Kreuz 在「人文·社会」里已收「十字架」义，这里是它的解剖义（下背）。
+ // 中文不写「腰部」：那和上面 die Taille 的「腰」太近，测验会分不开。
+ {de:"das Kreuz",zh:"下背",py:"达斯 克洛伊茨",em:"🧘"},
+ {de:"die Hüfte",zh:"髋",py:"迪 辉夫特",em:"🕺"},
  {de:"der Ellbogen",zh:"手肘",py:"德尔 埃尔博根",xp:28,yp:42,em:"💪"},
+ {de:"der Unterarm",zh:"小臂",py:"德尔 温特阿姆",em:"🦾"},
  {de:"die Leiste",zh:"鼠蹊",py:"迪 莱斯特",xp:44,yp:46,em:"🩲"},
+ {de:"die Geschlechtsteile",zh:"生殖器",py:"迪 格施莱希茨泰勒",em:"🚻"},
+ {de:"das Gesäß",zh:"臀",py:"达斯 格泽斯",em:"🍑"},
  {de:"das Handgelenk",zh:"手腕",py:"达斯 汉特格伦克",xp:26,yp:50,em:"⌚"},
  {de:"die Hand",zh:"手",py:"迪 汉特",xp:25,yp:54,em:"✋"},
  {de:"der Finger",zh:"手指",py:"德尔 芬格",xp:24,yp:57,em:"👆"},
  {de:"der Oberschenkel",zh:"大腿",py:"德尔 奥伯申克尔",xp:42,yp:54,em:"🦵"},
  {de:"das Knie",zh:"膝盖",py:"达斯 克尼",xp:45,yp:66,em:"🦵"},
  {de:"das Schienbein",zh:"小腿",py:"达斯 席恩拜因",xp:45,yp:77,em:"🦵"},
+ {de:"die Wade",zh:"小腿肚",py:"迪 瓦德",em:"🦵"},
  {de:"der Knöchel",zh:"脚踝",py:"德尔 克讷歇尔",xp:41,yp:85,em:"🦶"},
+ {de:"die Ferse",zh:"脚后跟",py:"迪 费尔泽",em:"👠"},
  {de:"der Fuß",zh:"脚",py:"德尔 福斯",xp:39,yp:89,em:"🦶"},
  {de:"der Kopf",zh:"头",py:"德尔 科普夫",xp:43,yp:6,em:"🗣️"},
  {de:"das Gesicht",zh:"脸",py:"达斯 格济希特",xp:54,yp:14,em:"😀"},
