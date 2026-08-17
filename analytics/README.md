@@ -66,7 +66,10 @@ wrangler deploy                                                 # 部署新版 w
 - `GET /api/progress?lang=de|en`（带 token）→ 取得该语言的词汇掌握、复习、错词、日课与最近学习明细
 - `PUT /api/progress`（带 token）`{lang,rev,document}` → 写入该语言学习明细；版本冲突返回 `409` 及服务端版本，客户端合并后重试
 - `POST /api/sync`（带 token）`{lang,known,streak,best,total,quiz,level}` → 更新排行榜/徽章用的摘要，明细由 `/api/progress` 单独恢复
-- `POST /api/profile/update`（带 token）`{nickname?,avatar?,av_bg?,sig?,email?}` → 改资料与邮箱；邮箱传空字符串＝删除。**phone 字段已不再接受**
+- `POST /api/profile/update`（带 token）`{nickname?,avatar?,av_bg?,sig?,email?,password?}` → 改资料与邮箱；邮箱传空字符串＝删除。**phone 字段已不再接受**
+  - ⚠️ **改动 `email` 必须带 `password` 重验当前密码**（与「重新生成恢复码」同规矩）：找回邮箱是账号的第二把钥匙，只凭会话就能改的话，借到一台已登录的手机即可 `email_code` → `reset` 拿走整个账号。密码错返回 400 并计入登录频控桶。
+  - 第三方登录账号（`provider≠pw`）**不允许**设置找回邮箱 —— 它们没有密码可二次验证，丢失访问的正解是回去用 GitHub/Google 重新登录。
+  - 邮箱一旦变更，`email_ok` 归零、未用完的验证码（`mail_*`）一并清空。
 - `GET  /api/me`（带 token）→ 自己的资料 + 排名；`email` **只返回掩码**（如 `t***@qq.com`），另有 `hasEmail` 布尔位。**不再返回 phone**
 - `GET  /api/leaderboard?by=known|streak|total` → Top 50（`badges` 是**数量**，不是列表）
 - `GET  /api/profile?name=<用户名>` → 公开主页数据（带 token 时含 isFollowing/关注数）
@@ -79,6 +82,7 @@ wrangler deploy                                                 # 部署新版 w
 - `POST /api/account/recovery`（带 token）`{password}` → 重新生成恢复码（密码账号须验当前密码），返回 `{recovery}`，**旧码立即作废**
 - `POST /api/account/email_code` `{username}` → 给该账号绑定的邮箱发 6 位验证码（10 分钟有效）。**无论账号/邮箱是否存在都返回同一句**，防账号枚举
 - `POST /api/account/reset` `{username,new,code?|emailCode?}` → 重置密码（无需登录）。**恢复码与邮箱验证码二选一**；成功后踢掉全部会话、返回新 token 与**一枚新恢复码**；走邮箱通道会顺带标记 `email_ok=1`
+  - ⚠️ 只对**密码账号**开放：`provider≠pw` 且没有 `pass_hash` 的账号一律按失败处理。否则等于凭一封邮件给第三方账号凭空造出一条用户名+密码通道（`/api/login` 只看 `pass_hash`，不看 `provider`）。
 - `POST /api/logout`（带 token）→ 登出当前会话（幂等）
 - `POST /api/logout_all`（带 token）→ 踢掉除当前外全部会话，返回 `{ok,revoked}`
 

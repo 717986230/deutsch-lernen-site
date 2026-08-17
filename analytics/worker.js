@@ -363,8 +363,12 @@ export default {
       };
       const mailCode = String(b.emailCode || '').replace(/\D/g, '');
       if (!name || (!code && !mailCode)) return fail();
-      const u = await env.DB.prepare('SELECT id,rec_salt,rec_hash,mail_salt,mail_hash,mail_exp,mail_try FROM users WHERE username=?').bind(name).first();
+      const u = await env.DB.prepare('SELECT id,provider,pass_hash,rec_salt,rec_hash,mail_salt,mail_hash,mail_exp,mail_try FROM users WHERE username=?').bind(name).first();
       if (!u) return fail();
+      // 第三方账号没有密码可「重置」—— 真给它写一个 pass_hash，等于凭一封邮件
+      // 给 GitHub/Google 账号凭空造出一条用户名+密码的登录通道（/api/login 只看
+      // pass_hash 不看 provider）。这类账号丢失访问的正解是回去用第三方重新登录。
+      if (u.provider !== 'pw' && !u.pass_hash) return fail();
       let passed = false;
       if (mailCode) {                                    // ① 邮箱验证码
         if (!u.mail_hash || !u.mail_exp || Date.now() > u.mail_exp) return fail();
@@ -611,8 +615,31 @@ export default {
       }
       if (b.email != null) {
         const em = normEmail(b.email); if (!em.ok) return json({ err: em.err }, 400, cors);
-        if (em.val) { const dup = await env.DB.prepare('SELECT id FROM users WHERE email=? AND id<>?').bind(em.val, uid).first();
-          if (dup) return json({ err: '该邮箱已被使用' }, 400, cors); }
+        // 找回密码邮箱＝账号的第二把钥匙：改掉它就能走 email_code → reset 拿走整个账号。
+        // 所以和「重新生成恢复码」同规矩 —— 必须重验当前密码，光有会话不够
+        // （借到一台已登录的手机就能改走，原主人会被彻底锁在门外）。
+        const me = await env.DB.prepare('SELECT username,provider,pass_salt,pass_hash,email FROM users WHERE id=?').bind(uid).first();
+        if (!me) return json({ err: '账号不存在' }, 404, cors);
+        if ((me.email || '') !== (em.val || '')) {
+          if (me.provider === 'pw' && me.pass_hash) {
+            const c = await rateCheck(env, 'lgu:' + me.username, RL.lgu.limit);
+            if (!c.ok) return tooMany(cors, c.retry);
+            if (await pbkdf2(String(b.password || ''), me.pass_salt) !== me.pass_hash) {
+              await rateHit(env, 'lgu:' + me.username, RL.lgu.limit, RL.lgu.win);
+              return json({ err: '请输入当前密码以确认修改邮箱' }, 400, cors);
+            }
+          } else {
+            // 第三方账号既没密码也没恢复码，会话内无从二次验证。它们本来就靠
+            // GitHub/Google 回来登录，不需要找回邮箱 —— 直接不给改。
+            return json({ err: '第三方登录账号无需设置找回邮箱' }, 400, cors);
+          }
+          // 换了邮箱，之前那次「邮箱已验证」的结论作废，未用完的验证码一并清掉
+          set.push('email_ok=?'); bind.push(0);
+          set.push('mail_hash=?'); bind.push(null);
+          set.push('mail_salt=?'); bind.push(null);
+          set.push('mail_exp=?'); bind.push(null);
+          set.push('mail_try=?'); bind.push(0);
+        }
         set.push('email=?'); bind.push(em.val);
       }
       if (b.av_bg != null) {

@@ -4428,10 +4428,13 @@ function meSettingsOpen(){var u=_meUser||{};var isPw=_isPwAcct(u);var view=docum
     +'<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">忘记密码时唯一的自助入口。重新生成会<b>作废旧码</b>，新码只显示一次，请务必存好。</div>'
     +'<input class="acct-input" id="setRecPw" type="password" autocomplete="current-password" placeholder="输入当前密码以确认" style="margin-bottom:8px">'
     +'<div class="acct-err" id="setRecErr"></div><button class="oauth-btn" style="margin:0" onclick="meNewRecovery()">重新生成恢复码</button></div>';}
-  h+='<div class="set-block"><div class="set-t">邮箱（用于找回密码）</div>'
+  // 找回邮箱是账号的第二把钥匙，改它必须重验密码（同「重新生成恢复码」）。
+  // 第三方账号没有密码、也不走邮箱找回，这一块干脆不显示。
+  if(isPw){h+='<div class="set-block"><div class="set-t">邮箱（用于找回密码）</div>'
     +'<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">选填。仅用于忘记密码时找回，不做推送、不给第三方；留空即删除，注销账号时一并永久删除。本站不收集手机号。</div>'
-    +'<input class="acct-input" id="setEmail" type="email" autocomplete="email" placeholder="'+(u.hasEmail?('当前：'+_esc(u.email||'')+'（留空则删除）'):'邮箱（未填写）')+'" onkeydown="if(event.key===\'Enter\'){event.preventDefault();meSaveContact();}">'
-    +'<div class="acct-err" id="setCtErr"></div><button class="acct-btn" onclick="meSaveContact()">保存联系方式</button></div>';
+    +'<input class="acct-input" id="setEmail" type="email" autocomplete="email" placeholder="'+(u.hasEmail?('当前：'+_esc(u.email||'')+'（留空则删除）'):'邮箱（未填写）')+'" style="margin-bottom:8px">'
+    +'<input class="acct-input" id="setEmailPw" type="password" autocomplete="current-password" placeholder="输入当前密码以确认" onkeydown="if(event.key===\'Enter\'){event.preventDefault();meSaveContact();}">'
+    +'<div class="acct-err" id="setCtErr"></div><button class="acct-btn" onclick="meSaveContact()">保存联系方式</button></div>';}
   h+='<div class="set-block"><div class="set-t">退出其它设备</div><div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">怀疑账号在别处登录时使用，仅保留当前设备</div><div class="acct-err" id="setAllErr"></div><button class="oauth-btn" style="margin:0" onclick="meLogoutAll()">退出其它所有设备</button></div>';
   h+='<div class="set-block"><div class="set-t" style="color:var(--red-text)">注销账号</div><div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">⚠️ 永久删除账号、昵称、全部学习统计、关注与徽章，<b>不可恢复</b>（本地学习记录不受影响）</div><button class="danger-btn" onclick="meDeleteStart()">注销账号…</button></div>';
   h+='<button class="oauth-btn" style="margin-top:14px" onclick="meEditClose()">← 返回</button></div>';
@@ -4514,10 +4517,13 @@ function meNewRecovery(){
 function meSaveContact(){
   var em=document.getElementById('setEmail'),err=document.getElementById('setCtErr');
   err.style.color='';err.textContent='';
-  var body={};
-  if(em)body.email=em.value||'';
+  if(!em)return;   // 第三方账号不显示这一块
+  var pw=document.getElementById('setEmailPw');
+  // 改找回邮箱要连当前密码一起发；服务端只有验过密码才落库
+  var body={email:em.value||'',password:(pw&&pw.value)||''};
   apiFetch('/api/profile/update',{method:'POST',body:body}).then(function(r){
     if(r&&r.ok){err.style.color='var(--gold-text)';err.textContent='\u2713 已保存';
+      if(pw)pw.value='';
       try{renderMe();}catch(e){}
     }else{err.textContent=(r&&r.data&&r.data.err)||'保存失败，请稍后再试';}
   },function(){err.textContent='网络错误';});
