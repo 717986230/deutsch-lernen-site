@@ -4576,10 +4576,18 @@ function renderRank(by){if(by){_rankBy=by;}var ids={known:'rkKnown',streak:'rkSt
 // 初始化：接住 OAuth 回跳的 token、拉取自己的资料、离开页面时同步
 (function(){var justOauth=false;
 try{var m=(location.hash||'').match(/acct_token=([a-f0-9]+)/);if(m){acctSetAuth(m[1],ACCT.user||null);justOauth=true;try{history.replaceState(null,'',location.pathname);}catch(e){}}}catch(e){}
+// ⚠️ 本块的同步代码只能碰**本块及更早**定义的函数。同步进度用到的 _dailyGet /
+// _spWrongGet 都在后面那个 <script> 块里，HTML 解析器在两块之间会回到事件循环，
+// 网络回调可能就在那一刻插进来 —— 2026-08 线上白屏（_dailyGet is not defined）就是这么来的。
+// 所以凡是会走到 _progressDoc 的路径，一律等文档解析完再启动。
+function _afterParse(fn){if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fn);}else{fn();}}
 // 必须登录。已保存 token 时先进入学习页，后台恢复明细；只有服务端明确 401 才清 token 回登录，
 // 网络波动或恢复接口暂不可用都不能把已经登录的用户误踢出去。
-if(ACCT.token){acctEnter();if(API_BASE){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();acctPullProgress().then(function(p){if(!(p&&p.status===401))acctSync(true);});if(justOauth)showSection(START_SEC);}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});}}else{document.documentElement.classList.add('locked');showSection('account');}
-try{document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&ACCT.token)acctSync(true);});}catch(e){}
+// acctEnter → showSection 也必须等解析完：showSection 里那一排 typeof X==='function' 守卫
+// 在解析中途会集体判假（spInit/renderHomeDash 的 dailyPlan 都在后面那块），
+// 结果是深链 #spell 打开一片空白、#home 的今日课程恒显示「0 词」。
+if(ACCT.token){_afterParse(acctEnter);if(API_BASE){_afterParse(function(){apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data.user){ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();acctPullProgress().then(function(p){if(!(p&&p.status===401))acctSync(true);});if(justOauth)showSection(START_SEC);}else if(r&&r.status===401){acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}});});}}else{document.documentElement.classList.add('locked');_afterParse(function(){showSection('account');});}
+_afterParse(function(){try{document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&ACCT.token)acctSync(true);});}catch(e){}});
 })();
 </script>
 <script>
