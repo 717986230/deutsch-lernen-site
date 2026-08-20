@@ -4267,8 +4267,14 @@ function buildBoardQuiz(){
   var box=document.getElementById('boardQuiz');if(!box)return;
   var items=_boardItems();if(items.length<4){box.innerHTML='';return;}
   var ti=Math.floor(Math.random()*items.length),t=items[ti];
+  // 干扰项不能和正确答案共用同一个 emoji：图卡里 💪 同时是肩膀/上臂/手肘/手臂，
+  // 🦵 同时是大腿/膝盖/小腿/小腿肚 —— 一旦两个选项顶着同一张图，「看图选」这道题
+  // 就真的没法看图作答了（实测 200 题里有 17 题如此）。先只挑图不同的当干扰项；
+  // 万一某个板凑不够（图标重复太多），再退回原来的规则，宁可出题也不留空。
   var opts=[t],guard=0;
-  while(opts.length<4&&guard++<200){var c=items[Math.floor(Math.random()*items.length)];if(opts.indexOf(c)<0&&c.de!==t.de)opts.push(c);}
+  while(opts.length<4&&guard++<300){var c=items[Math.floor(Math.random()*items.length)];if(opts.indexOf(c)<0&&c.de!==t.de&&c.em!==t.em)opts.push(c);}
+  guard=0;
+  while(opts.length<4&&guard++<300){var c2=items[Math.floor(Math.random()*items.length)];if(opts.indexOf(c2)<0&&c2.de!==t.de)opts.push(c2);}
   for(var i=opts.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=opts[i];opts[i]=opts[j];opts[j]=x;}
   var h='<div class="gq-head">✏️ 看图选德语</div><div class="gq-sub">选出下面这个的德语说法</div>'
     +'<div style="text-align:center;margin:6px 0 10px"><span style="font-size:46px">'+t.em+'</span><div style="font-size:15px;color:var(--text);font-weight:600">'+t.zh+'</div></div>'
