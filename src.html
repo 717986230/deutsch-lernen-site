@@ -201,6 +201,11 @@ to{opacity:1}}
 .sec-title-icon{font-size:16px;width:34px;height:34px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(88,204,2,.12);border:1px solid var(--gold-faint);border-radius:10px}
 .sec-title-text{font-size:15px;font-weight:600;color:var(--text);letter-spacing:.5px}
 .sec-title-count{font-size:11px;color:var(--text-faint);margin-left:auto}
+/* .sec-title 是 flex，右侧那颗「🔊 全部朗读」默认可收缩，长标题一挤就换行，
+   变成又窄又高的两行块（实测 320px 下被压成 78×50，视觉高度直接翻倍）。
+   该让位的是标题文字，不是按钮 —— 按钮钉死不收缩、不换行。 */
+.sec-title-text{min-width:0}
+.sec-title>.btn{flex-shrink:0;white-space:nowrap}
 /* SEARCH */
 .search-wrap{position:relative;max-width:440px;margin:20px auto}
 .search-wrap input{width:100%;padding:12px 44px 12px 18px;border-radius:30px;border:1px solid var(--gold-dim);background:rgba(88,204,2,.06);color:var(--text);font-size:14px;outline:none;font-family:inherit}
@@ -443,7 +448,10 @@ body.lang-en .phfab{display:none}
 .gq-sub{font-size:12px;color:var(--text-faint);margin-bottom:10px}
 .gq-q{margin:12px 0 6px;font-size:14px;color:var(--text);line-height:1.6}
 .gq-opts{display:flex;flex-wrap:wrap;gap:8px}
-.gq-opt{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 14px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .15s;line-height:1.4}
+/* min-width 至少 44：单字母选项（比如 d）只有 37px 宽，和同样窄的邻项并排时
+   两边的 44px 热区会互相咬掉一点，实测只剩 43.4px。把短选项直接撑到 44，
+   热区就等于视觉尺寸，不再依赖邻项有多宽。 */
+.gq-opt{min-width:44px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 14px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .15s;line-height:1.4}
 .gq-opt:hover{border-color:var(--gold-dim)}
 .gq-opt.ok{background:rgba(88,204,2,.14);border-color:#58cc02;color:var(--gold-text);font-weight:700}
 .gq-opt.bad{background:rgba(255,75,75,.1);border-color:var(--red-text);color:var(--red-text)}
@@ -463,12 +471,16 @@ body.lang-en .phfab{display:none}
 /* 触摸热区：视觉尺寸不动，透明 ::after 撑到 ≥44×44（iOS HIG / WCAG 2.5.8 AAA）。
    横向用 width:100% 保持原宽，只在本来就窄于 44 时才横向撑开，
    免得热区盖住并排的相邻按钮，把邻居变成点不动。 */
-.level-tab,.gq-opt,.read-art-btn,.dlg-play,.dlg-drill,.gloss-btn,.art-toggle,.btn,.acct-btn,.subnav-chip,.board-tab,.cat-tab,.oauth-btn,.sp-levels button,.dash-cta button,.foot .link,.voice-tip,.spk-panel button,#support p button,#support>.container>div>button{position:relative}
+.level-tab,.gq-opt,.read-art-btn,.dlg-play,.dlg-drill,.gloss-btn,.art-toggle,.btn,.acct-btn,.subnav-chip,.board-tab,.cat-tab,.oauth-btn,.sp-levels button,.dash-cta button,.dash-goal-row,.prof-follow .pf-n,.foot .link,.voice-tip,.spk-panel button,#support p button,#support>.container>div>button{position:relative}
 /* ⚠️ .fab-read 与 .beginner-fab 本来就是 position:fixed，**不能**写进上面那条 ——
    同特异性下后写的 relative 会把它们从固定浮层打回文档流（曾经就这么把
    「循环朗读」和「零基础入门」两个悬浮按钮变成了行内元素）。
    固定定位本身就是绝对定位子元素的包含块，::after 热区照样生效，无需 relative。 */
-.level-tab::after,.gq-opt::after,.read-art-btn::after,.dlg-play::after,.dlg-drill::after,.gloss-btn::after,.art-toggle::after,.btn::after,.acct-btn::after,.subnav-chip::after,.board-tab::after,.cat-tab::after,.oauth-btn::after,.sp-levels button::after,.dash-cta button::after,.fab-read::after,.beginner-fab::after,.foot .link::after,.voice-tip::after,.spk-panel button::after,#support p button::after,#support>.container>div>button::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:100%;min-width:44px;min-height:44px;pointer-events:none}
+.level-tab::after,.gq-opt::after,.read-art-btn::after,.dlg-play::after,.dlg-drill::after,.gloss-btn::after,.art-toggle::after,.btn::after,.acct-btn::after,.subnav-chip::after,.board-tab::after,.cat-tab::after,.oauth-btn::after,.sp-levels button::after,.dash-cta button::after,.dash-goal-row::after,.prof-follow .pf-n::after,.fab-read::after,.beginner-fab::after,.foot .link::after,.voice-tip::after,.spk-panel button::after,#support p button::after,#support>.container>div>button::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:100%;min-width:44px;min-height:44px}
+/* ⚠️ 这里**不能**写 pointer-events:none。写了热区就不参与命中测试，
+   整条规则等于白设：实测「🔊 全部朗读」视觉 33px 高，可点区域也只有 34px，
+   去掉这一句才真的变成 44px。横向已用 width:100% 锁死在按钮自身宽度，
+   只有纵向会撑开，不会盖到并排的邻居（tools/verify-tap-targets.mjs 逐个把关）。 */
 
 /* 替换元素（input）不支持伪元素热区，只能直接给高度；滑块把「可拖的高度」
    和「看起来的粗细」分开：轨道仍是细的，但整条 44px 都能按住。 */
@@ -1277,7 +1289,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <p id="readSub" style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
     <button id="loopAllBtn" class="fab-read" type="button" aria-label="循环朗读全部短文" onclick="toggleLoopAll()">🔊 循环朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="readRateV" style="color:var(--gold-text);font-weight:600">0.62</span> 🐇</div>
-    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px">▶ 整篇朗读 · 点句即听 · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
+    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:15px">▶ 整篇朗读 · 点句即听 · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
     <div class="level-tabs" id="readLevelTabs"></div>
     <div id="readCount" style="font-size:12px;color:var(--gold-text);margin:4px 0 10px"></div>
     <div id="readList"></div>
@@ -1299,7 +1311,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <button id="seriesLoopBtn" class="fab-read" type="button" aria-label="循环朗读全部连载" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:var(--gold-text);font-weight:600">0.62</span> 🐇</div>
     <div class="sec-title"><span class="sec-title-icon">🎬</span><span class="sec-title-text">原创连载 · 留学生活</span><span class="sec-title-count" id="seriesCount"></span></div>
-    <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听 · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
+    <p style="font-size:12px;color:var(--text-faint);margin:0 0 15px">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听 · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
     <div class="level-tabs" id="seriesLevelTabs"></div>
     <div id="seriesList"></div>
     <div class="sec-title" style="margin-top:32px"><span class="sec-title-icon">📺</span><span class="sec-title-text">正版视频资源 · 看原版</span></div>
@@ -1588,7 +1600,8 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
 .sp-uml button:active{background:var(--gold);color:var(--on-brand)}
 .sp-ctrl{display:flex;gap:10px;justify-content:center;margin:18px auto 0;max-width:520px}
 .sp-ctrl button{flex:1;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text-dim);font-size:14px;font-family:inherit;cursor:pointer}
-.sp-levels{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px auto 18px;max-width:460px}
+/* gap 至少 10：按钮 34px 高，行距不到 44 的话上下两排热区会互相抢，实测只剩 42 */
+.sp-levels{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px auto 18px;max-width:460px}
 .sp-levels button{padding:7px 16px;border:1px solid var(--border);border-radius:16px;background:var(--surface);color:var(--text-dim);font-size:13px;font-family:inherit;cursor:pointer}
 .sp-levels button.on{background:var(--gold);color:var(--on-brand);border-color:transparent;font-weight:700}
 /* 首页学习仪表盘 */
