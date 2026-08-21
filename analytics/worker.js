@@ -668,7 +668,11 @@ export default {
     // ───────── 排行榜 / 公开主页 ─────────
     if (M === 'GET' && path === '/api/leaderboard') {
       const cols = { known: 'known', streak: 'best_streak', total: 'total' };
-      const by = cols[url.searchParams.get('by')] ? url.searchParams.get('by') : 'known';
+      // 必须用 hasOwnProperty：cols['constructor'] / cols['__proto__'] 是从原型链上
+      // 继承来的，直接取值也是真值，于是 col 会变成一个函数或 [object Object]，
+      // 直接拼进 ORDER BY —— 实测 ?by=constructor 就能把这个接口打成 500。
+      const q = url.searchParams.get('by');
+      const by = Object.prototype.hasOwnProperty.call(cols, q) ? q : 'known';
       const col = cols[by];
       let where = col + '>0', binds = [];
       if (url.searchParams.get('scope') === 'friends') {

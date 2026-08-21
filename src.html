@@ -471,12 +471,12 @@ body.lang-en .phfab{display:none}
 /* 触摸热区：视觉尺寸不动，透明 ::after 撑到 ≥44×44（iOS HIG / WCAG 2.5.8 AAA）。
    横向用 width:100% 保持原宽，只在本来就窄于 44 时才横向撑开，
    免得热区盖住并排的相邻按钮，把邻居变成点不动。 */
-.level-tab,.gq-opt,.read-art-btn,.dlg-play,.dlg-drill,.gloss-btn,.art-toggle,.btn,.acct-btn,.subnav-chip,.board-tab,.cat-tab,.oauth-btn,.sp-levels button,.dash-cta button,.dash-goal-row,.prof-follow .pf-n,.foot .link,.voice-tip,.spk-panel button,#support p button,#support>.container>div>button{position:relative}
+.level-tab,.gq-opt,.read-art-btn,.dlg-play,.dlg-drill,.gloss-btn,.art-toggle,.btn,.acct-btn,.subnav-chip,.board-tab,.cat-tab,.oauth-btn,.sp-levels button,.dash-cta button,.rank-tabs button,.dash-goal-row,.prof-follow .pf-n,.foot .link,.voice-tip,.spk-panel button,#support p button,#support>.container>div>button{position:relative}
 /* ⚠️ .fab-read 与 .beginner-fab 本来就是 position:fixed，**不能**写进上面那条 ——
    同特异性下后写的 relative 会把它们从固定浮层打回文档流（曾经就这么把
    「循环朗读」和「零基础入门」两个悬浮按钮变成了行内元素）。
    固定定位本身就是绝对定位子元素的包含块，::after 热区照样生效，无需 relative。 */
-.level-tab::after,.gq-opt::after,.read-art-btn::after,.dlg-play::after,.dlg-drill::after,.gloss-btn::after,.art-toggle::after,.btn::after,.acct-btn::after,.subnav-chip::after,.board-tab::after,.cat-tab::after,.oauth-btn::after,.sp-levels button::after,.dash-cta button::after,.dash-goal-row::after,.prof-follow .pf-n::after,.fab-read::after,.beginner-fab::after,.foot .link::after,.voice-tip::after,.spk-panel button::after,#support p button::after,#support>.container>div>button::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:100%;min-width:44px;min-height:44px}
+.level-tab::after,.gq-opt::after,.read-art-btn::after,.dlg-play::after,.dlg-drill::after,.gloss-btn::after,.art-toggle::after,.btn::after,.acct-btn::after,.subnav-chip::after,.board-tab::after,.cat-tab::after,.oauth-btn::after,.sp-levels button::after,.dash-cta button::after,.rank-tabs button::after,.dash-goal-row::after,.prof-follow .pf-n::after,.fab-read::after,.beginner-fab::after,.foot .link::after,.voice-tip::after,.spk-panel button::after,#support p button::after,#support>.container>div>button::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:100%;min-width:44px;min-height:44px}
 /* ⚠️ 这里**不能**写 pointer-events:none。写了热区就不参与命中测试，
    整条规则等于白设：实测「🔊 全部朗读」视觉 33px 高，可点区域也只有 34px，
    去掉这一句才真的变成 44px。横向已用 width:100% 锁死在按钮自身宽度，
@@ -1774,6 +1774,16 @@ body{padding-bottom:var(--tab-h)}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Leaderboard</div>
     <h2 class="page-title">🏆 学习排行榜</h2>
+    <div class="rank-tabs">
+      <button type="button" id="rsAll" class="on" onclick="rankScope('all')">🌍 全站</button>
+      <button type="button" id="rsFriends" onclick="rankScope('friends')">👥 关注的人</button>
+      <button type="button" id="rsFeed" onclick="rankScope('feed')">📣 学习动态</button>
+    </div>
+    <div class="rank-tabs" id="rankMetrics">
+      <button type="button" id="rkKnown" class="on" onclick="renderRank('known')">📖 掌握词</button>
+      <button type="button" id="rkStreak" onclick="renderRank('streak')">🔥 最长打卡</button>
+      <button type="button" id="rkTotal" onclick="renderRank('total')">⚡ 累计学习</button>
+    </div>
     <div class="rank-list" id="rankList"><p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p></div>
     <p class="acct-note" id="rankHint" style="max-width:440px;margin:14px auto 0"></p>
 </div>
@@ -3242,7 +3252,7 @@ function nextQ(){
 function escQ(s){return s.replace(/'/g,"&#39;").replace(/"/g,'&quot;')}
 function checkQ(btn,selected,correct){
   document.querySelectorAll('#mainQuizArea .quiz-opt').forEach(b=>b.disabled=true);
-  mq.total++;try{studyTick();}catch(e){}
+  mq.total++;try{studyTick(1,1);}catch(e){}   // 这是真答题，要计入「测验」统计
   const sel=selected.replace(/&#39;/g,"'").replace(/&quot;/g,'"');
   const cor=correct.replace(/&#39;/g,"'").replace(/&quot;/g,'"');
   if(sel===cor){btn.classList.add('correct');mq.score++;}
@@ -4064,6 +4074,18 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 function applyTheme(t){var r=document.documentElement;if(t==="dark"||t==="light")r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");var dark=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",dark?"#111417":"#58cc02");var b=document.getElementById("themeToggle");if(b)b.textContent=dark?"☀️":"🌙";}function toggleTheme(){var cur=document.documentElement.getAttribute("data-theme");var sys=matchMedia("(prefers-color-scheme:dark)").matches;var eff=cur==="dark"||(cur!=="light"&&sys);var next=eff?"light":"dark";try{localStorage.setItem("theme",next);}catch(e){}applyTheme(next);}(function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}applyTheme(t);})();try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",function(){var t=null;try{t=localStorage.getItem("theme");}catch(e){}if(t!=="dark"&&t!=="light")applyTheme(null);});}catch(e){}
 function _today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function _yday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}function getStudy(){var s;try{s=JSON.parse(localStorage.getItem(_migrateDeLocal("study"))||"{}");}catch(e){s={};}if(!s.goal)s.goal=20;return s;}function saveStudy(s){try{localStorage.setItem(_migrateDeLocal("study"),JSON.stringify(s));}catch(e){}}function studyTick(n,isQuiz){var s=getStudy(),t=_today();if(s.d!==t){s.streak=(s.last===_yday())?(s.streak||0)+1:1;s.last=t;s.d=t;s.n=0;}var _pn=(s.n||0);s.n=_pn+(n||1);s.total=(s.total||0)+(n||1);if(isQuiz)s.quiz=(s.quiz||0)+1;if((s.streak||0)>(s.best||0))s.best=s.streak;if(!s.h)s.h={};s.h[t]=s.n;var hk=Object.keys(s.h);if(hk.length>14){hk.sort();for(var hi=0;hi<hk.length-14;hi++)delete s.h[hk[hi]];}var _gl=s.goal||20;var _hit=(_pn<_gl&&s.n>=_gl&&s.gday!==t);if(_hit)s.gday=t;saveStudy(s);if(_hit)_goalToast(_gl);try{track("study");}catch(e){}try{acctSyncSoon();}catch(e){}}
 // 当日首次达标轻提示（3 秒消失，同日不重复；样式对齐现有 _ttsHint 提示条）
+// 点卡片听发音也算学习，但同一个词一天只计一次 —— 否则对着一张卡狂点就能把
+// 「累计学习」和排行榜刷上去（首页今日目标同理）。返回 true 表示这次该计分。
+function _tapOnce(key){
+  try{
+    var k=_migrateDeLocal('tapDay'),t=_today();
+    var o=JSON.parse(localStorage.getItem(k)||'{}');
+    if(o.d!==t)o={d:t,w:{}};
+    if(o.w[key])return false;
+    o.w[key]=1;localStorage.setItem(k,JSON.stringify(o));
+    return true;
+  }catch(e){return true;}
+}
 function _goalToast(g){try{_toast('🎉 今日目标达成（'+g+' 次）！明天继续保持');}catch(e){}}function getKnown(){try{return JSON.parse(localStorage.getItem(_migrateDeLocal("known"))||"{}");}catch(e){return {};}}function saveKnown(m){try{localStorage.setItem(_migrateDeLocal("known"),JSON.stringify(m));}catch(e){}}function knownHas(de){return !!getKnown()[de];}function knownToggle(p,btn){var m=getKnown();if(m[p.de]){delete m[p.de];}else{m[p.de]={b:1,t:Date.now()};try{studyTick();}catch(e){}}saveKnown(m);try{acctSyncSoon();}catch(e){}if(btn){var on=!!m[p.de];btn.classList.toggle("on",on);btn.title=on?"已学会（点击取消）":"标记为已学会";}}
 // ── 间隔复习（Leitner）：掌握的词按盒级 3/7/16/35 天到期回炉；老数据(值=1)视为立即到期 ──
 var SRS_IV=[0,3,7,16,35];
@@ -4326,7 +4348,7 @@ function picPick(brd,i,cell){
   out.style.display="block";document.body.classList.add("has-picbar");
   out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+it[3]+'</span> <b lang="de" style="font-size:20px;color:var(--gold-text);vertical-align:middle">'+it[0]+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+it[0].replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+it[1]+' · <span style="color:var(--text-faint)">'+it[2]+'</span></div>';
   try{speakDE(it[0]);}catch(e){}
-  try{studyTick(1,1);}catch(e){}
+  try{if(_tapOnce(it[0]))studyTick(1);}catch(e){}
 }
 function _boardItems(){
   if(_curBoard==='koerper')return BODY_PARTS.map(function(p){return{de:p.de,zh:p.zh,em:p.em};});
@@ -4378,7 +4400,7 @@ function bpPick(i){
   out.style.display='block';document.body.classList.add('has-picbar');
   out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+p.em+'</span> <b lang="de" style="font-size:20px;color:var(--gold-text);vertical-align:middle">'+p.de+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+p.de.replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+p.zh+' · <span style="color:var(--text-faint)">'+p.py+'</span></div>';
   try{speakDE(p.de);}catch(e){}
-  try{studyTick(1,1);}catch(e){}
+  try{if(_tapOnce(p.de))studyTick(1);}catch(e){}
 }
 // PWA 安装：捕获浏览器可安装事件，页面上给一个「安装到桌面」按钮（Chrome 自动提示很吝啬，删了就不弹，这里可随时手动装）
 var _deferredPrompt=null;

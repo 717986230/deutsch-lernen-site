@@ -137,6 +137,22 @@ else {
   else ok('重置后可用新密码登录');
 }
 
-console.log(`账号安全回归：重放 ${3} 组接管路径`);
+// ─────────────────────────────────────────────────────────
+// ④ 排行榜 by 参数：不能被原型链上的键带进 ORDER BY
+// ─────────────────────────────────────────────────────────
+// cols['constructor'] / cols['__proto__'] 是继承来的，直接取值也是真值，
+// 于是排序列会变成一个函数或 [object Object] 拼进 SQL —— 实测能把接口打成 500。
+db.prepare("INSERT INTO users (username,nickname,provider,known,streak,best_streak,total,level,created,updated) VALUES ('lb','lb','pw',7,1,3,9,'A1',1,1)").run();
+for (const q of ['', '?by=known', '?by=streak', '?by=total', '?by=constructor', '?by=__proto__', '?by=toString', '?by=known;DROP TABLE users']) {
+  let r;
+  try { r = await call('GET', '/api/leaderboard' + q); }
+  catch (e) { bad(`/api/leaderboard${q} 直接抛异常：${e.message}`); continue; }
+  if (r.status !== 200) bad(`/api/leaderboard${q} 返回 ${r.status}，应为 200`);
+  else if (!['known', 'streak', 'total'].includes(r.data.by)) bad(`/api/leaderboard${q} 回了非法排序字段 by=${r.data.by}`);
+}
+if (!db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='users'").get()) bad('users 表没了');
+ok('排行榜 by 参数只认三个白名单值，原型链键与注入串都被挡下');
+
+console.log(`账号安全回归：重放 ${3} 组接管路径 + 排行榜排序参数`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 账号接管路径全部堵住，正常找回流程未受影响');
