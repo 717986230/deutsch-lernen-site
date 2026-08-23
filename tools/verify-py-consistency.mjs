@@ -67,6 +67,8 @@ for (const [de, list] of seen) {
 const TAIL = {
   teller: '泰勒', geschirr: '格施尔', löffel: '勒费尔', tasse: '塔瑟', kanne: '卡呢',
   becher: '贝希尔', glas: '格拉斯', hundert: '洪德特', tausend: '套森特', zehn: '岑',
+  // 词首 s+元音读 [z]：Sahne 一度被写成「萨讷」（当成 [s] 了），句子里却一直是「扎讷」
+  sahne: '扎讷', milch: '米尔希',
 };
 let checked = 0;
 for (const [de, list] of seen) {
