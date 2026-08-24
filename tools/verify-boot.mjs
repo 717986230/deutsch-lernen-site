@@ -17,6 +17,7 @@ import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize } from 'node:path';
+import { getChromium, skipNoBrowser } from './_browser.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8731;
@@ -34,8 +35,10 @@ const srv = createServer((req, res) => {
 });
 await new Promise((r) => srv.listen(PORT, r));
 
-const { chromium } = await import('/opt/node22/lib/node_modules/playwright/index.js').then((m) => m.default || m);
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browserEnv = await getChromium();
+if (!browserEnv) { skipNoBrowser('启动期体检'); srv.close(); process.exit(0); }
+const { chromium, launch: launchOpts } = browserEnv;
+const browser = await chromium.launch(launchOpts);
 
 // 所有 /api/* 同步返回，把「回调插进两个脚本块之间」这个最坏时序钉死
 const STUB = () => {

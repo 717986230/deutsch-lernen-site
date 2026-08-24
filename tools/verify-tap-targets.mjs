@@ -11,6 +11,7 @@ import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize } from 'node:path';
+import { getChromium, skipNoBrowser } from './_browser.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8734;
@@ -28,8 +29,10 @@ const srv = createServer((req, res) => {
 });
 await new Promise((r) => srv.listen(PORT, r));
 
-const { chromium } = await import('/opt/node22/lib/node_modules/playwright/index.js').then((m) => m.default || m);
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browserEnv = await getChromium();
+if (!browserEnv) { skipNoBrowser('触摸目标体检'); srv.close(); process.exit(0); }
+const { chromium, launch: launchOpts } = browserEnv;
+const browser = await chromium.launch(launchOpts);
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
 await page.addInitScript(() => {
   localStorage.setItem('acct_token', 't1');
