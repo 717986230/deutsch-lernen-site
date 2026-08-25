@@ -3208,7 +3208,7 @@ function setQuizLevel(k,btn){
 }
 function getAllPhrases(){
   const src=quizLevel==='all'?categories:categories.filter(c=>c.level===quizLevel);
-  return src.flatMap((c,ci)=>c.phrases.map((p,pi)=>Object.assign({},p,{id:`${ci}-${pi}`})));
+  return src.flatMap((c,ci)=>c.phrases.filter(p=>!p.ref).map((p,pi)=>Object.assign({},p,{id:`${ci}-${pi}`})));
 }
 function quizHeader(){
   const prog=Math.round(mq.total/mq.roundLen*100);
@@ -4792,7 +4792,11 @@ function spStartDaily(){
 var _spMetaMap=null,_spMetaLang='';
 function _spMeta(de){if(!_spMetaMap||_spMetaLang!==LANG){_spMetaMap={};_spMetaLang=LANG;var cats=categories;for(var ci=0;ci<cats.length;ci++)for(var pi=0;pi<cats[ci].phrases.length;pi++){var p=cats[ci].phrases[pi];var w=(p.de||'').replace(/^[^A-Za-zÄÖÜäöüß]+/,'').replace(/[^A-Za-zÄÖÜäöüß]+$/,'');if(w&&!_spMetaMap[w])_spMetaMap[w]={zh:p.zh,py:p.py};if(!_spMetaMap[p.de])_spMetaMap[p.de]={zh:p.zh,py:p.py};}}return _spMetaMap[de];}
 function spStartReview(){if(!spEnsure(spStartReview))return;var due=srsDueList(),q=[];for(var i=0;i<due.length;i++){var meta=_spMeta(due[i]);if(meta)q.push({de:due[i],zh:meta.zh,py:meta.py});}if(!q.length)return;SP.review=true;SP.daily=false;SP.q=_spShuf(q).slice(0,20);_spGo();}
-function spBuildPool(level){var out=[],seen={},known=getKnown(),cats=categories,sent=SP.unit==='sent';for(var ci=0;ci<cats.length;ci++){var c=cats[ci];if(level!=='all'&&c.level!==level)continue;for(var pi=0;pi<c.phrases.length;pi++){var p=c.phrases[pi];if(sent){var s=(p.de||'').trim();if(s.split(/\s+/).length>=2&&s.length>=8&&s.length<=48&&/^[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß ,.!?'’\-]*$/.test(s)){var sk=s.toLowerCase();if(!seen[sk]&&!known[s]){seen[sk]=1;out.push({de:s,zh:p.zh,py:p.py});}}}else{var w=(p.de||'').replace(/^[^A-Za-zÄÖÜäöüß]+/,'').replace(/[^A-Za-zÄÖÜäöüß]+$/,'');if(/^[A-Za-zÄÖÜäöüß]{2,20}$/.test(w)){var k=w.toLowerCase();if(!seen[k]&&!known[w]){seen[k]=1;out.push({de:w,zh:p.zh,py:p.py});}}}}}return out;}
+// ref:1 的条目只供查阅、点读、标记「已学会」，**不进**拼写和测验题库。
+// 起因：菜单分类里 92 个菜名多是英/日文（Chicken Gyoza、Yaki Udon Kamoniku），
+// 逐字母拼它们学不到任何德语，却一次性占掉 a2 句子拼写池的 12%。
+// 同分类里那 51 个德语词（die Teigtasche / glutenhaltiges Getreide…）不带这个标记，照常参练。
+function spBuildPool(level){var out=[],seen={},known=getKnown(),cats=categories,sent=SP.unit==='sent';for(var ci=0;ci<cats.length;ci++){var c=cats[ci];if(level!=='all'&&c.level!==level)continue;for(var pi=0;pi<c.phrases.length;pi++){var p=c.phrases[pi];if(p.ref)continue;if(sent){var s=(p.de||'').trim();if(s.split(/\s+/).length>=2&&s.length>=8&&s.length<=48&&/^[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß ,.!?'’\-]*$/.test(s)){var sk=s.toLowerCase();if(!seen[sk]&&!known[s]){seen[sk]=1;out.push({de:s,zh:p.zh,py:p.py});}}}else{var w=(p.de||'').replace(/^[^A-Za-zÄÖÜäöüß]+/,'').replace(/[^A-Za-zÄÖÜäöüß]+$/,'');if(/^[A-Za-zÄÖÜäöüß]{2,20}$/.test(w)){var k=w.toLowerCase();if(!seen[k]&&!known[w]){seen[k]=1;out.push({de:w,zh:p.zh,py:p.py});}}}}}return out;}
 function spSetUnit(u){SP.unit=u;var b=document.getElementById('spUnits').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-u')===u);spUpdatePoolInfo();}
 function _spIsLetter(ch){return /[A-Za-zÄÖÜäöüß]/.test(ch);}
 function _spAutoAdvance(){ // 越过空格/标点：自动填充其槽位

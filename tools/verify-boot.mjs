@@ -92,8 +92,38 @@ const out = await boot({ token: '', label: '未登录启动' });
 if (!out.locked) bad('未登录启动没有上锁');
 if (!out.active.includes('account')) bad(`未登录启动落在 ${out.active.join(',') || '（无）'}，应为 account`);
 
+// ⑤ 只供查阅的条目（ref:1）不能混进拼写和测验题库
+// 菜单分类里 92 个菜名多是英/日文，逐字母拼「Yaki Udon Kamoniku」学不到德语，
+// 加上之前一次性占掉 a2 句子拼写池的 12%。同分类里 51 个德语词不带 ref，照常参练。
+const pagePool = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await pagePool.addInitScript(STUB);
+await pagePool.addInitScript(`try{localStorage.setItem('acct_token','t1')}catch(e){}`);
+await pagePool.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+await pagePool.waitForFunction(() => window._DEC, null, { timeout: 20000 }).catch(() => {});
+const pool = await pagePool.evaluate(() => {
+  const refs = new Set(), plain = new Set();
+  for (const c of categories) for (const p of c.phrases) (p.ref ? refs : plain).add(p.de);
+  if (!refs.size) return { none: true };
+  const hit = (arr) => arr.filter((x) => refs.has(x.de)).length;
+  SP.unit = 'sent'; const sent = spBuildPool('all');
+  SP.unit = 'word'; const word = spBuildPool('all');
+  quizLevel = 'all';
+  const quiz = getAllPhrases();
+  return { refs: refs.size, sent: hit(sent), word: hit(word), quiz: hit(quiz),
+    plainInQuiz: quiz.filter((x) => plain.has(x.de)).length };
+});
+await pagePool.close();
+if (pool.none) bad('没有任何 ref:1 条目 —— 标记丢了，菜名会重新混进题库');
+else {
+  if (pool.sent) bad(`句子拼写池里混进 ${pool.sent} 条只供查阅的条目`);
+  if (pool.word) bad(`单词拼写池里混进 ${pool.word} 条只供查阅的条目`);
+  if (pool.quiz) bad(`测验题库里混进 ${pool.quiz} 条只供查阅的条目`);
+  if (!pool.plainInQuiz) bad('题库里一条普通词条都没有 —— ref 过滤把该留的也滤掉了');
+}
+
 await browser.close();
 srv.close();
-console.log(`启动期体检：4 种入口 · 今日课程「${dash.daily}」`);
+console.log(`启动期体检：4 种入口 · 今日课程「${dash.daily}」`
+  + (pool.refs ? ` · ${pool.refs} 条只供查阅的条目已挡在题库外` : ''));
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 启动期零报错');
