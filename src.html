@@ -3877,7 +3877,9 @@ function renderReadings(){
   const cnt=document.getElementById('readCount');
   if(cnt)cnt.textContent='共 '+list.length+' 篇短文';
   const el=document.getElementById('readList');
-  const htmls=list.map((r,ri)=>{
+  // 建 HTML 串（逐词小注在这一步做，是整个渲染里最贵的部分）——
+  // 所以**按批建**，不要一次性把 69 篇全建出来再插。
+  const build=(r,ri)=>{
     const body=r.paras.map((p,pi)=>`<div class="read-para" id="rp_${ri}_${pi}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="${readingLang}">${isEn?p[0]:wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div>${p[2]?`<div style="font-size:12px;color:var(--text-faint);margin-top:1px">${p[2]}</div>`:''}</div></div></div>`).join('');
     return `<div class="card" id="rcard_${ri}" style="cursor:default;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
@@ -3886,17 +3888,19 @@ function renderReadings(){
         <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span>
         <button class="read-art-btn" id="rab_${ri}" type="button" title="朗读全文" aria-label="朗读全文：${r.title}" style="margin-left:auto" onclick="toggleArticle(this,${ri})">▶ 朗读</button>
       </div>${body}</div>`;
-  });
-  // 分批渲染：先同步出前 6 篇，其余每帧追加（低端机首开不卡）
+  };
+  // 分批渲染：先同步出前 6 篇，其余每帧建好再追加（低端机首开不卡）
   // 带渲染代号：快速切换标签/级别时，上一次的追加循环必须立即作废，
   // 否则旧文章会继续往新列表里追加（曾导致「餐厅」10 篇里混进 23 篇分级短文）
+  // ⚠️ ri 必须是在 list 里的真实下标：元素 id（rcard_/rp_/rab_）和 toggleArticle(ri)
+  //    都靠它对应回文章，切片时要用 i+k 补回偏移，不能用 slice 后的局部下标。
   const gen=++_rdGen;
-  el.innerHTML=htmls.slice(0,6).join('');
+  el.innerHTML=list.slice(0,6).map(build).join('');
   let i=6;
   (function step(){
     if(gen!==_rdGen)return;
-    if(i>=htmls.length)return;
-    el.insertAdjacentHTML('beforeend',htmls.slice(i,i+6).join(''));
+    if(i>=list.length)return;
+    el.insertAdjacentHTML('beforeend',list.slice(i,i+6).map((r,k)=>build(r,i+k)).join(''));
     i+=6;
     (window.requestAnimationFrame||setTimeout)(step,16);
   })();

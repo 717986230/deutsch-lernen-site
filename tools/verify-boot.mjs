@@ -112,6 +112,40 @@ const pool = await pagePool.evaluate(() => {
   return { refs: refs.size, sent: hit(sent), word: hit(word), quiz: hit(quiz),
     plainInQuiz: quiz.filter((x) => plain.has(x.de)).length };
 });
+
+// ⑥ 短文分批渲染的下标必须对得上文章
+// renderReadings 按批建 HTML 串（一次性全建会在中端机上卡 100ms），
+// 切片时 ri 要用 i+k 补回偏移 —— 写成 slice 后的局部下标，元素 id 和
+// toggleArticle(ri) 就会集体错位，表现是「点第 30 篇朗读，读的是第 6 篇」。
+await pagePool.evaluate(() => showSection('reading'));
+await pagePool.waitForTimeout(2500);
+const rd = await pagePool.evaluate(() => {
+  const list = _getReadList();
+  const bad = [];
+  list.forEach((r, ri) => {
+    const card = document.getElementById('rcard_' + ri);
+    if (!card) return bad.push(`第 ${ri} 篇没渲染出来`);
+    if (!card.textContent.includes(r.title)) bad.push(`rcard_${ri} 里不是《${r.title}》`);
+    const btn = document.getElementById('rab_' + ri);
+    if (!btn || (btn.getAttribute('onclick') || '').indexOf('toggleArticle(this,' + ri + ')') < 0) {
+      bad.push(`rab_${ri} 的 onclick 下标不对`);
+    }
+  });
+  // 再从引擎侧验一次：点末篇，_rq 必须指向末篇
+  let engine = null;
+  if (list.length) {
+    const n = list.length - 1;
+    toggleArticle(document.getElementById('rab_' + n), n);
+    engine = window._rq && window._rq.ri;
+    toggleArticle(document.getElementById('rab_' + n), n);
+    if (engine !== n) bad.push(`点第 ${n} 篇，朗读引擎却指向第 ${engine} 篇`);
+  }
+  return { n: list.length, bad: bad.slice(0, 5), total: bad.length };
+});
+if (!rd.n) bad('短文一篇都没渲染出来');
+for (const m of rd.bad) bad('短文渲染：' + m);
+if (rd.total > rd.bad.length) bad(`短文渲染：另有 ${rd.total - rd.bad.length} 处同类问题未列出`);
+
 await pagePool.close();
 if (pool.none) bad('没有任何 ref:1 条目 —— 标记丢了，菜名会重新混进题库');
 else {
@@ -123,7 +157,7 @@ else {
 
 await browser.close();
 srv.close();
-console.log(`启动期体检：4 种入口 · 今日课程「${dash.daily}」`
+console.log(`启动期体检：4 种入口 · 今日课程「${dash.daily}」 · 短文 ${rd.n} 篇下标对齐`
   + (pool.refs ? ` · ${pool.refs} 条只供查阅的条目已挡在题库外` : ''));
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 启动期零报错');
