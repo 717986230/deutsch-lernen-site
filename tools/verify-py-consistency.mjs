@@ -96,6 +96,9 @@ const LOAN = {
   foul: '法乌尔', account: '阿考恩特', discounter: '迪斯考恩特尔', deadline: '德特莱因',
   computer: '康普尤特尔', party: '帕尔提', sake: '萨凯', friday: '弗莱德',
   'online-banking': '昂莱恩班金',
+  // 菜单里的英文词同理。德语词尾 d 一律清化读 [t]，德国人念英文菜名也照办：
+  fried: '弗莱特', red: '雷特', boiled: '博伊尔特',
+  power: '帕乌尔', mochi: '莫奇', szechuan: '塞楚安', tom: '托姆', hot: '霍特',
 };
 let loans = 0;
 for (const [de, py, where] of rows) {
