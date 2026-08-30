@@ -22,11 +22,13 @@ const rd = (f) => JSON.parse(readFileSync(join(ROOT, f), 'utf8'));
 // ── 收集所有「德语 → 谐音」的出处 ──
 // 德语和英语的谐音是两套体系，分开收，不能互相比。
 const seen = new Map();   // de → [{py, where}]
+const rows = [];          // [de, py, where] —— 供下面按词对齐的检查用
 const note = (de, py, where) => {
   if (!de || !py) return;
   const k = String(de).trim();
   if (!seen.has(k)) seen.set(k, []);
   seen.get(k).push({ py: String(py).trim(), where });
+  rows.push([k, String(py).trim(), where]);
 };
 
 for (const f of ['data/categories.json', 'data/readings.json', 'data/series.json', 'data/dialogs.json']) {
@@ -86,6 +88,29 @@ for (const [de, list] of seen) {
   }
 }
 
-console.log(`谐音一致性体检：${words} 个词条跨 ${new Set([...seen.values()].flat().map((x) => x.where.split('[')[0])).size} 个数据源比对，词根收尾校验 ${checked} 处`);
+// ── C. 外来词必须按**德国人实际怎么念**写，不能照抄英语读法 ──
+// 典型：der Job 曾写成「约普」（德语 /j/），但德语里这个词念 [dʒɔp]；
+// Black Friday 的 Friday 曾写成「弗莱塔克」—— 那是德语 Freitag 的谐音，把词译过去了。
+const LOAN = {
+  job: '乔普', sushi: '祖施', dashi: '达施', shampoo: '沙姆普', cloud: '克劳特',
+  foul: '法乌尔', account: '阿考恩特', discounter: '迪斯考恩特尔', deadline: '德特莱因',
+  computer: '康普尤特尔', party: '帕尔提', sake: '萨凯', friday: '弗莱德',
+  'online-banking': '昂莱恩班金',
+};
+let loans = 0;
+for (const [de, py, where] of rows) {
+  const D = de.split(/\s+/), P = py.split(/\s+/);
+  if (D.length !== P.length) continue;          // 词数对不上就不敢按位比
+  for (let i = 0; i < D.length; i++) {
+    const k = D[i].toLowerCase().replace(/[^a-zäöüß-]/g, '');
+    const want = LOAN[k];
+    if (!want) continue;
+    loans++;
+    const got = P[i].replace(/[，。！？、；：]/g, '');
+    if (got !== want) bad(`外来词「${D[i]}」的谐音应是「${want}」，实际「${got}」（${where}）`);
+  }
+}
+
+console.log(`谐音一致性体检：${words} 个词条跨 ${new Set([...seen.values()].flat().map((x) => x.where.split('[')[0])).size} 个数据源比对，词根收尾校验 ${checked} 处，外来词读法校验 ${loans} 处`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 同词谐音全站一致，复合词词根写法统一');
