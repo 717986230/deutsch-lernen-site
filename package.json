@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs --dev",
-    "verify": "node tools/verify-build-artifacts.mjs && node --no-warnings tools/verify-schema.mjs && node --no-warnings tools/verify-account-security.mjs && node tools/verify-data.mjs && node tools/verify-pron.mjs && node tools/verify-py-consistency.mjs && node tools/verify-boards-sync.mjs && node tools/verify-web-data.mjs && node tools/verify-css-position.mjs && node tools/verify-contrast.mjs && node tools/verify-boot.mjs && node tools/verify-tap-targets.mjs && node tools/verify-board-quiz.mjs && node tools/verify-sections.mjs",
+    "verify": "node tools/verify-build-artifacts.mjs && node --no-warnings tools/verify-schema.mjs && node --no-warnings tools/verify-account-security.mjs && node tools/verify-data.mjs && node tools/verify-pron.mjs && node tools/verify-py-consistency.mjs && node tools/verify-loanwords.mjs && node tools/verify-boards-sync.mjs && node tools/verify-web-data.mjs && node tools/verify-css-position.mjs && node tools/verify-contrast.mjs && node tools/verify-boot.mjs && node tools/verify-tap-targets.mjs && node tools/verify-board-quiz.mjs && node tools/verify-sections.mjs",
     "verify:boot": "node tools/verify-boot.mjs",
     "verify:schema": "node --no-warnings tools/verify-schema.mjs",
     "verify:data": "node tools/verify-data.mjs",
@@ -18,6 +18,7 @@
     "verify:quiz": "node tools/verify-board-quiz.mjs",
     "verify:boards": "node tools/verify-boards-sync.mjs",
     "verify:py": "node tools/verify-py-consistency.mjs",
+    "verify:loan": "node tools/verify-loanwords.mjs",
     "verify:sections": "node tools/verify-sections.mjs"
   },
   "devDependencies": {

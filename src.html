@@ -174,6 +174,9 @@ body.no-gloss .rd-word rt{display:none}
 .spk-panel select{border:1px solid var(--border);border-radius:8px;padding:2px 6px;background:var(--surface-2);color:var(--gold-text);font-family:inherit}
 #spkRateV{color:var(--gold-text);font-weight:600;min-width:32px}
 .card-zh{font-size:14px;color:var(--text-dim);margin-bottom:0}
+.card-syn{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:7px;font-size:13px}
+.card-syn .syn-tag{flex-shrink:0;font-size:11px;color:var(--gold-text);border:1px solid var(--gold-faint);border-radius:6px;padding:1px 5px}
+.card-syn b{color:var(--text);font-weight:600;font-style:italic}
 .card-py{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--gold-faint)}
 .card.flipped .card-py{display:block}
 /* 拼读拆解 */
@@ -2564,7 +2567,7 @@ function filterPhrases(){
     if(activeCat!=='all'&&cat.name!==activeCat)return;
     cat.phrases.forEach((p,pi)=>{
       if(_onlyUnknown&&typeof knownHas==='function'&&knownHas(p.de))return; // 藏起已学会的
-      if(!q||p.de.toLowerCase().includes(q)||p.zh.includes(q)||p.py.includes(q)){
+      if(!q||p.de.toLowerCase().includes(q)||p.zh.includes(q)||p.py.includes(q)||(p.syn&&p.syn.toLowerCase().includes(q))){
         results.push(Object.assign({},p,{cat:cat.name,icon:cat.icon,id:`${ci}-${pi}`}));
       }
     });
@@ -2887,9 +2890,14 @@ function makeCard(p,id){
   const phon=(lng==='de')
     ? `<div class="py-label" style="margin-bottom:5px">拼读（按字母组合自己读出来）</div><div class="ph-row">${phonicsHtml(p.de)}</div><div style="margin-top:8px"><span class="py-label">谐音参考</span> <span class="py-text">${p.py}</span></div>`
     : `<span class="py-label">谐音</span> <span class="py-text">${p.py}</span>`;
-  d.innerHTML=`<div class="card-de-row"><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${p.de}">🔊</button><div class="card-de" lang="${lng}">${_artHl(p.de,_searchQ)}</div><button class="star-btn know-btn${known?' on':''}" type="button" title="${known?'已学会（点击取消）':'标记为已学会'}" aria-label="标记已学会" style="margin-left:auto">✓</button></div><div class="card-zh">${_hl(p.zh,_searchQ)}</div><div class="card-py">${phon}</div>`;
+  // 英语外来词（der Job / das Handy / 菜单上的 Fried Rice）额外给一行德语说法，
+  // 免得只会说英语借词、听不懂德国人嘴里的 die Arbeit / das Mobiltelefon。
+  const synRow=p.syn?`<div class="card-syn"><span class="syn-tag">德语说法</span><b lang="de">${_artHl(p.syn,_searchQ)}</b><button class="speak-btn syn-speak" type="button" title="朗读德语说法" aria-label="朗读 ${p.syn}" style="width:22px;height:22px;font-size:11px">🔊</button></div>`:'';
+  d.innerHTML=`<div class="card-de-row"><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${p.de}">🔊</button><div class="card-de" lang="${lng}">${_artHl(p.de,_searchQ)}</div><button class="star-btn know-btn${known?' on':''}" type="button" title="${known?'已学会（点击取消）':'标记为已学会'}" aria-label="标记已学会" style="margin-left:auto">✓</button></div><div class="card-zh">${_hl(p.zh,_searchQ)}</div>${synRow}<div class="card-py">${phon}</div>`;
   const sb=d.querySelector('.speak-btn');
   sb.addEventListener('click',(e)=>{e.stopPropagation();speakDE(p.de,sb);});
+  const yb=d.querySelector('.syn-speak');
+  if(yb)yb.addEventListener('click',(e)=>{e.stopPropagation();speakDE(p.syn.replace(/\s*\/\s*/g,', '),yb);});
   const kb=d.querySelector('.know-btn');if(kb)kb.addEventListener('click',(e)=>{e.stopPropagation();knownToggle(p,kb);});
   d.addEventListener('click',()=>{
     flippedCards[id]=!flippedCards[id];
