@@ -21,9 +21,8 @@ tools/make_readgloss.py 为阅读/连载预生成小注词表 data/read_gloss.js
 web/                   Vue 用户端源码（待再次发布）
 web/dist/              Vue 构建中间产物（不提交）
 index.html + sw.js     当前旧端部署产物，由 GitHub Pages 发布
-legacy.html            旧端备用入口；再次切换 Vue 前用于同域回退
 src.html + build.mjs   旧端源码与构建器
-de/en.<hash>.dat       旧端词库切片
+de/en.<hash>.dat       旧端词库切片（历史切片留着给缓存了旧 sw.js 的浏览器兜底）
 manifest.webmanifest   PWA 清单
 ```
 
