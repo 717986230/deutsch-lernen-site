@@ -99,6 +99,8 @@ const LOAN = {
   // 菜单里的英文词同理。德语词尾 d 一律清化读 [t]，德国人念英文菜名也照办：
   fried: '弗莱特', red: '雷特', boiled: '博伊尔特',
   power: '帕乌尔', mochi: '莫奇', szechuan: '塞楚安', tom: '托姆', hot: '霍特',
+  // 午餐菜单：Yellow 德国人念 [ˈjɛloː]（y 在词首＝[j]），Poke 念 [ˈpoːkeː] 两个音节
+  yellow: '耶洛', poke: '波凯', wok: '沃克',
 };
 let loans = 0;
 for (const [de, py, where] of rows) {

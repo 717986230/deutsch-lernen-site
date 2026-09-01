@@ -30,7 +30,8 @@ trendy online basketball hey okay fake pink quantencomputer
 recyceln scannen downloaden uploaden chatten joggen surfen
 chicken beef shrimp shrimps duck salmon tuna prawns king dumplings vegetables veggie
 soup rice roll bowl set mix fried boiled crispy crunchy spicy sweet red green pink
-rainbow dragon korean power cheesecake summerrolls springroll mini hot pot cocos
+rainbow dragon korean power cheesecake summerrolls springroll hot pot cocos
+yellow cherrytomate
 `.trim().split(/\s+/));
 
 // 品牌名不翻译：Red Bull 就是 Red Bull，德语里没有别的叫法
