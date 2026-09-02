@@ -10,6 +10,11 @@
 //   A. 同一个德语词条，跨所有数据源必须谐音完全相同（零误判）
 //   B. 复合词的词尾词根，谐音也必须以该词根的标准写法收尾
 //      （Suppenteller 必须以「泰勒」结尾，Einweggeschirr 必须以「格施尔」结尾）
+//   D. 名词的谐音必须以冠词的谐音开头（das X 不能写成「迪 X」）
+//
+// 2026-09 又补一道：过敏原表把同一个词写成两遍 ——「die Krebstiere」和「B – Krebstiere」，
+// 两处谐音各写各的（克雷普斯提勒 / 克雷普斯蒂尔），A 却因为 de 字符串不同而放行。
+// 现在比对前先剥掉「字母 – 」前缀，这类「同词换个马甲」就跑不掉了。
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -63,6 +68,34 @@ for (const [de, list] of seen) {
   }
 }
 
+// ── A2. 剥掉「B – 」这种字母前缀后，仍然是同一个词 ──
+// 过敏原表用「B – Krebstiere」的写法，和词库里的「die Krebstiere」是同一个词，
+// 谐音的**词身部分**必须一致（前面那个字母的谐音各自保留）。
+const strip = (de) => de.trim().replace(/^[A-ZÄÖÜ]\s*[–-]\s*/, '').replace(/^(der|die|das)\s+/i, '');
+const stripPy = (de, py) => {
+  let t = py.trim();
+  if (/^[A-ZÄÖÜ]\s*[–-]\s*/.test(de.trim())) t = t.replace(/^\S+\s+/, '');   // 去掉字母的谐音
+  else t = t.replace(/^(德尔|迪|达斯)\s+/, '');                                 // 去掉冠词的谐音
+  return t;
+};
+const body = new Map();
+for (const [de, list] of seen) {
+  const w = strip(de);
+  if (/\s/.test(w)) continue;                       // 只比单词
+  for (const x of list) {
+    const t = stripPy(de, x.py);
+    if (!body.has(w)) body.set(w, new Map());
+    if (!body.get(w).has(t)) body.get(w).set(t, []);
+    body.get(w).get(t).push(`${de}=${x.py}（${x.where}）`);
+  }
+}
+let bodies = 0;
+for (const [w, m] of body) {
+  if (m.size < 2) continue;
+  bodies++;
+  bad(`「${w}」换个写法就换个谐音：` + [...m.values()].map((v) => v[0]).join('　'));
+}
+
 // ── B. 复合词词尾的词根写法必须统一 ──
 // 只收「作为词尾出现、且谐音也应落在结尾」的名词词根 —— 这样匹配是精确的，
 // 不会像在词中间瞎找子串那样把 Stunde 里的 und 也算进去。
@@ -71,6 +104,10 @@ const TAIL = {
   becher: '贝希尔', glas: '格拉斯', hundert: '洪德特', tausend: '套森特', zehn: '岑',
   // 词首 s+元音读 [z]：Sahne 一度被写成「萨讷」（当成 [s] 了），句子里却一直是「扎讷」
   sahne: '扎讷', milch: '米尔希',
+  // 2026-09：这三个词根各自散着 2–3 种写法，统一后钉在这里
+  tee: '特',          // Grüntee/Jasmintee/Eistee 都是「特」，曾有一处写「提」
+  tiere: '提勒',      // -tiere 的词尾 -e 不吞，曾有一处写「蒂尔」
+  nummer: '努默尔',   // Nummer [ˈnʊmɐ]，-er 读 [ɐ]；曾散成 努默/努梅尔/农默尔
 };
 let checked = 0;
 for (const [de, list] of seen) {
@@ -116,6 +153,19 @@ for (const [de, py, where] of rows) {
   }
 }
 
-console.log(`谐音一致性体检：${words} 个词条跨 ${new Set([...seen.values()].flat().map((x) => x.where.split('[')[0])).size} 个数据源比对，词根收尾校验 ${checked} 处，外来词读法校验 ${loans} 处`);
+// ── D. 名词谐音必须以冠词的谐音开头 ──
+// das Zitronengras 曾写成「迪 齐特龙恩格拉斯」、der Quantencomputer 写成「迪 …」，
+// 卡片上直接教错性别。这条是纯机械核对，零误判。
+const ART = { der: '德尔', die: '迪', das: '达斯' };
+let arts = 0;
+for (const [de, py, where] of rows) {
+  const m = de.match(/^(der|die|das)\s/);
+  if (!m) continue;
+  arts++;
+  const want = ART[m[1]];
+  if (!py.startsWith(want + ' ')) bad(`「${de}」是 ${m[1]}，谐音却以「${py.split(/\s/)[0]}」开头，应是「${want}」（${where}）`);
+}
+
+console.log(`谐音一致性体检：${words} 个词条跨 ${new Set([...seen.values()].flat().map((x) => x.where.split('[')[0])).size} 个数据源比对，词根收尾校验 ${checked} 处，外来词读法校验 ${loans} 处，冠词核对 ${arts} 处，换皮同词比对 ${body.size} 组`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 同词谐音全站一致，复合词词根写法统一');

@@ -3230,7 +3230,18 @@ function nextQ(){
   const all=getAllPhrases();
   const idx=Math.floor(Math.random()*all.length);
   mq.current=all[idx];
+  // 干扰项不能和正解「显示出来一模一样」：词库里有 13 个同德语词（das Gericht=菜肴/法院）、
+  // 174 个同中文（Tschüss!/Tschau!/Auf Wiedersehen! 都译作「再见！」）。撞上就是两个选项都对，
+  // 却只有一个判分 —— 按 4152 条的池子算约每 8000 题出一次，答题的人只会觉得「这题有毒」。
   const wrong=[];
+  const clash=(w)=>w.de===mq.current.de||w.zh===mq.current.zh||wrong.some(x=>x.de===w.de||x.zh===w.zh);
+  for(var _g=0;wrong.length<3&&_g<300;_g++){
+    const w=all[Math.floor(Math.random()*all.length)];
+    if(w.id===mq.current.id||wrong.find(x=>x.id===w.id))continue;
+    if(clash(w))continue;
+    wrong.push(w);
+  }
+  // 兜底：题库小到凑不齐 3 个不撞车的（比如某级别只剩几条），放宽到只查 id，别把页面卡死
   while(wrong.length<3){
     const w=all[Math.floor(Math.random()*all.length)];
     if(w.id!==mq.current.id&&!wrong.find(x=>x.id===w.id))wrong.push(w);

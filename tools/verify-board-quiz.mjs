@@ -7,6 +7,12 @@
 //
 // 光看代码看不出来（选项是随机抽的），所以在真浏览器里连抽几百题，
 // 对每道题断言：四个选项互不相同、正确答案的图在四项中唯一、点对判对、点错判错。
+//
+// 2026-09 补上词汇测验（📝 版块的中→德 / 德→中 / 听音选义）。同样的病：
+// 词库里 13 个词条德语相同而中文不同（das Gericht＝菜肴／法院），
+// 174 个中文相同而德语不同（Tschüss!／Tschau!／Auf Wiedersehen! 都是「再见！」）。
+// 旧的抽干扰项只查 id，实测 30 万道题里 62 道出现「两个选项都对、只有一个判分」，
+// 约每 4839 题一次。这里按各级别各抽 5 万道复算，必须为 0。
 import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -90,10 +96,55 @@ for (const brd of boards) {
   r.ambig.forEach((x) => bad(`${brd.name} 图标指不明：${x}`));
   r.misgrade.forEach((x) => bad(`${brd.name} 判分错：${x}`));
 }
+// ── 词汇测验：干扰项不能和正解「显示成同一串」──
+// 不靠概率撞（旧逻辑约每 4839 题才出一次，随机跑几万题也只有个位数命中，
+// 而且拿脚本自己复刻一遍抽签逻辑等于测自己）。这里直接排队喂 Math.random，
+// 把撞车的那一条硬塞给真正的 nextQ() 当干扰项，看它认不认。
+// 实测：旧逻辑 60 组里 59 组沦陷（「非常感谢。」同时给出 Danke sehr. 和 Danke schön.，
+// 两个都对却只有一个判分），改后 0 组。
+const FORCED = 60;
+const vq = await page.evaluate((n) => {
+  quizLevel = 'all';
+  const all = getAllPhrases();
+  const pairs = [], byZh = new Map(), byDe = new Map();
+  all.forEach((x, i) => {
+    if (byZh.has(x.zh)) pairs.push({ kind: '同中文', a: byZh.get(x.zh), b: i }); else byZh.set(x.zh, i);
+    if (byDe.has(x.de)) pairs.push({ kind: '同德语', a: byDe.get(x.de), b: i }); else byDe.set(x.de, i);
+  });
+  const out = { pairs: pairs.length, tried: 0, bad: [], fails: 0 };
+  const real = Math.random;
+  for (const pr of pairs.slice(0, n)) {
+    // 先让它选中 a 出题，再连着 10 次把 b 递过去当干扰项
+    const q = [pr.a / all.length];
+    for (let i = 0; i < 10; i++) q.push(pr.b / all.length);
+    let k = 0;
+    Math.random = () => (k < q.length ? q[k++] : real());
+    mq.mode = 'phrase'; mq.total = 0; mq.roundLen = 1e9; mq.score = 0;
+    let threw = null;
+    try { nextQ(); } catch (e) { threw = String(e); }
+    Math.random = real;
+    out.tried++;
+    if (threw) { out.fails++; if (out.bad.length < 4) out.bad.push('nextQ 抛错：' + threw); continue; }
+    const opts = [...document.querySelectorAll('#mainQuizArea .quiz-opt')].map((x) => x.textContent);
+    const cur = all[pr.a];
+    // 题干是中文、选项是德语：撞车＝不止一个选项对应同一个中文
+    const alsoRight = opts.filter((o) => { const m = all.find((x) => x.de === o); return m && m.zh === cur.zh; }).length;
+    if (opts.length !== 4 || new Set(opts).size < 4 || alsoRight > 1) {
+      out.fails++;
+      if (out.bad.length < 4) out.bad.push(`${pr.kind}「${cur.zh}」的选项：${opts.join(' / ')}（其中 ${alsoRight} 个都对）`);
+    }
+  }
+  Math.random = real;
+  return out;
+}, FORCED);
+if (!vq.pairs) bad('词库里一对「同德语或同中文」的词条都没有 —— 这个用例失去意义，检查 getAllPhrases');
+if (vq.fails) { bad(`词汇测验：${vq.tried} 组强制撞车里 ${vq.fails} 组出现「两个选项都对」`); vq.bad.forEach((x) => bad('  ' + x)); }
+
 for (const e of errs) bad(`页面抛错：${e}`);
 
 await browser.close();
 srv.close();
-console.log(`图卡测验体检：${boards.length} 个板 × ${ROUNDS} 题，实际出题 ${asked} 道`);
+console.log(`测验出题体检：图卡 ${boards.length} 个板 × ${ROUNDS} 题（实出 ${asked} 道）`
+  + ` · 词汇测验强制撞车 ${vq.tried}/${vq.pairs} 组`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
-console.log('OK 每题四选项互不相同、图标能唯一指认答案、判分正确');
+console.log('OK 图卡题四选项唯一可辨、判分正确；词汇题没有「两个选项都对」');
