@@ -22,41 +22,54 @@ const ok = (m) => console.log('  ✓ ' + m);
 // ── 最小 D1 垫片：worker 只用到 prepare/bind/first/all/run/batch ──
 const db = new DatabaseSync(':memory:');
 db.exec(readFileSync(join(ROOT, 'analytics/schema.sql'), 'utf8'));
-const stmt = (sql) => ({
-  _b: [],
-  bind(...a) { this._b = a.map((v) => (v === undefined ? null : (typeof v === 'boolean' ? +v : v))); return this; },
-  first() { const r = db.prepare(sql).get(...this._b); return r === undefined ? null : r; },
-  all() { return { results: db.prepare(sql).all(...this._b) }; },
-  run() { const r = db.prepare(sql).run(...this._b); return { meta: { changes: r.changes, last_row_id: r.lastInsertRowid } }; },
-});
+const stmt = (sql) => {
+  // D1 的 stmt.bind() 返回**新**语句，原语句不变；早先这里写成「改 this 再 return this」，
+  // 于是 batch(acts.map(a => st.bind(...a))) 里所有元素都是同一个对象、绑的是最后一组值，
+  // 测出来的行为跟线上不是一回事（会把 N 条不同动态测成 N 条一样的）。
+  const make = (b) => ({
+    bind: (...a) => make(a.map((v) => (v === undefined ? null : (typeof v === 'boolean' ? +v : v)))),
+    first() { const r = db.prepare(sql).get(...b); return r === undefined ? null : r; },
+    all() { return { results: db.prepare(sql).all(...b) }; },
+    run() { const r = db.prepare(sql).run(...b); return { meta: { changes: r.changes, last_row_id: r.lastInsertRowid } }; },
+  });
+  return make([]);
+};
 const DB = { prepare: stmt, batch: async (list) => list.map((s) => s.run()) };
 
 // 验证码只在邮件正文里出现一次，所以发信必须拦下来 —— 攻击链的关键一环正是「码发给了谁」
 const mailbox = [];
-const env = { DB, SITE: 'https://www.uuoo.site', MAIL_FROM: 'no-reply@uuoo.site', RESEND_API_KEY: 'test' };
+let mailBroken = false;                       // 置 true 模拟 Resend 挂了
+const env = { DB, SITE: 'https://www.uuoo.site', SITE_URL: 'https://www.uuoo.site',
+  MAIL_FROM: 'no-reply@uuoo.site', RESEND_API_KEY: 'test',
+  GH_CLIENT_ID: 'cid', GH_CLIENT_SECRET: 'sec' };
 
 // 拦 fetch：Resend 发信接口直接记账返回成功
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (u, o) => {
   const s = String(u);
   if (s.includes('resend.com')) {
+    if (mailBroken) return new Response(JSON.stringify({ message: 'service down' }), { status: 500 });
     const b = JSON.parse(o.body);
     mailbox.push({ to: Array.isArray(b.to) ? b.to[0] : b.to, html: b.html || b.text || '' });
     return new Response(JSON.stringify({ id: 'x' }), { status: 200 });
   }
+  // GitHub OAuth 的两个外部端点：换 token / 取用户信息
+  if (s.includes('github.com/login/oauth/access_token')) return new Response(JSON.stringify({ access_token: 'gho_x' }), { status: 200 });
+  if (s.includes('api.github.com/user')) return new Response(JSON.stringify({ id: 4242, login: 'octo', name: 'Octo' }), { status: 200 });
   return realFetch(u, o);
 };
 
 const worker = (await import(pathToFileURL(join(ROOT, 'analytics/worker.js')).href)).default;
-const call = async (method, path, body, token) => {
-  const h = { origin: 'https://www.uuoo.site', 'CF-Connecting-IP': '203.0.113.' + Math.floor(Math.random() * 250) };
+const call = async (method, path, body, token, extraHeaders) => {
+  const h = Object.assign({ origin: 'https://www.uuoo.site', 'CF-Connecting-IP': '203.0.113.' + Math.floor(Math.random() * 250) }, extraHeaders || {});
   if (token) h.Authorization = 'Bearer ' + token;
   const res = await worker.fetch(new Request('https://api.test' + path, {
-    method, headers: h, body: body === undefined ? undefined : JSON.stringify(body),
+    method, headers: h, body: body === undefined ? undefined : JSON.stringify(body), redirect: 'manual',
   }), env, { waitUntil() {} });
   let data = {};
   try { data = await res.json(); } catch (_) {}
-  return { status: res.status, ok: res.ok, data };
+  return { status: res.status, ok: res.ok, data,
+    location: res.headers.get('Location') || '', setCookie: res.headers.get('Set-Cookie') || '' };
 };
 
 // ─────────────────────────────────────────────────────────
@@ -153,6 +166,85 @@ for (const q of ['', '?by=known', '?by=streak', '?by=total', '?by=constructor', 
 if (!db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='users'").get()) bad('users 表没了');
 ok('排行榜 by 参数只认三个白名单值，原型链键与注入串都被挡下');
 
-console.log(`账号安全回归：重放 ${3} 组接管路径 + 排行榜排序参数`);
+
+// ─────────────────────────────────────────────────────────
+// ⑤ email_code：发信故障也不能变成「这个账号存不存在」的探测器
+// ─────────────────────────────────────────────────────────
+// 走到发信那一步时，「用户存在」和「绑了邮箱」两道门槛都已经过了。
+// 这时候如果发信失败回 500、其他情况回 200，拿一批用户名扫一遍就能筛出可下手的目标 ——
+// 而那正是 email_code → reset 接管链的第一步。
+mailBroken = true;
+const probeHit = await call('POST', '/api/account/email_code', { username: 'victim' });
+const probeMiss = await call('POST', '/api/account/email_code', { username: 'no-such-user-here' });
+mailBroken = false;
+if (probeHit.status !== probeMiss.status || JSON.stringify(probeHit.data) !== JSON.stringify(probeMiss.data)) {
+  bad(`发信故障时响应可区分：存在的账号回 ${probeHit.status} ${JSON.stringify(probeHit.data)}，`
+    + `不存在的回 ${probeMiss.status} ${JSON.stringify(probeMiss.data)} —— 等于账号探测器`);
+} else ok(`发信故障时存在/不存在的账号回同一句（${probeHit.status}）`);
+
+// ─────────────────────────────────────────────────────────
+// ⑥ OAuth：state 必须绑定发起流程的那个浏览器
+// ─────────────────────────────────────────────────────────
+// 只把 state 存库里挡不住登录 CSRF：攻击者自己走一遍 start 拿到合法 state，
+// 再把 callback 链接发给受害者，受害者就「登录」进了攻击者的账号，
+// 之后所有学习进度都同步进去。所以 start 时下发同值 Cookie，callback 双提交比对。
+const start = await call('GET', '/api/oauth/github/start');
+const stateM = /[?&]state=([a-f0-9]+)/.exec(start.location || '');
+if (!stateM) bad(`OAuth start 没带 state：${start.status} ${start.location}`);
+else {
+  const state = stateM[1];
+  if (!new RegExp('uuoo_os=' + state + '\\b').test(start.setCookie)) bad(`OAuth start 没有下发绑定用的 Cookie：${start.setCookie}`);
+  else ok('OAuth start 下发了与 state 同值的 HttpOnly Cookie');
+  if (!/HttpOnly/i.test(start.setCookie) || !/SameSite=Lax/i.test(start.setCookie) || !/Secure/i.test(start.setCookie)) {
+    bad(`OAuth Cookie 属性不全（要 HttpOnly + Secure + SameSite=Lax）：${start.setCookie}`);
+  }
+  // 攻击者把 callback 链接丢给别人：受害者浏览器里没有这个 Cookie
+  const noCookie = await call('GET', '/api/oauth/github/callback?code=abc&state=' + state);
+  if (!/#login\?err=oauth/.test(noCookie.location || '')) {
+    bad(`不带 Cookie 的 callback 竟然通过了：${noCookie.status} ${noCookie.location}`);
+  } else ok('不带 Cookie 的 callback 被拒（登录 CSRF 堵住）');
+  if (db.prepare('SELECT 1 FROM users WHERE provider=? AND provider_id=?').get('github', '4242')) {
+    bad('被拒的 callback 仍然建出了账号');
+  }
+  // 正常流程：同一浏览器带着 Cookie 回来，必须能登进去
+  const s2 = await call('GET', '/api/oauth/github/start');
+  const st2 = /[?&]state=([a-f0-9]+)/.exec(s2.location)[1];
+  const good = await call('GET', '/api/oauth/github/callback?code=abc&state=' + st2, undefined, undefined, { Cookie: 'uuoo_os=' + st2 });
+  if (!/#acct_token=[a-f0-9]+/.test(good.location || '')) bad(`带对 Cookie 的正常第三方登录被误伤：${good.status} ${good.location}`);
+  else ok('带对 Cookie 的第三方登录照常可用');
+  // state 用过即焚
+  const replay = await call('GET', '/api/oauth/github/callback?code=abc&state=' + st2, undefined, undefined, { Cookie: 'uuoo_os=' + st2 });
+  if (!/#login\?err=oauth/.test(replay.location || '')) bad('同一个 state 可以重放');
+  else ok('state 用过即焚，不能重放');
+}
+
+// ─────────────────────────────────────────────────────────
+// ⑦ /api/sync：不能拿来灌 activity 表，也不能把排行榜刷到天上
+// ─────────────────────────────────────────────────────────
+const flood = await call('POST', '/api/register', { username: 'flooder', nickname: 'F', password: 'correct-horse' });
+const ftok = flood.data.token;
+const actCount = () => db.prepare('SELECT COUNT(*) c FROM activity WHERE uid=(SELECT id FROM users WHERE username=?)').get('flooder').c;
+const payload = { known: 500, streak: 10, best: 10, total: 900, quiz: 50 };
+for (let i = 0; i < 6; i++) await call('POST', '/api/sync', Object.assign({ lang: 'en' }, payload), ftok);
+if (actCount()) bad(`英语同步写出了 ${actCount()} 条动态 —— 徽章去重靠的是 users.badges，而它只在德语分支回写，会无限重复`);
+else ok('英语同步不再写 activity（去重状态和写入分支一致）');
+await call('POST', '/api/sync', Object.assign({ lang: 'de' }, payload), ftok);
+const deOnce = actCount();
+if (!deOnce) bad('德语同步一条动态都没写 —— 去重改过头，Feed 空了');
+for (let i = 0; i < 6; i++) await call('POST', '/api/sync', Object.assign({ lang: 'de' }, payload), ftok);
+if (actCount() !== deOnce) bad(`德语重复同步把动态从 ${deOnce} 条涨到了 ${actCount()} 条`);
+else ok(`德语同步只写一次（${deOnce} 条），重复同步不再增长`);
+
+// MAX() 合并是多设备必需的，但上限必须说得通：德语 4253 + 英语 7192 条词，
+// known 给到 20000 已经很宽。这里只断言「离谱值进不去」，
+// 不可逆本身是设计取舍（换设备时不能让本地的 0 清空云端），文档里写明了。
+await call('POST', '/api/sync', { lang: 'de', known: 9999999, streak: 99999, best: 99999, total: 9e9, quiz: 9e9 }, ftok);
+const infl = db.prepare("SELECT known,streak,best_streak,total,quiz FROM users WHERE username='flooder'").get();
+const caps = { known: 20000, streak: 3650, best_streak: 3650, total: 1000000, quiz: 1000000 };
+let capBad = 0;
+for (const [k, hi] of Object.entries(caps)) if (infl[k] > hi) { bad(`${k} 被刷到 ${infl[k]}，超过上限 ${hi}`); capBad++; }
+if (!capBad) ok(`离谱数值被夹到上限内（known=${infl.known} streak=${infl.streak} total=${infl.total}）`);
+
+console.log(`账号安全回归：重放 ${3} 组接管路径 + 排行榜排序 + 邮箱探测 + OAuth 登录 CSRF + 同步灌水/刷分`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 账号接管路径全部堵住，正常找回流程未受影响');

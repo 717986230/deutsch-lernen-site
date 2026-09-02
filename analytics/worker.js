@@ -340,7 +340,11 @@ export default {
       if (!u || !u.email) return generic;
       const code = genMailCode(), salt = rndHex(16), hash = await pbkdf2(code, salt);
       const sent = await sendMail(env, u.email, code);
-      if (!sent.ok) return json({ err: sent.err }, 500, cors);   // 配置/服务问题要让站长看得见
+      // 发信失败也必须回同一句。此处已经过了「用户存在且绑了邮箱」两道门槛，
+      // 一旦这里回 500 而别处回 200，攻击者拿一批用户名扫一遍就能筛出
+      // 「哪些账号存在且绑了邮箱」—— 那正是 email_code → reset 接管链的第一步。
+      // 站长要看故障，去 Cloudflare 日志（wrangler tail）看 console.error，不要走响应体。
+      if (!sent.ok) { console.error('[email_code] 发信失败 uid=' + u.id + ' err=' + sent.err); return generic; }
       await env.DB.prepare('UPDATE users SET mail_salt=?,mail_hash=?,mail_exp=?,mail_try=0 WHERE id=?')
         .bind(salt, hash, Date.now() + MAIL_TTL, u.id).run();
       return generic;
@@ -439,32 +443,57 @@ export default {
       const cid = prov.cid(env);
       if (!cid) return Response.redirect(site + '/#login?err=oauth_unavailable', 302);
       const redirect = url.origin + '/api/oauth/' + om[1] + '/callback';
+      // state 只存在库里、不绑浏览器的话，它挡不住登录 CSRF：攻击者自己走一遍 start
+      // 拿到一个合法 state，再把 callback 链接丢给受害者，受害者的浏览器就会「登录成」
+      // 攻击者的账号，之后所有学习进度都同步进攻击者账号里。
+      // 所以除了库里那份，再往浏览器塞一个同值 Cookie，callback 时两边必须对上
+      // （双提交）。callback 是 OAuth 服务商发起的顶级跳转，SameSite=Lax 的 Cookie 会带上。
+      const COOKIE = 'uuoo_os';
+      const readCookie = (name) => {
+        const raw = req.headers.get('Cookie') || '';
+        for (const part of raw.split(';')) {
+          const i = part.indexOf('=');
+          if (i > 0 && part.slice(0, i).trim() === name) return part.slice(i + 1).trim();
+        }
+        return '';
+      };
+      const setCookie = (v, maxAge) =>
+        `${COOKIE}=${v}; Max-Age=${maxAge}; Path=/api/oauth; HttpOnly; Secure; SameSite=Lax`;
       if (step === 'start') {
         const state = rndHex(16);
         await env.DB.prepare('INSERT INTO oauth_state (state,exp) VALUES (?,?)').bind(state, Date.now() + 600000).run();
         const authUrl = prov.authUrl + '?client_id=' + encodeURIComponent(cid) +
           '&redirect_uri=' + encodeURIComponent(redirect) + '&scope=' + encodeURIComponent(prov.scope) +
           '&state=' + state + (prov.extra || '');
-        return Response.redirect(authUrl, 302);
+        return new Response(null, { status: 302, headers: { Location: authUrl, 'Set-Cookie': setCookie(state, 600) } });
       }
       // callback
       const code = url.searchParams.get('code'), state = url.searchParams.get('state');
+      const drop = { 'Set-Cookie': setCookie('', 0) };                    // 无论成败都把 Cookie 清掉
+      const denyOauth = () => new Response(null, { status: 302, headers: Object.assign({ Location: site + '/#login?err=oauth' }, drop) });
       const st = state && await env.DB.prepare('SELECT exp FROM oauth_state WHERE state=?').bind(state).first();
-      if (!code || !st || st.exp < Date.now()) return Response.redirect(site + '/#login?err=oauth', 302);
+      if (!code || !st || st.exp < Date.now()) return denyOauth();
+      // 这一步是新加的：state 必须来自**同一个浏览器**
+      if (!state || readCookie(COOKIE) !== state) {
+        await env.DB.prepare('DELETE FROM oauth_state WHERE state=?').bind(state).run();
+        return denyOauth();
+      }
       await env.DB.prepare('DELETE FROM oauth_state WHERE state=?').bind(state).run();
       const tr = await fetch(prov.tokenUrl, {
         method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ client_id: cid, client_secret: prov.secret(env), code, redirect_uri: redirect, grant_type: 'authorization_code' }),
       });
       const tok = await tr.json().catch(() => ({}));
-      if (!tok.access_token) return Response.redirect(site + '/#login?err=oauth', 302);
+      if (!tok.access_token) return denyOauth();
       const ur = await fetch(prov.userUrl, { headers: { Authorization: 'Bearer ' + tok.access_token, 'User-Agent': 'uuoo-app', Accept: 'application/json' } });
       const info = await ur.json().catch(() => ({}));
       const pid = info[prov.idKey] != null ? String(info[prov.idKey]) : '';
-      if (!pid) return Response.redirect(site + '/#login?err=oauth', 302);
+      if (!pid) return denyOauth();
       const uid = await oauthUpsert(env, om[1], pid, info[prov.loginKey], info[prov.nameKey]);
-      // token 放 URL 片段(#)而非查询串(?)：片段不进 Referer / 访问日志，前端读后立即清除
-      return Response.redirect(site + '/#acct_token=' + (await newSession(env, uid)), 302);
+      // token 放 URL 片段(#)而非查询串(?)：片段不进 Referer / 访问日志，前端读后立即清除。
+      // 前端还会检查「这一标签页确实点过第三方登录」才认这个 token（防会话固定，见 src.html）。
+      return new Response(null, { status: 302,
+        headers: Object.assign({ Location: site + '/#acct_token=' + (await newSession(env, uid)) }, drop) });
     }
 
     // ───────── 学习明细（需登录；按目标语言分开、带 revision 防止新设备覆盖旧设备） ─────────
@@ -513,8 +542,14 @@ export default {
       if (!syncRate.ok) return tooMany(cors, syncRate.retry);
       const b = await body(req);
       const lang = b.lang === 'en' ? 'en' : 'de';
-      const clamp = (v) => Math.max(0, Math.min(1e7, v | 0));
-      const known = clamp(b.known), streak = clamp(b.streak), best = clamp(b.best), total = clamp(b.total), quiz = clamp(b.quiz);
+      // 下面几个字段进库时走 MAX()（多设备合并必须的，见后文），代价是**只能往上、不能往下**：
+      // 一次请求刷个 9999999 就能永久霸榜，之后老实上报也降不回来。
+      // MAX() 本身要留，但上限必须收到说得通的范围内 —— 德语词库 4253 条、英语 7192 条，
+      // known 给到 20000 已经是「全站每个词都认识」还富余一倍。
+      const clamp = (v, hi) => Math.max(0, Math.min(hi, v | 0));
+      const MAX_KNOWN = 20000, MAX_DAYS = 3650, MAX_COUNT = 1000000;
+      const known = clamp(b.known, MAX_KNOWN), streak = clamp(b.streak, MAX_DAYS), best = clamp(b.best, MAX_DAYS),
+        total = clamp(b.total, MAX_COUNT), quiz = clamp(b.quiz, MAX_COUNT);
       const level = String(b.level || 'A1').slice(0, 4);
       const old = await env.DB.prepare('SELECT badges,known,best_streak,total,quiz FROM users WHERE id=?').bind(uid).first();
       if (!old) return json({ err: '账号不存在' }, 404, cors);
@@ -550,15 +585,28 @@ export default {
         'UPDATE users SET known=MAX(known,?),streak=?,best_streak=MAX(best_streak,?,?),' +
         'total=MAX(total,?),quiz=MAX(quiz,?),level=?,badges=?,updated=? WHERE id=?')
         .bind(merged.known, merged.streak, merged.best, merged.streak, merged.total, merged.quiz, level, badges, now, uid).run();
-      // 学习动态：纯系统事件（新徽章 / 打卡破纪录），供关注者的 Feed
-      if (old) {
+      // 学习动态：纯系统事件（新徽章 / 打卡破纪录），供关注者的 Feed。
+      // 只在 lang==='de' 时发：去重靠的是 users.badges / users.best_streak，
+      // 而这两列**只有德语分支才回写**。英语同步下 old.badges 永远是旧值，
+      // 于是同一批徽章每同步一次就重插一次 —— 实测同样内容连同步 9 次，
+      // activity 从 6 行涨到 54 行，且限流是 30 次/分钟，等于每分钟能灌 180 行。
+      if (old && lang === 'de') {
         const had = new Set((old.badges || '').split(',').filter(Boolean));
-        const acts = list.filter(id => !had.has(id)).map(id => ['badge', id]);
+        let acts = list.filter(id => !had.has(id)).map(id => ['badge', id]);
         const newBest = merged.best;
         if (newBest > (old.best_streak || 0) && newBest >= 3) acts.push(['streak', String(newBest)]);
+        acts = acts.slice(0, 10);
+        if (acts.length) {
+          // 再兜一道：库里已经有的同类动态不重复插。上面的语言判断哪天被人改了，
+          // 也不至于又变成灌水口子。
+          const seenRows = await env.DB.prepare(
+            'SELECT type,data FROM activity WHERE uid=? AND type IN (?,?)').bind(uid, 'badge', 'streak').all();
+          const seenAct = new Set((seenRows.results || []).map(r => r.type + '\u0000' + r.data));
+          acts = acts.filter(([t, d]) => !seenAct.has(t + '\u0000' + d));
+        }
         if (acts.length) {
           const st = env.DB.prepare('INSERT INTO activity (uid,type,data,ts) VALUES (?,?,?,?)');
-          await env.DB.batch(acts.slice(0, 10).map(([t, d]) => st.bind(uid, t, d, now)));
+          await env.DB.batch(acts.map(([t, d]) => st.bind(uid, t, d, now)));
         }
       }
       return json({ ok: 1, badges: list }, 200, cors);

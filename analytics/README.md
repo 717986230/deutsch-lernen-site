@@ -66,6 +66,8 @@ wrangler deploy                                                 # 部署新版 w
 - `GET /api/progress?lang=de|en`（带 token）→ 取得该语言的词汇掌握、复习、错词、日课与最近学习明细
 - `PUT /api/progress`（带 token）`{lang,rev,document}` → 写入该语言学习明细；版本冲突返回 `409` 及服务端版本，客户端合并后重试
 - `POST /api/sync`（带 token）`{lang,known,streak,best,total,quiz,level}` → 更新排行榜/徽章用的摘要，明细由 `/api/progress` 单独恢复
+  - 数值上限：`known` ≤ 20000、`streak`/`best` ≤ 3650、`total`/`quiz` ≤ 1000000。这几列入库走 `MAX()`（多设备合并必需，换设备时不能让本地的 0 清空云端），**代价是只能往上不能往下**，所以上限必须说得通 —— 德语 4253 条 + 英语 7192 条词，20000 已是「全站都认识」还富余一倍。彻底杜绝刷分要服务端记分，本站是离线优先、客户端权威，做不到。
+  - 学习动态（`activity`）**只在 `lang=de` 时写**：去重靠 `users.badges` / `users.best_streak`，而这两列只有德语分支回写。英语分支下 `old.badges` 永远是旧值，同一批徽章每同步一次就重插一次（实测同内容连同步 9 次，`activity` 从 6 行涨到 54 行）。写入前还会查一次已有动态兜底。
 - `POST /api/profile/update`（带 token）`{nickname?,avatar?,av_bg?,sig?,email?,password?}` → 改资料与邮箱；邮箱传空字符串＝删除。**phone 字段已不再接受**
   - ⚠️ **改动 `email` 必须带 `password` 重验当前密码**（与「重新生成恢复码」同规矩）：找回邮箱是账号的第二把钥匙，只凭会话就能改的话，借到一台已登录的手机即可 `email_code` → `reset` 拿走整个账号。密码错返回 400 并计入登录频控桶。
   - 第三方登录账号（`provider≠pw`）**不允许**设置找回邮箱 —— 它们没有密码可二次验证，丢失访问的正解是回去用 GitHub/Google 重新登录。
@@ -80,7 +82,8 @@ wrangler deploy                                                 # 部署新版 w
 - `POST /api/account/password`（带 token）`{old,new}` → 修改密码（仅密码账号；成功后踢掉除当前外全部会话）
 - `POST /api/account/delete`（带 token）密码账号传 `{password}`、第三方账号传 `{confirm:自己的用户名}` → 注销账号（硬删，不可恢复）
 - `POST /api/account/recovery`（带 token）`{password}` → 重新生成恢复码（密码账号须验当前密码），返回 `{recovery}`，**旧码立即作废**
-- `POST /api/account/email_code` `{username}` → 给该账号绑定的邮箱发 6 位验证码（10 分钟有效）。**无论账号/邮箱是否存在都返回同一句**，防账号枚举
+- `POST /api/account/email_code` `{username}` → 给该账号绑定的邮箱发 6 位验证码（10 分钟有效）。**无论账号/邮箱是否存在、发信成功与否，都返回同一句 200**，防账号枚举
+  - 发信失败以前回 500 —— 但走到发信这步时「账号存在」和「绑了邮箱」两道门槛都已经过了，于是 500/200 的差异等于告诉攻击者哪些账号可下手（`email_code` → `reset` 接管链的第一步）。现在故障走 `console.error`，站长用 `wrangler tail` 看。
 - `POST /api/account/reset` `{username,new,code?|emailCode?}` → 重置密码（无需登录）。**恢复码与邮箱验证码二选一**；成功后踢掉全部会话、返回新 token 与**一枚新恢复码**；走邮箱通道会顺带标记 `email_ok=1`
   - ⚠️ 只对**密码账号**开放：`provider≠pw` 且没有 `pass_hash` 的账号一律按失败处理。否则等于凭一封邮件给第三方账号凭空造出一条用户名+密码通道（`/api/login` 只看 `pass_hash`，不看 `provider`）。
 - `POST /api/logout`（带 token）→ 登出当前会话（幂等）
@@ -123,7 +126,8 @@ wrangler secret put RESEND_API_KEY     # 在 Resend 后台创建，切勿写进 
 wrangler deploy
 ```
 
-未配置 `RESEND_API_KEY` 时，`/api/account/email_code` 返回 500 并提示未配置——恢复码通道不受影响，照常可用。
+未配置 `RESEND_API_KEY` 时，`/api/account/email_code` 对外仍回那句通用提示（不暴露账号是否存在），
+故障详情打在 Worker 日志里（`wrangler tail`）——恢复码通道不受影响，照常可用。
 验证码只存 PBKDF2 哈希，10 分钟过期，同一枚最多试 5 次，用掉即清除。
 发送频控：每用户名 1 小时 5 次、每 IP 1 小时 20 次。
 
@@ -145,6 +149,15 @@ wrangler deploy
 
 **GitHub**：Settings → Developer settings → **OAuth Apps** → New OAuth App
 - Homepage URL：`https://www.uuoo.site`
+> **OAuth 的 state 绑定浏览器**：`/start` 除了把 `state` 写进 `oauth_state` 表，还会下发同值 Cookie
+> `uuoo_os`（`HttpOnly; Secure; SameSite=Lax; Path=/api/oauth; Max-Age=600`），`/callback` 两边必须对上。
+> 只存库不绑浏览器挡不住登录 CSRF：攻击者自己走一遍 `start` 拿到合法 `state`，再把 callback 链接发给
+> 受害者，受害者就「登录」进了攻击者的账号，之后学习进度全同步进去。`state` 用过即焚，不能重放。
+>
+> 前端配套：回跳带的 `#acct_token=` **只有「本标签页刚点过第三方登录」才采信**
+> （`oauthLogin()` 写 `sessionStorage.oauth_go`，读后即删），否则任何人发个
+> `https://www.uuoo.site/#acct_token=<自己的 token>` 就能让别人登进他的账号。
+
 - **Authorization callback URL**：`https://uuoo-analytics.<你的子域>.workers.dev/api/oauth/github/callback`
 - 拿到 **Client ID** 填 `wrangler.toml` 的 `GH_CLIENT_ID`；Secret 用 `wrangler secret put GH_CLIENT_SECRET`
 

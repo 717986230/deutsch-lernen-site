@@ -92,6 +92,34 @@ const out = await boot({ token: '', label: '未登录启动' });
 if (!out.locked) bad('未登录启动没有上锁');
 if (!out.active.includes('account')) bad(`未登录启动落在 ${out.active.join(',') || '（无）'}，应为 account`);
 
+// ⑤ 会话固定：URL 里的 #acct_token= 只有「本标签页刚点过第三方登录」才认
+// 以前是照单全收，于是把 https://www.uuoo.site/#acct_token=<攻击者自己的 token>
+// 发给别人，对方一点就登进了攻击者的账号，之后学习进度全同步到攻击者名下。
+const FAKE = 'a'.repeat(48);
+async function hashLogin(primed) {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await page.addInitScript(STUB);
+  await page.addInitScript(`(function(){try{localStorage.removeItem('acct_token');${primed ? "sessionStorage.setItem('oauth_go','1');" : "sessionStorage.removeItem('oauth_go');"}}catch(e){}})();`);
+  await page.goto(`http://localhost:${PORT}/index.html#acct_token=${FAKE}`, { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(1200);
+  const r = await page.evaluate(() => ({
+    stored: (() => { try { return localStorage.getItem('acct_token'); } catch (e) { return null; } })(),
+    locked: document.documentElement.classList.contains('locked'),
+    leftover: (() => { try { return sessionStorage.getItem('oauth_go'); } catch (e) { return null; } })(),
+    hash: location.hash,
+  }));
+  await page.close();
+  return r;
+}
+const drive = await hashLogin(false);
+if (drive.stored === FAKE) bad('URL 里的 #acct_token= 被直接采信 —— 攻击者发个链接就能让别人登进他的账号（会话固定）');
+else if (!drive.locked) bad('未登录状态下带 #acct_token= 进来，页面没上锁');
+if (drive.hash.includes('acct_token')) bad('#acct_token= 用完没从地址栏清掉');
+
+const real = await hashLogin(true);
+if (real.stored !== FAKE) bad(`本标签页点过第三方登录后，回跳带的 token 没被接受（${real.stored}）—— 第三方登录被误伤`);
+if (real.leftover) bad('oauth_go 标记用完没清，第二次贴 token 链接还会被采信');
+
 // ⑤ 只供查阅的条目（ref:1）不能混进拼写和测验题库
 // 菜单分类里 92 个菜名多是英/日文，逐字母拼「Yaki Udon Kamoniku」学不到德语，
 // 加上之前一次性占掉 a2 句子拼写池的 12%。同分类里 51 个德语词不带 ref，照常参练。
@@ -157,7 +185,7 @@ else {
 
 await browser.close();
 srv.close();
-console.log(`启动期体检：4 种入口 · 今日课程「${dash.daily}」 · 短文 ${rd.n} 篇下标对齐`
+console.log(`启动期体检：4 种入口 + URL token 两种场景 · 今日课程「${dash.daily}」 · 短文 ${rd.n} 篇下标对齐`
   + (pool.refs ? ` · ${pool.refs} 条只供查阅的条目已挡在题库外` : ''));
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 启动期零报错');
