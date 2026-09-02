@@ -153,6 +153,49 @@ for (const [de, py, where] of rows) {
   }
 }
 
+// ── E. 高频虚词在句子里只能有一种写法 ──
+// A 只管「整条词条一模一样」，B 只管复合词词尾，中间漏掉最大的一块：
+// 句子内部的虚词。实测 sich 被写成 西希／齐希／济赫 三种，dem 写成 登／登姆／代姆／顿姆 四种，
+// zusammen 写成 楚扎门／楚萨门（后者把 s 当成 [s] 读了，站里的规则是 s+元音读 [z]）。
+// 学员在两句话里看到同一个词两种拼法，只会怀疑自己记错了。
+//
+// 判定很保守：只看出现 ≥15 次的词，且某种写法占比 ≥75% 时才认定「其余是少数派」。
+// 势均力敌的（比如 -sten 的 腾/滕 之争）一律不管 —— 那是选字口味，不是对错。
+const FUNC_MIN = 15, FUNC_SHARE = 0.25;
+// er- 是**前缀**（erklären/erhalten），非重读读 [ɐ]，和代词 er [eːɐ̯]=埃尔 本来就不同音。
+const FUNC_EXEMPT = { er: 'er- 是非重读前缀，与代词 er 不同音，「尔」是对的' };
+const tally = new Map();
+for (const [de, py] of rows) {
+  const d = de.split(/\s+/), q = py.split(/\s+/);
+  if (d.length !== q.length) continue;              // 对不齐的没法按位比
+  for (let i = 0; i < d.length; i++) {
+    const k = d[i].toLowerCase().replace(/[^a-zäöüß]/g, '');
+    if (!k) continue;
+    const v = q[i].replace(/[，。！？、；：]+$/, '');
+    if (!tally.has(k)) tally.set(k, new Map());
+    if (!tally.get(k).has(v)) tally.get(k).set(v, []);
+    tally.get(k).get(v).push(`${de} → ${py}`);
+  }
+}
+let funcs = 0, funcSkip = 0;
+for (const [w, m] of tally) {
+  const total = [...m.values()].reduce((a, b) => a + b.length, 0);
+  if (total < FUNC_MIN || m.size < 2) continue;
+  const sorted = [...m].sort((a, b) => b[1].length - a[1].length);
+  const minN = sorted.slice(1).reduce((a, [, l]) => a + l.length, 0);
+  if (minN / total > FUNC_SHARE) continue;          // 没有明显主流，不判对错
+  if (FUNC_EXEMPT[w]) { funcSkip++; continue; }
+  funcs++;
+  for (const [v, list] of sorted.slice(1)) {
+    bad(`高频词「${w}」全站 ${total} 次里 ${sorted[0][1].length} 次写「${sorted[0][0]}」，`
+      + `这 ${list.length} 处却写「${v}」：${list[0]}`);
+  }
+}
+// 豁免项失效时要提醒清理，别让它一直挡着真问题
+for (const w of Object.keys(FUNC_EXEMPT)) {
+  if (!tally.has(w)) bad(`豁免表里的「${w}」在词库里已经没有了，请从 FUNC_EXEMPT 删掉`);
+}
+
 // ── D. 名词谐音必须以冠词的谐音开头 ──
 // das Zitronengras 曾写成「迪 齐特龙恩格拉斯」、der Quantencomputer 写成「迪 …」，
 // 卡片上直接教错性别。这条是纯机械核对，零误判。
@@ -166,6 +209,7 @@ for (const [de, py, where] of rows) {
   if (!py.startsWith(want + ' ')) bad(`「${de}」是 ${m[1]}，谐音却以「${py.split(/\s/)[0]}」开头，应是「${want}」（${where}）`);
 }
 
-console.log(`谐音一致性体检：${words} 个词条跨 ${new Set([...seen.values()].flat().map((x) => x.where.split('[')[0])).size} 个数据源比对，词根收尾校验 ${checked} 处，外来词读法校验 ${loans} 处，冠词核对 ${arts} 处，换皮同词比对 ${body.size} 组`);
+console.log(`谐音一致性体检：${words} 个词条跨 ${new Set([...seen.values()].flat().map((x) => x.where.split('[')[0])).size} 个数据源比对，词根收尾校验 ${checked} 处，外来词读法校验 ${loans} 处，冠词核对 ${arts} 处，换皮同词比对 ${body.size} 组，高频虚词 ${tally.size} 个词位`
+  + (funcSkip ? `（豁免 ${funcSkip} 个已确认的同形异音）` : ''));
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 同词谐音全站一致，复合词词根写法统一');

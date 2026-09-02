@@ -102,8 +102,11 @@ for (const brd of boards) {
 // 把撞车的那一条硬塞给真正的 nextQ() 当干扰项，看它认不认。
 // 实测：旧逻辑 60 组里 59 组沦陷（「非常感谢。」同时给出 Danke sehr. 和 Danke schön.，
 // 两个都对却只有一个判分），改后 0 组。
+// 德语和英语共用同一个 nextQ（setLang 只是原地换掉 categories 的内容），
+// 但两套词库的撞车对数不一样：德语 204 对，英语 140 对。守卫必须在两边都成立，
+// 所以两种语言各跑一遍 —— 只测德语的话，英语侧回归了没人知道。
 const FORCED = 60;
-const vq = await page.evaluate((n) => {
+const forceProbe = (n) => page.evaluate((n) => {
   quizLevel = 'all';
   const all = getAllPhrases();
   const pairs = [], byZh = new Map(), byDe = new Map();
@@ -136,15 +139,31 @@ const vq = await page.evaluate((n) => {
   }
   Math.random = real;
   return out;
-}, FORCED);
-if (!vq.pairs) bad('词库里一对「同德语或同中文」的词条都没有 —— 这个用例失去意义，检查 getAllPhrases');
-if (vq.fails) { bad(`词汇测验：${vq.tried} 组强制撞车里 ${vq.fails} 组出现「两个选项都对」`); vq.bad.forEach((x) => bad('  ' + x)); }
+}, n);
+
+const vqs = {};
+for (const lang of ['de', 'en']) {
+  await page.evaluate((l) => setLang(l), lang);
+  if (lang === 'en') {
+    // 英语库是按需下载的 en.dat，没到货就跑等于测了个空池子
+    await page.waitForFunction(() => window._ENC, null, { timeout: 30000 })
+      .catch(() => bad('英语词库 30s 没到货，英语侧的出题检查没跑成'));
+  }
+  await page.waitForTimeout(300);
+  const r = await forceProbe(FORCED);
+  vqs[lang] = r;
+  const L = lang === 'de' ? '德语' : '英语';
+  if (!r.pairs) bad(`${L}词库里一对「同词条或同中文」都没有 —— 这个用例失去意义，检查 getAllPhrases`);
+  if (r.fails) { bad(`${L}词汇测验：${r.tried} 组强制撞车里 ${r.fails} 组出现「两个选项都对」`); r.bad.forEach((x) => bad('  ' + x)); }
+}
+await page.evaluate(() => setLang('de'));
+const vq = vqs.de;
 
 for (const e of errs) bad(`页面抛错：${e}`);
 
 await browser.close();
 srv.close();
 console.log(`测验出题体检：图卡 ${boards.length} 个板 × ${ROUNDS} 题（实出 ${asked} 道）`
-  + ` · 词汇测验强制撞车 ${vq.tried}/${vq.pairs} 组`);
+  + ` · 词汇测验强制撞车 德语 ${vqs.de.tried}/${vqs.de.pairs} 组、英语 ${vqs.en.tried}/${vqs.en.pairs} 组`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 图卡题四选项唯一可辨、判分正确；词汇题没有「两个选项都对」');
