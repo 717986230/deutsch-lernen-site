@@ -245,6 +245,33 @@ let capBad = 0;
 for (const [k, hi] of Object.entries(caps)) if (infl[k] > hi) { bad(`${k} 被刷到 ${infl[k]}，超过上限 ${hi}`); capBad++; }
 if (!capBad) ok(`离谱数值被夹到上限内（known=${infl.known} streak=${infl.streak} total=${infl.total}）`);
 
-console.log(`账号安全回归：重放 ${3} 组接管路径 + 排行榜排序 + 邮箱探测 + OAuth 登录 CSRF + 同步灌水/刷分`);
+
+// ─────────────────────────────────────────────────────────
+// ⑧ /stats：共享密钥不能无限次猜
+// ─────────────────────────────────────────────────────────
+// 之前这个端点一次都不限流，谁都能拿字典慢慢试。返回的是聚合数据
+// （PV/UV、热门页面、城市分布），猜中就能把站点流量画像全看走。
+env.STATS_KEY = 'super-secret-key';
+const statIp = { 'CF-Connecting-IP': '198.51.100.7' };
+let blocked = 0, allowed = 0;
+for (let i = 0; i < 26; i++) {
+  const r = await call('GET', '/stats?key=wrong-guess-' + i, undefined, undefined, statIp);
+  if (r.status === 429) blocked++;
+  else if (r.status === 403) allowed++;
+  else bad(`/stats 猜错密钥返回了 ${r.status}，应为 403 或 429`);
+}
+if (!blocked) bad(`连猜 26 次错误密钥一次都没被拦（全是 403）—— 密钥可以无限暴力猜`);
+else ok(`连猜错误密钥：放行 ${allowed} 次后开始 429，共拦下 ${blocked} 次`);
+// 正确密钥必须仍然能用（换个 IP，别被上面的桶误伤）
+const right = await call('GET', '/stats?key=super-secret-key', undefined, undefined, { 'CF-Connecting-IP': '198.51.100.9' });
+if (right.status !== 200) bad(`正确密钥被误伤了：${right.status}`);
+else ok('正确密钥照常可用');
+// 没配 STATS_KEY 时必须一律拒绝，不能变成「不传 key 就放行」
+delete env.STATS_KEY;
+const unset = await call('GET', '/stats', undefined, undefined, { 'CF-Connecting-IP': '198.51.100.11' });
+if (unset.status === 200) bad('没配 STATS_KEY 时 /stats 竟然放行了');
+else ok(`没配 STATS_KEY 时一律拒绝（${unset.status}）`);
+
+console.log(`账号安全回归：重放 ${3} 组接管路径 + 排行榜排序 + 邮箱探测 + OAuth 登录 CSRF + 同步灌水/刷分 + /stats 密钥爆破`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 账号接管路径全部堵住，正常找回流程未受影响');

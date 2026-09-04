@@ -100,6 +100,7 @@ const RL = {
   rst: { limit: 8, win: 3600000 },  // 恢复码校验失败：每 IP / 每用户名 1 小时各 8 次（仅失败计）
   mls: { limit: 5, win: 3600000 },  // 发送邮箱验证码：每用户名 1 小时 5 次（每次发送即计）
   mli: { limit: 20, win: 3600000 }, // 发送邮箱验证码：每 IP 1 小时 20 次
+  stk: { limit: 20, win: 3600000 }, // /stats 密钥猜错：每 IP 1 小时 20 次（仅失败计）
 };
 
 // 第三方登录配置（GitHub / Google 同一套 OAuth2 流程，差异抽到这里）
@@ -195,7 +196,24 @@ export default {
       return new Response('ok', { headers: cors });
     }
     if (M === 'GET' && path === '/stats') {
-      if (url.searchParams.get('key') !== env.STATS_KEY) return new Response('forbidden', { status: 403 });
+      // /stats 是一把「猜对就全看到」的共享密钥，之前**一次都不限流** —— 可以无限次猜。
+      // 返回的是聚合数据（PV/UV、热门页面、城市分布），不含原始 IP，但站点流量画像
+      // 本来也不该谁都能翻。失败计入每 IP 的桶，猜错 20 次这一小时就别猜了。
+      const sIp = req.headers.get('CF-Connecting-IP') || 'unknown';
+      const sc = await rateCheck(env, 'stk:' + sIp, RL.stk.limit);
+      if (!sc.ok) return new Response('too many', { status: 429, headers: { 'Retry-After': String(Math.ceil((sc.retry || 60) / 1000)) } });
+      // 逐字符全比完再判，别一遇到不同就早退。（说实话跨公网的时间差被抖动淹没，
+      // 真正起作用的是上面的限流；这几行只是把这个问题彻底关掉。）
+      const eqConst = (a, b) => {
+        a = String(a == null ? '' : a); b = String(b == null ? '' : b);
+        let r = a.length ^ b.length;
+        for (let i = 0; i < Math.max(a.length, b.length); i++) r |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+        return r === 0;
+      };
+      if (!env.STATS_KEY || !eqConst(url.searchParams.get('key'), env.STATS_KEY)) {
+        await rateHit(env, 'stk:' + sIp, RL.stk.limit, RL.stk.win);
+        return new Response('forbidden', { status: 403 });
+      }
       const days = Math.min(90, +url.searchParams.get('days') || 7);
       const since = Date.now() - days * 86400000;
       const pv = await env.DB.prepare('SELECT COUNT(*) c FROM events WHERE ts>?').bind(since).first();
