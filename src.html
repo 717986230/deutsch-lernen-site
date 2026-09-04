@@ -364,18 +364,10 @@ body:not(.lang-en) .en-only-block{display:none}
 .fic-teal{background:linear-gradient(135deg,#24a58a,#0a736a);box-shadow:0 6px 14px rgba(20,184,166,.32)}
 .fic-red{background:linear-gradient(135deg,#e56d62,#c92c2c);box-shadow:0 6px 14px rgba(255,75,75,.32)}
 .fic-pink{background:linear-gradient(135deg,#d37696,#b93868);box-shadow:0 6px 14px rgba(224,68,126,.32)}
-.bp{cursor:pointer}
-.bp .dot{fill:#fff;stroke:#2f7a00;stroke-width:1.5}
-.bp .halo{fill:rgba(255,255,255,.45)}
-.bp.active .dot{fill:#ff9600}
-.bp.active .halo{fill:rgba(255,150,0,.25)}
-.bl{cursor:pointer}
-.bl-line{stroke:#9db8a0;stroke-width:1;fill:none}
-.bl.active .bl-line{stroke:#ff9600;stroke-width:1.6}
-.bl-de{font-size:15px;font-weight:600;fill:var(--text);font-family:Georgia,serif}
-.bl-zh{font-size:11px;fill:var(--text-faint)}
-.bl.active .bl-de{fill:#e07f00}
-.bl:hover .bl-de{fill:#46a302}
+
+
+
+
 .board-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none;justify-content:flex-start}
 .board-tabs::-webkit-scrollbar{display:none}
 .board-tab{flex-shrink:0;padding:7px 15px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-size:13px;font-family:inherit;white-space:nowrap;transition:all .15s}
@@ -398,8 +390,7 @@ body:not(.lang-en) .en-only-block{display:none}
    浮条右端的 🔊（实测浮条右边界 370，按钮占 326~370）。 */
 body.has-picbar #toTop{bottom:calc(var(--tab-h) + 108px)}
 .pic-out{position:sticky;bottom:calc(var(--tab-h) + 12px);margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
-.bp-chip{border:1px solid var(--border);background:var(--surface);color:var(--text-dim);border-radius:14px;padding:4px 11px;font-size:12px;cursor:pointer;font-family:inherit}
-.bp-chip.active{border-color:var(--gold);background:var(--gold);color:var(--on-brand)}
+
 /* 拼读器右侧小浮钮（约为零基础钮一半大）+ 弹窗 */
 /* 原来是贴右边缘的竖排长条，压在网格第三列上；为它让路又要吃掉一整列。
    改成右下角圆钮（在底栏之上、回到顶部按钮左边），彻底离开内容区。 */
@@ -589,7 +580,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
       <div class="card" onclick="showSection('phrases')" style="text-align:center;padding:24px 16px">
         <div class="fic fic-purple"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 16h3v4l5-4h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 20 4z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="8.5" cy="10" r="1.15" fill="#fff"/><circle cx="12" cy="10" r="1.15" fill="#fff"/><circle cx="15.5" cy="10" r="1.15" fill="#fff"/></svg></div>
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">词句大全</div>
-        <div style="font-size:12px;color:var(--text-dim)">20大类·含谐音</div>
+        <div style="font-size:12px;color:var(--text-dim)" id="homePhraseSub">词句大全·含谐音</div>
       </div>
       <div class="card" onclick="showSection('reading')" style="text-align:center;padding:24px 16px">
         <div class="fic fic-teal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.2C9.6 4.7 6.6 4.5 4 5.5V19c2.6-1 5.6-.8 8 .7 2.4-1.5 5.4-1.7 8-.7V5.5c-2.6-1-5.6-.8-8 .7z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M12 6.2v13.5" stroke="#fff" stroke-width="2"/></svg></div>
@@ -1610,13 +1601,9 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
 .auth-aurora i:nth-child(4){width:240px;height:240px;background:#ff9600;bottom:6%;left:2%;animation-delay:-14s;opacity:.42}
 @keyframes auroraFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(46px,-34px) scale(1.16)}66%{transform:translate(-32px,28px) scale(.88)}}
 @media (prefers-reduced-motion:reduce){.auth-aurora i{animation:none}}
-/* 3D 浮动吉祥物（纯 CSS，离线/微信可用） */
-.mascot{position:relative;z-index:1;width:130px;height:130px;margin-bottom:2px;perspective:640px}
-.mascot-3d{position:absolute;left:0;right:0;top:0;height:118px;font-size:80px;line-height:118px;text-align:center;transform-style:preserve-3d;animation:mascotFloat 4.6s ease-in-out infinite;filter:drop-shadow(0 12px 14px rgba(0,0,0,.24))}
-@keyframes mascotFloat{0%,100%{transform:translateY(0) rotateX(0) rotateY(-13deg) rotateZ(-2deg)}25%{transform:translateY(-15px) rotateX(9deg) rotateY(0deg) rotateZ(0deg)}50%{transform:translateY(-7px) rotateX(0) rotateY(13deg) rotateZ(2deg)}75%{transform:translateY(-15px) rotateX(-9deg) rotateY(0deg) rotateZ(0deg)}}
-.mascot-shadow{position:absolute;left:50%;bottom:4px;width:66px;height:14px;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(0,0,0,.3),rgba(0,0,0,0) 70%);border-radius:50%;animation:mascotShadow 4.6s ease-in-out infinite}
-@keyframes mascotShadow{0%,100%{transform:translateX(-50%) scale(1);opacity:.5}25%,75%{transform:translateX(-50%) scale(.66);opacity:.26}50%{transform:translateX(-50%) scale(.86);opacity:.38}}
-@media (prefers-reduced-motion:reduce){.mascot-3d,.mascot-shadow{animation:none}}
+
+
+@media (prefers-reduced-motion:reduce){}
 .hide-fab .phfab{display:none}
 /* 硬登录门槛：上锁时只显示登录页，其余全部隐藏 */
 :root.locked #topbar,:root.locked .lang-switch,:root.locked #nav,:root.locked #pwaInstall,:root.locked .phfab,:root.locked .skip-link{display:none!important}
@@ -1708,8 +1695,6 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
 body{padding-bottom:var(--tab-h)}
 :root.locked #bottomNav{display:none}
 :root.locked body{padding-bottom:0}
-.glass-title{position:relative;z-index:1;text-align:center;font-size:25px;font-weight:800;letter-spacing:.5px;margin:0 0 5px;color:var(--text)}
-.glass-sub{position:relative;z-index:1;text-align:center;font-size:13px;color:var(--text-dim);max-width:360px;margin:0 0 20px;line-height:1.7}
 .glass-card{position:relative;z-index:1;width:100%;max-width:400px;padding:24px 22px;border-radius:26px;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);border:1px solid rgba(255,255,255,.4);box-shadow:0 14px 46px rgba(20,30,20,.2),inset 0 1px 0 rgba(255,255,255,.55)}
 :root[data-theme=dark] .glass-card{background:rgba(26,30,36,.42);border-color:rgba(255,255,255,.14);box-shadow:0 14px 46px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08)}
 .glass-card .acct-tabs button{background:rgba(255,255,255,.28);color:var(--text)}
@@ -2216,6 +2201,9 @@ function updatePhrasesSub(){
     const lw=LANG==='en'?'英语':'德语';
     el.textContent=cc+'个分类 · '+pc+'个词句 · 点击卡片看谐音 · 🔊 点喇叭听地道'+lw+'发音';
   }
+  // 首页那张卡以前写死「20大类」，加到第 23 类都没人改。跟着词库算，就不会再过期。
+  const hs=document.getElementById('homePhraseSub');
+  if(hs&&categories.length)hs.textContent=categories.length+'大类·含谐音';
   const si=document.getElementById('searchInput');
   if(si)si.placeholder=(LANG==='en'?'搜索英语、中文或谐音...':'搜索德语、中文或谐音...');
 }
