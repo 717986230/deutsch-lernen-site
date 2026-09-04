@@ -153,6 +153,38 @@ for (const [de, py, where] of rows) {
   }
 }
 
+// ── E0. 高频虚词的写法直接钉死 ──
+// E 那道是「按多数派判少数派」，有两种情况它抓不到：
+//   · 全部出现都写错 —— 没有多数派可比。实测 dein 两处都写成「迪嫩」（那是 dienen 的音）；
+//   · 出现次数太少 —— weiter 只有 4 次，1:3 也够不着 15 次的门槛，
+//     于是「瓦伊特尔」和「魏特尔」并存。
+// 所以这里另立一张**人工逐个核对过读音**的表，写错就报，不看频率。
+// 表里只收读音无歧义的高频虚词；有歧义的（比如前缀 er- 和代词 er 不同音）不收。
+const CANON = {
+  die: '迪', der: '德尔', das: '达斯', dem: '登', den: '登',
+  ein: '艾因', eine: '埃内', einen: '艾嫩', mein: '麦因', dein: '代因',
+  ich: '伊希', du: '度', sie: '齐', wir: '维尔', mich: '米希', mir: '米尔', sich: '西希',
+  ist: '伊斯特', sind: '辛特', bin: '宾', hat: '哈特', habe: '哈贝', haben: '哈本',
+  kann: '坎', können: '克嫩', möchten: '麦希腾',
+  und: '温特', nicht: '尼希特', auch: '奥赫', sehr: '泽尔', gut: '古特', viele: '菲勒',
+  in: '因', im: '伊姆', am: '阿姆', an: '安', auf: '奥夫', mit: '米特', nach: '纳赫',
+  zu: '楚', zum: '楚姆', für: '菲尔', von: '冯',
+  was: '瓦斯', wie: '维', wo: '沃', es: '埃斯', bitte: '比特', weiter: '魏特尔',
+};
+let canons = 0;
+for (const [de, py, where] of rows) {
+  const d = de.split(/\s+/), q = py.split(/\s+/);
+  if (d.length !== q.length) continue;
+  for (let i = 0; i < d.length; i++) {
+    const k = d[i].toLowerCase().replace(/[^a-zäöüß]/g, '');
+    const want = CANON[k];
+    if (!want) continue;
+    canons++;
+    const got = q[i].replace(/[，。！？、；：]+$/, '');
+    if (got !== want) bad(`「${d[i]}」的谐音应是「${want}」，实际「${got}」——出自「${de}」（${where}）`);
+  }
+}
+
 // ── E. 高频虚词在句子里只能有一种写法 ──
 // A 只管「整条词条一模一样」，B 只管复合词词尾，中间漏掉最大的一块：
 // 句子内部的虚词。实测 sich 被写成 西希／齐希／济赫 三种，dem 写成 登／登姆／代姆／顿姆 四种，
@@ -209,7 +241,7 @@ for (const [de, py, where] of rows) {
   if (!py.startsWith(want + ' ')) bad(`「${de}」是 ${m[1]}，谐音却以「${py.split(/\s/)[0]}」开头，应是「${want}」（${where}）`);
 }
 
-console.log(`谐音一致性体检：${words} 个词条跨 ${new Set([...seen.values()].flat().map((x) => x.where.split('[')[0])).size} 个数据源比对，词根收尾校验 ${checked} 处，外来词读法校验 ${loans} 处，冠词核对 ${arts} 处，换皮同词比对 ${body.size} 组，高频虚词 ${tally.size} 个词位`
+console.log(`谐音一致性体检：${words} 个词条跨 ${new Set([...seen.values()].flat().map((x) => x.where.split('[')[0])).size} 个数据源比对，词根收尾校验 ${checked} 处，外来词读法校验 ${loans} 处，冠词核对 ${arts} 处，换皮同词比对 ${body.size} 组，高频虚词 ${tally.size} 个词位、钉死 ${Object.keys(CANON).length} 个词共 ${canons} 处`
   + (funcSkip ? `（豁免 ${funcSkip} 个已确认的同形异音）` : ''));
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 同词谐音全站一致，复合词词根写法统一');
