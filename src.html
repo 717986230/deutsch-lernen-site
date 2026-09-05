@@ -2141,7 +2141,13 @@ Object.defineProperty(window,'DE_CATEGORIES',{configurable:true,get:function(){
 }});
 // 词库是否就绪：dev 内联即就绪；生产等 de.dat 到货（window._DEC）。_deEnsure 未就绪时后台拉取并在到货后回调。
 function _deReady(){return typeof _loadDE!=='function'||!!window._DEC;}
-function _deEnsure(cb){if(_deReady())return true;try{_loadDE().then(function(){try{cb&&cb();}catch(e){}});}catch(e){}return false;}
+// 词库懒加载失败的统一兜底。以前 _loadDE()/_loadEN() 拒绝时顺着 .then() 链一路变成
+// unhandledrejection —— 诊断红条会把「Failed to fetch」原样甩给用户，吓人且无从操作；
+// 更糟的是触发方的回调永远等不到：renderPhrases 提前把 _rendered.phrases 置 true，
+// 词句页会卡死在「📖 词库加载中…」——切走切回来都救不回来，只能刷新页面。
+// _loadDE()/_loadEN() 失败后都会把内部的 _deP/_enP 置空，所以重新调用就是一次真实重试。
+function _dictFail(retry,onFail){if(onFail){try{onFail(retry);}catch(e){}}else{try{_toast('网络不稳，词库没加载成功，点这里重试',5000,retry);}catch(e){}}}
+function _deEnsure(cb,onFail){if(_deReady())return true;try{_loadDE().then(function(){try{cb&&cb();}catch(e){}})['catch'](function(){_dictFail(function(){_deEnsure(cb,onFail);},onFail);});}catch(e){}return false;}
 // de.dat 到货回调：清掉依赖词库的派生缓存并补渲染当前版块
 function _onDELoaded(){
   try{_phSug=null;_phSugP=null;_deWordMap=null;_spMetaMap=null;}catch(e){}
@@ -2613,7 +2619,18 @@ function startChunkedRender(container,items,makeFn){
 function renderPhrases(){
   if(typeof stopAutoPlay==='function')stopAutoPlay();
   _rendered.phrases=true;   // 任何渲染路径都视为已渲染，避免切回时重复渲染
-  if(!_deReady()){const el0=document.getElementById('phraseContent');if(el0)el0.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:48px 0">📖 词库加载中…</div>';_deEnsure(renderPhrases);return;}
+  if(!_deReady()){
+    const el0=document.getElementById('phraseContent');
+    if(el0)el0.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:48px 0">📖 词库加载中…</div>';
+    // 加载失败也要给条活路：不然 _rendered.phrases 已经在上面置 true 了，
+    // 切走切回来 showSection 不会再调 renderPhrases，页面就永远停在这句「加载中」上
+    _deEnsure(renderPhrases,function(retry){
+      if(!el0)return;
+      el0.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:48px 0">⚠️ 词库加载失败，请检查网络<br><button type="button" class="btn" id="phRetryBtn" style="margin-top:14px">点击重试</button></div>';
+      var rb=document.getElementById('phRetryBtn');if(rb)rb.onclick=retry;
+    });
+    return;
+  }
   var _atb=document.getElementById('artToggleBtn');if(_atb)_atb.setAttribute('aria-pressed',_artColorOn()?'true':'false');
   const el=document.getElementById('phraseContent');
   const lb={'0':'lb-0','a1':'lb-a1','a2':'lb-a2','b1':'lb-b1','b2':'lb-b2'};
@@ -4780,11 +4797,11 @@ function spSetDiff(d){SP.diff=d;var b=document.getElementById('spDiffs').querySe
 function _spStoreKey(k){return k+'_'+(LANG==='en'?'en':'de');}
 function _spWrongGet(){try{return JSON.parse(localStorage.getItem(_spStoreKey('spWrong'))||'{}');}catch(e){return {};}}
 function _spWrongSave(m){try{localStorage.setItem(_spStoreKey('spWrong'),JSON.stringify(m));}catch(e){}}
-function spEnsure(cb){
-  if(LANG!=='en')return _deEnsure(cb);
+function spEnsure(cb,onFail){
+  if(LANG!=='en')return _deEnsure(cb,onFail);
   if(window._ENC)return true;
   if(typeof _loadEN!=='function')return true;
-  try{_loadEN().then(function(){cb&&cb();});}catch(e){}
+  try{_loadEN().then(function(){try{cb&&cb();}catch(e){}})['catch'](function(){_dictFail(function(){spEnsure(cb,onFail);},onFail);});}catch(e){}
   return false;
 }
 // 进入拼写练习的公共收尾：重置进度 + 切换面板 + 出题（spStart/spStartWrong/spStartReview 共用）
@@ -4843,7 +4860,7 @@ function _spAutoAdvance(){ // 越过空格/标点：自动填充其槽位
 function spRenderLevels(){var L=[['0','🌱 零基础'],['a1','⭐ A1'],['a2','⭐⭐ A2'],['b1','🔥 B1'],['b2','💎 B2'],['all','📚 全部']];document.getElementById('spLevels').innerHTML=L.map(function(x){return '<button type="button" class="'+(x[0]===SP.level?'on':'')+'" onclick="spSetLevel(\''+x[0]+'\')">'+x[1]+'</button>';}).join('');}
 function spSetLevel(l){SP.level=l;spRenderLevels();spUpdatePoolInfo();}
 function spSetMode(m){SP.mode=m;var b=document.getElementById('spModes').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-m')===m);}
-function spUpdatePoolInfo(){var el=document.getElementById('spPoolInfo');if(!spEnsure(spUpdatePoolInfo)){if(el)el.innerHTML='词库加载中… ⏳';return;}var n=spBuildPool(SP.level).length;var wn=0,dn=0;try{wn=Object.keys(_spWrongGet()).length;}catch(e){}try{dn=srsDueList().length;}catch(e){}var _st=' style="width:auto;display:inline-block;margin:10px 4px 0;padding:7px 18px" onclick="';var btns='';if(dn)btns+='<button type="button" class="acct-btn"'+_st+'spStartReview()">📆 到期复习（'+dn+'）</button>';if(wn)btns+='<button type="button" class="oauth-btn"'+_st+'spStartWrong()">🔁 错词本（'+wn+'）</button>';el.innerHTML=(n?('待记 '+n+' 词（已掌握的自动跳过）· 每组 '+Math.min(SP.size,n)+' 词'):'这个级别的词都掌握啦，换一个级别试试 🎉')+(btns?'<br>'+btns:'');}
+function spUpdatePoolInfo(){var el=document.getElementById('spPoolInfo');if(!spEnsure(spUpdatePoolInfo,function(retry){if(!el)return;el.innerHTML='⚠️ 词库加载失败 <button type="button" class="btn" id="spRetryBtn" style="margin-left:6px;padding:4px 12px;font-size:12px">点击重试</button>';var rb=document.getElementById('spRetryBtn');if(rb)rb.onclick=retry;})){if(el)el.innerHTML='词库加载中… ⏳';return;}var n=spBuildPool(SP.level).length;var wn=0,dn=0;try{wn=Object.keys(_spWrongGet()).length;}catch(e){}try{dn=srsDueList().length;}catch(e){}var _st=' style="width:auto;display:inline-block;margin:10px 4px 0;padding:7px 18px" onclick="';var btns='';if(dn)btns+='<button type="button" class="acct-btn"'+_st+'spStartReview()">📆 到期复习（'+dn+'）</button>';if(wn)btns+='<button type="button" class="oauth-btn"'+_st+'spStartWrong()">🔁 错词本（'+wn+'）</button>';el.innerHTML=(n?('待记 '+n+' 词（已掌握的自动跳过）· 每组 '+Math.min(SP.size,n)+' 词'):'这个级别的词都掌握啦，换一个级别试试 🎉')+(btns?'<br>'+btns:'');}
 function spInit(){var en=LANG==='en',t=document.getElementById('spTitle'),intro=document.getElementById('spIntro'),inp=document.getElementById('spInput'),uml=document.getElementById('spUml');if(t)t.textContent=en?'⌨️ 英语拼写':'⌨️ 拼写记忆';if(intro)intro.textContent=en?'看中文 / 听发音 → 键盘敲出英语拼写。逐字母强校验，已掌握的词自动跳过，专攻没记牢的。':'看中文 / 听发音 → 键盘敲出德语拼写。逐字母强校验，敲错原地纠正；已掌握的词自动跳过，专攻没记牢的。';if(inp)inp.setAttribute('aria-label',en?'输入英语拼写':'输入德语拼写');if(uml)uml.style.display=en?'none':'';spRenderLevels();spSetMode(SP.mode);spSetUnit(SP.unit||'word');spSetDiff(SP.diff);document.getElementById('spSetup').style.display='';document.getElementById('spDrill').style.display='none';document.getElementById('spDone').style.display='';document.getElementById('spDone').style.display='none';var sb=document.getElementById('spSoundBtn');if(sb)sb.textContent=SP.sound?'🔔 音效':'🔕 静音';spUpdatePoolInfo();if(inp&&!inp._b){inp._b=1;inp.addEventListener('input',spOnInput);}}
 function _spShuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
 function spStart(){if(!spEnsure(spStart))return;var pool=_spShuf(spBuildPool(SP.level));if(!pool.length){spUpdatePoolInfo();return;}try{_lastStudySet({spell:1,level:SP.level,name:(LANG==='en'?'英语拼写':'拼写记忆')+' · '+(levelName(SP.level)||'全部')});}catch(e){}SP.review=false;SP.daily=false;SP.q=pool.slice(0,SP.size);_spGo();}
