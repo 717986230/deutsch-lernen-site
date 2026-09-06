@@ -125,6 +125,33 @@ for (const [de, list] of seen) {
   }
 }
 
+// ── B2. 词尾后缀按位比对，覆盖句子内部（不只是整词）──
+// B 只看「de 整串去掉冠词后是不是单词」，句子里的词天然被跳过 ——
+// 「Ich hoffe, diese Information ist hilfreich.」里的 Information 就漏检了。
+// 起因：-tion 这个后缀站内曾经三种写法并存（细欧恩 22 处／齐昂 6 处／齐翁 11 处），
+// 22:17 够不上「多数派」判定的门槛（E 要求少数派占比 ≤25%），39 次里没一次
+// 单独超过 15 次的阈值触发 E0，两道现成的检查都没抓到——只有真去数一遍才发现。
+// 判断依据不是数数：dePhonics() 对 -tion 没有特例，会逐字母拆成 t-i-o-n，
+// 说明这是"规则管不到"的外来后缀，只能按发音本身判断——[tsi̯oːn] 是一个音节，
+// 「齐翁」比「细欧恩」（拆成三段、丢了塞擦音）和「齐昂」（元音是 a 不是 o）都准。
+// -bar 同理：furchtbar/der Nachbar 曾经掉了词尾的儿化尾音，站内其余 5 处都有。
+const SUFFIX_TOK = { tion: '齐翁', bar: '巴尔' };
+let suffixToks = 0;
+for (const [de, py, where] of rows) {
+  const D = de.split(/\s+/), P = py.split(/\s+/);
+  if (D.length !== P.length) continue;
+  for (let i = 0; i < D.length; i++) {
+    const w = D[i].toLowerCase().replace(/[^a-zäöüß]/g, '');
+    for (const [root, want] of Object.entries(SUFFIX_TOK)) {
+      if (!w.endsWith(root)) continue;
+      suffixToks++;
+      const got = P[i].replace(/[，。！？、；：]+$/, '');
+      if (!got.endsWith(want)) bad(`「${D[i]}」以 -${root} 结尾，谐音应以「${want}」收尾，实际「${got}」——出自「${de}」（${where}）`);
+      break;
+    }
+  }
+}
+
 // ── C. 外来词必须按**德国人实际怎么念**写，不能照抄英语读法 ──
 // 典型：der Job 曾写成「约普」（德语 /j/），但德语里这个词念 [dʒɔp]；
 // Black Friday 的 Friday 曾写成「弗莱塔克」—— 那是德语 Freitag 的谐音，把词译过去了。
@@ -241,7 +268,7 @@ for (const [de, py, where] of rows) {
   if (!py.startsWith(want + ' ')) bad(`「${de}」是 ${m[1]}，谐音却以「${py.split(/\s/)[0]}」开头，应是「${want}」（${where}）`);
 }
 
-console.log(`谐音一致性体检：${words} 个词条跨 ${new Set([...seen.values()].flat().map((x) => x.where.split('[')[0])).size} 个数据源比对，词根收尾校验 ${checked} 处，外来词读法校验 ${loans} 处，冠词核对 ${arts} 处，换皮同词比对 ${body.size} 组，高频虚词 ${tally.size} 个词位、钉死 ${Object.keys(CANON).length} 个词共 ${canons} 处`
+console.log(`谐音一致性体检：${words} 个词条跨 ${new Set([...seen.values()].flat().map((x) => x.where.split('[')[0])).size} 个数据源比对，词根收尾校验 ${checked} 处，后缀按位校验 ${suffixToks} 处，外来词读法校验 ${loans} 处，冠词核对 ${arts} 处，换皮同词比对 ${body.size} 组，高频虚词 ${tally.size} 个词位、钉死 ${Object.keys(CANON).length} 个词共 ${canons} 处`
   + (funcSkip ? `（豁免 ${funcSkip} 个已确认的同形异音）` : ''));
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 同词谐音全站一致，复合词词根写法统一');
