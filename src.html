@@ -2403,12 +2403,16 @@ function nextNumQ(){
   }
   const opts=[numQ.current,...wrong].sort(()=>Math.random()-.5);
   let qText='',optText='';
+  // 同一套毛病：选项内容不再塞进 onclick 的 JS 字符串参数，只用 data-correct
+  // 标出哪个按钮是对的，checkNumQ 里直接比按钮。之前 de2zh 分支把数字词原文
+  // 塞进单引号参数，且原来的"找对的那个按钮"还靠 String(onclick 文本).includes(...)
+  // 反查，一样脆弱；现在统一用 querySelector('[data-correct]')。
   if(numQ.mode==='de2zh'){
     qText=`<div class="quiz-q">${numQ.current.n}</div><div class="quiz-hint">这个数字的德语怎么说？</div>`;
-    optText=opts.map(o=>`<button class="quiz-opt" onclick="checkNumQ(this,'${o.de}','${numQ.current.de}')">${o.de}</button>`).join('');
+    optText=opts.map(o=>`<button class="quiz-opt"${o===numQ.current?' data-correct="1"':''} onclick="checkNumQ(this)">${_esc(o.de)}</button>`).join('');
   } else if(numQ.mode==='zh2de'){
     qText=`<div class="quiz-q" style="font-size:24px">${numQ.current.de}</div><div class="quiz-hint">这个德语数字是多少？</div>`;
-    optText=opts.map(o=>`<button class="quiz-opt" onclick="checkNumQ(this,${o.n},${numQ.current.n})">${o.n}</button>`).join('');
+    optText=opts.map(o=>`<button class="quiz-opt"${o===numQ.current?' data-correct="1"':''} onclick="checkNumQ(this)">${o.n}</button>`).join('');
   } else {
     const a=pool[Math.floor(Math.random()*8)];
     const b=pool[Math.floor(Math.random()*8)];
@@ -2417,7 +2421,7 @@ function nextNumQ(){
     qText=`<div class="quiz-q" style="font-size:22px">${a.n} + ${b.n} = ?</div><div class="quiz-hint">用德语说出答案</div>`;
     const wrongNums=[ans+1,ans-1,ans+2,ans-2].filter(x=>x>=0);
     const calcOpts=[ansObj,...wrongNums.slice(0,3).map(x=>({n:x,de:String(x)}))].sort(()=>Math.random()-.5);
-    optText=calcOpts.map(o=>`<button class="quiz-opt" onclick="checkNumQ(this,${o.n},${ans})">${o.n}</button>`).join('');
+    optText=calcOpts.map(o=>`<button class="quiz-opt"${o===ansObj?' data-correct="1"':''} onclick="checkNumQ(this)">${o.n}</button>`).join('');
   }
   document.getElementById('numQuizArea').innerHTML=`
     <div class="quiz-box">
@@ -2426,17 +2430,17 @@ function nextNumQ(){
       <div class="quiz-opts">${optText}</div>
     </div>`;
 }
-function checkNumQ(btn,selected,correct){
-  document.querySelectorAll('#numQuizArea .quiz-opt').forEach(b=>b.disabled=true);
+function checkNumQ(btn){
+  const box=document.getElementById('numQuizArea');
+  box.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
   numQ.total++;
-  if(String(selected)===String(correct)){
+  const correctBtn=box.querySelector('.quiz-opt[data-correct="1"]');
+  if(btn===correctBtn){
     btn.classList.add('correct');
     numQ.score++;
   } else {
     btn.classList.add('wrong');
-    document.querySelectorAll('#numQuizArea .quiz-opt').forEach(b=>{
-      if(String(b.getAttribute('onclick')).includes(`'${correct}'`)||String(b.getAttribute('onclick')).includes(`,${correct})`))b.classList.add('correct');
-    });
+    if(correctBtn)correctBtn.classList.add('correct');
   }
   setTimeout(nextNumQ,1200);
 }
@@ -3288,15 +3292,23 @@ function nextQ(){
   const opts=[mq.current,...wrong].sort(()=>Math.random()-.5);
   let qHtml='',optsHtml='';
   var target=LANG==='en'?'英语':'德语', wordLang=LANG==='en'?'en':'de';
+  // 选项按钮不再把词的原文塞进 onclick 的 JS 字符串参数——那条路走不通：
+  // escQ 用 HTML 实体转义单引号，可 onclick="..." 是个双引号属性，HTML 解析器
+  // 会在把属性值交给 JS 解析器之前就先把 &#39;/&quot; 解码回真正的引号。
+  // 词库里 "Mach's gut!"／"Wie geht's?" 这种带撇号的词一旦被抽成选项，
+  // 撇号复原后就会把 checkQ(this,'...') 的参数字符串截断，抛
+  // "Uncaught SyntaxError: missing ) after argument list"——线上真出过这个事故。
+  // 现在只用 data-correct 标记哪个按钮是对的，checkQ 里直接比按钮而不比文本，
+  // 词的原文只作为按钮的文本内容出现（经 _esc 转义），压根不进 JS 代码。
   if(mq.mode==='phrase'){
-    qHtml=`<div class="quiz-q" style="font-size:20px">${mq.current.zh}</div><div class="quiz-hint">请选择正确的${target}翻译</div>`;
-    optsHtml=opts.map(o=>`<button class="quiz-opt" lang="${wordLang}" onclick="checkQ(this,'${escQ(o.de)}','${escQ(mq.current.de)}')">${o.de}</button>`).join('');
+    qHtml=`<div class="quiz-q" style="font-size:20px">${_esc(mq.current.zh)}</div><div class="quiz-hint">请选择正确的${target}翻译</div>`;
+    optsHtml=opts.map(o=>`<button class="quiz-opt"${o===mq.current?' data-correct="1"':''} lang="${wordLang}" onclick="checkQ(this)">${_esc(o.de)}</button>`).join('');
   } else if(mq.mode==='listen'){
     qHtml=`<div class="quiz-q"><button class="speak-btn" type="button" title="重播发音" aria-label="重播发音" style="width:62px;height:62px;font-size:28px" onclick="speakDE(mq.current.de,this)">🔊</button></div><div class="quiz-hint">听${target}发音，选出正确的中文（可点喇叭重播）</div>`;
-    optsHtml=opts.map(o=>`<button class="quiz-opt" onclick="checkQ(this,'${escQ(o.zh)}','${escQ(mq.current.zh)}')">${o.zh}</button>`).join('');
+    optsHtml=opts.map(o=>`<button class="quiz-opt"${o===mq.current?' data-correct="1"':''} onclick="checkQ(this)">${_esc(o.zh)}</button>`).join('');
   } else {
-    qHtml=`<div class="quiz-q" style="font-size:18px;font-style:italic" lang="${wordLang}">${mq.current.de} <button class="speak-btn" type="button" title="朗读" aria-label="朗读" style="font-style:normal;vertical-align:middle" onclick="speakDE(mq.current.de,this)">🔊</button></div><div class="quiz-hint">请选择正确的中文翻译</div>`;
-    optsHtml=opts.map(o=>`<button class="quiz-opt" onclick="checkQ(this,'${escQ(o.zh)}','${escQ(mq.current.zh)}')">${o.zh}</button>`).join('');
+    qHtml=`<div class="quiz-q" style="font-size:18px;font-style:italic" lang="${wordLang}">${_esc(mq.current.de)} <button class="speak-btn" type="button" title="朗读" aria-label="朗读" style="font-style:normal;vertical-align:middle" onclick="speakDE(mq.current.de,this)">🔊</button></div><div class="quiz-hint">请选择正确的中文翻译</div>`;
+    optsHtml=opts.map(o=>`<button class="quiz-opt"${o===mq.current?' data-correct="1"':''} onclick="checkQ(this)">${_esc(o.zh)}</button>`).join('');
   }
   document.getElementById('mainQuizArea').innerHTML=`
     <div class="quiz-box">
@@ -3307,18 +3319,15 @@ function nextQ(){
     </div>`;
   if(mq.mode==='listen'){try{speakDE(mq.current.de);}catch(e){}}
 }
-function escQ(s){return s.replace(/'/g,"&#39;").replace(/"/g,'&quot;')}
-function checkQ(btn,selected,correct){
-  document.querySelectorAll('#mainQuizArea .quiz-opt').forEach(b=>b.disabled=true);
+function checkQ(btn){
+  const box=document.getElementById('mainQuizArea');
+  box.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
   mq.total++;try{studyTick(1,1);}catch(e){}   // 这是真答题，要计入「测验」统计
-  const sel=selected.replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-  const cor=correct.replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-  if(sel===cor){btn.classList.add('correct');mq.score++;}
+  const correctBtn=box.querySelector('.quiz-opt[data-correct="1"]');
+  if(btn===correctBtn){btn.classList.add('correct');mq.score++;}
   else{
     btn.classList.add('wrong');
-    document.querySelectorAll('#mainQuizArea .quiz-opt').forEach(b=>{
-      if(b.textContent.trim()===cor)b.classList.add('correct');
-    });
+    if(correctBtn)correctBtn.classList.add('correct');
     // 词汇类测验答错 → 本轮错题数组（按 de 去重）
     if(_quizIsVocab()&&mq.current&&mq.current.de){
       mq.wrong=mq.wrong||[];
@@ -3342,7 +3351,10 @@ function showQuizResult(){
     var rows='',i;
     for(i=0;i<wr.length;i++){
       var w=wr[i];
-      rows+='<div class="rank-row" style="cursor:auto"><div class="rank-name"><div class="rank-nick" lang="de">'+_esc(w.de)+'</div><div class="rank-meta">'+_esc(w.zh)+'</div></div><button class="speak-btn" type="button" title="朗读" aria-label="朗读 '+_esc(w.de)+'" onclick="speakDE(\''+escQ(w.de)+'\',this)">🔊</button></div>';
+      // 词的原文放 data-w（HTML 转义足够），不进 onclick 的 JS 字符串——
+      // 原来的 escQ('...') 写法碰到带撇号的词（如 Mach's gut!）会被 HTML 解析器
+      // 把转义撇回真引号，截断 speakDE(...) 的参数，抛 SyntaxError。
+      rows+='<div class="rank-row" style="cursor:auto"><div class="rank-name"><div class="rank-nick" lang="de">'+_esc(w.de)+'</div><div class="rank-meta">'+_esc(w.zh)+'</div></div><button class="speak-btn" type="button" title="朗读" aria-label="朗读 '+_esc(w.de)+'" data-w="'+_esc(w.de)+'">🔊</button></div>';
     }
     wrHtml='<div style="margin-top:16px;text-align:left"><div style="font-size:13px;font-weight:700;margin-bottom:8px">📝 本轮错题（'+wr.length+'）</div>'+rows+'<button class="btn" style="margin-top:6px" onclick="quizWrongToSpell()">⌨️ 拼写巩固错词</button></div>';
   }
@@ -3356,6 +3368,9 @@ function showQuizResult(){
       ${wrHtml}
       <button class="btn" onclick="startQuiz('${mq.mode}')" style="margin-top:16px">🔁 再来一组</button>
     </div>`;
+  document.querySelectorAll('#mainQuizArea .rank-row .speak-btn[data-w]').forEach(function(b){
+    b.addEventListener('click',function(){try{speakDE(b.getAttribute('data-w'),b);}catch(e){}});
+  });
 }
 // 本轮错题 → 拼写错词本（spWrong，{de:{zh,py}} 去重），并跳转拼写记忆
 function quizWrongToSpell(){
@@ -3379,7 +3394,7 @@ function nextNumMainQ(){
   }
   const opts=[mq.current,...wrong].sort(()=>Math.random()-.5);
   const qHtml=`<div class="quiz-q">${mq.current.n}</div><div class="quiz-hint">这个数字的${target}怎么说？</div>`;
-  const optsHtml=opts.map(o=>`<button class="quiz-opt" lang="${wordLang}" onclick="checkQ(this,'${escQ(o.de)}','${escQ(mq.current.de)}')">${o.de}</button>`).join('');
+  const optsHtml=opts.map(o=>`<button class="quiz-opt"${o===mq.current?' data-correct="1"':''} lang="${wordLang}" onclick="checkQ(this)">${_esc(o.de)}</button>`).join('');
   document.getElementById('mainQuizArea').innerHTML=`
     <div class="quiz-box">
       ${quizHeader()}
@@ -3397,7 +3412,7 @@ function nextGenderQ(){
   const noun=mq.current.de.replace(/^(der|die|das)\s+/,'');
   const correct=mq.current.de.match(/^(der|die|das)/)[1];
   const opts=['der','die','das'];
-  const optsHtml=opts.map(o=>`<button class="quiz-opt" lang="de" style="font-weight:700;color:${GENDER_COLOR[o]}" onclick="checkGenderQ(this,'${o}','${correct}')">${o}</button>`).join('');
+  const optsHtml=opts.map(o=>`<button class="quiz-opt"${o===correct?' data-correct="1"':''} lang="de" style="font-weight:700;color:${GENDER_COLOR[o]}" onclick="checkGenderQ(this)">${o}</button>`).join('');
   document.getElementById('mainQuizArea').innerHTML=`
     <div class="quiz-box">
       ${quizHeader()}
@@ -3452,7 +3467,7 @@ function nextConjQ(){
   while(wrong.length<3&&pool.length){const w=pool.splice(Math.floor(Math.random()*pool.length),1)[0];if(!wrong.includes(w))wrong.push(w);}
   const opts=[correct,...wrong].sort(()=>Math.random()-.5);
   mq.current={de:CONJ_PERSON[idx]+' '+correct,zh:v.zh};
-  const optsHtml=opts.map(o=>`<button class="quiz-opt" lang="de" onclick="checkConjQ(this,'${o}','${correct}')">${o}</button>`).join('');
+  const optsHtml=opts.map(o=>`<button class="quiz-opt"${o===correct?' data-correct="1"':''} lang="de" onclick="checkConjQ(this)">${o}</button>`).join('');
   document.getElementById('mainQuizArea').innerHTML=`
     <div class="quiz-box">
       ${quizHeader()}
@@ -3462,22 +3477,26 @@ function nextConjQ(){
       <button class="btn" onclick="startQuiz('conj')" style="font-size:12px">重新开始</button>
     </div>`;
 }
-function checkConjQ(btn,sel,correct){
-  document.querySelectorAll('#mainQuizArea .quiz-opt').forEach(b=>b.disabled=true);
+function checkConjQ(btn){
+  const box=document.getElementById('mainQuizArea');
+  box.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
   mq.total++;
-  if(sel===correct){btn.classList.add('correct');mq.score++;}
-  else{btn.classList.add('wrong');document.querySelectorAll('#mainQuizArea .quiz-opt').forEach(b=>{if(b.textContent.trim()===correct)b.classList.add('correct');});}
+  const correctBtn=box.querySelector('.quiz-opt[data-correct="1"]');
+  if(btn===correctBtn){btn.classList.add('correct');mq.score++;}
+  else{btn.classList.add('wrong');if(correctBtn)correctBtn.classList.add('correct');}
   try{speakDE(mq.current.de);}catch(e){}
   const done=mq.total>=mq.roundLen;
   setTimeout(done?showQuizResult:nextQ,1400);
 }
-function checkGenderQ(btn,sel,correct){
-  document.querySelectorAll('#mainQuizArea .quiz-opt').forEach(b=>b.disabled=true);
+function checkGenderQ(btn){
+  const box=document.getElementById('mainQuizArea');
+  box.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
   mq.total++;
-  if(sel===correct){btn.classList.add('correct');mq.score++;}
+  const correctBtn=box.querySelector('.quiz-opt[data-correct="1"]');
+  if(btn===correctBtn){btn.classList.add('correct');mq.score++;}
   else{
     btn.classList.add('wrong');
-    document.querySelectorAll('#mainQuizArea .quiz-opt').forEach(b=>{if(b.textContent.trim()===correct)b.classList.add('correct');});
+    if(correctBtn)correctBtn.classList.add('correct');
   }
   if(mq.current&&mq.current.de){try{speakDE(mq.current.de);}catch(e){}}
   const done=mq.total>=mq.roundLen;
