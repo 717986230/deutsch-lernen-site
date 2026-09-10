@@ -72,8 +72,42 @@ for (const lang of ['de', 'en']) {
   }
 }
 
+// ── 长列表必须分批渲染 ──
+// 阅读 69 篇 / 连载 12 集都要给每个德语词包 <span> 做逐词小注，是全站最贵的渲染。
+// 一次性建完再 innerHTML 就是一个堵死主线程的长任务：连载曾经这么写，实测在
+// 4 倍降速的手机档位上单个任务 1152ms —— 整整一秒多点什么都没反应。
+// 这里不测耗时（换台机器就飘），只断言「同步返回时列表还没建完、之后才补齐」，
+// 也就是 rAF 分批循环确实在跑；顺带确认首批不为空（首屏不能是白的）。
+{
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const batchErrs = [];
+  page.on('pageerror', (e) => batchErrs.push(String(e).split('\n')[0]));
+  await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); } catch (e) {} });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => window._DEC, null, { timeout: 25000 }).catch(() => {});
+  for (const [name, sec, fn, sel, minTotal] of [
+    ['阅读短文', 'reading', 'renderReadings', '#readList > .card', 7],
+    ['留学连载', 'series', 'renderSeries', '#seriesList > .card', 3],
+  ]) {
+    const r = await page.evaluate(async ([sec, fn, sel]) => {
+      showSection(sec);
+      if (typeof window[fn] !== 'function') return { missing: 1 };
+      window[fn]();
+      const first = document.querySelectorAll(sel).length;   // 同步返回那一刻
+      for (let i = 0; i < 90; i++) await new Promise((r) => requestAnimationFrame(r));
+      return { first, final: document.querySelectorAll(sel).length };
+    }, [sec, fn, sel]);
+    if (r.missing) { bad(`${name}：找不到 ${fn}()，是不是被改名了`); continue; }
+    if (!r.final || r.final < minTotal) { bad(`${name}：最终只渲染出 ${r.final} 篇，疑似没渲染`); continue; }
+    if (!r.first) bad(`${name}：${fn}() 同步返回时一篇都没有，首屏会是白的`);
+    else if (r.first >= r.final) bad(`${name}：${fn}() 同步就把 ${r.first} 篇全建完了（应分批），主线程会被一个长任务堵死`);
+  }
+  for (const e of batchErrs) bad(`分批渲染检查抛错：${e}`);
+  await page.close();
+}
+
 await browser.close();
 srv.close();
-console.log(`版块回归：${SECS.length} 版块 × 深浅双主题 × 中德/中英，共打开 ${checked} 次`);
+console.log(`版块回归：${SECS.length} 版块 × 深浅双主题 × 中德/中英，共打开 ${checked} 次；阅读/连载分批渲染各验一遍`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 全部版块零报错、内容非空');

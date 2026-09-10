@@ -4093,12 +4093,16 @@ function buildSeriesTabs(){
   el.innerHTML=present.map(([k,l])=>`<button class="level-tab${k===seriesActive?' active':''}" onclick="setSeriesLevel('${k}')">${l}</button>`).join('');
 }
 function setSeriesLevel(k){stopSeries();seriesActive=k;buildSeriesTabs();renderSeries();}
+var _srGen=0;
 function renderSeries(){
   const el=document.getElementById('seriesList'); if(!el)return;
   const list=_getSeriesList();
   const isEn=LANG==='en', itemLang=isEn?'en':'de';
   const cnt=document.getElementById('seriesCount'); if(cnt)cnt.textContent='共 '+list.length+' 集';
-  el.innerHTML=list.map((r,i)=>{
+  // 逐词小注（wrapWords）是整个渲染里最贵的一步，跟 renderReadings 一样**按批建**：
+  // 原来 12 集 96 句一次性建完再 innerHTML，实测在 4 倍降速的手机档位上是一个
+  // 1152ms 的单一长任务 —— 主线程整整卡死一秒多，点什么都没反应。
+  const build=(r,i)=>{
     const body=r.paras.map((p,j)=>`<div class="read-para" id="srp_${i}_${j}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakSeriesPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="${itemLang}">${isEn?p[0]:wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div>${p[2]?`<div style="font-size:12px;color:var(--text-faint);margin-top:1px">${p[2]}</div>`:''}</div></div></div>`).join('');
     return `<div class="card" id="scard_${i}" style="cursor:default;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
@@ -4107,7 +4111,20 @@ function renderSeries(){
         <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span>
         <button class="read-art-btn" id="srab_${i}" type="button" title="朗读整集" aria-label="朗读整集：${r.title}" style="margin-left:auto" onclick="toggleEpisode(this,${i})">▶ 朗读</button>
       </div>${body}</div>`;
-  }).join('');
+  };
+  // 带渲染代号：切语言/重进版块时上一轮追加循环必须立即作废，否则旧集会继续追进新列表。
+  // ⚠️ i 必须是在 list 里的真实下标：元素 id（scard_/srp_/srab_）和 toggleEpisode(i)
+  //    都靠它对应回该集，切片时要用 i+k 补回偏移，不能用 slice 后的局部下标。
+  const gen=++_srGen;
+  el.innerHTML=list.slice(0,2).map(build).join('');
+  let i=2;
+  (function step(){
+    if(gen!==_srGen)return;
+    if(i>=list.length)return;
+    el.insertAdjacentHTML('beforeend',list.slice(i,i+2).map((r,k)=>build(r,i+k)).join(''));
+    i+=2;
+    (window.requestAnimationFrame||setTimeout)(step,16);
+  })();
 }
 function speakSeriesPara(btn,text){stopSeries();speakDE(text,btn);}
 function _clearSeriesHL(){document.querySelectorAll('#seriesList .read-para.rp-on').forEach(e=>e.classList.remove('rp-on'));}

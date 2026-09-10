@@ -19,7 +19,7 @@
 // 反爬说明：这是客户端"混淆"，能挡住查看源码/curl/复制 JSON 等随手爬取，
 // 但无法阻止用开发者工具的定向提取——这是任何纯静态站的固有上限。
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, unlinkSync, existsSync } from 'fs';
 import { createHash } from 'crypto';
 import { minify } from 'terser';
 
@@ -155,7 +155,22 @@ async function build() {
   }
   out += html.slice(last);
 
+  // 换名前先记下**当前线上那份** index.html 引用的切片：它们要留一代当宽限期，
+  // 免得刚好卡在「已加载旧 index.html、还没拉词库」那几秒的用户 404（重试也救不回来，只能刷新）。
+  const prevKeep = existsSync('index.html')
+    ? (readFileSync('index.html', 'utf8').match(/\b(?:de|en)\.[a-f0-9]{8}\.dat\b/g) || [])
+    : [];
+
   writeFileSync('index.html', out);
+
+  // 清理孤儿词库切片：德语库每改一次数据就落一个新哈希文件，旧的从来没人删，
+  // 实测已经攒了 4 个没人引用的 de.*.dat（1.6MB）跟着一起进仓库、进 GitHub Pages。
+  if (!DEV) {
+    const keep = new Set([deFile, enFile, ...prevKeep]);
+    const orphans = readdirSync('.').filter((f) => /^(?:de|en)\.[a-f0-9]{8}\.dat$/.test(f) && !keep.has(f));
+    for (const f of orphans) unlinkSync(f);
+    if (orphans.length) console.log(`  清理孤儿切片 ${orphans.length} 个：${orphans.join(', ')}（保留上一代 ${prevKeep.join(', ') || '—'} 作宽限）`);
+  }
 
   // 3) 生成 Service Worker
   //    壳缓存 V 含内容哈希，每次发版换新；词典切片放独立持久缓存 DATA，跨版本保留——
