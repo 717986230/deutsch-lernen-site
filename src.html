@@ -1355,6 +1355,11 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
         <div style="color:var(--text);font-weight:700;margin-bottom:4px">听力测验</div>
         <div style="font-size:12px;color:var(--text-dim)">听德语→选中文</div>
       </div>
+      <div class="card" onclick="startQuiz('wrongbook')" style="text-align:center;padding:20px">
+        <div style="font-size:28px;margin-bottom:8px">📕</div>
+        <div style="color:var(--text);font-weight:700;margin-bottom:4px">错题库</div>
+        <div style="font-size:12px;color:var(--text-dim)" id="qdWrong">暂无错题，测验答错会自动收录</div>
+      </div>
     </div>
     <div style="font-size:12px;color:var(--text-faint);margin-bottom:4px">出题范围（词汇 / 反向测验）：</div>
     <div class="level-tabs" id="quizLevelTabs">
@@ -2255,6 +2260,8 @@ function updateQuizCardLang(){
   set('qdReverse', en?'看英语→选中文':'看德语→选中文');
   // 测验出题范围标签跟随语言：德语 A1/A2/B1/B2，英语 入门/中考/高考/四级/六级
   _lvTabs('quizLevelTabs','setQuizLevel',(typeof quizLevel!=='undefined')?quizLevel:'all');
+  // 错题库随语言切换（spWrong 按语言分开存），切语言后条数要跟着换
+  if(typeof updateQuizWrongSub==='function')updateQuizWrongSub();
 }
 function updateHeroLang(){
   const lab=document.getElementById('heroLabel'),tit=document.getElementById('heroTitle'),sub=document.getElementById('heroSub');
@@ -2296,6 +2303,7 @@ function showSection(id){
   if(id==='me'&&typeof renderMe==='function')renderMe();
   if(id==='rank'&&typeof rankScope==='function')rankScope(_rankScope);
   if(id==='spell'&&typeof spInit==='function')spInit();
+  if(id==='quiz'&&typeof updateQuizWrongSub==='function')updateQuizWrongSub();
   if(id==='home'&&typeof renderHomeDash==='function')renderHomeDash();
   if(id==='dialog'&&typeof renderDialogues==='function')renderDialogues();
   var _bsec=(id==='me'||id==='account')?'account':(id==='series'||id==='dialog'?'reading':id);
@@ -3246,11 +3254,26 @@ let mq={score:0,total:0,mode:'',current:null,roundLen:10};
 let quizLevel='all';
 function startQuiz(mode){
   if(!_deEnsure(function(){startQuiz(mode);})){try{_toast('词库加载中，马上开始…',1500);}catch(e){}return;}
-  mq={score:0,total:0,mode:mode,current:null,roundLen:10,wrong:[]};
+  if(mode==='wrongbook'&&!_quizWrongPool().length){try{_toast('还没有错题，先去测验里刷几道题吧',2000);}catch(e){}return;}
+  const roundLen=(mode==='wrongbook')?Math.min(10,_quizWrongPool().length):10;
+  mq={score:0,total:0,mode:mode,current:null,roundLen:roundLen,wrong:[]};
   nextQ();
 }
 // 词汇类测验（出题对象是词库 {de,zh,py} 条目）才计错题本；数字/冠词/变位不参与
-function _quizIsVocab(){return mq.mode==='phrase'||mq.mode==='reverse'||mq.mode==='listen';}
+function _quizIsVocab(){return mq.mode==='phrase'||mq.mode==='reverse'||mq.mode==='listen'||mq.mode==='wrongbook';}
+// 错题库：练习测验答错的词持久存在 spWrong（和拼写记忆共用同一份，答错自动记、答对自动摘）
+function _quizWrongPool(){
+  var m={},out=[],k;
+  try{m=_spWrongGet();}catch(e){}
+  for(k in m)out.push({de:k,zh:(m[k]&&m[k].zh)||'',py:(m[k]&&m[k].py)||'',id:'wrongbook-'+k});
+  return out;
+}
+function updateQuizWrongSub(){
+  var el=document.getElementById('qdWrong');
+  if(!el)return;
+  var n=0;try{n=_quizWrongPool().length;}catch(e){}
+  el.textContent=n?('已收录 '+n+' 个错题 · 专项巩固'):'暂无错题，测验答错会自动收录';
+}
 function setQuizLevel(k,btn){
   quizLevel=k;
   document.querySelectorAll('#quizLevelTabs .level-tab').forEach(b=>b.classList.remove('active'));
@@ -3271,22 +3294,27 @@ function nextQ(){
   if(mq.mode==='gender'){ nextGenderQ(); return; }
   if(mq.mode==='conj'){ nextConjQ(); return; }
   const all=getAllPhrases();
-  const idx=Math.floor(Math.random()*all.length);
-  mq.current=all[idx];
+  // 错题库：出题对象换成 spWrong 里的错词，干扰项仍从完整词库抽（错题库本身可能凑不够 4 个选项）
+  const isWrongbook=mq.mode==='wrongbook';
+  const pool=isWrongbook?_quizWrongPool():all;
+  if(isWrongbook&&!pool.length){showQuizResult();return;} // 答题过程中全部答对摘完了，直接结算
+  const idx=Math.floor(Math.random()*pool.length);
+  mq.current=pool[idx];
   // 干扰项不能和正解「显示出来一模一样」：词库里有 13 个同德语词（das Gericht=菜肴/法院）、
   // 174 个同中文（Tschüss!/Tschau!/Auf Wiedersehen! 都译作「再见！」）。撞上就是两个选项都对，
   // 却只有一个判分 —— 按 4152 条的池子算约每 8000 题出一次，答题的人只会觉得「这题有毒」。
+  const distractPool=isWrongbook?all:pool;
   const wrong=[];
   const clash=(w)=>w.de===mq.current.de||w.zh===mq.current.zh||wrong.some(x=>x.de===w.de||x.zh===w.zh);
   for(var _g=0;wrong.length<3&&_g<300;_g++){
-    const w=all[Math.floor(Math.random()*all.length)];
+    const w=distractPool[Math.floor(Math.random()*distractPool.length)];
     if(w.id===mq.current.id||wrong.find(x=>x.id===w.id))continue;
     if(clash(w))continue;
     wrong.push(w);
   }
   // 兜底：题库小到凑不齐 3 个不撞车的（比如某级别只剩几条），放宽到只查 id，别把页面卡死
   while(wrong.length<3){
-    const w=all[Math.floor(Math.random()*all.length)];
+    const w=distractPool[Math.floor(Math.random()*distractPool.length)];
     if(w.id!==mq.current.id&&!wrong.find(x=>x.id===w.id))wrong.push(w);
   }
   const opts=[mq.current,...wrong].sort(()=>Math.random()-.5);
@@ -3300,8 +3328,8 @@ function nextQ(){
   // "Uncaught SyntaxError: missing ) after argument list"——线上真出过这个事故。
   // 现在只用 data-correct 标记哪个按钮是对的，checkQ 里直接比按钮而不比文本，
   // 词的原文只作为按钮的文本内容出现（经 _esc 转义），压根不进 JS 代码。
-  if(mq.mode==='phrase'){
-    qHtml=`<div class="quiz-q" style="font-size:20px">${_esc(mq.current.zh)}</div><div class="quiz-hint">请选择正确的${target}翻译</div>`;
+  if(mq.mode==='phrase'||mq.mode==='wrongbook'){
+    qHtml=`<div class="quiz-q" style="font-size:20px">${_esc(mq.current.zh)}</div><div class="quiz-hint">${isWrongbook?'错题重练，请选择正确的'+target+'翻译':'请选择正确的'+target+'翻译'}</div>`;
     optsHtml=opts.map(o=>`<button class="quiz-opt"${o===mq.current?' data-correct="1"':''} lang="${wordLang}" onclick="checkQ(this)">${_esc(o.de)}</button>`).join('');
   } else if(mq.mode==='listen'){
     qHtml=`<div class="quiz-q"><button class="speak-btn" type="button" title="重播发音" aria-label="重播发音" style="width:62px;height:62px;font-size:28px" onclick="speakDE(mq.current.de,this)">🔊</button></div><div class="quiz-hint">听${target}发音，选出正确的中文（可点喇叭重播）</div>`;
@@ -3324,14 +3352,21 @@ function checkQ(btn){
   box.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
   mq.total++;try{studyTick(1,1);}catch(e){}   // 这是真答题，要计入「测验」统计
   const correctBtn=box.querySelector('.quiz-opt[data-correct="1"]');
-  if(btn===correctBtn){btn.classList.add('correct');mq.score++;}
-  else{
+  if(btn===correctBtn){
+    btn.classList.add('correct');mq.score++;
+    // 答对了：如果这个词原本在错题库里，说明这次巩固成功，摘掉它——错题库不是越攒越多，是练一个少一个
+    if(_quizIsVocab()&&mq.current&&mq.current.de){
+      try{var _qm=_spWrongGet();if(_qm[mq.current.de]){delete _qm[mq.current.de];_spWrongSave(_qm);updateQuizWrongSub();}}catch(e){}
+    }
+  }else{
     btn.classList.add('wrong');
     if(correctBtn)correctBtn.classList.add('correct');
-    // 词汇类测验答错 → 本轮错题数组（按 de 去重）
+    // 词汇类测验答错 → 本轮错题数组（按 de 去重）+ 直接写入错题库（spWrong，和拼写记忆共用），
+    // 不用等到结算页手动点「拼写巩固错词」才留痕——答错当场就该记下来。
     if(_quizIsVocab()&&mq.current&&mq.current.de){
       mq.wrong=mq.wrong||[];
       mq.wrong.some(function(x){return x.de===mq.current.de;})||mq.wrong.push({de:mq.current.de,zh:mq.current.zh||'',py:mq.current.py||''});
+      try{var _qm2=_spWrongGet();_qm2[mq.current.de]={zh:mq.current.zh||'',py:mq.current.py||''};_spWrongSave(_qm2);updateQuizWrongSub();}catch(e){}
     }
   }
   if(mq.current&&mq.current.de){try{speakDE(mq.current.de);}catch(e){}} // 答完听德语发音
