@@ -172,6 +172,15 @@ async function build() {
     if (orphans.length) console.log(`  清理孤儿切片 ${orphans.length} 个：${orphans.join(', ')}（保留上一代 ${prevKeep.join(', ') || '—'} 作宽限）`);
   }
 
+  // 2.5) sitemap 的 lastmod 跟着构建走：手写死过一次就忘一次（上次停在 2026-08-10，
+  //      其间内容改了十几轮）。只有内容真变了才动日期，否则每次构建都改会让 git 噪音变大。
+  if (!DEV && existsSync('sitemap.xml')) {
+    const sm = readFileSync('sitemap.xml', 'utf8');
+    const today = new Date().toISOString().slice(0, 10);
+    const next = sm.replace(/<lastmod>[\d-]+<\/lastmod>/, `<lastmod>${today}</lastmod>`);
+    if (next !== sm) { writeFileSync('sitemap.xml', next); console.log(`  sitemap.xml lastmod → ${today}`); }
+  }
+
   // 3) 生成 Service Worker
   //    壳缓存 V 含内容哈希，每次发版换新；词典切片放独立持久缓存 DATA，跨版本保留——
   //    英语库(~600KB)文件名带内容哈希，不变则复用，变了才换名重下，激活时清掉旧切片。
