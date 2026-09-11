@@ -128,10 +128,50 @@ if (feat.rdWords === 0 && feat.rdGloss) bad('英语模式下阅读页没有可�
 if (feat.srWords === 0 && feat.srGloss) bad('英语模式下连载页没有可点词（.w = 0），却还留着「隐藏词义」按钮 —— 点了没反应');
 if (feat.linksVisible) bad(`英语模式下连载页仍显示 ${feat.linkN} 个德语视频资源（DW 等）`);
 
+// ── ④ 级别叫法必须整站一致地倒向英语考试体系 ──
+// 站里有两套级别叫法：德语走 CEFR（零基础/A1/A2/B1/B2），英语走考试体系
+// （入门/中考/高考/四级/六级，见 LN_EN / LEVEL_TABS_EN）。词句页和测验页早就切了，
+// 但拼写页把 ['a1','⭐ A1'] 这串**写死**在 spRenderLevels 里，阅读页和连载页则直接引
+// READ_LEVELS/READ_LN —— 于是英语端这三处的标签、以及每张短文/连载卡上的徽章，
+// 全都还挂着 A1/A2/B1。中国人学英语没人按 CEFR 分级，这是实打实的错。
+// 注：C1/C2 只有德语库有内容，英语侧没有对应叫法，真出现了会退回 CEFR 原名，这里放行。
+const CEFR = /(^|[^A-Za-z])(A1|A2|B1|B2)([^A-Za-z]|$)|零基础/;
+const lvSpots = [
+  ['词句页级别标签', 'phrases', '#levelTabs .level-tab'],
+  ['测验页出题范围', 'quiz', '#quizLevelTabs .level-tab'],
+  ['拼写页级别', 'spell', '#spLevels button'],
+  ['阅读页级别标签', 'reading', '#readLevelTabs .level-tab'],
+  ['阅读卡片徽章', 'reading', '#readList .level-badge'],
+  ['连载页级别标签', 'series', '#seriesLevelTabs .level-tab'],
+  ['连载卡片徽章', 'series', '#seriesList .level-badge'],
+];
+let lvChecked = 0;
+for (const [name, sec, sel] of lvSpots) {
+  const txts = await page.evaluate(async ([sec, sel]) => {
+    showSection(sec);
+    await new Promise((r) => setTimeout(r, 700));   // 阅读/连载分批渲染，等首批铺开
+    return [...document.querySelectorAll(sel)].filter((e) => e.offsetParent).map((e) => e.innerText.trim());
+  }, [sec, sel]);
+  if (!txts.length) { bad(`${name}：一个都没渲染出来（选择器 ${sel}）`); continue; }
+  lvChecked += txts.length;
+  const stale = [...new Set(txts.filter((t) => CEFR.test(t)))];
+  if (stale.length) bad(`英语模式下「${name}」仍在用德语的 CEFR 叫法：${stale.join('、')} —— 英语该是 入门/中考/高考/四级/六级`);
+}
+
+// ── ⑤ 首页问候语 ──
+const hi = await page.evaluate(async () => {
+  showSection('home');
+  await new Promise((r) => setTimeout(r, 300));
+  const el = document.querySelector('.dash-hi');
+  return el ? el.innerText.split('\n')[0].trim() : null;
+});
+if (hi === null) bad('首页找不到 .dash-hi 问候语');
+else if (/Hallo/.test(hi)) bad(`英语模式下首页还在用德语问候：「${hi}」`);
+
 for (const e of errs) bad('页面抛错：' + e);
 
 await browser.close();
 srv.close();
-console.log(`英语端语言切换体检：扫了 ${scanned} 个版块的可见文案 + 测验卡片 ${cards.length} 张 + 德语专属功能 3 处`);
+console.log(`英语端语言切换体检：扫了 ${scanned} 个版块的可见文案 + 测验卡片 ${cards.length} 张 + 德语专属功能 3 处 + 级别叫法 ${lvChecked} 处 + 首页问候`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 切到英语后没有残留的德语文案，也没有德语专属功能露头');

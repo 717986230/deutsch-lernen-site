@@ -3557,13 +3557,21 @@ const EN_DIALOGUES = __DATA_EN_DIALOGUES__;
 const READ_LEVELS=[['all','📚 全部'],['0','🌱 零基础'],['a1','⭐ A1'],['a2','⭐⭐ A2'],['b1','🔥 B1'],['b2','💎 B2'],['c1','🏆 C1'],['c2','👑 C2']];
 const READ_LB={'0':'lb-0','a1':'lb-a1','a2':'lb-a2','b1':'lb-b1','b2':'lb-b2','c1':'lb-c1','c2':'lb-c2'};
 const READ_LN={'0':'零基础','a1':'A1','a2':'A2','b1':'B1','b2':'B2','c1':'C1','c2':'C2'};
+// 短文/连载的级别叫法必须跟着语言走：英语端用考试体系（入门/中考/高考/四级/六级），
+// 就像词句页和测验页早就在做的那样（LN_EN / LEVEL_TABS_EN）。这里原来直接引 READ_LN，
+// 于是英语端的级别标签和每张卡的徽章都还挂着 CEFR 的 A1/A2/B1 —— 中国人学英语没人这么分级。
+// c1/c2 英语库目前没有内容（en_readings 只有 0/a1/a2/b1/b2），真有了就退回 CEFR 原名，
+// 不替站长编一个查无实据的叫法。
+const READ_LV_ICON={'all':'📚','0':'🌱','a1':'⭐','a2':'⭐⭐','b1':'🔥','b2':'💎','c1':'🏆','c2':'👑'};
+function readLevelName(k){return (LANG==='en'&&LN_EN[k])?LN_EN[k]:READ_LN[k];}
+function readLevelTab(k){return (READ_LV_ICON[k]||'')+' '+(k==='all'?'全部':readLevelName(k));}
 let readActive='all';
 function buildReadTabs(){
   var source=LANG==='en'?EN_READINGS:READINGS;
   var available={all:1};source.forEach(function(r){if(r.topic!=='restaurant')available[r.level]=1;});
   if(!available[readActive])readActive='all';
-  document.getElementById('readLevelTabs').innerHTML=READ_LEVELS.filter(function(x){return available[x[0]];}).map(([k,l])=>
-    `<button class="level-tab${k===readActive?' active':''}" onclick="setReadLevel('${k}')">${l}</button>`).join('');
+  document.getElementById('readLevelTabs').innerHTML=READ_LEVELS.filter(function(x){return available[x[0]];}).map(([k])=>
+    `<button class="level-tab${k===readActive?' active':''}" onclick="setReadLevel('${k}')">${readLevelTab(k)}</button>`).join('');
 }
 function setReadLevel(k){stopReading();readActive=k;buildReadTabs();renderReadings();}
 // 餐厅专题：带 topic:'restaurant' 的短文集中到「🍽️ 餐厅」标签，不与分级短文混排
@@ -4002,7 +4010,7 @@ function renderReadings(){
     return `<div class="card" id="rcard_${ri}" style="cursor:default;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
         <span style="font-size:17px;font-weight:600;color:var(--gold-text)" lang="${readingLang}">${r.title}</span>
-        <span class="level-badge ${READ_LB[r.level]}">${READ_LN[r.level]}</span>
+        <span class="level-badge ${READ_LB[r.level]}">${readLevelName(r.level)}</span>
         <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span>
         <button class="read-art-btn" id="rab_${ri}" type="button" title="朗读全文" aria-label="朗读全文：${r.title}" style="margin-left:auto" onclick="toggleArticle(this,${ri})">▶ 朗读</button>
       </div>${body}</div>`;
@@ -4096,7 +4104,7 @@ function buildSeriesTabs(){
   const el=document.getElementById('seriesLevelTabs'); if(!el)return;
   const source=_getSeriesSource();
   const present=READ_LEVELS.filter(([k])=>k==='all'||source.some(r=>r.level===k));
-  el.innerHTML=present.map(([k,l])=>`<button class="level-tab${k===seriesActive?' active':''}" onclick="setSeriesLevel('${k}')">${l}</button>`).join('');
+  el.innerHTML=present.map(([k])=>`<button class="level-tab${k===seriesActive?' active':''}" onclick="setSeriesLevel('${k}')">${readLevelTab(k)}</button>`).join('');
 }
 function setSeriesLevel(k){stopSeries();seriesActive=k;buildSeriesTabs();renderSeries();}
 var _srGen=0;
@@ -4113,7 +4121,7 @@ function renderSeries(){
     return `<div class="card" id="scard_${i}" style="cursor:default;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
         <span style="font-size:17px;font-weight:600;color:var(--gold-text)" lang="${itemLang}">${r.title}</span>
-        <span class="level-badge ${READ_LB[r.level]}">${READ_LN[r.level]}</span>
+        <span class="level-badge ${READ_LB[r.level]}">${readLevelName(r.level)}</span>
         <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span>
         <button class="read-art-btn" id="srab_${i}" type="button" title="朗读整集" aria-label="朗读整集：${r.title}" style="margin-left:auto" onclick="toggleEpisode(this,${i})">▶ 朗读</button>
       </div>${body}</div>`;
@@ -4836,7 +4844,7 @@ function _dashTrend(s,today){
 function _dashStreak(s,t){try{var y=_yday();if(s.last===y&&(s.streak||0)>=1)return '<div class="dash-nudge" onclick="showSection(\'spell\')">\uD83D\uDD25 已连续 '+(s.streak||0)+' 天打卡！今天学一点就能续上，别让火苗熄了 \u2192</div>';}catch(e){}return '';}
 function _dashDue(){try{var dn=srsDueList().length;return dn?'<div style="font-size:12px;color:#e8930c;margin-top:10px;cursor:pointer" onclick="showSection(\'spell\')">📆 有 '+dn+' 个学过的词到期了，去复习巩固 →</div>':'';}catch(e){return '';}}
 // 首页学习仪表盘：本地数据即时渲染（打卡/掌握词/徽章 + 今日目标 + 快捷入口）
-function renderHomeDash(){var el=document.getElementById('homeDash');if(!el)return;var s={};try{s=getStudy();}catch(e){}var t='';try{t=_today();}catch(e){}var todayN=(s.d===t)?(s.n||0):0;var goal=s.goal||20;var streak=(s.last===t||s.last===_yday())?(s.streak||0):0;var known=0;try{known=Object.keys(getKnown()).length;}catch(e){}var badges=0;try{badges=_badgeSeen().length;}catch(e){}var pct=Math.min(100,Math.round(todayN/goal*100));var nick=(ACCT.user&&(ACCT.user.nickname||ACCT.user.username))||'同学';var av=ACCT.user?_avatarHtml(ACCT.user,44):'<span class="avatar" style="width:44px;height:44px;background:#58cc02;font-size:24px">🦉</span>';var goalPick='<div class="dash-cta" id="dashGoalPick" style="display:none">'+[10,20,50,100].map(function(g){return '<button type="button" class="'+(goal===g?'on':'')+'" onclick="setDailyGoal('+g+')">'+g+'</button>';}).join('')+'</div>';var lastHtml='';try{var _ls=JSON.parse(localStorage.getItem('lastStudy')||'null');if(_ls&&_ls.name)lastHtml='<div class="dash-last" onclick="resumeLast()">▶ 继续上次：'+_esc(_ls.name)+'</div>';}catch(e){}var _dp={total:0,rev:0,neu:0},_dd=false;try{_dp=dailyPlan();_dd=_dailyDone();}catch(e){}var dailyCard=_dd?'<div class="dash-daily done">✅ 今日课程已完成，明天见！</div>':'<div class="dash-daily" onclick="spStartDaily()"><div class="dd-txt"><b>📅 今日课程</b><span>'+_dp.total+' 词 · '+_dp.rev+' 复习 + '+_dp.neu+' 新词'+((_dp.lv&&_dp.lv!=='all'&&levelName(_dp.lv))?' · '+levelName(_dp.lv):'')+'</span></div><span class="dd-go">▶ 开始</span></div>';el.innerHTML='<div class="dash"><div class="dash-top">'+av+'<div class="dash-hi">Hallo, '+_esc(nick)+'！<small>'+(pct>=100?'今日目标已达成，太棒了 🎉':(todayN>0?'继续保持，今天已学 '+todayN+' 次':'今天还没开始，来一组拼写吧'))+'</small></div></div>'+dailyCard+'<div class="dash-stats"><div class="dash-stat" onclick="showSection(\'me\')"><b>'+streak+'</b><span>🔥 连续打卡</span></div><div class="dash-stat" onclick="showSection(\'spell\')"><b>'+known+'</b><span>📖 掌握词</span></div><div class="dash-stat" onclick="showSection(\'me\')"><b>'+badges+'</b><span>🏅 徽章</span></div></div><div class="dash-goal"><div class="dash-goal-row" onclick="dashGoalToggle()" style="cursor:pointer" title="调整每日目标"><span>今日目标 ✏️</span><span>'+todayN+' / '+goal+'</span></div><div class="dash-goal-bar"><i style="width:'+pct+'%"></i></div>'+goalPick+'</div>'+_dashTrend(s,t)+_dashStreak(s,t)+_dashDue()+lastHtml+'<div class="dash-cta"><button type="button" onclick="showSection(\'spell\')">⌨️ 拼写记忆</button><button type="button" onclick="showSection(\'quiz\')">🎯 练习测验</button><button type="button" onclick="showSection(\'rank\')">🏆 排行榜</button></div></div>';}
+function renderHomeDash(){var el=document.getElementById('homeDash');if(!el)return;var s={};try{s=getStudy();}catch(e){}var t='';try{t=_today();}catch(e){}var todayN=(s.d===t)?(s.n||0):0;var goal=s.goal||20;var streak=(s.last===t||s.last===_yday())?(s.streak||0):0;var known=0;try{known=Object.keys(getKnown()).length;}catch(e){}var badges=0;try{badges=_badgeSeen().length;}catch(e){}var pct=Math.min(100,Math.round(todayN/goal*100));var nick=(ACCT.user&&(ACCT.user.nickname||ACCT.user.username))||'同学';var av=ACCT.user?_avatarHtml(ACCT.user,44):'<span class="avatar" style="width:44px;height:44px;background:#58cc02;font-size:24px">🦉</span>';var goalPick='<div class="dash-cta" id="dashGoalPick" style="display:none">'+[10,20,50,100].map(function(g){return '<button type="button" class="'+(goal===g?'on':'')+'" onclick="setDailyGoal('+g+')">'+g+'</button>';}).join('')+'</div>';var lastHtml='';try{var _ls=JSON.parse(localStorage.getItem('lastStudy')||'null');if(_ls&&_ls.name)lastHtml='<div class="dash-last" onclick="resumeLast()">▶ 继续上次：'+_esc(_ls.name)+'</div>';}catch(e){}var _dp={total:0,rev:0,neu:0},_dd=false;try{_dp=dailyPlan();_dd=_dailyDone();}catch(e){}var dailyCard=_dd?'<div class="dash-daily done">✅ 今日课程已完成，明天见！</div>':'<div class="dash-daily" onclick="spStartDaily()"><div class="dd-txt"><b>📅 今日课程</b><span>'+_dp.total+' 词 · '+_dp.rev+' 复习 + '+_dp.neu+' 新词'+((_dp.lv&&_dp.lv!=='all'&&levelName(_dp.lv))?' · '+levelName(_dp.lv):'')+'</span></div><span class="dd-go">▶ 开始</span></div>';el.innerHTML='<div class="dash"><div class="dash-top">'+av+'<div class="dash-hi">'+(LANG==='en'?'Hello, ':'Hallo, ')+_esc(nick)+'！<small>'+(pct>=100?'今日目标已达成，太棒了 🎉':(todayN>0?'继续保持，今天已学 '+todayN+' 次':'今天还没开始，来一组拼写吧'))+'</small></div></div>'+dailyCard+'<div class="dash-stats"><div class="dash-stat" onclick="showSection(\'me\')"><b>'+streak+'</b><span>🔥 连续打卡</span></div><div class="dash-stat" onclick="showSection(\'spell\')"><b>'+known+'</b><span>📖 掌握词</span></div><div class="dash-stat" onclick="showSection(\'me\')"><b>'+badges+'</b><span>🏅 徽章</span></div></div><div class="dash-goal"><div class="dash-goal-row" onclick="dashGoalToggle()" style="cursor:pointer" title="调整每日目标"><span>今日目标 ✏️</span><span>'+todayN+' / '+goal+'</span></div><div class="dash-goal-bar"><i style="width:'+pct+'%"></i></div>'+goalPick+'</div>'+_dashTrend(s,t)+_dashStreak(s,t)+_dashDue()+lastHtml+'<div class="dash-cta"><button type="button" onclick="showSection(\'spell\')">⌨️ 拼写记忆</button><button type="button" onclick="showSection(\'quiz\')">🎯 练习测验</button><button type="button" onclick="showSection(\'rank\')">🏆 排行榜</button></div></div>';}
 // 今日目标可调：点「今日目标」行展开 10/20/50/100 四档
 function dashGoalToggle(){var p=document.getElementById('dashGoalPick');if(p)p.style.display=(p.style.display==='none')?'':'none';}
 function setDailyGoal(g){var s=getStudy();s.goal=g;saveStudy(s);try{track('goal',{g:g});}catch(e){}renderHomeDash();}
@@ -4968,7 +4976,12 @@ function _spAutoAdvance(){ // 越过空格/标点：自动填充其槽位
   while(SP.pos<SP.word.length&&!_spIsLetter(SP.word[SP.pos])){var s=document.getElementById('spS'+SP.pos);if(s){s.textContent=SP.word[SP.pos];s.className='sp-slot auto filled';}SP.pos++;}
   if(SP.pos<SP.word.length){var n=document.getElementById('spS'+SP.pos);if(n)n.className='sp-slot cur';}
 }
-function spRenderLevels(){var L=[['0','🌱 零基础'],['a1','⭐ A1'],['a2','⭐⭐ A2'],['b1','🔥 B1'],['b2','💎 B2'],['all','📚 全部']];document.getElementById('spLevels').innerHTML=L.map(function(x){return '<button type="button" class="'+(x[0]===SP.level?'on':'')+'" onclick="spSetLevel(\''+x[0]+'\')">'+x[1]+'</button>';}).join('');}
+function spRenderLevels(){
+// 这里原来把「零基础/A1/A2/B1/B2」写死了，于是英语端拼写页还挂着 CEFR——
+// 而隔壁词句页/测验页早就用 LEVEL_TABS_EN 切成了「入门/中考/高考/四级/六级」。
+// 改为跟着语言取，只保留本页把「全部」排在末尾的习惯。
+var _T=(LANG==='en'?LEVEL_TABS_EN:LEVEL_TABS_DE),_m={};_T.forEach(function(x){_m[x[0]]=x[1];});
+var L=[['0',_m['0']],['a1',_m.a1],['a2',_m.a2],['b1',_m.b1],['b2',_m.b2],['all',_m.all]];document.getElementById('spLevels').innerHTML=L.map(function(x){return '<button type="button" class="'+(x[0]===SP.level?'on':'')+'" onclick="spSetLevel(\''+x[0]+'\')">'+x[1]+'</button>';}).join('');}
 function spSetLevel(l){SP.level=l;spRenderLevels();spUpdatePoolInfo();}
 function spSetMode(m){SP.mode=m;var b=document.getElementById('spModes').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-m')===m);}
 function spUpdatePoolInfo(){var el=document.getElementById('spPoolInfo');if(!spEnsure(spUpdatePoolInfo,function(retry){if(!el)return;el.innerHTML='⚠️ 词库加载失败 <button type="button" class="btn" id="spRetryBtn" style="margin-left:6px;padding:4px 12px;font-size:12px">点击重试</button>';var rb=document.getElementById('spRetryBtn');if(rb)rb.onclick=retry;})){if(el)el.innerHTML='词库加载中… ⏳';return;}var n=spBuildPool(SP.level).length;var wn=0,dn=0;try{wn=Object.keys(_spWrongGet()).length;}catch(e){}try{dn=srsDueList().length;}catch(e){}var _st=' style="width:auto;display:inline-block;margin:10px 4px 0;padding:7px 18px" onclick="';var btns='';if(dn)btns+='<button type="button" class="acct-btn"'+_st+'spStartReview()">📆 到期复习（'+dn+'）</button>';if(wn)btns+='<button type="button" class="oauth-btn"'+_st+'spStartWrong()">🔁 错词本（'+wn+'）</button>';el.innerHTML=(n?('待记 '+n+' 词（已掌握的自动跳过）· 每组 '+Math.min(SP.size,n)+' 词'):'这个级别的词都掌握啦，换一个级别试试 🎉')+(btns?'<br>'+btns:'');}
