@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs --dev",
-    "verify": "node tools/verify-build-artifacts.mjs && node --no-warnings tools/verify-schema.mjs && node --no-warnings tools/verify-account-security.mjs && node tools/verify-data.mjs && node tools/verify-pron.mjs && node tools/verify-py-consistency.mjs && node tools/verify-loanwords.mjs && node tools/verify-no-dup-words.mjs && node tools/verify-boards-sync.mjs && node tools/verify-web-data.mjs && node tools/verify-css-position.mjs && node tools/verify-contrast.mjs && node tools/verify-boot.mjs && node tools/verify-xss.mjs && node tools/verify-dict-fetch-fail.mjs && node tools/verify-quiz-safe-html.mjs && node tools/verify-quiz-wrongbook.mjs && node tools/verify-lang-switch.mjs && node tools/verify-tap-targets.mjs && node tools/verify-board-quiz.mjs && node tools/verify-sections.mjs",
+    "verify": "node tools/verify-build-artifacts.mjs && node --no-warnings tools/verify-schema.mjs && node --no-warnings tools/verify-account-security.mjs && node tools/verify-data.mjs && node tools/verify-pron.mjs && node tools/verify-py-consistency.mjs && node tools/verify-loanwords.mjs && node tools/verify-no-dup-words.mjs && node tools/verify-boards-sync.mjs && node tools/verify-web-data.mjs && node tools/verify-css-position.mjs && node tools/verify-contrast.mjs && node tools/verify-boot.mjs && node tools/verify-xss.mjs && node tools/verify-dict-fetch-fail.mjs && node tools/verify-quiz-safe-html.mjs && node tools/verify-quiz-wrongbook.mjs && node tools/verify-lang-switch.mjs && node tools/verify-seo-pages.mjs && node tools/verify-tap-targets.mjs && node tools/verify-board-quiz.mjs && node tools/verify-sections.mjs",
     "verify:boot": "node tools/verify-boot.mjs",
     "verify:xss": "node tools/verify-xss.mjs",
     "verify:dict-fail": "node tools/verify-dict-fetch-fail.mjs",
@@ -25,7 +25,9 @@
     "verify:py": "node tools/verify-py-consistency.mjs",
     "verify:loan": "node tools/verify-loanwords.mjs",
     "verify:dup": "node tools/verify-no-dup-words.mjs",
-    "verify:sections": "node tools/verify-sections.mjs"
+    "verify:sections": "node tools/verify-sections.mjs",
+    "gen:seo": "node tools/gen-seo-pages.mjs",
+    "verify:seo": "node tools/verify-seo-pages.mjs"
   },
   "devDependencies": {
     "terser": "^5.48.0"

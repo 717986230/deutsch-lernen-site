@@ -1,11 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 本站是 hash 路由的单页应用，#reading 这类片段搜索引擎不会当成独立页面收录，
-     所以这里只列根地址。等将来换成真正的多路径再逐条补。 -->
+<!-- 根地址是 hash 路由的单页应用（#reading 这类片段不会被当成独立页收录），
+     而且带硬登录门槛——爬虫渲染后只看得到登录表单。
+     下面几页是 tools/gen-seo-pages.mjs 生成的独立教学页：无登录墙、各自一个 URL、
+     内容与站内完全一致（不是给爬虫另做一套，那是 cloaking）。改内容后记得 npm run gen:seo。 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.uuoo.site/</loc>
     <lastmod>2026-09-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.uuoo.site/de-pronunciation.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.uuoo.site/de-grammar.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.uuoo.site/de-numbers.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.uuoo.site/en-grammar.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.uuoo.site/en-pronunciation.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
