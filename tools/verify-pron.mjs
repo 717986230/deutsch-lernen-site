@@ -31,14 +31,19 @@ const txt = section('pronunciation') + section('numbers')
   + arr('var GQ_DATA=');
 
 // ① 同词多谐音：匹配「德语词 = 谐音」/「德语词（中文）＝ 谐音」
-const pairs = [...txt.matchAll(/([A-Za-zÄÖÜäöüß]{2,})\s*(?:（[^）]*）)?\s*[=＝]\s*([一-鿿·]+)/g)];
+// 词里允许夹音节连字符：自然拼读那节写的是 Va-ter / Fens-ter / Mut-ter 这种切好的形式。
+// 原来的字符类不含 '-'，只能从 Va-ter 里抓到尾巴上的 ter，于是把 法特尔/芬斯特/穆特尔
+// 判成「同一个词 ter 有三种谐音」——纯属误报。去掉连字符再做键，既消除误报，
+// 又让切音节的写法真的参与比对（Va-ter 会和规则5 里的 Vater 对上，写歪了照样抓）。
+const pairs = [...txt.matchAll(/([A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß-]*[A-Za-zÄÖÜäöüß])\s*(?:（[^）]*）)?\s*[=＝]\s*([一-鿿·]+)/g)];
 const seen = new Map();
 for (const [, w, py] of pairs) {
-  if (!seen.has(w)) seen.set(w, new Set());
-  seen.get(w).add(py);
+  const key = w.replace(/-/g, '');
+  if (!seen.has(key)) seen.set(key, new Map());
+  seen.get(key).set(py, w);          // 记下原样写法，报错时好定位是哪一处
 }
-for (const [w, set] of [...seen].sort()) {
-  if (set.size > 1) bad(`「${w}」在发音/数字页有 ${set.size} 种谐音：${[...set].join(' / ')}`);
+for (const [w, m] of [...seen].sort()) {
+  if (m.size > 1) bad(`「${w}」在发音/数字页有 ${m.size} 种谐音：${[...m].map(([py, raw]) => `${py}（写作 ${raw}）`).join(' / ')}`);
 }
 
 // ② 规则违反：每条都是本站自己在页面上讲过的规则
