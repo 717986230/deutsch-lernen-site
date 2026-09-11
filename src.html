@@ -1353,7 +1353,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
       <div class="card" onclick="startQuiz('listen')" style="text-align:center;padding:20px">
         <div style="font-size:28px;margin-bottom:8px">🎧</div>
         <div style="color:var(--text);font-weight:700;margin-bottom:4px">听力测验</div>
-        <div style="font-size:12px;color:var(--text-dim)">听德语→选中文</div>
+        <div style="font-size:12px;color:var(--text-dim)" id="qdListen">听德语→选中文</div>
       </div>
       <div class="card" onclick="startQuiz('wrongbook')" style="text-align:center;padding:20px">
         <div style="font-size:28px;margin-bottom:8px">📕</div>
@@ -1388,7 +1388,9 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <p id="readSub" style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
     <button id="loopAllBtn" class="fab-read" type="button" aria-label="循环朗读全部短文" onclick="toggleLoopAll()">🔊 循环朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="readRateV" style="color:var(--gold-text);font-weight:600">0.62</span> 🐇</div>
-    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:15px">▶ 整篇朗读 · 点句即听 · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
+    <!-- 逐词小注只有德语有（renderReadings 里英语走 p[0] 原文、不过 wrapWords），
+         所以英语端整段藏掉：否则既写着「点德语词」，又在推销一个点不动的功能。 -->
+    <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:15px">▶ 整篇朗读 · 点句即听<span class="de-only-block"> · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></span></p>
     <div class="level-tabs" id="readLevelTabs"></div>
     <div id="readCount" style="font-size:12px;color:var(--gold-text);margin:4px 0 10px"></div>
     <div id="readList"></div>
@@ -1410,12 +1412,13 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <button id="seriesLoopBtn" class="fab-read" type="button" aria-label="循环朗读全部连载" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
     <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:#58cc02"> <span id="seriesRateV" style="color:var(--gold-text);font-weight:600">0.62</span> 🐇</div>
     <div class="sec-title"><span class="sec-title-icon">🎬</span><span class="sec-title-text">原创连载 · 留学生活</span><span class="sec-title-count" id="seriesCount"></span></div>
-    <p style="font-size:12px;color:var(--text-faint);margin:0 0 15px">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听 · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></p>
+    <p style="font-size:12px;color:var(--text-faint);margin:0 0 15px">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听<span class="de-only-block"> · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></span></p>
     <div class="level-tabs" id="seriesLevelTabs"></div>
     <div id="seriesList"></div>
-    <div class="sec-title" style="margin-top:32px"><span class="sec-title-icon">📺</span><span class="sec-title-text">正版视频资源 · 看原版</span></div>
-    <p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">以下为外部官方/平台资源，点击跳转观看<b>正版</b>。本站不复制其视频或字幕内容，仅提供导航链接。</p>
-    <div class="phrase-grid" id="seriesLinks"></div>
+    <!-- SERIES_LINKS 全是德语学习资源（DW 慢速德语新闻等），英语端不该出现 -->
+    <div class="sec-title de-only-block" style="margin-top:32px"><span class="sec-title-icon">📺</span><span class="sec-title-text">正版视频资源 · 看原版</span></div>
+    <p class="de-only-block" style="font-size:12px;color:var(--text-faint);margin:0 0 10px">以下为外部官方/平台资源，点击跳转观看<b>正版</b>。本站不复制其视频或字幕内容，仅提供导航链接。</p>
+    <div class="phrase-grid de-only-block" id="seriesLinks"></div>
   </div>
 </div>
 
@@ -1496,7 +1499,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Support</div>
     <h2 class="page-title">支持作者 · 请杯咖啡 ☕</h2>
-    <p style="text-align:center;font-size:14px;color:var(--text-dim);line-height:1.9;max-width:520px;margin:0 auto">这份手册从词句整理、发音朗读到测验复习，都是<b>业余时间一点点做出来、并持续维护</b>的；域名和时间都是实打实的成本。它<b>一直免费、无广告</b>。<br>如果它在你学德语的路上帮上了忙，欢迎扫码<b>随手打赏一点</b>，让它能继续更新下去 😊<br>一块两块都是心意，谢谢你的支持！</p>
+    <p style="text-align:center;font-size:14px;color:var(--text-dim);line-height:1.9;max-width:520px;margin:0 auto">这份手册从词句整理、发音朗读到测验复习，都是<b>业余时间一点点做出来、并持续维护</b>的；域名和时间都是实打实的成本。它<b>一直免费、无广告</b>。<br>如果它在你学外语的路上帮上了忙，欢迎扫码<b>随手打赏一点</b>，让它能继续更新下去 😊<br>一块两块都是心意，谢谢你的支持！</p>
     <div style="max-width:290px;margin:18px auto 0;background:#fff;border-radius:16px;padding:8px;box-shadow:var(--shadow)">
       <img src="support-qr.png" alt="微信收款二维码" loading="lazy" style="width:100%;height:auto;display:block;border-radius:12px">
     </div>
@@ -2258,6 +2261,9 @@ function updateQuizCardLang(){
   set('qdNum', en?'看数字→选英语':'看数字→说德语');
   set('qdPhrase', en?'看中文→选英语':'看中文→选德语');
   set('qdReverse', en?'看英语→选中文':'看德语→选中文');
+  // 这张卡的副标题原来没有 id，于是切到英语后还挂着「听德语→选中文」——
+  // 旁边三张都跟着语言走，唯独它漏了，站长在真机截图里逮到的。
+  set('qdListen', en?'听英语→选中文':'听德语→选中文');
   // 测验出题范围标签跟随语言：德语 A1/A2/B1/B2，英语 入门/中考/高考/四级/六级
   _lvTabs('quizLevelTabs','setQuizLevel',(typeof quizLevel!=='undefined')?quizLevel:'all');
   // 错题库随语言切换（spWrong 按语言分开存），切语言后条数要跟着换
