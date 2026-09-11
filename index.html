@@ -1601,6 +1601,12 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
 .acct-div{display:flex;align-items:center;gap:10px;color:var(--text-faint);font-size:12px;margin:16px 0}
 .acct-div::before,.acct-div::after{content:"";flex:1;height:1px;background:var(--border)}
 .oauth-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:8px;text-decoration:none}
+/* 触摸热区：登录页这几个控件视觉上都不到 44px（标签 153×36、忘记密码 140×25、
+   登录与第三方按钮 312×40/41）。这是每个新用户必经的一屏，点不准代价最大，
+   而 verify-tap-targets 一直是登录态跑的、从没查过这一屏，所以漏到了现在。
+   照全站惯例：视觉尺寸一点不动，用透明 ::after 把可点范围撑到 ≥44px。 */
+.acct-tabs button,.acct-btn,.oauth-btn,.acct-forgot{position:relative}
+.acct-tabs button::after,.acct-btn::after,.oauth-btn::after,.acct-forgot::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;min-width:44px;height:44px}
 .oauth-btn:active{transform:translateY(1px)}
 .acct-note{font-size:11px;color:var(--text-faint);text-align:center;line-height:1.7;margin-top:14px}
 /* 头像 */
@@ -1786,7 +1792,7 @@ body{padding-bottom:var(--tab-h)}
       <div id="paneLogin">
           <div class="acct-field"><label>用户名</label><input class="acct-input" id="lgUser" autocomplete="username" placeholder="小写字母/数字/下划线" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('lgPass').focus();}"></div>
           <div class="acct-field"><label>密码</label><input class="acct-input" id="lgPass" type="password" autocomplete="current-password" placeholder="至少 6 位" onkeydown="if(event.key==='Enter'){event.preventDefault();acctLogin();}"></div>
-          <div style="text-align:right;margin:-4px 0 8px"><button type="button" onclick="acctForgot()" style="background:none;border:none;color:var(--gold-text);font-size:12px;font-family:inherit;cursor:pointer;padding:4px">忘记密码？用恢复码重置</button></div>
+          <div style="text-align:right;margin:-4px 0 8px"><button type="button" class="acct-forgot" onclick="acctForgot()" style="background:none;border:none;color:var(--gold-text);font-size:12px;font-family:inherit;cursor:pointer;padding:4px">忘记密码？用恢复码重置</button></div>
           <div id="lgForgot" style="display:none;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--bg)">
             <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:8px">两种方式任选其一：<b>绑定过邮箱</b>就点「发送验证码」；没绑定就用注册时保存的<b>恢复码</b>。重置后所有设备需重新登录，并会发给你一枚新的恢复码。</div>
             <input class="acct-input" id="fgUser" placeholder="用户名" autocomplete="username" style="margin-bottom:8px">
@@ -1816,6 +1822,62 @@ body{padding-bottom:var(--tab-h)}
         <a class="oauth-btn" id="oauthGithub" href="javascript:oauthLogin('github')">🐙 用 GitHub 登录</a>
         <a class="oauth-btn" id="oauthGoogle" href="javascript:oauthLogin('google')">🌈 用 Google 登录</a>
     </div>
+  </div>
+
+  <!-- 未登录访客（以及搜索引擎）唯一看得到的内容。这里原来**只有**上面那张登录表单：
+       实测整页可见文字 65 个字、零个标题、零句说明——陌生人根本不知道这是什么站，
+       自然也不会注册；Google 那边收录到的同样只是一张无标题的表单。
+       所以这段既是 SEO，也是转化：先说清楚这是什么、能白看什么，再谈注册。
+       ⚠️ 它对未登录的真人和爬虫**完全一样**——给爬虫单独准备一套内容（cloaking）
+       是 Google 明令禁止的作弊手法，别往那个方向改。
+       登录后 showSection('account') 会重定向到 #me，所以这块天然只在未登录时出现。 -->
+  <div class="container" style="padding:6px 0 40px">
+    <h1 style="font-size:21px;text-align:center;margin:0 0 10px">德语学习手册 · 中国人自学德语</h1>
+    <p style="font-size:14px;color:var(--text-dim);line-height:1.9;text-align:center;max-width:560px;margin:0 auto 22px">
+      <b style="color:var(--gold-text)">4200+ 词句，每句配中文谐音</b>，点词即听真人朗读；发音与语法速查、分级短文、留学连载、情景对话、拼写记忆与互动测验。<br>完全免费、无广告、可离线使用。
+    </p>
+
+    <div class="sec-title"><span class="sec-title-icon">📖</span><span class="sec-title-text">这几页不用注册，现在就能看</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px;margin-bottom:24px">
+      <a class="card" href="de-pronunciation.html" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🔤</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">德语发音规律</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">字母表 · 自然拼读 · 谐音</div>
+      </a>
+      <a class="card" href="de-grammar.html" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">📐</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">德语语法速查</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">der/die/das · 四个格 · 变位</div>
+      </a>
+      <a class="card" href="de-numbers.html" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🔢</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">德语数字读法</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">倒序读法 · 序数词 · 谐音</div>
+      </a>
+      <a class="card" href="en-grammar.html" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">📘</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">英语语法速查</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">时态总表 · 五种句型</div>
+      </a>
+      <a class="card" href="en-pronunciation.html" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🔡</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">英语字母与数字</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">读法 · 长短音 · 谐音</div>
+      </a>
+    </div>
+
+    <div class="sec-title"><span class="sec-title-icon">🔑</span><span class="sec-title-text">注册之后还有什么</span></div>
+    <div class="tip-card"><div class="tip-body" style="line-height:2">
+      · <b>4200+ 词句</b>分 23 类，每句德语 + 中文 + 谐音，点喇叭听发音<br>
+      · <b>69 篇分级短文</b>（零基础到 C2）、<b>12 集留学连载</b>、<b>10 段情景对话</b>，点德语词即查词义<br>
+      · <b>互动测验</b>六种模式 + <b>错题库</b>：答错自动收录，答对自动移出<br>
+      · <b>拼写记忆</b>：看中文敲德语，逐字母校验，按记忆曲线安排复习<br>
+      · <b>打卡与排行榜</b>、每日课程，学习进度多设备同步<br>
+      · 另有<b>英语版</b>：7000+ 英语词句，同样每句配中文谐音
+    </div></div>
+    <p style="font-size:12px;color:var(--text-faint);text-align:center;margin-top:14px;line-height:1.9">
+      注册只需用户名和密码，<b>不收手机号</b>，也不接受任何上传。<a href="#legal" style="color:var(--gold-text)">隐私政策与用户协议</a>
+    </p>
   </div>
 </div>
 

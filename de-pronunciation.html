@@ -20,7 +20,7 @@
 <meta name="twitter:image" content="https://www.uuoo.site/og-cover.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"德语发音规律完全指南：字母表 + 自然拼读 + 中文谐音 | 德语学习手册","url":"https://www.uuoo.site/de-pronunciation.html","description":"德语 26 个字母怎么读、变音 ä ö ü 和组合音 ei/ie/ch/sch 的规律、德国小学生的自然拼读（切音节读长词），每条都配中文谐音。中国人自学德语发音，看这一页就够。","inLanguage":"zh-CN","teaches":"德语","isAccessibleForFree":true,"isFamilyFriendly":true}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:bc96e8eb0e6c -->
+<!-- src-hash:82b353700622 -->
 <style>
 :root{
   /* 底部标签栏占用的高度（含 iPhone 安全区）。所有 fixed/sticky 贴底的浮动元素
@@ -478,6 +478,12 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
 .acct-div{display:flex;align-items:center;gap:10px;color:var(--text-faint);font-size:12px;margin:16px 0}
 .acct-div::before,.acct-div::after{content:"";flex:1;height:1px;background:var(--border)}
 .oauth-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:8px;text-decoration:none}
+/* 触摸热区：登录页这几个控件视觉上都不到 44px（标签 153×36、忘记密码 140×25、
+   登录与第三方按钮 312×40/41）。这是每个新用户必经的一屏，点不准代价最大，
+   而 verify-tap-targets 一直是登录态跑的、从没查过这一屏，所以漏到了现在。
+   照全站惯例：视觉尺寸一点不动，用透明 ::after 把可点范围撑到 ≥44px。 */
+.acct-tabs button,.acct-btn,.oauth-btn,.acct-forgot{position:relative}
+.acct-tabs button::after,.acct-btn::after,.oauth-btn::after,.acct-forgot::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;min-width:44px;height:44px}
 .oauth-btn:active{transform:translateY(1px)}
 .acct-note{font-size:11px;color:var(--text-faint);text-align:center;line-height:1.7;margin-top:14px}
 /* 头像 */
@@ -692,7 +698,7 @@ body{padding-bottom:var(--tab-h)}
         <b>Q</b> → qu发"kv" ✦ Qualität＝克瓦利泰特，不是"kw"
       </div>
     </div>
-    <div class="gq-box" data-gq="p1"><div class="gq-head">✏️ 即学即练</div><div class="gq-sub">从 9 题里随机抽 3 题——答错也没关系，看一眼解释就懂了</div><div class="gq-item"><div class="gq-q">1. 德语单词的重音一般在哪？</div><div class="gq-opts"></div><div class="gq-why">💡 重音基本落在第一音节：KOMmen、SPRAche、GUten。外来词除外。</div></div><div class="gq-item"><div class="gq-q">2. sch 组合读什么？</div><div class="gq-opts"></div><div class="gq-why">💡 sch 固定读「施」：Schule＝施乌勒，schön＝舍恩。</div></div><div class="gq-item"><div class="gq-q">3. ie 组合读什么？</div><div class="gq-opts"></div><div class="gq-why">💡 ie 读长「伊」：viel＝菲尔，Liebe＝利贝。和 ei 正好相反。</div></div><div class="gq-score"></div></div>
+    <div class="gq-box" data-gq="p1"><div class="gq-head">✏️ 即学即练</div><div class="gq-sub">从 9 题里随机抽 3 题——答错也没关系，看一眼解释就懂了</div><div class="gq-item"><div class="gq-q">1. Hund（狗）词尾的 d 读什么？</div><div class="gq-opts"></div><div class="gq-why">💡 词尾 b/d/g 清化成 p/t/k：Hund 读「洪特」，Weg 读「韦克」。</div></div><div class="gq-item"><div class="gq-q">2. ja（是的）怎么读？</div><div class="gq-opts"></div><div class="gq-why">💡 J 发 y 音：ja＝雅。德语里没有汉语「鸡」那个 j 音。</div></div><div class="gq-item"><div class="gq-q">3. ie 组合读什么？</div><div class="gq-opts"></div><div class="gq-why">💡 ie 读长「伊」：viel＝菲尔，Liebe＝利贝。和 ei 正好相反。</div></div><div class="gq-score"></div></div>
 
     <div class="sec-title" id="pronunciation_s1"><span class="sec-title-icon">🔤</span><span class="sec-title-text">特殊字母（变音 Umlaute）</span></div>
     <table class="pron-table">

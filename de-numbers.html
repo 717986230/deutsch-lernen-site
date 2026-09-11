@@ -20,7 +20,7 @@
 <meta name="twitter:image" content="https://www.uuoo.site/og-cover.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"德语数字 0-100 万怎么读：倒序读法详解 + 中文谐音 | 德语学习手册","url":"https://www.uuoo.site/de-numbers.html","description":"德语数字从 0 到百万的完整读法，重点讲清 21-99 的倒序规则（个位 + und + 十位），以及序数词「第几」怎么说。每个数字都配中文谐音。","inLanguage":"zh-CN","teaches":"德语","isAccessibleForFree":true,"isFamilyFriendly":true}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:bc96e8eb0e6c -->
+<!-- src-hash:82b353700622 -->
 <style>
 :root{
   /* 底部标签栏占用的高度（含 iPhone 安全区）。所有 fixed/sticky 贴底的浮动元素
@@ -478,6 +478,12 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
 .acct-div{display:flex;align-items:center;gap:10px;color:var(--text-faint);font-size:12px;margin:16px 0}
 .acct-div::before,.acct-div::after{content:"";flex:1;height:1px;background:var(--border)}
 .oauth-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:8px;text-decoration:none}
+/* 触摸热区：登录页这几个控件视觉上都不到 44px（标签 153×36、忘记密码 140×25、
+   登录与第三方按钮 312×40/41）。这是每个新用户必经的一屏，点不准代价最大，
+   而 verify-tap-targets 一直是登录态跑的、从没查过这一屏，所以漏到了现在。
+   照全站惯例：视觉尺寸一点不动，用透明 ::after 把可点范围撑到 ≥44px。 */
+.acct-tabs button,.acct-btn,.oauth-btn,.acct-forgot{position:relative}
+.acct-tabs button::after,.acct-btn::after,.oauth-btn::after,.acct-forgot::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;min-width:44px;height:44px}
 .oauth-btn:active{transform:translateY(1px)}
 .acct-note{font-size:11px;color:var(--text-faint);text-align:center;line-height:1.7;margin-top:14px}
 /* 头像 */

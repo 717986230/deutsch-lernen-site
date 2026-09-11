@@ -123,9 +123,63 @@ for (const sec of SECS) {
   }
 }
 
+// ── 登录墙那一屏 ──
+// 上面整轮都带着 acct_token 跑，于是**从没走到过登录页**——而那是每个新用户必经的
+// 第一屏，点不准的代价最大。这个盲区一直存在：实测那屏的控件全部不达标
+// （标签 153×36、忘记密码 140×25、登录与第三方按钮 312×40/41）。
+// 单开一个无 token 的页面把它补上。
+{
+  const anon = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await anon.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await anon.waitForTimeout(600);
+  const locked = await anon.evaluate(() => document.documentElement.classList.contains('locked'));
+  if (!locked) bad('无 token 打开首页竟然没上锁，登录墙的前提变了，这段检查要重写');
+  else {
+    const res = await anon.evaluate((MIN) => {
+      const out = [];
+      let measured = 0;
+      for (const el of document.querySelectorAll('#account button,#account a[href]')) {
+        const r0 = el.getBoundingClientRect();
+        if (!r0.width || !r0.height) continue;
+        const cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden' || cs.display === 'inline') continue;
+        el.scrollIntoView({ block: 'center' });
+        const b = el.getBoundingClientRect();
+        const cx = Math.round(b.left + b.width / 2), cy = Math.round(b.top + b.height / 2);
+        // 判定必须和上面那轮一模一样：只认元素自己和它的后代。
+        // 早先这里误写成还认祖先（|| n.contains(el)），点在按钮外面命中父容器也算数，
+        // 于是热区被量成整个卡片那么大——6 个不达标的控件只报出 1 个。
+        const own = (n) => !!n && (n === el || el.contains(n));
+        const label = (el.innerText || el.getAttribute('aria-label') || '').trim().slice(0, 20);
+        if (!own(document.elementFromPoint(cx, cy))) { out.push({ label, kind: '抢点' }); continue; }
+        measured++;
+        // 从中心往四个方向二分，量真实命中范围（伪元素撑的热区只有这样才量得到）
+        const reach = (dx, dy) => {
+          if (!own(document.elementFromPoint(cx + dx * 0.5, cy + dy * 0.5))) return 0;
+          let lo = 0.5, hi = 60;
+          while (hi - lo > 0.01) {
+            const mid = (lo + hi) / 2;
+            if (own(document.elementFromPoint(cx + dx * mid, cy + dy * mid))) lo = mid; else hi = mid;
+          }
+          return lo;
+        };
+        const w = reach(-1, 0) + reach(1, 0), h = reach(0, -1) + reach(0, 1);
+        if (h < MIN - 0.05 || w < MIN - 0.05) out.push({ label, kind: '过小', w: +w.toFixed(1), h: +h.toFixed(1) });
+      }
+      return { out, measured };
+    }, MIN);
+    checked++; total += res.measured;
+    for (const h of res.out) {
+      if (h.kind === '抢点') { stolen++; bad(`登录页「${h.label}」正中心点不到，被别的元素挡住`); }
+      else { small++; bad(`登录页「${h.label}」实际可点 ${h.w}×${h.h}，不足 ${MIN}×${MIN}`); }
+    }
+  }
+  await anon.close();
+}
+
 await browser.close();
 srv.close();
-console.log(`触摸目标体检：${checked} 个版块、实测 ${total} 个控件（按命中测试量，非读 CSS）`
+console.log(`触摸目标体检：${checked} 个版块（含登录墙那一屏）、实测 ${total} 个控件（按命中测试量，非读 CSS）`
   + (unmeasured ? `，另有 ${unmeasured} 个滚不进视口没量成` : '')
   + (exempt ? `，放行 ${exempt} 个已记录在案的例外` : ''));
 if (fail) { console.error(`\n共 ${fail} 处问题（过小 ${small} · 被抢点 ${stolen}）`); process.exit(1); }
