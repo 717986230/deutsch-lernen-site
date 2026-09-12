@@ -31,19 +31,19 @@ const SITE = 'https://www.uuoo.site';
 // 每页：输出文件 / 语言 / 要抓的版块 / title / description
 // 合并薄内容：英语发音和英语数字各自只有几百字，单独成页属于 thin content，反而扣分。
 const PAGES = [
-  { file: 'de-pronunciation.html', lang: 'de', secs: ['pronunciation'],
+  { file: 'de-pronunciation.html', crumb: '德语发音规律', lang: 'de', secs: ['pronunciation'],
     title: '德语发音规律完全指南：字母表 + 自然拼读 + 中文谐音 | 德语学习手册',
     desc: '德语 26 个字母怎么读、变音 ä ö ü 和组合音 ei/ie/ch/sch 的规律、德国小学生的自然拼读（切音节读长词），每条都配中文谐音。中国人自学德语发音，看这一页就够。' },
-  { file: 'de-grammar.html', lang: 'de', secs: ['grammar'],
+  { file: 'de-grammar.html', crumb: '德语语法速查', lang: 'de', secs: ['grammar'],
     title: '德语语法速查：der/die/das、四个格、动词变位、时态 | 德语学习手册',
     desc: '德语名词性别 der/die/das 怎么记、四个格（主格宾格与格属格）、动词变位、完成时与从句语序、形容词词尾、介词支配格，全部配例句拆解。' },
-  { file: 'de-numbers.html', lang: 'de', secs: ['numbers'],
+  { file: 'de-numbers.html', crumb: '德语数字读法', lang: 'de', secs: ['numbers'],
     title: '德语数字 0-100 万怎么读：倒序读法详解 + 中文谐音 | 德语学习手册',
     desc: '德语数字从 0 到百万的完整读法，重点讲清 21-99 的倒序规则（个位 + und + 十位），以及序数词「第几」怎么说。每个数字都配中文谐音。' },
-  { file: 'en-grammar.html', lang: 'en', secs: ['en-grammar'],
+  { file: 'en-grammar.html', crumb: '英语语法速查', lang: 'en', secs: ['en-grammar'],
     title: '英语语法速查：时态总表、五种句型、从句 | 英语学习手册',
     desc: '英语 16 大时态总表、五种基本句型、三大从句、情态动词、被动语态、非谓语动词，配例句逐条拆解。面向中文母语者的英语语法速查表。' },
-  { file: 'en-pronunciation.html', lang: 'en', secs: ['en-pron', 'en-num'],
+  { file: 'en-pronunciation.html', crumb: '英语字母与数字', lang: 'en', secs: ['en-pron', 'en-num'],
     title: '英语字母与数字读法 + 中文谐音 | 英语学习手册',
     desc: '英语 26 个字母的读法、5 个元音的长短音规律、常见字母组合，以及 1 到大数的英语读法与序数词，每条配中文谐音。' },
 ];
@@ -153,15 +153,19 @@ for (const page of PAGES) {
 <meta name="twitter:title" content="${esc(page.title)}">
 <meta name="twitter:description" content="${esc(page.desc)}">
 <meta name="twitter:image" content="${SITE}/og-cover.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":${JSON.stringify(page.title)},"url":"${SITE}/${page.file}","description":${JSON.stringify(page.desc)},"inLanguage":"zh-CN","teaches":${JSON.stringify(page.lang === 'en' ? '英语' : '德语')},"isAccessibleForFree":true,"isFamilyFriendly":true}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[
+{"@type":"LearningResource","name":${JSON.stringify(page.title)},"url":"${SITE}/${page.file}","description":${JSON.stringify(page.desc)},"inLanguage":"zh-CN","teaches":${JSON.stringify(page.lang === 'en' ? '英语' : '德语')},"isAccessibleForFree":true,"isFamilyFriendly":true},
+{"@type":"BreadcrumbList","itemListElement":[
+{"@type":"ListItem","position":1,"name":${JSON.stringify(page.lang === 'en' ? '英语学习手册' : '德语学习手册')},"item":"${SITE}/"},
+{"@type":"ListItem","position":2,"name":${JSON.stringify(page.crumb)}}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
 <!-- src-hash:${srcHash} -->
 <style>${css}</style>
 </head>
 <body${page.lang === 'en' ? ' class="lang-en"' : ''}>
-<div class="container" style="padding-top:14px">
-  <a href="/" style="font-size:13px;color:var(--gold-text);font-weight:600;text-decoration:none">← ${page.lang === 'en' ? '英语' : '德语'}学习手册 · 回首页</a>
-</div>
+<nav class="container" style="padding-top:14px;font-size:13px;color:var(--text-faint)" aria-label="面包屑">
+  <a href="/" style="color:var(--gold-text);font-weight:600;text-decoration:none">${page.lang === 'en' ? '英语' : '德语'}学习手册</a> › <span>${esc(page.crumb)}</span>
+</nav>
 ${body}
 <div class="container" style="padding:22px 0 40px">
   <div class="tip-card">

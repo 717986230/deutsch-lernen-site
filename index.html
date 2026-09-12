@@ -302,7 +302,7 @@ mark.sh{background:rgba(88,204,2,.32);color:inherit;border-radius:3px;padding:0 
 .letter-card .speak-btn{margin-top:8px}
 /* TIPS */
 .tip-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
-.tip-title{font-size:13px;color:var(--gold-text);margin-bottom:6px;letter-spacing:.5px}
+.tip-title{font-size:13px;color:var(--gold-text);margin:0 0 6px;letter-spacing:.5px}
 .tip-body{font-size:13px;color:var(--text-dim);line-height:1.7}
 .tip-body b{color:var(--text)}
 /* PROGRESS */
@@ -839,6 +839,17 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
       <tr><td class="pron-letter">k → ch</td><td class="pron-example">make, book, milk</td><td class="pron-example">machen, Buch, Milch</td><td class="pron-zh">马赫恩／布赫／米尔希</td></tr>
       <tr><td class="pron-letter">th → d</td><td class="pron-example">thing, that, think</td><td class="pron-example">Ding, das, denken</td><td class="pron-zh">丁／达斯／邓肯</td></tr>
     </table>
+
+    <!-- 常见问题：按中文母语者真实会搜的问法写（「德语一共多少个字母」「ß 怎么读」
+         「德语重音在哪」）。问题用 h3，答案紧跟其后——搜索引擎抽取问答靠的是语义标题，
+         不是 FAQPage schema：那种富媒体结果 Google 从 2023 年起只对政府/医疗类权威站点
+         展示，个人站加了也不会有效果，所以这里老老实实写内容。 -->
+    <div class="sec-title"><span class="sec-title-icon">❓</span><span class="sec-title-text">德语发音 · 常见问题</span></div>
+    <div class="tip-card"><h3 class="tip-title">德语一共有多少个字母？</h3><div class="tip-body">26 个基础拉丁字母，外加 <b>4 个特殊字符</b>：变音 <b>ä ö ü</b> 和 <b>ß</b>。变音字母不算独立字母，排序时按 a/o/u 处理；ß 也不算，它只是 ss 的一种写法。</div></div>
+    <div class="tip-card"><h3 class="tip-title">ß 怎么读？什么时候写 ß、什么时候写 ss？</h3><div class="tip-body">ß 只发<b>清音 [s]</b>，和 ss 同音，区别只在拼写：<b>长元音或双元音之后写 ß</b>（Straße、heiß、Fuß），<b>短元音之后写 ss</b>（Wasser、muss）。ß 不出现在词首，也没有大写形式（全大写时写 SS）。瑞士和列支敦士登已全面废除 ß，一律写 ss。</div></div>
+    <div class="tip-card"><h3 class="tip-title">ch 到底有几种读法？</h3><div class="tip-body">两种，看<b>前面那个字母</b>：跟在 <b>a / o / u / au</b> 后面是喉音的 ach-Laut（machen、Buch）；跟在其余字母（e i ä ö ü ei eu äu 以及 l n r）后面是轻擦的 ich-Laut（ich、Milch）。另外 <b>chs 读 [ks]</b>（sechs、Fuchs），这是第三种情况，别按上面两条套。</div></div>
+    <div class="tip-card"><h3 class="tip-title">德语单词的重音在哪个音节？</h3><div class="tip-body">绝大多数词重音在<b>第一个音节</b>。两个例外要记：带<b>不可分前缀</b>（be- ge- er- ver- zer- ent- emp-）的动词，重音在<b>词根</b>不在前缀（ver<b>STE</b>hen）；带<b>可分前缀</b>（auf- an- aus- ein- mit- vor- ab-）的动词，重音在<b>前缀</b>（<b>AUF</b>stehen）。外来词重音常在后面。</div></div>
+    <div class="tip-card"><h3 class="tip-title">德语真的「所见即所读」吗？</h3><div class="tip-body">基本是，规则性远比英语强——把字母、组合音，加上这一页的<b>音节切分</b>三样掌握了，没见过的长词也能读出来，这正是德国小学教认字的办法。真正的例外集中在<b>外来词</b>（Information 的 -tion、Restaurant 的法语尾音），数量有限，单独记即可。</div></div>
   </div>
 </div>
 
@@ -962,6 +973,12 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
       <button class="btn" onclick="startNumQuiz('calc')">计算训练</button>
     </div>
     <div id="numQuizArea"></div>
+
+    <div class="sec-title"><span class="sec-title-icon">❓</span><span class="sec-title-text">德语数字 · 常见问题</span></div>
+    <div class="tip-card"><h3 class="tip-title">德语 21 到 99 为什么倒着说？</h3><div class="tip-body">德语把<b>个位放在十位前面</b>，中间用 und 连接：21 = einundzwanzig（字面「一和二十」）、47 = siebenundvierzig。这是日耳曼语的老习惯，英语旧时也说 four-and-twenty（童谣里还留着），只是英语后来改了、德语保留至今。<b>21–99 全部适用</b>，100 以上也只有末两位倒装。</div></div>
+    <div class="tip-card"><h3 class="tip-title">hundert、tausend 前面要不要加 ein？</h3><div class="tip-body">两种都对。日常口语常直接说 hundert、tausend；<b>正式读数</b>（金额、编号、电话）习惯说 einhundert、eintausend，把位数说清楚，不容易听岔。</div></div>
+    <div class="tip-card"><h3 class="tip-title">Million 和 tausend 的写法为什么不一样？</h3><div class="tip-body">因为词性不同。hundert / tausend 是<b>数词</b>，小写并与前后连写（zweitausend）；<b>Million、Milliarde 是阴性名词</b>，要<b>大写、分写</b>，超过 1 还要用复数：eine Million、zwei Millionen。所以 2 500 000 写作 zwei Millionen fünfhunderttausend。</div></div>
+    <div class="tip-card"><h3 class="tip-title">序数词「第几」怎么构成？日期怎么写？</h3><div class="tip-body"><b>1.–19. 加 -te</b>，<b>20. 起加 -ste</b>（zwanzigste）。四个不规则要单独记：erste（第一）、dritte（第三）、siebte（第七）、achte（第八）。写日期就用序数词加一个<b>点</b>：der 1. Januar，读作 der erste Januar。</div></div>
   </div>
 </div>
 
@@ -1303,7 +1320,15 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     </div></div></details>
 
     <div class="gq-box" data-gq="g5"></div>
-    </div></details>  </div>
+    </div></details>
+
+    <div class="sec-title"><span class="sec-title-icon">❓</span><span class="sec-title-text">德语语法 · 常见问题</span></div>
+    <div class="tip-card"><h3 class="tip-title">der / die / das 到底有没有规律？</h3><div class="tip-body">有一半规律：<b>看后缀基本能定</b>——-ung / -heit / -keit / -schaft / -ion / -tät / -ik 是 <b>die</b>；-chen / -lein / -ment / -um 是 <b>das</b>；-er（做…的人）/ -ling / -ismus / -ist 是 <b>der</b>。另一半（Tisch、Buch、Lampe 这类基础词）没有规律，只能<b>连冠词一起背</b>——记 der Tisch，别记 Tisch。</div></div>
+    <div class="tip-card"><h3 class="tip-title">德语四个格分别管什么？</h3><div class="tip-body">格是用来<b>标记「谁对谁做了什么」</b>的：<b>主格</b>＝动作发出者（谁在做）；<b>宾格</b>＝动作直接承受者（做了什么）；<b>与格</b>＝间接对象（给谁、对谁）；<b>属格</b>＝所属关系（谁的）。中文靠语序区分，德语靠冠词变形区分，所以德语的语序反而更自由。</div></div>
+    <div class="tip-card"><h3 class="tip-title">为什么德语动词有时跑到句子最后？</h3><div class="tip-body">主句里动词<b>永远在第二位</b>；但一旦变成<b>从句</b>（weil、dass、wenn、ob、关系从句），动词就<b>踢到句尾</b>：Ich bleibe zu Hause, <b>weil</b> ich krank <b>bin</b>。另外可分动词的前缀在主句里也要甩到句尾（Ich stehe um 7 Uhr <b>auf</b>）。</div></div>
+    <div class="tip-card"><h3 class="tip-title">Perfekt 和 Präteritum 该用哪个？</h3><div class="tip-body">看场合，不看时间远近：<b>口语讲过去的事几乎一律用 Perfekt</b>（Ich habe gegessen）；<b>书面叙述</b>——小说、新闻、报告——用 Präteritum。例外是 sein / haben 和情态动词，它们的 Präteritum（war、hatte、konnte、musste）在口语里也极常用，说 ich war 比 ich bin gewesen 自然得多。</div></div>
+    <div class="tip-card"><h3 class="tip-title">形容词词尾为什么变来变去？</h3><div class="tip-body">记住一条就够：<b>性、数、格的信息，整个名词短语里只需要被标记一次</b>。冠词已经标清楚了（der / die / das），形容词就偷懒，用弱变化 -e / -en；<b>没有冠词</b>时没人标，形容词只好自己扛，词尾长得很像定冠词（guter Wein、kaltes Wasser）；ein 类冠词有几处标不出来（ein Mann、ein Kind），形容词就在那几处补上——这就是所谓混合变化。</div></div>
+  </div>
 </div>
 
 <!-- ══════════════ PHRASES ══════════════ -->

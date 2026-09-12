@@ -76,6 +76,22 @@ for (const f of FILES) {
       desc: meta('meta[name="description"]', 'content'),
       canonical: meta('link[rel="canonical"]', 'href'),
       ld: !!document.querySelector('script[type="application/ld+json"]'),
+      ...(() => {
+        const s = document.querySelector('script[type="application/ld+json"]');
+        if (!s) return {};
+        try {
+          const j = JSON.parse(s.textContent);
+          const g = j['@graph'] || [j];
+          const bc = g.find((x) => x['@type'] === 'BreadcrumbList');
+          const nav = document.querySelector('nav[aria-label="面包屑"]');
+          return {
+            ldTypes: g.map((x) => x['@type']),
+            crumbSD: bc ? bc.itemListElement.map((x) => x.name).join(' › ') : null,
+            crumbVis: nav ? nav.innerText.replace(/\s+/g, ' ').trim() : null,
+          };
+        } catch (e) { return { ldErr: e.message }; }
+      })(),
+      faqQs: [...document.querySelectorAll('h3.tip-title')].filter((x) => x.offsetParent).length,
       words: txt.length,
       locked: document.documentElement.classList.contains('locked'),
       buttons: document.querySelectorAll('button').length,
@@ -96,12 +112,26 @@ for (const f of FILES) {
   else descs.set(r.desc, f);
   if (r.canonical !== `https://www.uuoo.site/${f}`) bad(`${f} 的 canonical 不对：${r.canonical}`);
   if (!r.ld) bad(`${f} 没有 JSON-LD 结构化数据`);
+  // 结构化数据写坏了比没有更糟：Google 会整段丢弃，而本地肉眼看不出来。
+  // 标题/描述里出现一个没转义的引号就够崩，所以真解析一遍。
+  else if (r.ldErr) bad(`${f} 的 JSON-LD 不是合法 JSON：${r.ldErr}`);
+  else {
+    if (!r.ldTypes.includes('LearningResource')) bad(`${f} 的 JSON-LD 缺 LearningResource`);
+    if (!r.ldTypes.includes('BreadcrumbList')) bad(`${f} 的 JSON-LD 缺 BreadcrumbList`);
+    // Google 明确要求结构化数据里的面包屑和页面上看得见的那条一致，对不上会被判为不一致而忽略
+    else if (r.crumbSD && r.crumbVis && r.crumbSD !== r.crumbVis) {
+      bad(`${f} 面包屑对不上：结构化数据「${r.crumbSD}」 vs 页面可见「${r.crumbVis}」`);
+    }
+  }
 
   // ③ 免登录可见 + 有实质内容
   if (r.locked) bad(`${f} 被登录墙挡住了（root 带 locked）—— 这几页的全部意义就是免登录可见`);
   if (r.words < 900) bad(`${f} 正文只有 ${r.words} 字，thin content 反而扣分`);
   if (!r.h2) bad(`${f} 没有可见的 h2 标题`);
   if (r.inLinks < 3) bad(`${f} 只有 ${r.inLinks} 个可见链接，互链太少不利于抓取`);
+  // 德语三页带「常见问题」（按中文母语者真实会搜的问法写、用 h3 承载）。
+  // 这是这几页能被搜到的主要抓手，掉了不会有任何报错，只会悄悄没流量。
+  if (/^de-/.test(f) && r.faqQs < 4) bad(`${f} 的常见问题只剩 ${r.faqQs} 条（应 ≥4），h3.tip-title 是不是被改了`);
 
   // ④ 没有死控件
   if (r.buttons) bad(`${f} 还留着 ${r.buttons} 个按钮 —— 静态页上没有 JS，点了不会有任何反应`);
