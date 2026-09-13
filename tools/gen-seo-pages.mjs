@@ -114,6 +114,18 @@ for (const page of PAGES) {
         if (dead.test(tn.nodeValue)) { dead.lastIndex = 0; tn.nodeValue = tn.nodeValue.replace(dead, ''); }
         dead.lastIndex = 0;
       }
+      // 小节标题在应用里是 <div class="sec-title">（那边站名才是 h1，层级另有安排），
+      // 但拆成独立页后它就是本页的二级标题。不换的话文档层级会从 h1 直接跳到 h3
+      // （常见问题），中间整层是空的，搜索引擎也拿不到「26个基础字母」「自然拼读」
+      // 这些正好是搜索词的小标题。
+      // .sec-title 自己显式设了 display:flex 和 margin，文字外观由 .sec-title-text
+      // 决定，且样式表里没有裸 h2 规则 —— 换成 h2 后外观完全不变。
+      el.querySelectorAll('div.sec-title').forEach((d) => {
+        const h = document.createElement('h2');
+        for (const a of d.attributes) h.setAttribute(a.name, a.value);
+        h.innerHTML = d.innerHTML;
+        d.replaceWith(h);
+      });
       // 折叠块在静态页上一律展开：读者点不动，收着等于把内容藏了
       el.querySelectorAll('details').forEach((d) => d.setAttribute('open', ''));
       el.removeAttribute('style');
@@ -126,7 +138,11 @@ for (const page of PAGES) {
   await tab.close();
   if (!parts.length) continue;
 
-  const body = parts.join('\n');
+  // 每页必须有且只有一个 h1：版块在应用里是 <h2 class="page-title">（因为站名才是 h1），
+  // 但拆成独立页之后，这一页的主标题就是它自己，没有 h1 是明摆着的 SEO 缺陷。
+  // .page-title 的特异性高于裸 h1 规则，所以换标签后**外观完全不变**。
+  // 只换第一个：en-pronunciation 合并了两个版块，后一个理应留作 h2。
+  const body = parts.join('\n').replace(/<h2( class="page-title"[^>]*)>([\s\S]*?)<\/h2>/, '<h1$1>$2</h1>');
   const text = body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   if (text.length < 500) { errs.push(`${page.file}: 抓到的正文只有 ${text.length} 字，疑似没渲染`); continue; }
 
@@ -134,7 +150,7 @@ for (const page of PAGES) {
     .map((p) => `<a href="${p.file}">${esc(p.title.split(/[：|]/)[0])}</a>`).join(' · ');
 
   const out = `<!DOCTYPE html>
-<html lang="zh-CN"${page.lang === 'en' ? '' : ''}>
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

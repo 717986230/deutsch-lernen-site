@@ -177,7 +177,8 @@ async function build() {
   if (!DEV && existsSync('sitemap.xml')) {
     const sm = readFileSync('sitemap.xml', 'utf8');
     const today = new Date().toISOString().slice(0, 10);
-    const next = sm.replace(/<lastmod>[\d-]+<\/lastmod>/, `<lastmod>${today}</lastmod>`);
+    // 注意 /g：sitemap 现在有 6 条 URL，漏了 g 只会改第一条，另外 5 个教学页的日期会一直烂着（真发生过）
+    const next = sm.replace(/<lastmod>[\d-]+<\/lastmod>/g, `<lastmod>${today}</lastmod>`);
     if (next !== sm) { writeFileSync('sitemap.xml', next); console.log(`  sitemap.xml lastmod → ${today}`); }
   }
 
