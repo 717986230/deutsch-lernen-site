@@ -30,6 +30,10 @@ const SITE = 'https://www.uuoo.site';
 
 // 每页：输出文件 / 语言 / 要抓的版块 / title / description
 // 合并薄内容：英语发音和英语数字各自只有几百字，单独成页属于 thin content，反而扣分。
+// 图卡词表：词表页的数据源，也用来现算标题里的板数/词数
+const BOARDS = JSON.parse(readFileSync(join(ROOT, 'data/boards.json'), 'utf8'));
+const BOARD_WORDS = BOARDS.reduce((n, b) => n + b.items.length, 0);
+
 const PAGES = [
   { file: 'de-pronunciation.html', crumb: '德语发音规律', lang: 'de', secs: ['pronunciation'],
     title: '德语发音规律完全指南：字母表 + 自然拼读 + 中文谐音 | 德语学习手册',
@@ -50,9 +54,10 @@ const PAGES = [
   // 所以不存在「另抄一份渲染逻辑然后漂移」的风险。
   // 另注：图卡词表**本来就是明文**——它不在 build.mjs 的加密清单里，data/boards.json
   // 本身就是仓库里的公开文件。所以这一页零新增暴露，AGENTS.md 1.3 的词库红线没被碰到。
+  // 板数/词数从 boards.json 现算，不写死——「3900+ 词句」那种过期文案已经栽过一次
   { file: 'de-woerter.html', crumb: '主题词表', lang: 'de', boards: true,
-    title: '德语常用词分类词表：星期、时间、人体、水果、动物 9 大主题 190 词 | 德语学习手册',
-    desc: '按主题整理的德语常用词对照表：星期一到星期日、几点几点与上午下午、人体部位、水果蔬菜、动物、交通、衣物、厨房餐具、天气。每个词都带冠词 der/die/das、中文释义和中文谐音。' },
+    title: `德语常用词分类词表：星期、时间、情绪、人体、动物 ${BOARDS.length} 大主题 ${BOARD_WORDS} 词 | 德语学习手册`,
+    desc: `按主题整理的德语常用词对照表，共 ${BOARDS.length} 类 ${BOARD_WORDS} 词：${BOARDS.map((b) => b.name).join('、')}。每个词都带冠词 der/die/das、中文释义和中文谐音。` },
   { file: 'en-pronunciation.html', crumb: '英语字母与数字', lang: 'en', secs: ['en-pron', 'en-num'],
     title: '英语字母与数字读法 + 中文谐音 | 英语学习手册',
     desc: '英语 26 个字母的读法、5 个元音的长短音规律、常见字母组合，以及 1 到大数的英语读法与序数词，每条配中文谐音。' },
@@ -96,7 +101,7 @@ for (const page of PAGES) {
 
   const parts = [];
   if (page.boards) {
-    const bs = JSON.parse(readFileSync(join(ROOT, 'data/boards.json'), 'utf8'));
+    const bs = BOARDS;
     let n = 0;
     for (const b of bs) {
       const rows = b.items.map(([de, zh, py, em]) =>
