@@ -23,7 +23,7 @@ let fail = 0;
 const bad = (m) => { console.error('ERROR ' + m); fail++; };
 
 const FILES = ['de-pronunciation.html', 'de-grammar.html', 'de-numbers.html',
-  'en-grammar.html', 'en-pronunciation.html'];
+  'de-woerter.html', 'en-grammar.html', 'en-pronunciation.html'];
 
 // ── ① 生成物是否过期 ──
 const srcHash = createHash('sha1').update(readFileSync(join(ROOT, 'src.html'))).digest('hex').slice(0, 12);
@@ -135,7 +135,7 @@ for (const f of FILES) {
   if (r.inLinks < 3) bad(`${f} 只有 ${r.inLinks} 个可见链接，互链太少不利于抓取`);
   // 德语三页带「常见问题」（按中文母语者真实会搜的问法写、用 h3 承载）。
   // 这是这几页能被搜到的主要抓手，掉了不会有任何报错，只会悄悄没流量。
-  if (/^de-/.test(f) && r.faqQs < 4) bad(`${f} 的常见问题只剩 ${r.faqQs} 条（应 ≥4），h3.tip-title 是不是被改了`);
+  if (/^de-(pronunciation|grammar|numbers)/.test(f) && r.faqQs < 4) bad(`${f} 的常见问题只剩 ${r.faqQs} 条（应 ≥4），h3.tip-title 是不是被改了`);
 
   // ④ 没有死控件
   if (r.buttons) bad(`${f} 还留着 ${r.buttons} 个按钮 —— 静态页上没有 JS，点了不会有任何反应`);

@@ -36,6 +36,10 @@ const txt = section('pronunciation') + section('numbers')
 // 判成「同一个词 ter 有三种谐音」——纯属误报。去掉连字符再做键，既消除误报，
 // 又让切音节的写法真的参与比对（Va-ter 会和规则5 里的 Vater 对上，写歪了照样抓）。
 const pairs = [...txt.matchAll(/([A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß-]*[A-Za-zÄÖÜäöüß])\s*(?:（[^）]*）)?\s*[=＝]\s*([一-鿿·]+)/g)];
+// 字母表/数字表是 JS 对象数组（{n:7,de:'sieben',py:'西本'}），里面没有「=」，
+// 上面那条只认「词 = 谐音」的正则整段扫不到它们 —— 于是发音页正文写 sieben=齐本、
+// 数字表写 西本，两处打架也一路绿灯（本次就是这么漏出去的）。把对象写法也收进来。
+for (const m of txt.matchAll(/de:'([^']+)',\s*py:'([一-鿿·]+)'/g)) pairs.push(m);
 const seen = new Map();
 for (const [, w, py] of pairs) {
   const key = w.replace(/-/g, '');

@@ -804,7 +804,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <table class="pron-table">
       <tr><th>书面信号</th><th>它在告诉你</th><th>例词</th></tr>
       <tr><td class="pron-letter">辅音双写</td><td>前面那个元音<b>一定短</b>（双写就是专门来报信的）</td><td class="pron-example">Mut-ter = 穆特尔，kom-men = 科门，Was-ser = 瓦瑟</td></tr>
-      <tr><td class="pron-letter">ie</td><td>长音 i —— 不是"伊埃"两个音</td><td class="pron-example">Lie-be = 利贝，sie-ben = 齐本</td></tr>
+      <tr><td class="pron-letter">ie</td><td>长音 i —— 不是"伊埃"两个音</td><td class="pron-example">Lie-be = 利贝，sie-ben = 西本</td></tr>
       <tr><td class="pron-letter">不发音的 h</td><td>它<b>自己不发音</b>，只负责把前面的元音拉长（Dehnungs-h）</td><td class="pron-example">ge-hen = 盖恩，Uhr = 乌尔，Zahn = 查恩</td></tr>
       <tr><td class="pron-letter">元音双写</td><td>aa / ee / oo 一律长音</td><td class="pron-example">Haar = 哈尔，See = 泽，Boot = 波特</td></tr>
     </table>
@@ -1885,6 +1885,11 @@ body{padding-bottom:var(--tab-h)}
         <div style="font-size:24px;margin-bottom:6px">🔢</div>
         <div style="color:var(--text);font-weight:700;font-size:14px">德语数字读法</div>
         <div style="font-size:12px;color:var(--text-dim);margin-top:3px">倒序读法 · 序数词 · 谐音</div>
+      </a>
+      <a class="card" href="de-woerter.html" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🗂️</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">德语主题词表</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">星期 · 时间 · 人体 · 动物</div>
       </a>
       <a class="card" href="en-grammar.html" style="display:block;text-decoration:none;padding:16px;text-align:center">
         <div style="font-size:24px;margin-bottom:6px">📘</div>
@@ -4568,7 +4573,18 @@ var PIC_BOARDS=[
  {id:"wetter",icon:"☀️",name:"天气",items:[
   ["die Sonne","太阳","迪 佐呢","☀️"],["die Wolke","云","迪 沃尔克","☁️"],["der Regen","雨","德尔 雷根","🌧️"],["der Schnee","雪","德尔 施内","❄️"],
   ["der Blitz","闪电","德尔 布利茨","⚡"],["der Wind","风","德尔 温特","🌬️"],["der Regenbogen","彩虹","德尔 雷根博根","🌈"],["der Nebel","雾","德尔 内贝尔","🌫️"],
-  ["das Gewitter","雷雨","达斯 格维特","⛈️"],["der Mond","月亮","德尔 蒙特","🌙"],["der Stern","星星","德尔 施特恩","⭐"],["der Schirm","雨伞","德尔 施尔姆","☂️"]]}
+  ["das Gewitter","雷雨","达斯 格维特","⛈️"],["der Mond","月亮","德尔 蒙特","🌙"],["der Stern","星星","德尔 施特恩","⭐"],["der Schirm","雨伞","德尔 施尔姆","☂️"]]},
+ {id:"woche",icon:"📅",name:"星期",items:[
+  ["der Montag","星期一","德尔 蒙塔克","1️⃣"],["der Dienstag","星期二","德尔 迪恩斯塔克","2️⃣"],["der Mittwoch","星期三","德尔 米特沃赫","3️⃣"],["der Donnerstag","星期四","德尔 多纳斯塔克","4️⃣"],
+  ["der Freitag","星期五","德尔 弗莱塔克","5️⃣"],["der Samstag","星期六","德尔 扎姆斯塔克","6️⃣"],["der Sonntag","星期日","德尔 松塔克","7️⃣"],["die Woche","一周","迪 沃赫","📅"],
+  ["das Wochenende","周末","达斯 沃亨恩德","🎉"],["heute","今天","霍伊特","📍"],["morgen","明天","摩根","➡️"],["gestern","昨天","盖斯特恩","⬅️"]]},
+ {id:"zeit",icon:"🕐",name:"时间",items:[
+  ["ein Uhr","1点","艾因 乌尔","🕐"],["zwei Uhr","2点","茨威 乌尔","🕑"],["drei Uhr","3点","德莱 乌尔","🕒"],["vier Uhr","4点","菲尔 乌尔","🕓"],
+  ["fünf Uhr","5点","芬夫 乌尔","🕔"],["sechs Uhr","6点","泽克斯 乌尔","🕕"],["sieben Uhr","7点","西本 乌尔","🕖"],["acht Uhr","8点","阿赫特 乌尔","🕗"],
+  ["neun Uhr","9点","诺伊因 乌尔","🕘"],["zehn Uhr","10点","岑 乌尔","🕙"],["elf Uhr","11点","埃尔夫 乌尔","🕚"],["zwölf Uhr","12点","茨沃尔夫 乌尔","🕛"],
+  ["halb drei","两点半","哈尔普 德莱","🕝"],["Viertel nach drei","三点一刻","菲尔特尔 纳赫 德莱","⏩"],["Viertel vor drei","差一刻三点","菲尔特尔 佛尔 德莱","⏪"],["der Morgen","早上","德尔 摩根","🌅"],
+  ["der Vormittag","上午","德尔 佛尔米塔克","🌤️"],["der Mittag","中午","德尔 米塔克","☀️"],["der Nachmittag","下午","德尔 纳赫米塔克","🌇"],["der Abend","晚上","德尔 阿本特","🌆"],
+  ["die Nacht","夜里","迪 纳赫特","🌃"],["die Stunde","小时","迪 施通德","⏳"],["die Minute","分钟","迪 米努特","⏱️"]]}
 ];
 var _curBoard="koerper";
 function renderBoardTabs(){

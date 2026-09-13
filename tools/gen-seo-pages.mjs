@@ -43,6 +43,16 @@ const PAGES = [
   { file: 'en-grammar.html', crumb: '英语语法速查', lang: 'en', secs: ['en-grammar'],
     title: '英语语法速查：时态总表、五种句型、从句 | 英语学习手册',
     desc: '英语 16 大时态总表、五种基本句型、三大从句、情态动词、被动语态、非谓语动词，配例句逐条拆解。面向中文母语者的英语语法速查表。' },
+  // 这一页不抓版块，而是直接读 data/boards.json 生成对照表（见下面的 boards 分支）：
+  // 图卡网格本身不显示谐音（要点开卡片才出现），而「德语星期一到星期日 对照表」这类
+  // 搜索意图要的就是德语+中文+谐音三列齐全。
+  // 数据源就是应用读的同一份 boards.json（verify-boards-sync 保证它与 src.html 一字不差），
+  // 所以不存在「另抄一份渲染逻辑然后漂移」的风险。
+  // 另注：图卡词表**本来就是明文**——它不在 build.mjs 的加密清单里，data/boards.json
+  // 本身就是仓库里的公开文件。所以这一页零新增暴露，AGENTS.md 1.3 的词库红线没被碰到。
+  { file: 'de-woerter.html', crumb: '主题词表', lang: 'de', boards: true,
+    title: '德语常用词分类词表：星期、时间、人体、水果、动物 9 大主题 190 词 | 德语学习手册',
+    desc: '按主题整理的德语常用词对照表：星期一到星期日、几点几点与上午下午、人体部位、水果蔬菜、动物、交通、衣物、厨房餐具、天气。每个词都带冠词 der/die/das、中文释义和中文谐音。' },
   { file: 'en-pronunciation.html', crumb: '英语字母与数字', lang: 'en', secs: ['en-pron', 'en-num'],
     title: '英语字母与数字读法 + 中文谐音 | 英语学习手册',
     desc: '英语 26 个字母的读法、5 个元音的长短音规律、常见字母组合，以及 1 到大数的英语读法与序数词，每条配中文谐音。' },
@@ -85,7 +95,24 @@ for (const page of PAGES) {
   await tab.waitForFunction(() => window._DEC || window._ENC, null, { timeout: 25000 }).catch(() => {});
 
   const parts = [];
-  for (const sec of page.secs) {
+  if (page.boards) {
+    const bs = JSON.parse(readFileSync(join(ROOT, 'data/boards.json'), 'utf8'));
+    let n = 0;
+    for (const b of bs) {
+      const rows = b.items.map(([de, zh, py, em]) =>
+        `<tr><td class="pron-letter" lang="de">${esc(de)}</td><td>${esc(zh)}</td><td class="pron-zh">${esc(py)}</td><td style="font-size:20px;text-align:center">${esc(em)}</td></tr>`).join('\n      ');
+      n += b.items.length;
+      parts.push(`<h2 class="sec-title"><span class="sec-title-icon">${esc(b.icon)}</span><span class="sec-title-text">${esc(b.name)}（${b.items.length} 词）</span></h2>
+    <table class="pron-table">
+      <tr><th>德语</th><th>中文</th><th>谐音</th><th>图</th></tr>
+      ${rows}
+    </table>`);
+    }
+    parts.unshift(`<div class="container"><h1 class="page-title">德语常用词 · 主题词表</h1>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.9;margin-bottom:18px">${bs.length} 个主题共 ${n} 个德语常用词，每个词都带<b>冠词 der/die/das</b>（名词必须连冠词一起记）、中文释义和<b>中文谐音</b>。谐音只是起步的拐杖，读顺之后请按<a href="de-pronunciation.html" style="color:var(--gold-text)">发音规律</a>纠正口型。</p>`);
+    parts.push('</div>');
+  }
+  for (const sec of page.secs || []) {
     const html = await tab.evaluate(async (sec) => {
       showSection(sec);
       await new Promise((r) => setTimeout(r, 700));      // 等 JS 把字母表/数字表填进去
