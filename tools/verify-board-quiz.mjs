@@ -159,11 +159,55 @@ for (const lang of ['de', 'en']) {
 await page.evaluate(() => setLang('de'));
 const vq = vqs.de;
 
+// ── 图卡词必须点得响 ──
+// 图解的核心就是「点图听发音」。可这条链路断了不会抛错、也不会有任何报错——
+// 只是点下去一片安静，而站长自己未必每个板都点一遍（现在有 11 个板 228 个词）。
+// 逐词点一遍，断言每次**恰好**触发一次朗读、文本正好是该卡的德语词、语种是德语。
+// 文本对不对很关键：以前测验那边就出过「把整句塞进朗读」的事，这里直接钉死。
+await page.evaluate(() => showSection('body'));
+await page.waitForTimeout(300);
+// 上面的 boards 只取了 {id,name}，这里需要逐条词表。直接读 data/boards.json：
+// verify-boards-sync 已保证它与 src.html 的 PIC_BOARDS 一字不差。
+const BOARD_DATA = JSON.parse(readFileSync(join(ROOT, 'data/boards.json'), 'utf8'));
+let spoken = 0;
+for (const b of BOARD_DATA) {
+  const r = await page.evaluate(async (id) => {
+    // 探针包在站点自己的 speakDE 上，而不是 speechSynthesis.speak：
+    // 本文件在页面初始化时就把 speechSynthesis.speak 换成了空函数（为了让测试安静，
+    // 见文件开头），在那之上再套探针只会抓到那个空壳，一次都记不到。
+    const real = window.speakDE;
+    const log = [];
+    window.speakDE = function (t) { log.push({ t: t, lang: (typeof tgtLang === 'function' ? tgtLang() : '') }); };
+    switchBoard(id);
+    await new Promise((r) => setTimeout(r, 300));
+    const root = document.getElementById(id === 'koerper' ? 'bodyChips' : 'boardGrid');
+    const cells = [...root.querySelectorAll('.pic-cell')];
+    const out = [];
+    for (const c of cells) {
+      log.length = 0;
+      c.click();
+      await new Promise((r) => setTimeout(r, 8));
+      out.push({ label: (c.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 24), said: log.slice() });
+    }
+    window.speakDE = real;
+    return { n: cells.length, out };
+  }, b.id);
+  if (r.n !== b.items.length) bad(`图卡「${b.name}」渲染出 ${r.n} 张卡，数据里是 ${b.items.length} 条`);
+  const words = new Set(b.items.map((i) => i[0]));
+  for (const o of r.out) {
+    if (o.said.length !== 1) { bad(`图卡「${b.name}」点「${o.label}」触发了 ${o.said.length} 次朗读（应为 1 次）`); continue; }
+    if (!words.has(o.said[0].t)) bad(`图卡「${b.name}」点「${o.label}」朗读的是「${o.said[0].t}」，不是本卡的德语词`);
+    else if (!/^de/i.test(o.said[0].lang)) bad(`图卡「${b.name}」点「${o.label}」用 ${o.said[0].lang} 朗读德语词`);
+    else spoken++;
+  }
+}
+
 for (const e of errs) bad(`页面抛错：${e}`);
 
 await browser.close();
 srv.close();
 console.log(`测验出题体检：图卡 ${boards.length} 个板 × ${ROUNDS} 题（实出 ${asked} 道）`
-  + ` · 词汇测验强制撞车 德语 ${vqs.de.tried}/${vqs.de.pairs} 组、英语 ${vqs.en.tried}/${vqs.en.pairs} 组`);
+  + ` · 词汇测验强制撞车 德语 ${vqs.de.tried}/${vqs.de.pairs} 组、英语 ${vqs.en.tried}/${vqs.en.pairs} 组`
+  + ` · 图卡逐词点读 ${spoken} 词`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 图卡题四选项唯一可辨、判分正确；词汇题没有「两个选项都对」');
