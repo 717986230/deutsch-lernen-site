@@ -94,7 +94,19 @@ async function build() {
       writeFileSync(deFile, deEnc);
       const loader = 'var categories=[];var _deP=null;'
         + 'function _loadDE(){if(window._DEC)return Promise.resolve(window._DEC);'
-        + `if(!_deP)_deP=fetch(${JSON.stringify(deFile)}).then(function(r){if(!r.ok)throw 0;return r.text();})`
+        // 拿到响应就顺手写进 SW 的持久缓存（DATA）。
+        // 不能指望 SW 的 fetch 处理器来存：首访时这次请求往往发生在 SW 取得控制**之前**，
+        // 于是 de-data 一直是空的，词典只躺在浏览器 HTTP 缓存里 —— 用户装完 App
+        // 第一次离线打开就是空的（实测：首访后清掉 HTTP 缓存再断网，词库全没）。
+        // 也不能改成 SW install 时预取：那会让**未登录用户**也白下 407KB，
+        // 违背「登录页用不到词库、首屏体积减半」这个当初刻意做的优化。
+        // 谁下的谁负责存，最省也最准。
+        // 注意 clone() 必须**同步**调用：写在 caches.open().then 里就晚了（那时 r.text()
+        // 已经开始读 body，clone 抛 "body already used"，错误还被 catch 吞掉，
+        // 表现为「代码明明在，缓存还是空的」——踩过一次）。
+        + `if(!_deP)_deP=fetch(${JSON.stringify(deFile)}).then(function(r){if(!r.ok)throw 0;`
+        + `try{if(self.caches){var _cp=r.clone();caches.open("de-data").then(function(c){c.put(${JSON.stringify(deFile)},_cp);})["catch"](function(){});}}catch(e){}`
+        + `return r.text();})`
         + '.then(function(t){window._DEC=JSON.parse(_dec(t));'
         + 'try{if(typeof _onDELoaded==="function")_onDELoaded();}catch(e){}return window._DEC;})'
         + '["catch"](function(e){_deP=null;throw e;});return _deP;}';
@@ -111,7 +123,10 @@ async function build() {
       writeFileSync(enFile, enEnc);
       const loader = 'var _enP=null;'
         + 'function _loadEN(){if(window._ENC)return Promise.resolve(window._ENC);'
-        + `if(!_enP)_enP=fetch(${JSON.stringify(enFile)}).then(function(r){if(!r.ok)throw 0;return r.text();})`
+        // 同上：英语切片也自己落盘，否则切到英语后断网就没词库了
+        + `if(!_enP)_enP=fetch(${JSON.stringify(enFile)}).then(function(r){if(!r.ok)throw 0;`
+        + `try{if(self.caches){var _cp=r.clone();caches.open("de-data").then(function(c){c.put(${JSON.stringify(enFile)},_cp);})["catch"](function(){});}}catch(e){}`
+        + `return r.text();})`
         + '.then(function(t){window._ENC=JSON.parse(_dec(t));'
         + 'try{if(typeof setLang==="function"&&LANG==="en")setLang("en");}catch(e){}return window._ENC;})'
         + '["catch"](function(e){_enP=null;throw e;});return _enP;}'

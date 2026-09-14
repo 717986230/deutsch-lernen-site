@@ -95,6 +95,11 @@ for (const page of PAGES) {
   tab.on('pageerror', (e) => errs.push(`${page.file}: ${String(e).split('\n')[0]}`));
   await tab.addInitScript(([l]) => {
     try { localStorage.setItem('acct_token', 't1'); localStorage.setItem('siteLang', l); } catch (e) {}
+    // 把 Math.random 钉死成定值序列：页面里的「即学即练」是从 9~12 题里**随机抽 3 题**渲染的，
+    // 不钉的话每跑一次 gen:seo 都会抽到不同的题，产出页面凭空出现一堆 diff —— git 噪音，
+    // review 时根本分不清哪些是真改动。预渲染要的是可复现，不是随机。
+    var _s = 20260914;
+    Math.random = function () { _s = (_s * 1103515245 + 12345) % 2147483648; return _s / 2147483648; };
   }, [page.lang]);
   await tab.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
   await tab.waitForFunction(() => window._DEC || window._ENC, null, { timeout: 25000 }).catch(() => {});
