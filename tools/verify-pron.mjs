@@ -86,6 +86,51 @@ for (const [de, tens, ones] of [['vier', '十四', '四十'], ['fünf', '十五'
 if (nums.vier && nums.vier !== '菲尔') bad(`vier 独立词谐音「${nums.vier}」与规律表「菲尔」不一致`);
 if (nums['fünf'] && nums['fünf'] !== '芬夫') bad(`fünf 独立词谐音「${nums['fünf']}」与规律表「芬夫」不一致`);
 
-console.log(`发音/数字谐音体检：比对 ${seen.size} 个词、${RULES.length} 条规则`);
+// ── ④ 发音页 ↔ 词库交叉比对 ──
+// 这两侧一直各管各的：发音页归本文件，词库归 verify-py-consistency，**谁也不看谁**。
+// 于是同一个德语词在站里可以有两种谐音而全站绿灯——sieben 在发音页写「齐本」、
+// 数字表写「西本」就是这么漏出去的（已修）。实测这道口子下藏着 13 处分歧。
+// 发音页那侧已按本站自己写明的规则和同族词改齐；下面 PENDING 是剩下的词库侧分歧，
+// 每条都注明该往哪边改和理由，等站长/Codex 定夺（data/*.json 按 AGENTS.md 归 Codex）。
+const corpus = new Map();
+const addC = (de, py) => {
+  if (!de || !py) return;
+  const k = de.replace(/^(der|die|das)\s+/, '').replace(/[.,!?;:]+$/, '');
+  // 谐音也要去掉句末全角标点：词库里出自句子的条目会带「。」「！」，
+  // 只去德语侧的 ASCII 标点会把「当克。」和「当克」判成两种写法（误报）。
+  const v = py.replace(/^(德尔|迪|达斯)\s+/, '').replace(/[，。！？、；：]+$/, '');
+  if (!corpus.has(k)) corpus.set(k, new Set());
+  corpus.get(k).add(v);
+};
+for (const c2 of JSON.parse(readFileSync('data/categories.json', 'utf8'))) for (const ph of c2.phrases) addC(ph.de, ph.py);
+for (const b of JSON.parse(readFileSync('data/boards.json', 'utf8'))) for (const it of b.items) addC(it[0], it[2]);
+
+// 待裁决：词库侧与发音页冲突，但改动超出「照本站已有规则执行」的范围，需要人来定。
+// 值＝词库当前写法。定了之后把对应行删掉，检查会立刻重新盯住它。
+const PENDING = {
+  // 本站 verify-pron 的规则明写「z 读 [ts]，不能用卷舌的楚/扎」，页面写 粗 / 萨茨。
+  // 但词库对 z- 的写法本身就是混的（zwei 茨威 ✓、Zucker 楚克尔 ✗、Zahn 查恩 ✗），
+  // 且 zu 有 24 处 —— 这是整套 z- 谐音政策，不是一个词，别一个个偷偷改。
+  zu: '楚', Satz: '扎茨',
+  // 规则明写「au 是双元音，Pause 不能拆成葩乌两个音节」，页面写 泡泽。
+  Pause: '葩乌斯',
+  // 规则明写「Straße 词尾 -e 读 [ə]「瑟」」，页面写 施特拉瑟。
+  'Straße': '施特拉斯',
+  // 词库自己的 wichtig=维希提希 / günstig=京斯提希 都用「提」，唯独 richtig 用「蒂」。
+  richtig: '里希蒂希',
+};
+let crossed = 0, pend = 0;
+for (const [w, m] of seen) {
+  if (!corpus.has(w)) continue;
+  crossed++;
+  const cs = corpus.get(w);
+  const ps = [...m.keys()];
+  if (ps.some((x) => cs.has(x))) continue;              // 有一种写法对得上就算一致
+  if (PENDING[w] && cs.has(PENDING[w])) { pend++; continue; }
+  bad(`「${w}」发音页写「${ps.join('/')}」，词库却写「${[...cs].join('/')}」—— 同一个词两种教法`);
+}
+
+console.log(`发音/数字谐音体检：比对 ${seen.size} 个词、${RULES.length} 条规则，`
+  + `与词库交叉比对 ${crossed} 个词` + (pend ? `（${pend} 处词库侧分歧待裁决）` : ''));
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 发音与数字谐音全部通过');

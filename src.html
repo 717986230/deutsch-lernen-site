@@ -746,7 +746,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
         <b>V</b> → 发"f"音 ✦ Vater＝法特尔，不是"瓦特尔"<br>
         <b>W</b> → 发"v"音 ✦ Wasser＝瓦瑟，不是英语的"w"<br>
         <b>Z</b> → 发"ts"音 ✦ zu＝粗，Zeit＝采特，不是"兹"<br>
-        <b>S</b> → 母音间发"z兹" ✦ See＝泽，sonst＝松斯特<br>
+        <b>S</b> → 母音间发"z兹" ✦ See＝泽，sonst＝宗斯特<br>
         <b>Q</b> → qu发"kv" ✦ Qualität＝克瓦利泰特，不是"kw"
       </div>
     </div>
@@ -764,9 +764,9 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <div class="sec-title"><span class="sec-title-icon">🔗</span><span class="sec-title-text">常见字母组合发音</span></div>
     <table class="pron-table">
       <tr><th>组合</th><th>发音规则</th><th>谐音</th><th>例词</th></tr>
-      <tr><td class="pron-letter">ei</td><td>发"ai"音</td><td class="pron-zh">艾</td><td class="pron-example">Wein（酒）= 魏因</td></tr>
+      <tr><td class="pron-letter">ei</td><td>发"ai"音</td><td class="pron-zh">艾</td><td class="pron-example">Wein（酒）= 瓦因</td></tr>
       <tr><td class="pron-letter">ie</td><td>发长"i"音</td><td class="pron-zh">伊</td><td class="pron-example">viel（多）= 菲尔</td></tr>
-      <tr><td class="pron-letter">eu/äu</td><td>发"oi"音</td><td class="pron-zh">欧伊</td><td class="pron-example">Freund（朋友）= 弗洛因特</td></tr>
+      <tr><td class="pron-letter">eu/äu</td><td>发"oi"音</td><td class="pron-zh">欧伊</td><td class="pron-example">Freund（朋友）= 弗罗因特</td></tr>
       <tr><td class="pron-letter">au</td><td>发"ao"音</td><td class="pron-zh">奥</td><td class="pron-example">blau（蓝）= 布劳</td></tr>
       <tr><td class="pron-letter">ch</td><td>舌后摩擦音</td><td class="pron-zh">希/赫</td><td class="pron-example">ich（我）= 伊希；Bach = 巴赫</td></tr>
       <tr><td class="pron-letter">sch</td><td>类似"sh"</td><td class="pron-zh">施</td><td class="pron-example">schön（美）= 舍恩</td></tr>
@@ -2268,10 +2268,10 @@ const LETTERS = [
   {l:'I i',name:'伊（ih）',sound:'短"i伊"或长"i依"<br>ich=伊希<br>ie→长"依"',say:'I'},
   {l:'J j',name:'约特（yot）',sound:'⚠️ 发"y雅"音！<br>不是英语"j"<br>ja=雅，Jahr=雅尔',say:'Jott'},
   {l:'K k',name:'卡（kah）',sound:'"k卡"<br>Kaffee=卡菲<br>kalt=卡尔特',say:'Ka'},
-  {l:'L l',name:'艾尔（el）',sound:'"l勒"（清晰）<br>lieben=里本<br>laut=劳特',say:'Ell'},
+  {l:'L l',name:'艾尔（el）',sound:'"l勒"（清晰）<br>lieben=利本<br>laut=劳特',say:'Ell'},
   {l:'M m',name:'艾姆（em）',sound:'"m妈"<br>Morgen=摩根<br>Milch=米尔希',say:'Emm'},
   {l:'N n',name:'艾恩（en）',sound:'"n嫩"<br>nein=奈因<br>Nacht=纳赫特',say:'Enn'},
-  {l:'O o',name:'哦（oh）',sound:'长/短"哦"<br>oder=哦德尔<br>oben=哦本',say:'O'},
+  {l:'O o',name:'哦（oh）',sound:'长/短"哦"<br>oder=奥德尔<br>oben=奥本',say:'O'},
   {l:'P p',name:'配（peh）',sound:'"p配"<br>Pause=泡泽<br>Post=波斯特',say:'Peh'},
   {l:'Q q',name:'库（kuh）',sound:'⚠️ qu→"kv 克瓦"<br>不是"kw"<br>Qualität=克瓦利泰特',say:'Kuh'},
   {l:'R r',name:'艾尔（er）',sound:'⚠️ 喉部颤音<br>词尾→弱化"厄"<br>rot=罗特',say:'Err'},
@@ -4384,8 +4384,8 @@ p1:[
  {q:'Wasser（水）的 W 读哪个音？',o:['英语 w「窝」','v「瓦」','f「夫」'],a:1,w:'德语 W 一律发 v 音：Wasser＝瓦瑟。而字母 V 大多发 f 音（Vater＝法特尔）。'},
  {q:'ja（是的）怎么读？',o:['贾','雅','夏'],a:1,w:'J 发 y 音：ja＝雅。德语里没有汉语「鸡」那个 j 音。'},
  {q:'zu（去 / 太）的 z 读什么？',o:['兹 z','粗 ts','苏 s'],a:1,w:'Z 永远读 ts（对应汉语 c / z 的声母，不是卷舌）：zu＝粗，Zeit＝采特。'},
- {q:'sch 组合读什么？',o:['s、c、h 分开读','「施」','「斯克」'],a:1,w:'sch 固定读「施」：Schule＝施乌勒，schön＝舍恩。'},
- {q:'ei 组合读什么？',o:['艾','诶','伊'],a:0,w:'ei 读「艾」：Wein＝魏因，nein＝奈因。别和 ie（长音「伊」）搞混。'},
+ {q:'sch 组合读什么？',o:['s、c、h 分开读','「施」','「斯克」'],a:1,w:'sch 固定读「施」：Schule＝舒勒，schön＝舍恩。'},
+ {q:'ei 组合读什么？',o:['艾','诶','伊'],a:0,w:'ei 读「艾」：Wein＝瓦因，nein＝奈因。别和 ie（长音「伊」）搞混。'},
  {q:'ie 组合读什么？',o:['艾','长音「伊」','耶'],a:1,w:'ie 读长「伊」：viel＝菲尔，Liebe＝利贝。和 ei 正好相反。'},
  {q:'Hund（狗）词尾的 d 读什么？',o:['d','t','不发音'],a:1,w:'词尾 b/d/g 清化成 p/t/k：Hund 读「洪特」，Weg 读「韦克」。'},
  {q:'richtig 词尾的 -ig 读什么？',o:['伊格','伊希','伊克'],a:1,w:'-ig 结尾读「伊希」：richtig＝里希提希，lustig＝卢斯提希。'},
