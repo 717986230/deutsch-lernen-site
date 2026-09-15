@@ -202,12 +202,101 @@ for (const b of BOARD_DATA) {
   }
 }
 
+// ── 图卡「🔊 全部朗读」──
+// 逐词点读上面已经保了，但「一口气读完整个主题」是另一条链路：它自己排队、自己
+// 往下走，出错的方式也不一样 —— 读串板（切主题后还在读上一个板的词）、读到一半
+// 卡住、按钮停在「⏹ 停止」再也点不动、高亮留在屏幕上不消失。这些都不抛错。
+// 这里对每个板断言：按顺序读完本板全部词、每一句都恰好高亮对应那张卡、
+// 读完按钮复位且高亮清空。
+await page.evaluate(() => showSection('body'));
+await page.waitForTimeout(200);
+let readWords = 0;
+for (const b of BOARD_DATA) {
+  const r = await page.evaluate(async (id) => {
+    const wait = (ms) => new Promise((r2) => setTimeout(r2, ms));
+    switchBoard(id);
+    await wait(250);
+    const btn = document.getElementById('boardAllBtn');
+    const info = document.getElementById('boardAllInfo');
+    if (!btn) return { err: '没有「全部朗读」按钮' };
+    // 本文件开头把 speechSynthesis.speak 换成了空函数，onend 永远不来 ——
+    // 连读队列会卡在第一句。这里临时换成「记一笔 + 立刻 onend」，测完还原。
+    const realSpeak = window.speechSynthesis.speak;
+    const root = () => document.getElementById(id === 'koerper' ? 'bodyChips' : 'boardGrid');
+    const log = [];
+    window.speechSynthesis.speak = function (u) {
+      const hl = [...root().querySelectorAll('.pic-cell.reading')].map((c) => +c.getAttribute('data-i'));
+      log.push({ t: u.text, lang: u.lang, hl: hl });
+      setTimeout(() => { try { u.onend && u.onend(); } catch (e) {} }, 0);
+    };
+    const out = { info: (info && info.textContent) || '', said: [], playing: '', done: '', left: 0 };
+    btn.click();
+    out.playing = btn.textContent;                 // 这时应已变成「⏹ 停止」
+    for (let k = 0; k < 400 && btn.textContent !== '🔊 全部朗读'; k++) await wait(20);
+    out.done = btn.textContent;
+    out.left = root().querySelectorAll('.pic-cell.reading').length;
+    out.said = log;
+    window.speechSynthesis.speak = realSpeak;
+    return out;
+  }, b.id);
+  if (r.err) { bad(`图卡「${b.name}」：${r.err}`); continue; }
+  const want = b.items.map((i) => i[0]);
+  if (r.info.indexOf(String(want.length)) < 0) bad(`图卡「${b.name}」朗读栏写着「${r.info}」，本板是 ${want.length} 个词`);
+  if (r.playing !== '⏹ 停止') bad(`图卡「${b.name}」点了「全部朗读」按钮却仍显示「${r.playing}」`);
+  if (r.done !== '🔊 全部朗读') bad(`图卡「${b.name}」读完后按钮停在「${r.done}」—— 再也停不下来/点不动`);
+  if (r.left) bad(`图卡「${b.name}」读完后还剩 ${r.left} 张卡亮着高亮`);
+  const got = r.said.map((x) => x.t);
+  if (got.join('\u0001') !== want.join('\u0001')) {
+    const i = want.findIndex((w, k) => got[k] !== w);
+    bad(`图卡「${b.name}」连读的词对不上：共读了 ${got.length}/${want.length} 条`
+      + (i >= 0 ? `，第 ${i + 1} 条读的是「${got[i]}」，应为「${want[i]}」` : ''));
+  }
+  r.said.forEach((x, k) => {
+    if (!/^de/i.test(x.lang)) bad(`图卡「${b.name}」连读第 ${k + 1} 条用 ${x.lang} 读德语词`);
+    if (x.hl.length !== 1 || x.hl[0] !== k) {
+      bad(`图卡「${b.name}」读到第 ${k + 1} 条「${x.t}」时高亮的是 [${x.hl.join(',')}]（应只亮第 ${k} 张）`);
+    }
+  });
+  readWords += got.length;
+}
+
+// 读到一半的三种打断：再点一次 / 换主题 / 点某张卡。都必须真的停，不能继续往下读。
+const intr = await page.evaluate(async () => {
+  const wait = (ms) => new Promise((r2) => setTimeout(r2, ms));
+  const realSpeak = window.speechSynthesis.speak;
+  let log = [];
+  // 这次每句慢一点，才来得及在播放途中打断
+  window.speechSynthesis.speak = function (u) { log.push(u.text); setTimeout(() => { try { u.onend && u.onend(); } catch (e) {} }, 40); };
+  const btn = document.getElementById('boardAllBtn');
+  const out = {};
+  const run = async (breakIt, key) => {
+    switchBoard('zeit'); await wait(200); log = [];
+    btn.click(); await wait(120);
+    const mid = log.length;
+    await breakIt(); await wait(400);
+    out[key] = { after: log.length - mid, btn: btn.textContent,
+      left: document.querySelectorAll('.pic-cell.reading').length };
+  };
+  await run(async () => btn.click(), '再点一次');
+  await run(async () => switchBoard('lob'), '换主题');
+  await run(async () => document.querySelectorAll('#boardGrid .pic-cell')[3].click(), '点某张卡');
+  window.speechSynthesis.speak = realSpeak;
+  return out;
+});
+for (const [k, v] of Object.entries(intr)) {
+  // 「点某张卡」会由 picPick 自己再读一次那张卡的词，那一句是应该的
+  const allow = k === '点某张卡' ? 1 : 0;
+  if (v.after > allow) bad(`连读中「${k}」之后又读了 ${v.after} 条（最多允许 ${allow} 条）`);
+  if (v.btn !== '🔊 全部朗读') bad(`连读中「${k}」之后按钮仍是「${v.btn}」`);
+  if (v.left) bad(`连读中「${k}」之后还剩 ${v.left} 张卡亮着高亮`);
+}
+
 for (const e of errs) bad(`页面抛错：${e}`);
 
 await browser.close();
 srv.close();
 console.log(`测验出题体检：图卡 ${boards.length} 个板 × ${ROUNDS} 题（实出 ${asked} 道）`
   + ` · 词汇测验强制撞车 德语 ${vqs.de.tried}/${vqs.de.pairs} 组、英语 ${vqs.en.tried}/${vqs.en.pairs} 组`
-  + ` · 图卡逐词点读 ${spoken} 词`);
+  + ` · 图卡逐词点读 ${spoken} 词 · 全部朗读 ${readWords} 词 + 3 种打断`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 图卡题四选项唯一可辨、判分正确；词汇题没有「两个选项都对」');

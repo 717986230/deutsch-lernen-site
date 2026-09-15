@@ -381,6 +381,12 @@ body:not(.lang-en) .en-only-block{display:none}
 .pic-cell{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 3px 7px;text-align:center;cursor:pointer;transition:transform .12s,box-shadow .15s,border-color .15s;box-shadow:var(--shadow)}
 .pic-cell:hover{transform:translateY(-2px);border-color:var(--gold-dim);box-shadow:0 6px 16px rgba(0,0,0,.08)}
 .pic-cell.active{border-color:var(--gold);background:rgba(88,204,2,.08)}
+/* 连读时高亮当前这张卡。图解是网格，光听见声音不知道在读哪张 —— 没有这个高亮，
+   「全部朗读」在这一页等于一串听不懂的德语。和 .card.speaking-now 一套配色。 */
+.pic-cell.reading{border-color:#58cc02;background:rgba(88,204,2,.12);box-shadow:0 0 0 2px rgba(88,204,2,.45),0 4px 16px rgba(88,204,2,.2)}
+.board-readbar{display:flex;align-items:center;gap:10px;margin:-6px 0 10px}
+.board-readbar>span{font-size:12px;color:var(--text-dim)}
+.board-readbar>button{margin-left:auto;padding:7px 12px;font-size:12px}
 .pic-emoji{font-size:26px;line-height:1.15}
 .pic-de{font-size:12px;font-weight:600;color:var(--text);margin-top:4px;line-height:1.3;word-break:break-word;overflow-wrap:anywhere}
 .pic-zh{font-size:12px;color:var(--text-faint);margin-top:2px;line-height:1.3}
@@ -996,6 +1002,10 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <h2 class="page-title">图解词典 · 点图学单词</h2>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">选主题 → 点图看德语·听发音·带谐音</p>
     <div id="boardTabs" class="board-tabs"></div>
+    <div class="board-readbar">
+      <span id="boardAllInfo"></span>
+      <button id="boardAllBtn" class="btn" type="button" onclick="toggleBoardAll()">🔊 全部朗读</button>
+    </div>
     <div id="boardBody">
     <div id="bodyChips" class="pic-grid"></div>
     </div>
@@ -3235,26 +3245,31 @@ function speakWithLocale(text,lang,btn){
   _ttsProbe(u);speechSynthesis.speak(u);
 }
 
-var _pageRead={key:'',items:[],i:0,btn:null,lang:'de'},_pageReadRun=0;
+// onItem(i) 可选：每读到一条回调一次，停止时回调 -1。字母/数字表是一行行的文本，
+// 不给回调也看得懂读到哪；图解是网格，必须靠它高亮当前卡片。
+var _pageRead={key:'',items:[],i:0,btn:null,lang:'de',onItem:null},_pageReadRun=0;
 function _stopPageRead(){
   _pageReadRun++;
   if(!_pageRead.key)return;
   try{speechSynthesis.cancel();}catch(e){}
   if(_pageRead.btn){_pageRead.btn.textContent='🔊 全部朗读';_pageRead.btn.classList.remove('playing');}
-  _pageRead={key:'',items:[],i:0,btn:null,lang:'de'};
+  if(_pageRead.onItem)try{_pageRead.onItem(-1);}catch(e){}
+  _pageRead={key:'',items:[],i:0,btn:null,lang:'de',onItem:null};
 }
-function _startPageRead(key,items,lang,btn){
+function _startPageRead(key,items,lang,btn,onItem){
   if(_pageRead.key===key){_stopPageRead();return;}
   if(typeof stopLetterAudio==='function')stopLetterAudio();
   _stopPageRead();
   if(!items.length)return;
   var run=_pageReadRun;
-  _pageRead={key:key,items:items,i:0,btn:btn,lang:lang};
+  _pageRead={key:key,items:items,i:0,btn:btn,lang:lang,onItem:onItem||null};
   btn.textContent='⏹ 停止';btn.classList.add('playing');
   (function next(){
     if(run!==_pageReadRun||_pageRead.key!==key)return;
     if(_pageRead.i>=_pageRead.items.length){_stopPageRead();return;}
-    var u=new SpeechSynthesisUtterance(_pageRead.items[_pageRead.i++]);
+    var idx=_pageRead.i++;
+    if(onItem)try{onItem(idx);}catch(e){}
+    var u=new SpeechSynthesisUtterance(_pageRead.items[idx]);
     u.lang=lang==='en'?'en-US':'de-DE';
     var v=lang==='en'?_enVoice:_deVoice;if(v)u.voice=v;
     u.rate=_spk.rate;u.pitch=1;
@@ -4610,6 +4625,8 @@ function renderBoardTabs(){
   });
 }
 function switchBoard(id){
+  // 换主题必须先停：词表整个换掉了，旧的连读队列读的是上一个板的词
+  if(typeof stopPageNarration==='function')stopPageNarration();
   _curBoard=id;
   document.querySelectorAll("#boardTabs .board-tab").forEach(function(t,i){t.className="board-tab"+(PIC_BOARDS[i].id===id?" active":"");});
   var isBody=id==="koerper";
@@ -4617,7 +4634,7 @@ function switchBoard(id){
   document.getElementById("boardGrid").style.display=isBody?"none":"grid";
   document.getElementById("picOut").style.display="none";
   document.body.classList.remove("has-picbar");
-  if(isBody){renderBody();buildBoardQuiz();return;}
+  if(isBody){renderBody();updateBoardReadBar();buildBoardQuiz();return;}
   var brd=null;for(var i=0;i<PIC_BOARDS.length;i++)if(PIC_BOARDS[i].id===id)brd=PIC_BOARDS[i];
   var g=document.getElementById("boardGrid");
   g.innerHTML=(brd.items||[]).map(function(it,i){
@@ -4626,10 +4643,14 @@ function switchBoard(id){
   g.querySelectorAll(".pic-cell").forEach(function(c){
     c.addEventListener("click",function(){picPick(brd,+c.getAttribute("data-i"),c);});
   });
+  updateBoardReadBar();
   buildBoardQuiz();
 }
 function picPick(brd,i,cell){
   var it=brd.items[i];if(!it)return;
+  // 连读进行中点某张卡：speakDE 会 cancel 掉当前这句，而 cancel 触发的 onend
+  // 会让连读队列**接着往下读**，于是两个声音叠在一起。点一下＝接管，先停队列。
+  if(typeof stopPageNarration==='function')stopPageNarration();
   brd._grid=document.getElementById("boardGrid");
   document.querySelectorAll("#boardGrid .pic-cell").forEach(function(c){c.classList.remove("active");});
   if(cell)cell.classList.add("active");
@@ -4645,6 +4666,31 @@ function _boardItems(){
     return PIC_BOARDS[i].items.map(function(it){return{de:it[0],zh:it[1],em:it[3]};});
   return [];
 }
+// ── 图解「全部朗读」：把当前主题的词从头读到尾，逐条高亮并滚到视野内 ──
+function _boardCells(){
+  return document.querySelectorAll((_curBoard==='koerper'?'#bodyChips':'#boardGrid')+' .pic-cell');
+}
+function _boardReadMark(i){
+  var cells=_boardCells(),k;
+  for(k=0;k<cells.length;k++)cells[k].classList.remove('reading');
+  if(i<0)return;                       // -1 = 停止，只清高亮
+  var c=cells[i];if(!c)return;
+  c.classList.add('reading');
+  // 5 列网格一屏放不下 23 个词，不滚的话高亮走到屏幕外就等于没有
+  try{c.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){try{c.scrollIntoView();}catch(e2){}}
+}
+function updateBoardReadBar(){
+  var n=_boardItems().length,info=document.getElementById('boardAllInfo'),btn=document.getElementById('boardAllBtn');
+  if(info)info.textContent=n?'本主题 '+n+' 个词':'';
+  if(btn)btn.style.display=n?'':'none';
+}
+function toggleBoardAll(){
+  var btn=document.getElementById('boardAllBtn');if(!btn)return;
+  var words=_boardItems().map(function(x){return x.de;});
+  // key 带主题 id：同一个板再点一次＝停；换了板再点＝重新开始（而不是被当成「停」）
+  _startPageRead('board-'+_curBoard,words,'de',btn,_boardReadMark);
+}
+
 function buildBoardQuiz(){
   var box=document.getElementById('boardQuiz');if(!box)return;
   var items=_boardItems();if(items.length<4){box.innerHTML='';return;}
@@ -4684,6 +4730,7 @@ function renderBody(){
 }
 function bpPick(i){
   var p=BODY_PARTS[i];if(!p)return;
+  if(typeof stopPageNarration==='function')stopPageNarration();
   document.querySelectorAll('#bodyChips .pic-cell').forEach(function(x,k){x.className='pic-cell'+(k===i?' active':'');});
   var out=document.getElementById('picOut');
   out.style.display='block';document.body.classList.add('has-picbar');
