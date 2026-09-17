@@ -4142,11 +4142,12 @@ function renderReadings(){
   const build=(r,ri)=>{
     const body=r.paras.map((p,pi)=>`<div class="read-para" id="rp_${ri}_${pi}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="${readingLang}">${isEn?p[0]:wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div>${p[2]?`<div style="font-size:12px;color:var(--text-faint);margin-top:1px">${p[2]}</div>`:''}</div></div></div>`).join('');
     return `<div class="card" id="rcard_${ri}" style="cursor:default;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
         <span style="font-size:17px;font-weight:600;color:var(--gold-text)" lang="${readingLang}">${r.title}</span>
         <span class="level-badge ${READ_LB[r.level]}">${readLevelName(r.level)}</span>
         <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span>
         <button class="read-art-btn" id="rab_${ri}" type="button" title="朗读全文" aria-label="朗读全文：${r.title}" style="margin-left:auto" onclick="toggleArticle(this,${ri})">▶ 朗读</button>
+        <button class="read-art-btn" type="button" title="用这篇练拼写" aria-label="用这篇练拼写：${r.title}" onclick="spStartReading(${ri})">⌨️ 练这篇</button>
       </div>${body}</div>`;
   };
   // 分批渲染：先同步出前 6 篇，其余每帧建好再追加（低端机首开不卡）
@@ -4253,11 +4254,12 @@ function renderSeries(){
   const build=(r,i)=>{
     const body=r.paras.map((p,j)=>`<div class="read-para" id="srp_${i}_${j}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakSeriesPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="${itemLang}">${isEn?p[0]:wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div>${p[2]?`<div style="font-size:12px;color:var(--text-faint);margin-top:1px">${p[2]}</div>`:''}</div></div></div>`).join('');
     return `<div class="card" id="scard_${i}" style="cursor:default;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
         <span style="font-size:17px;font-weight:600;color:var(--gold-text)" lang="${itemLang}">${r.title}</span>
         <span class="level-badge ${READ_LB[r.level]}">${readLevelName(r.level)}</span>
         <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span>
         <button class="read-art-btn" id="srab_${i}" type="button" title="朗读整集" aria-label="朗读整集：${r.title}" style="margin-left:auto" onclick="toggleEpisode(this,${i})">▶ 朗读</button>
+        <button class="read-art-btn" type="button" title="用这集练拼写" aria-label="用这集练拼写：${r.title}" onclick="spStartSeries(${i})">⌨️ 练这集</button>
       </div>${body}</div>`;
   };
   // 带渲染代号：切语言/重进版块时上一轮追加循环必须立即作废，否则旧集会继续追进新列表。
@@ -4661,9 +4663,10 @@ function picPick(brd,i,cell){
   try{if(_tapOnce(it[0]))studyTick(1);}catch(e){}
 }
 function _boardItems(){
-  if(_curBoard==='koerper')return BODY_PARTS.map(function(p){return{de:p.de,zh:p.zh,em:p.em};});
+  // py 是给错题本用的：收录的词要能在拼写/测验里显示谐音，少一个字段就只能显示空白
+  if(_curBoard==='koerper')return BODY_PARTS.map(function(p){return{de:p.de,zh:p.zh,py:p.py,em:p.em};});
   for(var i=0;i<PIC_BOARDS.length;i++)if(PIC_BOARDS[i].id===_curBoard&&PIC_BOARDS[i].items)
-    return PIC_BOARDS[i].items.map(function(it){return{de:it[0],zh:it[1],em:it[3]};});
+    return PIC_BOARDS[i].items.map(function(it){return{de:it[0],zh:it[1],py:it[2],em:it[3]};});
   return [];
 }
 // ── 图解「全部朗读」：把当前主题的词从头读到尾，逐条高亮并滚到视野内 ──
@@ -4715,10 +4718,25 @@ function boardAns(btn,sel,cor){
   var box=document.getElementById('boardQuiz');
   box.querySelectorAll('.gq-opt').forEach(function(b){b.style.pointerEvents='none';if(b.textContent===cor)b.classList.add('ok');});
   if(sel!==cor)btn.classList.add('bad');
+  // 图卡题也进错题本（和主测验共用 spWrong）：答错收录、答对摘掉。
+  // 228 个图卡词都有 de/zh/py，正好满足词汇类测验的前提；在这之前图卡答错什么都不留，练了白练。
+  try{_boardWrong(cor,sel===cor);}catch(e){}
   try{speakDE(cor);}catch(e){}
   try{studyTick(1,1);}catch(e){}
   var sc=box.querySelector('.gq-score');sc.style.display='block';
   sc.innerHTML=(sel===cor?'🎉 答对了！':'✅ 正确答案已标绿')+'<button class="btn" type="button" style="padding:5px 14px;font-size:12px;margin-left:8px" onclick="buildBoardQuiz()">🔄 下一题</button>';
+}
+function _boardWrong(de,right){
+  var m=_spWrongGet();
+  if(right){ if(!m[de])return; delete m[de]; }
+  else{
+    var items=_boardItems(),it=null,i;
+    for(i=0;i<items.length;i++)if(items[i].de===de)it=items[i];
+    if(!it)return;                                   // 找不到就别往错题本里塞半条
+    m[de]={zh:it.zh||'',py:it.py||''};
+  }
+  _spWrongSave(m);
+  if(typeof updateQuizWrongSub==='function')updateQuizWrongSub();
 }
 function renderBody(){
   var chips=document.getElementById('bodyChips');
@@ -5033,17 +5051,22 @@ function _dashTrend(s,today){
 function _dashStreak(s,t){try{var y=_yday();if(s.last===y&&(s.streak||0)>=1)return '<div class="dash-nudge" onclick="showSection(\'spell\')">\uD83D\uDD25 已连续 '+(s.streak||0)+' 天打卡！今天学一点就能续上，别让火苗熄了 \u2192</div>';}catch(e){}return '';}
 function _dashDue(){try{var dn=srsDueList().length;return dn?'<div style="font-size:12px;color:#e8930c;margin-top:10px;cursor:pointer" onclick="showSection(\'spell\')">📆 有 '+dn+' 个学过的词到期了，去复习巩固 →</div>':'';}catch(e){return '';}}
 // 首页学习仪表盘：本地数据即时渲染（打卡/掌握词/徽章 + 今日目标 + 快捷入口）
-function renderHomeDash(){var el=document.getElementById('homeDash');if(!el)return;var s={};try{s=getStudy();}catch(e){}var t='';try{t=_today();}catch(e){}var todayN=(s.d===t)?(s.n||0):0;var goal=s.goal||20;var streak=(s.last===t||s.last===_yday())?(s.streak||0):0;var known=0;try{known=Object.keys(getKnown()).length;}catch(e){}var badges=0;try{badges=_badgeSeen().length;}catch(e){}var pct=Math.min(100,Math.round(todayN/goal*100));var nick=(ACCT.user&&(ACCT.user.nickname||ACCT.user.username))||'同学';var av=ACCT.user?_avatarHtml(ACCT.user,44):'<span class="avatar" style="width:44px;height:44px;background:#58cc02;font-size:24px">🦉</span>';var goalPick='<div class="dash-cta" id="dashGoalPick" style="display:none">'+[10,20,50,100].map(function(g){return '<button type="button" class="'+(goal===g?'on':'')+'" onclick="setDailyGoal('+g+')">'+g+'</button>';}).join('')+'</div>';var lastHtml='';try{var _ls=JSON.parse(localStorage.getItem('lastStudy')||'null');if(_ls&&_ls.name)lastHtml='<div class="dash-last" onclick="resumeLast()">▶ 继续上次：'+_esc(_ls.name)+'</div>';}catch(e){}var _dp={total:0,rev:0,neu:0},_dd=false;try{_dp=dailyPlan();_dd=_dailyDone();}catch(e){}var dailyCard=_dd?'<div class="dash-daily done">✅ 今日课程已完成，明天见！</div>':'<div class="dash-daily" onclick="spStartDaily()"><div class="dd-txt"><b>📅 今日课程</b><span>'+_dp.total+' 词 · '+_dp.rev+' 复习 + '+_dp.neu+' 新词'+((_dp.lv&&_dp.lv!=='all'&&levelName(_dp.lv))?' · '+levelName(_dp.lv):'')+'</span></div><span class="dd-go">▶ 开始</span></div>';el.innerHTML='<div class="dash"><div class="dash-top">'+av+'<div class="dash-hi">'+(LANG==='en'?'Hello, ':'Hallo, ')+_esc(nick)+'！<small>'+(pct>=100?'今日目标已达成，太棒了 🎉':(todayN>0?'继续保持，今天已学 '+todayN+' 次':'今天还没开始，来一组拼写吧'))+'</small></div></div>'+dailyCard+'<div class="dash-stats"><div class="dash-stat" onclick="showSection(\'me\')"><b>'+streak+'</b><span>🔥 连续打卡</span></div><div class="dash-stat" onclick="showSection(\'spell\')"><b>'+known+'</b><span>📖 掌握词</span></div><div class="dash-stat" onclick="showSection(\'me\')"><b>'+badges+'</b><span>🏅 徽章</span></div></div><div class="dash-goal"><div class="dash-goal-row" onclick="dashGoalToggle()" style="cursor:pointer" title="调整每日目标"><span>今日目标 ✏️</span><span>'+todayN+' / '+goal+'</span></div><div class="dash-goal-bar"><i style="width:'+pct+'%"></i></div>'+goalPick+'</div>'+_dashTrend(s,t)+_dashStreak(s,t)+_dashDue()+lastHtml+'<div class="dash-cta"><button type="button" onclick="showSection(\'spell\')">⌨️ 拼写记忆</button><button type="button" onclick="showSection(\'quiz\')">🎯 练习测验</button><button type="button" onclick="showSection(\'rank\')">🏆 排行榜</button></div></div>';}
+function renderHomeDash(){var el=document.getElementById('homeDash');if(!el)return;var s={};try{s=getStudy();}catch(e){}var t='';try{t=_today();}catch(e){}var todayN=(s.d===t)?(s.n||0):0;var goal=s.goal||20;var streak=(s.last===t||s.last===_yday())?(s.streak||0):0;var known=0;try{known=Object.keys(getKnown()).length;}catch(e){}var badges=0;try{badges=_badgeSeen().length;}catch(e){}var pct=Math.min(100,Math.round(todayN/goal*100));var nick=(ACCT.user&&(ACCT.user.nickname||ACCT.user.username))||'同学';var av=ACCT.user?_avatarHtml(ACCT.user,44):'<span class="avatar" style="width:44px;height:44px;background:#58cc02;font-size:24px">🦉</span>';var goalPick='<div class="dash-cta" id="dashGoalPick" style="display:none">'+[10,20,50,100].map(function(g){return '<button type="button" class="'+(goal===g?'on':'')+'" onclick="setDailyGoal('+g+')">'+g+'</button>';}).join('')+'</div>';var lastHtml='';try{var _ls=JSON.parse(localStorage.getItem(_migrateDeLocal('lastStudy'))||'null');if(_ls&&_ls.name)lastHtml='<div class="dash-last" onclick="resumeLast()">▶ 继续上次：'+_esc(_ls.name)+'</div>';}catch(e){}var _dp={total:0,rev:0,neu:0},_dd=false;try{_dp=dailyPlan();_dd=_dailyDone();}catch(e){}var dailyCard=_dd?'<div class="dash-daily done">✅ 今日课程已完成，明天见！</div>':'<div class="dash-daily" onclick="spStartDaily()"><div class="dd-txt"><b>📅 今日课程</b><span>'+_dp.total+' 词 · '+_dp.rev+' 复习 + '+_dp.neu+' 新词'+((_dp.lv&&_dp.lv!=='all'&&levelName(_dp.lv))?' · '+levelName(_dp.lv):'')+'</span></div><span class="dd-go">▶ 开始</span></div>';el.innerHTML='<div class="dash"><div class="dash-top">'+av+'<div class="dash-hi">'+(LANG==='en'?'Hello, ':'Hallo, ')+_esc(nick)+'！<small>'+(pct>=100?'今日目标已达成，太棒了 🎉':(todayN>0?'继续保持，今天已学 '+todayN+' 次':'今天还没开始，来一组拼写吧'))+'</small></div></div>'+dailyCard+'<div class="dash-stats"><div class="dash-stat" onclick="showSection(\'me\')"><b>'+streak+'</b><span>🔥 连续打卡</span></div><div class="dash-stat" onclick="showSection(\'spell\')"><b>'+known+'</b><span>📖 掌握词</span></div><div class="dash-stat" onclick="showSection(\'me\')"><b>'+badges+'</b><span>🏅 徽章</span></div></div><div class="dash-goal"><div class="dash-goal-row" onclick="dashGoalToggle()" style="cursor:pointer" title="调整每日目标"><span>今日目标 ✏️</span><span>'+todayN+' / '+goal+'</span></div><div class="dash-goal-bar"><i style="width:'+pct+'%"></i></div>'+goalPick+'</div>'+_dashTrend(s,t)+_dashStreak(s,t)+_dashDue()+lastHtml+'<div class="dash-cta"><button type="button" onclick="showSection(\'spell\')">⌨️ 拼写记忆</button><button type="button" onclick="showSection(\'quiz\')">🎯 练习测验</button><button type="button" onclick="showSection(\'rank\')">🏆 排行榜</button></div></div>';}
 // 今日目标可调：点「今日目标」行展开 10/20/50/100 四档
 function dashGoalToggle(){var p=document.getElementById('dashGoalPick');if(p)p.style.display=(p.style.display==='none')?'':'none';}
 function setDailyGoal(g){var s=getStudy();s.goal=g;saveStudy(s);try{track('goal',{g:g});}catch(e){}renderHomeDash();}
 // 「继续上次学习」：一键回到上次的级别/分类或拼写级别
 function resumeLast(){
-  var last=null;try{last=JSON.parse(localStorage.getItem('lastStudy')||'null');}catch(e){}
+  // 键必须走 _migrateDeLocal：写入侧一直写 lastStudy_de / lastStudy_en（双语拆分后的分语言键），
+  // 而这里和 renderHomeDash 都还在读裸 lastStudy —— 于是「▶ 继续上次」要么不出现，
+  // 要么显示拆分之前的老值且永不更新。两处一起修。
+  var last=null;try{last=JSON.parse(localStorage.getItem(_migrateDeLocal('lastStudy'))||'null');}catch(e){}
   if(!last)return;
   try{track('resume',{sp:last.spell?1:0});}catch(e){}
   if(last.spell){
     if(last.dialog!=null&&typeof spStartDialog==='function'){spStartDialog(last.dialog);return;}
+    // 找不到那篇（数据改过 / 切了语言）就退回拼写页，别卡在这儿什么也不发生
+    if(last.art&&typeof _spResumeArticle==='function'&&_spResumeArticle(last.art))return;
     try{if(last.level&&typeof SP!=='undefined')SP.level=last.level;}catch(e){}showSection('spell');return;}
   showSection('phrases');
   setTimeout(function(){
@@ -5127,6 +5150,35 @@ function spStartDialog(di){
   SP.review=false;SP.daily=false;SP.unit='sent';SP.q=q;
   try{_lastStudySet({spell:1,dialog:di,name:'对话拼写 · '+d.scene});}catch(e){}
   showSection('spell');_spGo();
+}
+// 短文 / 连载拼写：和上面的对话拼写同一条路子。
+// 这两处内容（69 篇 685 句 + 12 集 96 句）此前只能「读」——读完就没了，
+// 既不进测验也不进 SRS，是站里最大的一块闲置资产。句子长度筛选沿用对话那套（6–42 字符）。
+function _artSpellQ(paras){
+  var q=[],i;
+  for(i=0;i<paras.length;i++){
+    var pa=paras[i],t=(pa[0]||'').trim();
+    if(t.length>=6&&t.length<=42)q.push({de:t,zh:pa[1]||'',py:pa[2]||''});
+  }
+  return q;
+}
+function _spStartArticle(r,label){
+  if(!r||!r.paras)return;
+  var q=_artSpellQ(r.paras);
+  if(!q.length){try{_toast('这篇的句子偏长，暂不适合拼写练习');}catch(e){}return;}
+  SP.review=false;SP.daily=false;SP.unit='sent';SP.q=q;
+  // 存标题而不是下标：列表随级别/专题/语言筛选而变，下标过一会儿就指到别的文章去了
+  try{_lastStudySet({spell:1,art:r.title,name:label+' · '+r.title});}catch(e){}
+  showSection('spell');_spGo();
+}
+function spStartReading(ri){_spStartArticle(_getReadList()[ri],'短文拼写');}
+function spStartSeries(i){_spStartArticle(_getSeriesList()[i],'连载拼写');}
+// 「继续上次」用：按标题在两份数据里找回那篇
+function _spResumeArticle(title){
+  var pools=[[LANG==='en'?EN_READINGS:READINGS,'短文拼写'],[_getSeriesSource(),'连载拼写']],i,j;
+  for(i=0;i<pools.length;i++)for(j=0;j<pools[i][0].length;j++)
+    if(pools[i][0][j].title===title){_spStartArticle(pools[i][0][j],pools[i][1]);return true;}
+  return false;
 }
 // 今日课程：到期复习词 + 新词 混合成一节引导式微课（复用拼写引擎与 SRS）
 function _dailyGet(){try{return JSON.parse(localStorage.getItem(_migrateDeLocal('dailyLesson'))||'{}');}catch(e){return {};}}

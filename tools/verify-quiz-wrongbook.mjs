@@ -111,10 +111,62 @@ if (r4.stillThere) bad('答对了错题库里的词，但它还留在 spWrong �
 if (r4.afterN !== r4.beforeN - 1) bad(`答对一题后错题库条数应该 -1，实际 ${r4.beforeN} → ${r4.afterN}`);
 if (!/已收录 2 个错题/.test(r4.sub)) bad(`答对摘除后卡片文案没跟着更新："${r4.sub}"`);
 
+// ── ⑤ 图卡测验也进错题本 ──
+// 图卡题走的是另一条代码路径（boardAns，不经过 checkQ），一开始压根没接错题本：
+// 228 个图卡词答错什么都不留，练了白练。这里逐板验一遍「答错收录、答对摘除」。
+// 特别盯 py：_boardItems() 原来只取 de/zh/em，漏了谐音，收录进去就是半条记录。
+const boards = await page.evaluate(() => PIC_BOARDS.map((b) => ({ id: b.id, name: b.name })));
+let bChecked = 0;
+for (const brd of boards) {
+  const r = await page.evaluate(async (id) => {
+    const wait = (ms) => new Promise((r2) => setTimeout(r2, ms));
+    localStorage.setItem('spWrong_de', '{}');
+    showSection('body'); await wait(200);
+    switchBoard(id); await wait(250);
+    const items = _boardItems();
+    const out = { noPy: items.filter((x) => !x.py).map((x) => x.de).slice(0, 3) };
+    const box = () => document.getElementById('boardQuiz');
+    const target = () => {
+      const zh = box().querySelector('div[style*="font-weight:600"]').textContent;
+      return items.find((i) => i.zh === zh);
+    };
+    // 答错 → 收录
+    buildBoardQuiz();
+    let t = target();
+    [...box().querySelectorAll('.gq-opt')].find((o) => o.textContent !== t.de).click();
+    await wait(30);
+    const m1 = JSON.parse(localStorage.getItem('spWrong_de') || '{}');
+    out.收录 = m1[t.de] || null;
+    out.词 = t.de;
+    // 同一个词答对 → 摘除
+    let g = 0, hit = false;
+    while (g++ < 400 && !hit) {
+      buildBoardQuiz();
+      const t2 = target();
+      if (t2.de !== t.de) continue;
+      [...box().querySelectorAll('.gq-opt')].find((o) => o.textContent === t2.de).click();
+      await wait(30); hit = true;
+    }
+    out.重出到 = hit;
+    out.摘除后还在 = !!JSON.parse(localStorage.getItem('spWrong_de') || '{}')[t.de];
+    return out;
+  }, brd.id);
+  if (r.noPy.length) bad(`图卡「${brd.name}」有词没带谐音：${r.noPy.join('、')} —— 收进错题本会是半条记录`);
+  if (!r.收录) bad(`图卡「${brd.name}」答错「${r.词}」没有写进错题本`);
+  else {
+    if (!r.收录.zh) bad(`图卡「${brd.name}」错题本里「${r.词}」缺中文`);
+    if (!r.收录.py) bad(`图卡「${brd.name}」错题本里「${r.词}」缺谐音`);
+  }
+  if (!r.重出到) bad(`图卡「${brd.name}」400 次出题都没再抽到「${r.词}」，答对摘除这一路没验到`);
+  else if (r.摘除后还在) bad(`图卡「${brd.name}」答对「${r.词}」后它还留在错题本里`);
+  bChecked++;
+}
+
 for (const e of errs) bad('页面抛错：' + e);
 
 await browser.close();
 srv.close();
-console.log('错题库体检：空库拦截 · 答错自动记 · 答对自动摘 · 错题库模式只出错题范围内的题');
+console.log(`错题库体检：空库拦截 · 答错自动记 · 答对自动摘 · 错题库模式只出错题范围内的题`
+  + ` · 图卡测验 ${bChecked} 个板各验一遍收录与摘除`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 错题库生命周期正确，答错自动记、答对自动摘，且不会把测验炸崩');

@@ -22,7 +22,7 @@ import { dirname, join, normalize, extname } from 'node:path';
 import { getChromium, skipNoBrowser } from './_browser.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const PORT = 8741;
+const PORT = 8745;
 let fail = 0;
 const bad = (m) => { console.error('ERROR ' + m); fail++; };
 
