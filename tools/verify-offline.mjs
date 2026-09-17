@@ -16,7 +16,7 @@
 // 错误还被 catch 吞掉，于是「代码明明在，缓存还是空的」。这坑踩过一次，③ 也拦不住它，
 // 只有 ① 能。
 import { createServer } from 'node:http';
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize, extname } from 'node:path';
 import { getChromium, skipNoBrowser } from './_browser.mjs';
@@ -29,7 +29,10 @@ const bad = (m) => { console.error('ERROR ' + m); fail++; };
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json',
   '.dat': 'application/octet-stream', '.css': 'text/css', '.png': 'image/png',
   '.webmanifest': 'application/manifest+json' };
-const datOf = (p) => readdirSync(ROOT).find((f) => new RegExp(`^${p}\\.[a-f0-9]{8}\\.dat$`).test(f));
+// 认 index.html 里**正在用**的那一份，不能拿 readdir 撞见的第一个：
+// 构建会把上一代切片留在目录里给旧 SW 兜底，撞到旧的就会误报「首访没落盘」。
+const IDX = readFileSync(join(ROOT, 'index.html'), 'utf8');
+const datOf = (p) => (IDX.match(new RegExp(`${p}\\.[a-f0-9]{8}\\.dat`)) || [])[0];
 const DE_DAT = datOf('de'), EN_DAT = datOf('en');
 if (!DE_DAT || !EN_DAT) { console.error('ERROR 找不到词典切片 .dat，先跑 npm run build'); process.exit(1); }
 
