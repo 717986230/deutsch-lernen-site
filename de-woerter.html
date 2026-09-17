@@ -24,7 +24,7 @@
 {"@type":"ListItem","position":1,"name":"德语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"主题词表"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:9a85c67d25fd -->
+<!-- src-hash:78c2d2a576b5 -->
 <style>
 :root{
   /* 底部标签栏占用的高度（含 iPhone 安全区）。所有 fixed/sticky 贴底的浮动元素
@@ -359,6 +359,22 @@ body:not(.lang-en) .en-only-block{display:none}
 .pic-cell.active{border-color:var(--gold);background:rgba(88,204,2,.08)}
 /* 连读时高亮当前这张卡。图解是网格，光听见声音不知道在读哪张 —— 没有这个高亮，
    「全部朗读」在这一页等于一串听不懂的德语。和 .card.speaking-now 一套配色。 */
+.card-note{margin-top:8px;border-top:1px dashed var(--border);padding-top:8px}
+.note-tag{font-size:11px;color:var(--text-faint)}
+.note-body{font-size:13px;color:var(--text);line-height:1.6;margin-top:3px;white-space:pre-wrap;word-break:break-word}
+.note-input{width:100%;box-sizing:border-box;font-family:inherit;font-size:13px;line-height:1.5;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 9px;resize:vertical}
+.note-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.note-count{font-size:11px;color:var(--text-faint);margin-right:auto}
+.note-row .btn{padding:6px 14px;font-size:12px}
+.note-del{background:var(--surface);color:var(--text-dim);border:1px solid var(--border)}
+.note-btn.on{color:var(--gold-text)}
+/* 📝 和 ✓ 都是 28px 的 .star-btn，各自带 44px 的 ::after 热区。行内 gap 只有 8px，
+   两个圆心相距 28+8=36 < 44 —— 热区横向重叠，📝 被压成 36 宽（实测 36×45）。
+   按 §6.4 不动视觉尺寸，只把两颗按钮拉开：圆心距 28+18=46 ≥ 44，两边都够。 */
+.note-btn{margin-right:10px}
+.note-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.note-item .note-body{flex:1;margin-top:0}
+.note-item b{flex-shrink:0;max-width:34%;font-size:13px;color:var(--gold-text);word-break:break-word}
 .pic-cell.reading{border-color:#58cc02;background:rgba(88,204,2,.12);box-shadow:0 0 0 2px rgba(88,204,2,.45),0 4px 16px rgba(88,204,2,.2)}
 .board-readbar{display:flex;align-items:center;gap:10px;margin:-6px 0 10px}
 .board-readbar>span{font-size:12px;color:var(--text-dim)}
