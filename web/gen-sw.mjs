@@ -9,7 +9,7 @@ const walk = (dir, base = '') => readdirSync(join(DIST, dir), { withFileTypes: t
   .flatMap((e) => e.isDirectory() ? walk(join(dir, e.name), base) : [join(dir, e.name)]);
 
 // 白名单保留：dist 现在是干净的，但万一以后往里塞别的东西，缓存清单不该跟着膨胀
-const KEEP = /^(assets\/|data\/|index\.html$|support-qr\.png$)/;
+const KEEP = /^(assets\/|data\/|index\.html$|support-(qr|wechat)\.png$)/;
 const files = walk('.').map((f) => f.replace(/^\.\//, '')).filter((f) => KEEP.test(f) && f !== 'sw.js');
 const hash = createHash('sha256');
 for (const f of files.sort()) hash.update(readFileSync(join(DIST, f)));

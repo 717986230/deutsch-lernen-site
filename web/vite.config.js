@@ -23,7 +23,7 @@ function copyData() {
       }
       if (existsSync('../data')) cpSync('../data', 'public/data', { recursive: true });
       // 旧站的静态资源（打赏二维码等）也一并带过来，避免两处各存一份
-      for (const f of ['support-qr.png']) {
+      for (const f of ['support-qr.png', 'support-wechat.png']) {
         if (existsSync('../' + f)) cpSync('../' + f, 'public/' + f);
       }
     },

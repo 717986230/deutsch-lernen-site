@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const qr = import.meta.env.BASE_URL + 'support-qr.png';
+const wxQr = import.meta.env.BASE_URL + 'support-wechat.png';
 const copied = ref(false);
 
 // 与旧站 copyShare 同行为：复制站点网址，按钮短暂变成已复制
@@ -36,7 +37,7 @@ async function copyShare() {
       一块两块都是心意，谢谢你的支持！
     </p>
 
-    <div class="qr"><img :src="qr" alt="微信收款二维码" loading="lazy"></div>
+    <div class="qr"><img :src="qr" alt="微信支付收款二维码" loading="lazy"></div>
     <p class="cap">微信扫一扫 · 感谢每一份支持 ❤️</p>
 
     <p class="src">词典兜底数据来源：<a href="https://github.com/gugray/HanDeDict" rel="license noopener" target="_blank">HanDeDict</a>（CC BY-SA 3.0）</p>
@@ -52,6 +53,8 @@ async function copyShare() {
         使用心得、纠错、想加的功能，都欢迎来聊：<br>
         QQ：<b class="qq">717986230</b>
       </div>
+      <div class="ct-b">或者微信扫码加我好友 👇</div>
+      <div class="qr wx"><img :src="wxQr" alt="微信加好友二维码" loading="lazy"></div>
     </div>
 
     <div class="center back">
@@ -68,6 +71,8 @@ async function copyShare() {
 .sp-p b{color:var(--text)}
 .qr{max-width:290px;margin:18px auto 0;background:#fff;border-radius:16px;padding:8px;box-shadow:var(--shadow)}
 .qr img{width:100%;height:auto;display:block;border-radius:12px}
+/* 二维码底色写死 #fff（.qr 已有）：深色主题下变深底会明显掉识别率 */
+.qr.wx{max-width:200px;margin:10px auto 0}
 .cap{text-align:center;font-size:12px;color:var(--text-faint);margin-top:12px}
 /* 旧站这行是 11px，本项目辅助文字下限 12px */
 .src{text-align:center;font-size:12px;color:var(--text-dim);margin-top:18px}
