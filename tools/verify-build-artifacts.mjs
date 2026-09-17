@@ -58,6 +58,24 @@ try {
   staleList = execFileSync('git', ['ls-files', '*.dat'], { encoding: 'utf8' })
     .split('\n').filter(Boolean).filter((f) => !refs.has(f));
 } catch { /* 不在 git 仓库里就算了 */ }
+// 每个「没人引用」的切片，都必须是**真的上线过**的那一代 —— 也就是历史上某次提交的
+// index.html 引用过它。否则它就是构建中间产物：同一轮里跑两次构建，第一次那份从没上过线，
+// 却跟着 git add -A 混进了仓库（真发生过，417KB 垃圾）。上面的 MAX_STALE 只管总量，
+// 拦不住这种「数量不多但根本不该在」的文件。
+// 用 pickaxe 让 git 自己回答「有没有哪次提交的 index.html 出现过这个文件名」，
+// 不用自己划历史窗口，也就不会因为窗口不够长而误报。
+const neverDeployed = staleList.filter((f) => {
+  try {
+    return !execFileSync('git', ['log', '-1', '--format=%H', '-S', f, '--', 'index.html'],
+      { encoding: 'utf8' }).trim();
+  } catch { return false; }        // git 不可用就别瞎判
+});
+if (neverDeployed.length) {
+  fail(`这些切片从没被任何一版 index.html 引用过 —— 是构建中间产物，不该进仓库：\n`
+    + `       ${neverDeployed.join('\n       ')}\n`
+    + `       清理：git rm ${neverDeployed.join(' ')}`);
+}
+
 const stale = staleList.length;
 if (stale > MAX_STALE) {
   const drop = staleList.slice(0, stale - 3);   // 留最近 3 个

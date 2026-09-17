@@ -21,6 +21,7 @@
 
 import { readFileSync, writeFileSync, readdirSync, unlinkSync, existsSync } from 'fs';
 import { createHash } from 'crypto';
+import { execFileSync } from 'child_process';
 import { minify } from 'terser';
 
 const DEV = process.argv.includes('--dev');
@@ -170,11 +171,41 @@ async function build() {
   }
   out += html.slice(last);
 
-  // 换名前先记下**当前线上那份** index.html 引用的切片：它们要留一代当宽限期，
-  // 免得刚好卡在「已加载旧 index.html、还没拉词库」那几秒的用户 404（重试也救不回来，只能刷新）。
-  const prevKeep = existsSync('index.html')
-    ? (readFileSync('index.html', 'utf8').match(/\b(?:de|en)\.[a-f0-9]{8}\.dat\b/g) || [])
-    : [];
+  // 上一代切片要留着当宽限期，免得刚好卡在「已加载旧 index.html、还没拉词库」
+  // 那几秒的用户 404（重试也救不回来，只能刷新）。
+  //
+  // 「上一代」必须按**部署**算，不能按构建算。这里原来读磁盘上的 index.html，于是
+  // 同一轮里跑两次构建（改完数据建一次、调整后再建一次），第二次就把**第一次那个
+  // 从没上过线的中间产物**当成了上一代，真正线上在用的那份反而被当孤儿删掉。
+  // 这个坑连着踩了三次，最后一次还把中间产物提交进了仓库（417KB 垃圾）。
+  //
+  // 只看 git HEAD 也不够：数据没变时产物哈希和 HEAD 一样，宽限集合会塌缩成它自己，
+  // 真正的上一代照样被删（改成只读 HEAD 之后实测立刻发生）。所以沿 git 历史往回走，
+  // 取**最近两代不同的**已部署切片：线上这版 + 它前面那版。
+  const _datRefs = (t) => t.match(/\b(?:de|en)\.[a-f0-9]{8}\.dat\b/g) || [];
+  const GRACE_GENS = 2;                 // 线上这版 + 上一版；再往前的窗口早过了
+  const prevKeep = (() => {
+    const git = (args) => execFileSync('git', args,
+      // 产物 600KB+，默认 1MB 的 maxBuffer 太悬，显式放大
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 64 * 1024 * 1024 });
+    try {
+      const shas = git(['log', '-n', '20', '--format=%H', '--', 'index.html']).split('\n').filter(Boolean);
+      const de = [], en = [], all = new Set();
+      for (const sha of shas) {
+        let refs;
+        try { refs = _datRefs(git(['show', sha + ':index.html'])); } catch (e) { continue; }
+        for (const f of refs) {
+          const bucket = f[0] === 'd' ? de : en;
+          if (bucket.indexOf(f) < 0) bucket.push(f);
+          all.add(f);
+        }
+        if (de.length >= GRACE_GENS && en.length >= GRACE_GENS) break;   // 够两代就别再翻了
+      }
+      if (all.size) return [...de.slice(0, GRACE_GENS), ...en.slice(0, GRACE_GENS)];
+    } catch (e) { /* 没有 git / 没有 HEAD / index.html 还没被提交过 */ }
+    // 兜底：退回读磁盘那份（老行为）
+    return existsSync('index.html') ? _datRefs(readFileSync('index.html', 'utf8')) : [];
+  })();
 
   writeFileSync('index.html', out);
 
