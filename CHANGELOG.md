@@ -4,6 +4,23 @@
 
 ## 2026-09-17
 
+### 🍷 酒类词汇补齐 38 条
+词库里原来只有 Bier / Wein / Schnaps / Alkohol 四个笼统的词，点酒单根本不够用。
+这次按类补齐：
+
+- **烈酒**：伏特加 Wodka、朗姆 Rum（**白朗姆** weißer Rum / **棕朗姆** brauner Rum）、
+  威士忌、金酒、龙舌兰、白兰地（德语本土叫 **Weinbrand**）、干邑、利口酒、味美思、苦艾酒，
+  还有德国自己的两种烧酒：南德的 **Obstler**（水果）和北德的 **Korn**（谷物）。
+- **亚洲酒**：米酒 Reiswein、韩国烧酒 Soju、中国白酒 chinesischer Schnaps。
+  （日本清酒 Sake 词库里本来就有。）
+- **葡萄酒 / 起泡酒**：Sekt、香槟、Prosecco、桃红、**圣诞市场的热红酒 Glühwein**、
+  苹果酒、蜂蜜酒，以及点酒必用的**干型 trockener Wein / 甜型 süßer Wein**。
+- **啤酒**：小麦啤、皮尔森、扎啤 Fassbier、黑啤、淡色啤，还有**啤酒兑柠檬汽水的 Radler**。
+- **点单用语**：Zum Wohl!（比 Prost 正式）、Ich trinke keinen Alkohol.（我不喝酒）、
+  Was für Spirituosen haben Sie?（你们有什么烈酒？）
+
+⚠️ 特别标了一个坑：**der Korn 是酒，das Korn 才是谷物**——同一个词换个冠词就是两样东西。
+
 ### 📝 词句卡片可以写笔记了（只有你自己看得到）
 每张词句卡右上角多一颗 **📝**，点一下就能给这条记点什么——
 "这个词在第 3 课出现过"、"别和 xxx 搞混"、老师讲的窍门，随你。
