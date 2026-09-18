@@ -80,6 +80,8 @@ wrangler deploy                                                 # 部署新版 w
   - 邮箱一旦变更，`email_ok` 归零、未用完的验证码（`mail_*`）一并清空。
 - `GET  /api/me`（带 token）→ 自己的资料 + 排名；`email` **只返回掩码**（如 `t***@qq.com`），另有 `hasEmail` 布尔位。**不再返回 phone**
 - `GET  /api/leaderboard?by=known|streak|total` → Top 50（`badges` 是**数量**，不是列表）
+  - 返回 `{by, total, users, list}`：**`total` 是榜上人数**（该维度 >0 的人），**`users` 是全部注册账号数**。
+    两者口径不同，曾对不上（DB 226 人、页面显示 88）—— 差额是注册后零动作的账号。好友榜的 `users` 恒为 0。
 - `GET  /api/profile?name=<用户名>` → 公开主页数据（带 token 时含 isFollowing/关注数）
 - `POST /api/follow` / `POST /api/unfollow`（带 token）`{name}` → 关注 / 取关
 - `GET  /api/following`（带 token）→ 我关注的人列表

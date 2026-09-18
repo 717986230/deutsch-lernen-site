@@ -365,6 +365,8 @@ body:not(.lang-en) .en-only-block{display:none}
 /* 连读时高亮当前这张卡。图解是网格，光听见声音不知道在读哪张 —— 没有这个高亮，
    「全部朗读」在这一页等于一串听不懂的德语。和 .card.speaking-now 一套配色。 */
 /* 错题本列表 */
+.rank-summary{text-align:center;font-size:13px;color:var(--text-dim);margin:0 0 12px;line-height:1.7}
+.rank-summary b{color:var(--gold-text);font-size:15px}
 .wb-box{margin:22px 0 0;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .wb-box>summary{list-style:none;cursor:pointer;padding:13px 16px;font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;position:relative}
 .wb-box>summary::-webkit-details-marker{display:none}
@@ -1959,6 +1961,9 @@ body{padding-bottom:var(--tab-h)}
       <button type="button" id="rkStreak" onclick="renderRank('streak')">🔥 最长打卡</button>
       <button type="button" id="rkTotal" onclick="renderRank('total')">⚡ 累计学习</button>
     </div>
+    <!-- 全站人数：和榜上人数口径不同，所以两个数写在一起、把差别说清楚，
+         免得像 DB 226 / 页面 88 那样对不上还不知道为什么 -->
+    <p id="rankSummary" class="rank-summary" style="display:none"></p>
     <div class="rank-list" id="rankList"><p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p></div>
     <p class="acct-note" id="rankHint" style="max-width:440px;margin:14px auto 0"></p>
 </div>
@@ -5146,7 +5151,18 @@ function _tago(ts){var d=Date.now()-ts;if(d<60000)return '刚刚';if(d<3600000)r
 function renderFeed(){var el=document.getElementById('rankList');if(!el)return;if(!ACCT.token){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">登录后可看关注的人的学习动态</p>';return;}el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p>';apiFetch('/api/feed').then(function(r){if(!r||!r.ok||!r.data.list){el.innerHTML='<p class="acct-err">加载失败，请稍后再试</p>';return;}var list=r.data.list;if(!list.length){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">还没有动态——去关注几个学霸，或者自己点亮一枚徽章 🏅</p>';return;}var map={};BADGES.forEach(function(b){map[b.id]=b;});el.innerHTML=list.map(function(a){var txt;if(a.type==='badge'){var b=map[a.data];txt=b?('点亮徽章 '+b.emo+'「'+b.name+'」'):'点亮了一枚徽章';}else if(a.type==='streak'){txt='连续打卡破纪录：🔥 '+_esc(a.data)+' 天';}else{txt='有了新进展';}return '<div class="rank-row" data-u="'+_esc(a.username)+'">'+_avatarHtml(a,38)+'<div class="rank-name"><div class="rank-nick">'+_esc(a.nickname||a.username)+'</div><div class="rank-meta">'+txt+'</div></div><div class="rank-meta" style="flex-shrink:0">'+_tago(a.ts)+'</div></div>';}).join('');_bindUser(el,'.rank-row[data-u]',function(n){openProfile(n);});var hint=document.getElementById('rankHint');if(hint)hint.textContent='动态来自你关注的人和你自己（点亮徽章 / 打卡破纪录）';});}
 // 排行榜只显示前十。其余不提供展开 —— 名次靠后的具体是谁没人关心，
 // 给个总数让用户知道「榜上还有多少人」就够了。
-function renderRank(by){if(by){_rankBy=by;}var ids={known:'rkKnown',streak:'rkStreak',total:'rkTotal'};for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('on',k===_rankBy);}var el=document.getElementById('rankList');if(!el)return;el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p>';if(!API_BASE){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">排行榜暂未开放</p>';return;}if(_rankScope==='friends'&&!ACCT.token){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">登录后可看好友榜</p>';return;}apiFetch('/api/leaderboard?by='+_rankBy+(_rankScope==='friends'?'&scope=friends':'')).then(function(r){if(!r||!r.ok||!r.data.list){el.innerHTML='<p class="acct-err">加载失败，请稍后再试</p>';return;}var list=r.data.list,total=Number(r.data.total);if(!isFinite(total))total=list.length;var myname=ACCT.user&&ACCT.user.username;var unit=_rankBy==='streak'?'天':(_rankBy==='total'?'次':'词');if(!list.length){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">还没有人上榜，快去学习成为第一名 🎉</p>';}else{var _shown=list.slice(0,10);var _rest=Math.max(0,total-10);el.innerHTML=_shown.map(function(u,i){var no=i+1;var medal=no===1?'🥇':no===2?'🥈':no===3?'🥉':no;return '<div class="rank-row'+(u.username===myname?' me':'')+'" data-u="'+_esc(u.username)+'"><div class="rank-no'+(no<=3?' top':'')+'">'+medal+'</div>'+_avatarHtml(u,38)+'<div class="rank-name"><div class="rank-nick">'+_esc(u.nickname||u.username)+'</div><div class="rank-meta">'+_esc(u.level||'A1')+' · 🏅'+(u.badges||0)+'</div></div><div class="rank-val">'+(u[_rankBy]||0)+'<small>'+unit+'</small></div></div>';}).join('')+(_rest>0?'<p style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-dim)">榜上另有 '+_rest+' 人</p>':'');_bindUser(el,'.rank-row[data-u]',function(n){openProfile(n);});}var hint=document.getElementById('rankHint');if(hint)hint.innerHTML=ACCT.token?'点头像看主页 · 你的学习数据会自动同步上榜':'还没登录？<a href="javascript:showSection(\'account\')" style="color:var(--gold-text)">登录</a>后即可上榜';});}
+function renderRank(by){if(by){_rankBy=by;}var ids={known:'rkKnown',streak:'rkStreak',total:'rkTotal'};for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('on',k===_rankBy);}var el=document.getElementById('rankList');if(!el)return;el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p>';if(!API_BASE){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">排行榜暂未开放</p>';return;}if(_rankScope==='friends'&&!ACCT.token){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">登录后可看好友榜</p>';return;}apiFetch('/api/leaderboard?by='+_rankBy+(_rankScope==='friends'?'&scope=friends':'')).then(function(r){if(!r||!r.ok||!r.data.list){el.innerHTML='<p class="acct-err">加载失败，请稍后再试</p>';return;}var list=r.data.list,total=Number(r.data.total);if(!isFinite(total))total=list.length;
+    // users = 全部注册账号，和 total（榜上人数）口径不同：榜只收该维度 >0 的人。
+    // 老版 Worker 没这个字段，拿不到就当 0、整行不显示 —— 前端先上线也不会显示错的数。
+    var allUsers=Number(r.data.users)||0;var myname=ACCT.user&&ACCT.user.username;var unit=_rankBy==='streak'?'天':(_rankBy==='total'?'次':'词');if(!list.length){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">还没有人上榜，快去学习成为第一名 🎉</p>';}else{var _shown=list.slice(0,10);var _rest=Math.max(0,total-10);el.innerHTML=_shown.map(function(u,i){var no=i+1;var medal=no===1?'🥇':no===2?'🥈':no===3?'🥉':no;return '<div class="rank-row'+(u.username===myname?' me':'')+'" data-u="'+_esc(u.username)+'"><div class="rank-no'+(no<=3?' top':'')+'">'+medal+'</div>'+_avatarHtml(u,38)+'<div class="rank-name"><div class="rank-nick">'+_esc(u.nickname||u.username)+'</div><div class="rank-meta">'+_esc(u.level||'A1')+' · 🏅'+(u.badges||0)+'</div></div><div class="rank-val">'+(u[_rankBy]||0)+'<small>'+unit+'</small></div></div>';}).join('')+(_rest>0?'<p style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-dim)">榜上另有 '+_rest+' 人</p>':'');_bindUser(el,'.rank-row[data-u]',function(n){openProfile(n);});}var sum=document.getElementById('rankSummary');
+    if(sum){
+      if(allUsers>0&&_rankScope!=='friends'){
+        var unitName=_rankBy==='streak'?'打过卡':(_rankBy==='total'?'答过题':'学过词');
+        sum.innerHTML='👥 全站共 <b>'+allUsers+'</b> 位学员 · 其中 <b>'+total+'</b> 人'+unitName+'上了榜';
+        sum.style.display='';
+      }else{sum.textContent='';sum.style.display='none';}
+    }
+    var hint=document.getElementById('rankHint');if(hint)hint.innerHTML=ACCT.token?'点头像看主页 · 你的学习数据会自动同步上榜':'还没登录？<a href="javascript:showSection(\'account\')" style="color:var(--gold-text)">登录</a>后即可上榜';});}
 // 初始化：接住 OAuth 回跳的 token、拉取自己的资料、离开页面时同步
 (function(){var justOauth=false;
 // 会话固定防护：以前只要 URL 带 #acct_token=xxx 就照单全收，于是攻击者把

@@ -747,8 +747,18 @@ export default {
         where += ' AND (id=? OR id IN (SELECT followee FROM follows WHERE follower=?))';
         binds = [uid, uid];
       }
+      // total = 榜上人数（col>0）；users = 全部注册账号。
+      // 两个数口径不同，站长实测对不上过：DB 里 226 个账号，页面只显示 88 ——
+      // 差的 138 个是注册后一个词都没标记掌握的人。所以两个都返回，前端一起显示。
+      // 全局榜用一条 SQL 同时算出两个数（条件聚合），不多加一次 D1 往返；
+      // col 来自上面的白名单 cols，不是用户输入，拼进 SQL 是安全的。
+      // 好友榜没有「全部注册」这个概念，users 返回 0，前端不显示。
+      const friends = binds.length > 0;
+      const countSQL = friends
+        ? 'SELECT COUNT(*) AS total, 0 AS users FROM users WHERE ' + where
+        : 'SELECT SUM(CASE WHEN ' + col + '>0 THEN 1 ELSE 0 END) AS total, COUNT(*) AS users FROM users';
       const [count, rows] = await Promise.all([
-        env.DB.prepare('SELECT COUNT(*) AS total FROM users WHERE ' + where).bind(...binds).first(),
+        env.DB.prepare(countSQL).bind(...binds).first(),
         env.DB.prepare(
         'SELECT id,username,nickname,avatar,av_bg,known,best_streak,total,level,badges FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
         ).bind(...binds).all(),
@@ -758,7 +768,7 @@ export default {
         known: r.known, streak: r.best_streak, total: r.total,
         badges: badgeList(r.badges, r.id).length,     // id 只用来算创始人，不进返回体
       }));
-      return json({ by, total: Number(count?.total || 0), list }, 200, cors);
+      return json({ by, total: Number(count?.total || 0), users: Number(count?.users || 0), list }, 200, cors);
     }
     if (M === 'GET' && path === '/api/profile') {
       const name = String(url.searchParams.get('name') || '').trim().toLowerCase();
