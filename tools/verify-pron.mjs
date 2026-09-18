@@ -58,14 +58,20 @@ const RULES = [
     ['斯普/斯特', 'Sprache（语言）= 斯普拉赫']],
   ['qu 读 [kv]，谐音不能出现「夸」(=kw)、「克夫」(=kf) 或「克法」',
     ['kv夸', '克夫</td>', '克法利泰特']],
-  ['z 读 [ts]，对应汉语 c/z 系；不能用卷舌的「楚 / 扎」',
-    ['zu=楚', 'zu＝楚', 'Satz（句子）= 扎茨']],
-  ['au 是双元音 [aʊ̯]，Pause 不能拆成「葩乌」两个音节',
-    ['葩乌泽']],
-  ['Straße：词首 st 读「施特」，词尾 -e 读 [ə]「瑟」',
-    ['斯特拉斯']],
-  ['复合数词里的 und 读 [ʊnt]「温特」，不能吞掉 t，也不能把 zwanzig 的 z 写成卷舌的「楚」',
-    ['温楚万齐希', '菲因夫温德莱西希', '诺伊因温诺伊因齐希']],
+  // 只管德语 **z**=[ts]。德语**词首 s+元音**是 [z]，本站另有定论：写「扎」
+  // （TAIL 的 sahne:'扎讷' 就是这条），所以 Satz=扎茨 是对的，别再混进来 ——
+  // 这条规则原来把 Satz（句子）= 扎茨 也列成违规，等于用 z 的规矩去判 s。
+  ['z 读 [ts]，对应汉语 c/z 系；不能用卷舌的「楚」（zu 系一律「粗」）',
+    ['zu=楚', 'zu＝楚', '= 楚', '＝楚']],
+  ['au 是双元音 [aʊ̯]，Pause 不能拆成「葩乌」两个音节（正确：泡泽）',
+    ['葩乌']],
+  ['Straße：词首 st 读「施特」，词尾 -e 读 [ə]「瑟」（正确：施特拉瑟）',
+    ['斯特拉斯', '施特拉斯']],
+  // 这条原来只盯「温楚万齐希」。2026-09 把 zu 系 楚→粗 全站统一之后，那条错写法变成
+  // 「温粗万齐希」—— 不在名单里，守卫**静默失效**了（实测真有一条 21 – einundzwanzig 就这么溜过去）。
+  // zwanzig 的 z 是 zw-=[tsv]，家族写法是「茨」（茨威 / 茨万齐希），粗 和 楚 都不对，两个都列上。
+  ['复合数词里的 und 读 [ʊnt]「温特」，不能吞掉 t；zwanzig 的 zw- 写「茨」，不写「楚 / 粗」',
+    ['温楚万齐希', '温粗万齐希', '菲因夫温德莱西希', '诺伊因温诺伊因齐希']],
 ];
 for (const [desc, pats] of RULES) {
   const hit = pats.filter((p) => txt.includes(p));
@@ -105,20 +111,13 @@ const addC = (de, py) => {
 for (const c2 of JSON.parse(readFileSync('data/categories.json', 'utf8'))) for (const ph of c2.phrases) addC(ph.de, ph.py);
 for (const b of JSON.parse(readFileSync('data/boards.json', 'utf8'))) for (const it of b.items) addC(it[0], it[2]);
 
-// 待裁决：词库侧与发音页冲突，但改动超出「照本站已有规则执行」的范围，需要人来定。
-// 值＝词库当前写法。定了之后把对应行删掉，检查会立刻重新盯住它。
-const PENDING = {
-  // 本站 verify-pron 的规则明写「z 读 [ts]，不能用卷舌的楚/扎」，页面写 粗 / 萨茨。
-  // 但词库对 z- 的写法本身就是混的（zwei 茨威 ✓、Zucker 楚克尔 ✗、Zahn 查恩 ✗），
-  // 且 zu 有 24 处 —— 这是整套 z- 谐音政策，不是一个词，别一个个偷偷改。
-  zu: '楚', Satz: '扎茨',
-  // 规则明写「au 是双元音，Pause 不能拆成葩乌两个音节」，页面写 泡泽。
-  Pause: '葩乌斯',
-  // 规则明写「Straße 词尾 -e 读 [ə]「瑟」」，页面写 施特拉瑟。
-  'Straße': '施特拉斯',
-  // 词库自己的 wichtig=维希提希 / günstig=京斯提希 都用「提」，唯独 richtig 用「蒂」。
-  richtig: '里希蒂希',
-};
+// 曾经这里有一张 PENDING 表，记着 5 处「词库与发音页教法不一」的待裁决项
+// （zu=楚 24 处、Satz、Pause、Straße、richtig）。2026-09 站长授权一次性定完，
+// 依据固定为：①本站发音页已写明的规则 ②词库内部多数写法与同族词一致 ③德语实际音值。
+// 结果：zu 系 242 处 楚→粗、-tig 12 处 蒂希→提希、Straße 5 处 补回词尾「瑟」、
+// Pause 葩乌斯→泡泽、发音页 Satz 萨茨→扎茨（词首 s 是 [z]，按 TAIL 的 扎 系）。
+// 表已清空 —— 从此这些词由下面的交叉比对永久盯住，再分叉就直接报错。
+const PENDING = {};
 let crossed = 0, pend = 0;
 for (const [w, m] of seen) {
   if (!corpus.has(w)) continue;

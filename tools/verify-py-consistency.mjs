@@ -108,10 +108,18 @@ const TAIL = {
   tee: '特',          // Grüntee/Jasmintee/Eistee 都是「特」，曾有一处写「提」
   tiere: '提勒',      // -tiere 的词尾 -e 不吞，曾有一处写「蒂尔」
   nummer: '努默尔',   // Nummer [ˈnʊmɐ]，-er 读 [ɐ]；曾散成 努默/努梅尔/农默尔
+  // 复合数词：zw- 是 [tsv]，家族写法「茨」。序数词早就写 艾因温特茨万齐希，
+  // 唯独「21 – einundzwanzig」一直是 温楚万齐希 —— 而 verify-pron 的同名规则只扫 src.html，
+  // 词库这侧压根没人管，是靠一次临时排查才撞见的。钉在这里，以后跑不掉。
+  zwanzig: '茨万齐希'
 };
 let checked = 0;
+// 数字表的条目写成「21 – einundzwanzig」「10.000 – zehntausend」这种「数字 – 词」的形式，
+// 带空格，于是下面那句 /\s/ 一律跳过 —— **整张数字表从来没被词根校验覆盖过**，
+// tausend / hundert / zehn 这些钉子对它全不生效。剥掉前缀（谐音侧没有对应部分，本来就只写词）。
+const stripNum = (t) => t.replace(/^[\d.,]+\s*[–-]\s*/, '');
 for (const [de, list] of seen) {
-  const w = de.trim().toLowerCase().replace(/^(der|die|das)\s+/, '');
+  const w = stripNum(de.trim()).toLowerCase().replace(/^(der|die|das)\s+/, '');
   if (/\s/.test(w)) continue;                       // 只看单词，不看短语句子
   for (const [root, py] of Object.entries(TAIL)) {
     if (!w.endsWith(root)) continue;
@@ -195,7 +203,11 @@ const CANON = {
   kann: '坎', können: '克嫩', möchten: '麦希腾',
   und: '温特', nicht: '尼希特', auch: '奥赫', sehr: '泽尔', gut: '古特', viele: '菲勒',
   in: '因', im: '伊姆', am: '阿姆', an: '安', auf: '奥夫', mit: '米特', nach: '纳赫',
-  zu: '楚', zum: '楚姆', für: '菲尔', von: '冯',
+  // 2026-09 站长拍板统一 z 系：德语 z 是 [ts]，「楚」是卷舌的 ch，两回事。
+  // zu 系 242 处全部改「粗」（发音页与页内小测本来就教 zu → 粗 ts）。
+  // 注意只有 z+后元音走「粗」：z+前元音按 Zimmer=齐默尔 的家族用「齐」（bezüglich=贝齐格利希），
+  // zw- 仍是「茨」（茨威 / 茨万齐希）。
+  zu: '粗', zum: '粗姆', für: '菲尔', von: '冯',
   was: '瓦斯', wie: '维', wo: '沃', es: '埃斯', bitte: '比特', weiter: '魏特尔',
 };
 let canons = 0;

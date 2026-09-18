@@ -65,7 +65,11 @@ if (nums.en && JSON.stringify(nums.en).includes('"eins"')) bad('英语数字组�
 
 // ④ 抽出来的谐音必须是校正后的版本 —— 这是当初脱节的直接症状，单独钉一遍
 const all = JSON.stringify(ref) + JSON.stringify(letters) + JSON.stringify(nums);
-const STALE = ['葩乌泽', 'kv夸', '修恩', '格吕因', '斯特拉斯', '斯普/斯特', '扎茨', '克法利泰特', '泽赫岑', '集普', '菲因夫'];
+// 「扎茨」曾被列为旧写法，2026-09 复查后摘除：德语**词首 s+元音是 [z]**，
+// 站里对它的渲染压倒性走 z 系 —— 实测 106 个此类词条中 扎/泽/祖/佐 共 76 个，
+// 萨 系只有 10 个（且多为 Sake / Summerrolls 这类外来词，本就该读 [s]）；
+// 发音页 S 行自己也写「See=泽」。所以 Satz=扎茨 才是对的，萨茨 反而把 [z] 当成了 [s]。
+const STALE = ['葩乌泽', 'kv夸', '修恩', '格吕因', '斯特拉斯', '斯普/斯特', '克法利泰特', '泽赫岑', '集普', '菲因夫'];
 for (const s of STALE) if (all.includes(s)) bad(`抽出来的数据里仍有旧写法「${s}」——多半是 src.html 没同步改`);
 
 console.log(`web 端抽取数据体检：3 页 × 2 语言 · 字母 ${letters.length} · 数字卡 德 ${nums.de.map((a) => a.length).join('+')} / 英 ${nums.en.map((a) => a.length).join('+')}`);
