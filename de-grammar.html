@@ -24,7 +24,7 @@
 {"@type":"ListItem","position":1,"name":"德语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"德语语法速查"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:f07f30ca5070 -->
+<!-- src-hash:6fcbfa8ab0d8 -->
 <style>
 :root{
   /* 底部标签栏占用的高度（含 iPhone 安全区）。所有 fixed/sticky 贴底的浮动元素
@@ -165,10 +165,6 @@ to{opacity:1}}
 /* GRID */
 .phrase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 /* 长版块快速跳转条 */
-.subnav{position:sticky;top:48px;z-index:150;display:flex;gap:6px;overflow-x:auto;background:var(--nav-bg);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 16px;margin:0 -16px 8px;scrollbar-width:none;border-bottom:1px solid var(--gold-faint)}
-.subnav::-webkit-scrollbar{display:none}
-.subnav-chip{flex-shrink:0;padding:5px 12px;border-radius:14px;background:rgba(88,204,2,.1);color:var(--gold-text);font-size:12px;white-space:nowrap;cursor:pointer;border:1px solid var(--gold-faint);font-family:inherit}
-.subnav-chip:active{background:rgba(88,204,2,.25)}
 /* SECTION TITLE */
 .sec-title{display:flex;align-items:center;gap:10px;margin:38px 0 16px;scroll-margin-top:100px}
 .sec-title-icon{font-size:16px;width:34px;height:34px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(88,204,2,.12);border:1px solid var(--gold-faint);border-radius:10px}
@@ -344,6 +340,27 @@ body:not(.lang-en) .en-only-block{display:none}
 .pic-cell.active{border-color:var(--gold);background:rgba(88,204,2,.08)}
 /* 连读时高亮当前这张卡。图解是网格，光听见声音不知道在读哪张 —— 没有这个高亮，
    「全部朗读」在这一页等于一串听不懂的德语。和 .card.speaking-now 一套配色。 */
+/* 错题本列表 */
+.wb-box{margin:22px 0 0;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.wb-box>summary{list-style:none;cursor:pointer;padding:13px 16px;font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;position:relative}
+.wb-box>summary::-webkit-details-marker{display:none}
+.wb-box>summary::after{content:"▸";margin-left:auto;color:var(--text-faint);font-size:13px}
+.wb-box[open]>summary::after{content:"▾"}
+.wb-box[open]>summary{border-bottom:1px solid var(--border)}
+.wb-hint{font-size:12px;font-weight:400;color:var(--text-dim)}
+.wb-list{max-height:52vh;overflow-y:auto}
+.wb-row{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border)}
+.wb-row:last-child{border-bottom:none}
+.wb-main{flex:1;min-width:0}
+.wb-de{font-size:14px;font-weight:600;color:var(--gold-text);word-break:break-word}
+.wb-zh{font-size:12px;color:var(--text-dim);margin-top:1px}
+.wb-py{font-size:12px;color:var(--text-faint)}
+/* 次数徽章：错得越多越该先练，视觉上要能一眼扫出来。
+   颜色走已有的 --orange-text 令牌（浅深两套 :root 都定义过、对比度已达标），
+   不自造固定色 —— 第一版写死 #a34a00 + 橙色半透明底，深色主题下只有 2.42:1，
+   verify-contrast 当场拦下（§6.2）。 */
+.wb-n{flex-shrink:0;font-size:11px;font-weight:700;color:var(--orange-text);background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:2px 8px}
+.wb-foot{padding:11px 14px;text-align:center}
 .pic-cell.reading{border-color:#58cc02;background:rgba(88,204,2,.12);box-shadow:0 0 0 2px rgba(88,204,2,.45),0 4px 16px rgba(88,204,2,.2)}
 .board-readbar{display:flex;align-items:center;gap:10px;margin:-6px 0 10px}
 .board-readbar>span{font-size:12px;color:var(--text-dim)}
@@ -432,12 +449,12 @@ body.lang-en .phfab{display:none}
 /* 触摸热区：视觉尺寸不动，透明 ::after 撑到 ≥44×44（iOS HIG / WCAG 2.5.8 AAA）。
    横向用 width:100% 保持原宽，只在本来就窄于 44 时才横向撑开，
    免得热区盖住并排的相邻按钮，把邻居变成点不动。 */
-.level-tab,.gq-opt,.read-art-btn,.dlg-play,.dlg-drill,.gloss-btn,.art-toggle,.btn,.acct-btn,.subnav-chip,.board-tab,.cat-tab,.oauth-btn,.sp-levels button,.dash-cta button,.rank-tabs button,.dash-goal-row,.prof-follow .pf-n,.foot .link,.voice-tip,.spk-panel button,#support p button,#support>.container>div>button{position:relative}
+.level-tab,.gq-opt,.read-art-btn,.dlg-play,.dlg-drill,.gloss-btn,.art-toggle,.btn,.acct-btn,.board-tab,.cat-tab,.oauth-btn,.sp-levels button,.dash-cta button,.rank-tabs button,.dash-goal-row,.prof-follow .pf-n,.foot .link,.voice-tip,.spk-panel button,#support p button,#support>.container>div>button{position:relative}
 /* ⚠️ .fab-read 本来就是 position:fixed，**不能**写进上面那条 ——
    同特异性下后写的 relative 会把它们从固定浮层打回文档流（曾经就这么把
    「循环朗读」和「零基础入门」两个悬浮按钮变成了行内元素）。
    固定定位本身就是绝对定位子元素的包含块，::after 热区照样生效，无需 relative。 */
-.level-tab::after,.gq-opt::after,.read-art-btn::after,.dlg-play::after,.dlg-drill::after,.gloss-btn::after,.art-toggle::after,.btn::after,.acct-btn::after,.subnav-chip::after,.board-tab::after,.cat-tab::after,.oauth-btn::after,.sp-levels button::after,.dash-cta button::after,.rank-tabs button::after,.dash-goal-row::after,.prof-follow .pf-n::after,.fab-read::after,.foot .link::after,.voice-tip::after,.spk-panel button::after,#support p button::after,#support>.container>div>button::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:100%;min-width:44px;min-height:44px}
+.level-tab::after,.gq-opt::after,.read-art-btn::after,.dlg-play::after,.dlg-drill::after,.gloss-btn::after,.art-toggle::after,.btn::after,.acct-btn::after,.board-tab::after,.cat-tab::after,.oauth-btn::after,.sp-levels button::after,.dash-cta button::after,.rank-tabs button::after,.dash-goal-row::after,.prof-follow .pf-n::after,.fab-read::after,.foot .link::after,.voice-tip::after,.spk-panel button::after,#support p button::after,#support>.container>div>button::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:100%;min-width:44px;min-height:44px}
 /* ⚠️ 这里**不能**写 pointer-events:none。写了热区就不参与命中测试，
    整条规则等于白设：实测「🔊 全部朗读」视觉 33px 高，可点区域也只有 34px，
    去掉这一句才真的变成 44px。横向已用 width:100% 锁死在按钮自身宽度，
@@ -676,7 +693,6 @@ body{padding-bottom:var(--tab-h)}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Grammatik</div>
     <h1 class="page-title">德语语法速记</h1>
-    
 
     <details class="gram-group" open=""><summary>① 入门必学 · 冠词性别 / 动词变位 / 四个格 / 基础句型</summary><div class="gram-body"><h2 class="sec-title" id="grammar_s0"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">名词性别（冠词）</span></h2>
     <div class="rule-box">

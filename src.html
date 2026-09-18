@@ -189,10 +189,6 @@ to{opacity:1}}
 /* GRID */
 .phrase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 /* 长版块快速跳转条 */
-.subnav{position:sticky;top:48px;z-index:150;display:flex;gap:6px;overflow-x:auto;background:var(--nav-bg);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 16px;margin:0 -16px 8px;scrollbar-width:none;border-bottom:1px solid var(--gold-faint)}
-.subnav::-webkit-scrollbar{display:none}
-.subnav-chip{flex-shrink:0;padding:5px 12px;border-radius:14px;background:rgba(88,204,2,.1);color:var(--gold-text);font-size:12px;white-space:nowrap;cursor:pointer;border:1px solid var(--gold-faint);font-family:inherit}
-.subnav-chip:active{background:rgba(88,204,2,.25)}
 /* SECTION TITLE */
 .sec-title{display:flex;align-items:center;gap:10px;margin:38px 0 16px;scroll-margin-top:100px}
 .sec-title-icon{font-size:16px;width:34px;height:34px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(88,204,2,.12);border:1px solid var(--gold-faint);border-radius:10px}
@@ -368,6 +364,27 @@ body:not(.lang-en) .en-only-block{display:none}
 .pic-cell.active{border-color:var(--gold);background:rgba(88,204,2,.08)}
 /* 连读时高亮当前这张卡。图解是网格，光听见声音不知道在读哪张 —— 没有这个高亮，
    「全部朗读」在这一页等于一串听不懂的德语。和 .card.speaking-now 一套配色。 */
+/* 错题本列表 */
+.wb-box{margin:22px 0 0;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.wb-box>summary{list-style:none;cursor:pointer;padding:13px 16px;font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;position:relative}
+.wb-box>summary::-webkit-details-marker{display:none}
+.wb-box>summary::after{content:"▸";margin-left:auto;color:var(--text-faint);font-size:13px}
+.wb-box[open]>summary::after{content:"▾"}
+.wb-box[open]>summary{border-bottom:1px solid var(--border)}
+.wb-hint{font-size:12px;font-weight:400;color:var(--text-dim)}
+.wb-list{max-height:52vh;overflow-y:auto}
+.wb-row{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border)}
+.wb-row:last-child{border-bottom:none}
+.wb-main{flex:1;min-width:0}
+.wb-de{font-size:14px;font-weight:600;color:var(--gold-text);word-break:break-word}
+.wb-zh{font-size:12px;color:var(--text-dim);margin-top:1px}
+.wb-py{font-size:12px;color:var(--text-faint)}
+/* 次数徽章：错得越多越该先练，视觉上要能一眼扫出来。
+   颜色走已有的 --orange-text 令牌（浅深两套 :root 都定义过、对比度已达标），
+   不自造固定色 —— 第一版写死 #a34a00 + 橙色半透明底，深色主题下只有 2.42:1，
+   verify-contrast 当场拦下（§6.2）。 */
+.wb-n{flex-shrink:0;font-size:11px;font-weight:700;color:var(--orange-text);background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:2px 8px}
+.wb-foot{padding:11px 14px;text-align:center}
 .pic-cell.reading{border-color:#58cc02;background:rgba(88,204,2,.12);box-shadow:0 0 0 2px rgba(88,204,2,.45),0 4px 16px rgba(88,204,2,.2)}
 .board-readbar{display:flex;align-items:center;gap:10px;margin:-6px 0 10px}
 .board-readbar>span{font-size:12px;color:var(--text-dim)}
@@ -456,12 +473,12 @@ body.lang-en .phfab{display:none}
 /* 触摸热区：视觉尺寸不动，透明 ::after 撑到 ≥44×44（iOS HIG / WCAG 2.5.8 AAA）。
    横向用 width:100% 保持原宽，只在本来就窄于 44 时才横向撑开，
    免得热区盖住并排的相邻按钮，把邻居变成点不动。 */
-.level-tab,.gq-opt,.read-art-btn,.dlg-play,.dlg-drill,.gloss-btn,.art-toggle,.btn,.acct-btn,.subnav-chip,.board-tab,.cat-tab,.oauth-btn,.sp-levels button,.dash-cta button,.rank-tabs button,.dash-goal-row,.prof-follow .pf-n,.foot .link,.voice-tip,.spk-panel button,#support p button,#support>.container>div>button{position:relative}
+.level-tab,.gq-opt,.read-art-btn,.dlg-play,.dlg-drill,.gloss-btn,.art-toggle,.btn,.acct-btn,.board-tab,.cat-tab,.oauth-btn,.sp-levels button,.dash-cta button,.rank-tabs button,.dash-goal-row,.prof-follow .pf-n,.foot .link,.voice-tip,.spk-panel button,#support p button,#support>.container>div>button{position:relative}
 /* ⚠️ .fab-read 本来就是 position:fixed，**不能**写进上面那条 ——
    同特异性下后写的 relative 会把它们从固定浮层打回文档流（曾经就这么把
    「循环朗读」和「零基础入门」两个悬浮按钮变成了行内元素）。
    固定定位本身就是绝对定位子元素的包含块，::after 热区照样生效，无需 relative。 */
-.level-tab::after,.gq-opt::after,.read-art-btn::after,.dlg-play::after,.dlg-drill::after,.gloss-btn::after,.art-toggle::after,.btn::after,.acct-btn::after,.subnav-chip::after,.board-tab::after,.cat-tab::after,.oauth-btn::after,.sp-levels button::after,.dash-cta button::after,.rank-tabs button::after,.dash-goal-row::after,.prof-follow .pf-n::after,.fab-read::after,.foot .link::after,.voice-tip::after,.spk-panel button::after,#support p button::after,#support>.container>div>button::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:100%;min-width:44px;min-height:44px}
+.level-tab::after,.gq-opt::after,.read-art-btn::after,.dlg-play::after,.dlg-drill::after,.gloss-btn::after,.art-toggle::after,.btn::after,.acct-btn::after,.board-tab::after,.cat-tab::after,.oauth-btn::after,.sp-levels button::after,.dash-cta button::after,.rank-tabs button::after,.dash-goal-row::after,.prof-follow .pf-n::after,.fab-read::after,.foot .link::after,.voice-tip::after,.spk-panel button::after,#support p button::after,#support>.container>div>button::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:100%;min-width:44px;min-height:44px}
 /* ⚠️ 这里**不能**写 pointer-events:none。写了热区就不参与命中测试，
    整条规则等于白设：实测「🔊 全部朗读」视觉 33px 高，可点区域也只有 34px，
    去掉这一句才真的变成 44px。横向已用 width:100% 锁死在按钮自身宽度，
@@ -720,7 +737,6 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Aussprache</div>
     <h2 class="page-title">德语发音规律</h2>
-    <div class="subnav" id="pronSubnav"></div>
 
     <div class="sec-title"><span class="sec-title-icon">🔡</span><span class="sec-title-text">26个基础字母 + 4个特殊字符</span><button id="letterAllBtn" class="btn" type="button" style="margin-left:auto;padding:7px 12px;font-size:12px" onclick="toggleLetterAll()">🔊 全部朗读</button></div>
     <div style="margin-bottom:10px;font-size:12px;color:var(--text-dim)">💡 括号内为该字母的<b style="color:var(--gold-text)">名称读音</b>，发音栏说明该字母在单词中的<b style="color:var(--gold-text)">实际发音</b></div>
@@ -852,7 +868,6 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Zahlen</div>
     <h2 class="page-title">德语数字规律</h2>
-    <div class="subnav" id="numSubnav"></div>
 
     <div class="sec-title"><span class="sec-title-icon">1️⃣</span><span class="sec-title-text">基础数字 0–12（必须单独记）</span><button id="deNumAllBtn" class="btn" type="button" style="margin-left:auto;padding:7px 12px;font-size:12px" onclick="toggleNumberAll('de')">🔊 全部朗读</button></div>
     <div class="num-grid" id="numGrid0"></div>
@@ -1003,7 +1018,6 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Grammatik</div>
     <h2 class="page-title">德语语法速记</h2>
-    <div class="subnav" id="grammarSubnav"></div>
 
     <details class="gram-group" open><summary>① 入门必学 · 冠词性别 / 动词变位 / 四个格 / 基础句型</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🏷️</span><span class="sec-title-text">名词性别（冠词）</span></div>
     <div class="rule-box">
@@ -1414,6 +1428,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
       <button class="level-tab" onclick="setQuizLevel('b2',this)">💎 B2</button>
     </div>
     <div id="mainQuizArea"></div>
+    <div id="wrongBook"></div>
   </div>
 </div>
 
@@ -1949,7 +1964,6 @@ body{padding-bottom:var(--tab-h)}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Pronunciation</div>
     <h2 class="page-title">英语发音规律</h2>
-    <div class="subnav" id="enPronSubnav"></div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">英语<b>不像德语"所见即所读"</b>——同样字母常有多种读法。下面是中国人最该先掌握的规律 + 谐音示例。</p>
 
     <div class="sec-title"><span class="sec-title-icon">🔡</span><span class="sec-title-text">26 个英文字母卡</span><button id="enLetterAllBtn" class="btn" type="button" style="margin-left:auto;padding:7px 12px;font-size:12px" onclick="toggleEnglishLetterAll()">🔊 全部朗读</button></div>
@@ -1992,7 +2006,6 @@ body{padding-bottom:var(--tab-h)}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Numbers</div>
     <h2 class="page-title">英语数字规律</h2>
-    <div class="subnav" id="enNumSubnav"></div>
 
     <div class="sec-title"><span class="sec-title-icon">1️⃣</span><span class="sec-title-text">1–12（单独记）</span><button id="enNumAllBtn" class="btn" type="button" style="margin-left:auto;padding:7px 12px;font-size:12px" onclick="toggleNumberAll('en')">🔊 全部朗读</button></div>
     <div class="num-grid" id="enNum1"></div>
@@ -2023,7 +2036,6 @@ body{padding-bottom:var(--tab-h)}
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Grammar</div>
     <h2 class="page-title">英语语法速记</h2>
-    <div class="subnav" id="enGrammarSubnav"></div>
 
     <div class="sec-title"><span class="sec-title-icon">🔑</span><span class="sec-title-text">be 动词：am / is / are</span></div>
     <div class="rule-box">
@@ -2382,6 +2394,7 @@ function updateQuizCardLang(){
   _lvTabs('quizLevelTabs','setQuizLevel',(typeof quizLevel!=='undefined')?quizLevel:'all');
   // 错题库随语言切换（spWrong 按语言分开存），切语言后条数要跟着换
   if(typeof updateQuizWrongSub==='function')updateQuizWrongSub();
+  if(typeof renderWrongBook==='function')renderWrongBook();
 }
 // 启动时若存为英语，载入英语数据
 if(LANG==='en')applyLangData();
@@ -2417,7 +2430,7 @@ function showSection(id){
   if(id==='me'&&typeof renderMe==='function')renderMe();
   if(id==='rank'&&typeof rankScope==='function')rankScope(_rankScope);
   if(id==='spell'&&typeof spInit==='function')spInit();
-  if(id==='quiz'&&typeof updateQuizWrongSub==='function')updateQuizWrongSub();
+  if(id==='quiz'){if(typeof updateQuizWrongSub==='function')updateQuizWrongSub();if(typeof renderWrongBook==='function')renderWrongBook();}
   if(id==='home'&&typeof renderHomeDash==='function')renderHomeDash();
   if(id==='dialog'&&typeof renderDialogues==='function')renderDialogues();
   var _bsec=(id==='me'||id==='account')?'account':(id==='series'||id==='dialog'?'reading':id);
@@ -3382,16 +3395,79 @@ function startQuiz(mode){
 function _quizIsVocab(){return mq.mode==='phrase'||mq.mode==='reverse'||mq.mode==='listen'||mq.mode==='wrongbook';}
 // 错题库：练习测验答错的词持久存在 spWrong（和拼写记忆共用同一份，答错自动记、答对自动摘）
 function _quizWrongPool(){
-  var m={},out=[],k;
-  try{m=_spWrongGet();}catch(e){}
-  for(k in m)out.push({de:k,zh:(m[k]&&m[k].zh)||'',py:(m[k]&&m[k].py)||'',id:'wrongbook-'+k});
+  var l=_wrongList(),out=[],i;
+  for(i=0;i<l.length;i++)out.push({de:l[i].de,zh:l[i].zh,py:l[i].py,n:l[i].n,id:'wrongbook-'+l[i].de});
   return out;
+}
+// 错题本出题按错次加权：错 5 次的词被抽到的概率是错 1 次的 5 倍。
+// 原来是均匀随机 —— 一个反复记不住的词和一个手滑错过一次的词机会一样，
+// 「专项巩固」就名不副实了。
+function _wrongWeighted(pool){
+  var tot=0,i,w;
+  for(i=0;i<pool.length;i++)tot+=Math.max(1,pool[i].n||1);
+  var r=Math.random()*tot;
+  for(i=0;i<pool.length;i++){w=Math.max(1,pool[i].n||1);r-=w;if(r<=0)return i;}
+  return pool.length-1;
 }
 function updateQuizWrongSub(){
   var el=document.getElementById('qdWrong');
   if(!el)return;
   var n=0;try{n=_quizWrongPool().length;}catch(e){}
   el.textContent=n?('已收录 '+n+' 个错题 · 专项巩固'):'暂无错题，测验答错会自动收录';
+}
+// 错题本列表：看得见、点得动。排序＝错得多的在前，同次数按最近错的在前。
+function _wrongList(){
+  var m={},out=[],k;
+  try{m=_spWrongGet();}catch(e){}
+  for(k in m)out.push({de:k,zh:(m[k]&&m[k].zh)||'',py:(m[k]&&m[k].py)||'',n:_wrongN(m[k]),ts:(m[k]&&m[k].ts)||0});
+  out.sort(function(a,b){return (b.n-a.n)||(b.ts-a.ts)||(a.de<b.de?-1:1);});
+  return out;
+}
+function renderWrongBook(){
+  var box=document.getElementById('wrongBook');if(!box)return;
+  var list=_wrongList();
+  if(!list.length){box.innerHTML='';return;}           // 空的时候不占位，卡片副标题已经说明了
+  var open=box.querySelector('details')&&box.querySelector('details').open;
+  var d=document.createElement('details');
+  d.className='wb-box';if(open)d.open=true;
+  var sum=document.createElement('summary');
+  sum.appendChild(document.createTextNode('📕 错题本（'+list.length+'）'));
+  var hint=document.createElement('span');hint.className='wb-hint';
+  hint.textContent=list[0].n>1?'错得多的排在前面':'点词可听发音';
+  sum.appendChild(hint);
+  d.appendChild(sum);
+  var ul=document.createElement('div');ul.className='wb-list';
+  list.forEach(function(w){
+    var row=document.createElement('div');row.className='wb-row';
+    var spk=document.createElement('button');
+    spk.type='button';spk.className='speak-btn';spk.textContent='🔊';
+    spk.setAttribute('aria-label','朗读 '+w.de);
+    spk.addEventListener('click',function(){try{speakDE(w.de,spk);}catch(e){}});
+    var main=document.createElement('div');main.className='wb-main';
+    var de=document.createElement('div');de.className='wb-de';de.lang='de';de.textContent=w.de;
+    var zh=document.createElement('div');zh.className='wb-zh';
+    zh.textContent=w.zh;
+    if(w.py){var py=document.createElement('span');py.className='wb-py';py.textContent=' · '+w.py;zh.appendChild(py);}
+    main.appendChild(de);main.appendChild(zh);
+    var n=document.createElement('span');n.className='wb-n';n.textContent='错 '+w.n+' 次';
+    var del=document.createElement('button');
+    del.type='button';del.className='star-btn';del.textContent='✕';
+    del.title='从错题本移除';del.setAttribute('aria-label','把 '+w.de+' 从错题本移除');
+    del.addEventListener('click',function(){_wrongDel(w.de);});
+    row.appendChild(spk);row.appendChild(main);row.appendChild(n);row.appendChild(del);
+    ul.appendChild(row);
+  });
+  d.appendChild(ul);
+  var foot=document.createElement('div');foot.className='wb-foot';
+  var clr=document.createElement('button');
+  clr.type='button';clr.className='btn';clr.style.cssText='padding:6px 16px;font-size:12px;background:var(--surface);color:var(--text-dim);border:1px solid var(--border)';
+  clr.textContent='🗑 清空错题本';
+  clr.addEventListener('click',function(){
+    if(!confirm('把 '+list.length+' 个错题全部清掉？此操作不可撤销。'))return;
+    try{_spWrongSave({});_wrongRefresh();}catch(e){}
+  });
+  foot.appendChild(clr);d.appendChild(foot);
+  box.innerHTML='';box.appendChild(d);
 }
 function setQuizLevel(k,btn){
   quizLevel=k;
@@ -3417,7 +3493,7 @@ function nextQ(){
   const isWrongbook=mq.mode==='wrongbook';
   const pool=isWrongbook?_quizWrongPool():all;
   if(isWrongbook&&!pool.length){showQuizResult();return;} // 答题过程中全部答对摘完了，直接结算
-  const idx=Math.floor(Math.random()*pool.length);
+  const idx=isWrongbook?_wrongWeighted(pool):Math.floor(Math.random()*pool.length);
   mq.current=pool[idx];
   // 干扰项不能和正解「显示出来一模一样」：词库里有 13 个同德语词（das Gericht=菜肴/法院）、
   // 174 个同中文（Tschüss!/Tschau!/Auf Wiedersehen! 都译作「再见！」）。撞上就是两个选项都对，
@@ -3475,7 +3551,7 @@ function checkQ(btn){
     btn.classList.add('correct');mq.score++;
     // 答对了：如果这个词原本在错题库里，说明这次巩固成功，摘掉它——错题库不是越攒越多，是练一个少一个
     if(_quizIsVocab()&&mq.current&&mq.current.de){
-      try{var _qm=_spWrongGet();if(_qm[mq.current.de]){delete _qm[mq.current.de];_spWrongSave(_qm);updateQuizWrongSub();}}catch(e){}
+      _wrongDel(mq.current.de);
     }
   }else{
     btn.classList.add('wrong');
@@ -3485,7 +3561,7 @@ function checkQ(btn){
     if(_quizIsVocab()&&mq.current&&mq.current.de){
       mq.wrong=mq.wrong||[];
       mq.wrong.some(function(x){return x.de===mq.current.de;})||mq.wrong.push({de:mq.current.de,zh:mq.current.zh||'',py:mq.current.py||''});
-      try{var _qm2=_spWrongGet();_qm2[mq.current.de]={zh:mq.current.zh||'',py:mq.current.py||''};_spWrongSave(_qm2);updateQuizWrongSub();}catch(e){}
+      _wrongAdd(mq.current.de,mq.current.zh,mq.current.py);
     }
   }
   if(mq.current&&mq.current.de){try{speakDE(mq.current.de);}catch(e){}} // 答完听德语发音
@@ -3530,9 +3606,7 @@ function showQuizResult(){
 function quizWrongToSpell(){
   var wr=(mq&&mq.wrong)||[],i;
   try{
-    var m=_spWrongGet();
-    for(i=0;i<wr.length;i++){var w=wr[i];if(w&&w.de)m[w.de]={zh:w.zh||'',py:w.py||''};}
-    _spWrongSave(m);
+    for(i=0;i<wr.length;i++){var w=wr[i];if(w&&w.de)_wrongAdd(w.de,w.zh,w.py);}
   }catch(e){}
   try{track('quiz2spell',{n:wr.length});}catch(e){}
   showSection('spell');
@@ -4706,16 +4780,11 @@ function boardAns(btn,sel,cor){
   sc.innerHTML=(sel===cor?'🎉 答对了！':'✅ 正确答案已标绿')+'<button class="btn" type="button" style="padding:5px 14px;font-size:12px;margin-left:8px" onclick="buildBoardQuiz()">🔄 下一题</button>';
 }
 function _boardWrong(de,right){
-  var m=_spWrongGet();
-  if(right){ if(!m[de])return; delete m[de]; }
-  else{
-    var items=_boardItems(),it=null,i;
-    for(i=0;i<items.length;i++)if(items[i].de===de)it=items[i];
-    if(!it)return;                                   // 找不到就别往错题本里塞半条
-    m[de]={zh:it.zh||'',py:it.py||''};
-  }
-  _spWrongSave(m);
-  if(typeof updateQuizWrongSub==='function')updateQuizWrongSub();
+  if(right){_wrongDel(de);return;}
+  var items=_boardItems(),it=null,i;
+  for(i=0;i<items.length;i++)if(items[i].de===de)it=items[i];
+  if(!it)return;                                     // 找不到就别往错题本里塞半条
+  _wrongAdd(de,it.zh,it.py);
 }
 function renderBody(){
   var chips=document.getElementById('bodyChips');
@@ -4779,21 +4848,17 @@ function appInit(){
   try{initPhrases();}catch(e){}
   try{renderGramQuizzes();}catch(e){}
   try{buildReadTabs();buildSeriesTabs();}catch(e){}   // 标签轻量先建；长列表首次打开懒渲染
-  try{buildSubNav('grammar','grammarSubnav');buildSubNav('en-grammar','enGrammarSubnav');buildSubNav('pronunciation','pronSubnav');buildSubNav('numbers','numSubnav');buildSubNav('en-pron','enPronSubnav');buildSubNav('en-num','enNumSubnav');}catch(e){}
+  try{['grammar','en-grammar','pronunciation','numbers','en-pron','en-num'].forEach(tagSecTitles);}catch(e){}
 }
-// 长版块快速跳转条
-function buildSubNav(sectionId,navId){
-  const sec=document.getElementById(sectionId), nav=document.getElementById(navId);
-  if(!sec||!nav)return;
-  nav.innerHTML='';
-  sec.querySelectorAll('.sec-title').forEach((t,i)=>{
-    const id=sectionId+'_s'+i; t.id=id;
-    const lab=t.querySelector('.sec-title-text'); if(!lab)return;
-    const chip=document.createElement('button');
-    chip.className='subnav-chip'; chip.type='button'; chip.textContent=lab.textContent;
-    chip.onclick=function(){var el=document.getElementById(id);var d=el.closest&&el.closest('details');if(d)d.open=true;el.scrollIntoView({behavior:'smooth',block:'start'});};
-    nav.appendChild(chip);
-  });
+// 顶部那条横向「快速跳转」芯片条已按站长要求删除（太乱，且和页内标题重复）。
+// 但它原来顺手干了另一件事：给每个 .sec-title 打上 <sectionId>_s<i> 的 id ——
+// tools/gen-seo-pages.mjs 是从活页面克隆 DOM 生成免登录教学页的，
+// 那些 id 就是教学页里的标题锚点（de-grammar.html#grammar_s4 这种）。
+// 所以只删芯片，保留打 id 这一步。
+function tagSecTitles(sectionId){
+  const sec=document.getElementById(sectionId);
+  if(!sec)return;
+  sec.querySelectorAll('.sec-title').forEach((t,i)=>{t.id=sectionId+'_s'+i;});
 }
 setLang(LANG); // 应用初始语言（含 localStorage 记忆）
 if(!document.documentElement.classList.contains('locked'))appInit();  // 已登录直接建；未登录等解锁后建
@@ -5107,6 +5172,26 @@ function spSetDiff(d){SP.diff=d;var b=document.getElementById('spDiffs').querySe
 function _spStoreKey(k){return k+'_'+(LANG==='en'?'en':'de');}
 function _spWrongGet(){try{return JSON.parse(localStorage.getItem(_spStoreKey('spWrong'))||'{}');}catch(e){return {};}}
 function _spWrongSave(m){try{localStorage.setItem(_spStoreKey('spWrong'),JSON.stringify(m));}catch(e){}}
+// 全站只经这两个口子改错题本。原来 4 处各自 m[de]={zh,py} 直接赋值，
+// 想加「错了几次」就得同时改 4 处、漏一处就是静默不计数。
+// 条目升级为 {zh,py,n,ts}：n=累计错次，ts=最后一次错的时间。
+// 老数据只有 {zh,py}，读的时候按 n=1 / ts=0 兜底，不需要迁移。
+function _wrongN(e){return (e&&e.n)||1;}
+function _wrongAdd(de,zh,py){
+  if(!de)return;
+  try{
+    var m=_spWrongGet(),old=m[de];
+    m[de]={zh:zh||(old&&old.zh)||'',py:py||(old&&old.py)||'',n:(old?_wrongN(old):0)+1,ts:Date.now()};
+    _spWrongSave(m);_wrongRefresh();
+  }catch(e){}
+}
+function _wrongDel(de){
+  try{var m=_spWrongGet();if(!m[de])return;delete m[de];_spWrongSave(m);_wrongRefresh();}catch(e){}
+}
+function _wrongRefresh(){
+  try{if(typeof updateQuizWrongSub==='function')updateQuizWrongSub();}catch(e){}
+  try{if(typeof renderWrongBook==='function')renderWrongBook();}catch(e){}
+}
 function spEnsure(cb,onFail){
   if(LANG!=='en')return _deEnsure(cb,onFail);
   if(window._ENC)return true;
@@ -5219,7 +5304,7 @@ function spHint(){SP.revealed=true;spReveal();try{document.getElementById('spInp
 function spReplay(){try{if(typeof speakDE==='function')speakDE(SP.word);}catch(e){}}
 function spSkip(){SP.i++;spLoad();}
 function spWordDone(){SP.learned++;var flawless=!SP.revealed&&SP.miss===0;if(flawless)SP.perfect++;else if(SP.item){var w=SP.item,dup=false,k;for(k=0;k<SP.wrong.length;k++)if(SP.wrong[k].de===w.de){dup=true;break;}if(!dup)SP.wrong.push(w);}
-try{var _wm=_spWrongGet();if(flawless){if(_wm[SP.word]){delete _wm[SP.word];_spWrongSave(_wm);}}else if(SP.item){_wm[SP.word]={zh:SP.item.zh||'',py:SP.item.py||''};_spWrongSave(_wm);}}catch(e){}var card=document.getElementById('spCard');if(card){card.classList.add('ok');setTimeout(function(){card.classList.remove('ok');},500);}spDing();try{if(SP.review||(SP.item&&SP.item.rev)){srsGrade(SP.word,flawless);}else{var m=getKnown();if(!m[SP.word]){m[SP.word]={b:1,t:Date.now()};saveKnown(m);}}studyTick(1);acctSyncSoon();}catch(e){}SP.i++;setTimeout(spLoad,650);}
+if(flawless)_wrongDel(SP.word);else if(SP.item)_wrongAdd(SP.word,SP.item.zh,SP.item.py);var card=document.getElementById('spCard');if(card){card.classList.add('ok');setTimeout(function(){card.classList.remove('ok');},500);}spDing();try{if(SP.review||(SP.item&&SP.item.rev)){srsGrade(SP.word,flawless);}else{var m=getKnown();if(!m[SP.word]){m[SP.word]={b:1,t:Date.now()};saveKnown(m);}}studyTick(1);acctSyncSoon();}catch(e){}SP.i++;setTimeout(spLoad,650);}
 function spReviewWrong(){if(!SP.wrong.length)return;SP.q=_spShuf(SP.wrong.slice());SP.i=0;SP.learned=0;SP.perfect=0;SP.wrong=[];document.getElementById('spDone').style.display='none';document.getElementById('spDrill').style.display='';spLoad();}
 function spFinish(){document.getElementById('spBar').style.width='100%';document.getElementById('spDrill').style.display='none';var acc=SP.learned?Math.round(SP.perfect/SP.learned*100):0;var nw=SP.wrong.length;var wasDaily=SP.daily;SP.daily=false;var dailyBanner='';if(wasDaily){_dailyMark();try{if(typeof renderHomeDash==='function')renderHomeDash();}catch(e){}dailyBanner='<div style="font-size:14px;font-weight:800;color:var(--gold-text);margin-top:6px">✅ 今日课程完成！明天继续～</div>';}var d=document.getElementById('spDone');d.style.display='';d.innerHTML='<div class="sp-card"><div style="font-size:44px">🎉</div><div style="font-size:22px;font-weight:800;color:var(--text);margin-top:8px">本组完成！</div>'+dailyBanner+'<div style="font-size:14px;color:var(--text-dim);margin-top:10px">掌握 <b style="color:var(--gold-text);font-size:20px">'+SP.learned+'</b> 词 · 一次全对 <b style="color:var(--gold-text)">'+SP.perfect+'</b> 词（'+acc+'%）'+(nw?'<br>有 <b style="color:var(--red-text)">'+nw+'</b> 个词卡壳了，重练一遍记更牢':'')+'</div><div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">'+(nw?'<button type="button" class="acct-btn" onclick="spReviewWrong()">🔁 重练错词（'+nw+'）</button>':'')+'<div style="display:flex;gap:10px"><button type="button" class="'+(nw?'oauth-btn':'acct-btn')+'" style="flex:1;margin:0" onclick="spStart()">再来一组</button><button type="button" class="oauth-btn" style="flex:1;margin:0" onclick="spInit()">换级别/模式</button></div></div></div>';}
 </script>
