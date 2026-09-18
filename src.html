@@ -1616,11 +1616,13 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
         <div class="sp-tap">⌨️ 电脑直接打字 · 手机点这里调出键盘</div>
         <div class="sp-uml" id="spUml"><button type="button" onclick="spKey('ä')">ä</button><button type="button" onclick="spKey('ö')">ö</button><button type="button" onclick="spKey('ü')">ü</button><button type="button" onclick="spKey('ß')">ß</button></div>
       </div>
+      <!-- 纯图标：文字版四颗按钮在 390px 屏上要折行，很乱。
+           图标按钮对读屏是哑的，所以 aria-label 必须给全；title 顺带给鼠标端悬停提示。 -->
       <div class="sp-ctrl">
-        <button type="button" onclick="spReplay()">🔊 读一遍</button>
-        <button type="button" onclick="spHint()">💡 提示一个</button>
-        <button type="button" onclick="spSkip()">跳过 →</button>
-        <button type="button" id="spSoundBtn" onclick="spToggleSound()">🔔 音效</button>
+        <button type="button" onclick="spReplay()" title="再读一遍" aria-label="再读一遍">🔊</button>
+        <button type="button" onclick="spHint()" title="提示一个字母" aria-label="提示一个字母">💡</button>
+        <button type="button" onclick="spSkip()" title="跳过这个词" aria-label="跳过这个词">⏭</button>
+        <button type="button" id="spSoundBtn" onclick="spToggleSound()" title="音效开关" aria-label="音效：开">🔔</button>
       </div>
     </div>
     <div id="spDone" style="display:none"></div>
@@ -1755,9 +1757,22 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
 .sp-slot.filled{background:rgba(88,204,2,.14);color:var(--gold-text)}
 .sp-slot.bad{animation:spShake .3s;border-color:var(--red-text);background:rgba(255,75,75,.15)}
 /* 整句模式：字母槽更小、按词分组避免词中折行、标点弱化自动填 */
-.sp-word{display:inline-flex;gap:5px}
+.sp-word{display:inline-flex;flex-wrap:wrap;gap:5px;justify-content:center}
 .sp-slots.sent{gap:6px 14px}
 .sp-slots.sent .sp-slot{width:26px;height:38px;font-size:18px;border-radius:8px}
+/* 窄屏收窄格子：390px 宽的手机上，34px 格子 + 8px 间距最多排 9 个，
+   vielleicht（10 字母）直接冲出屏幕。28px 时能排 11 个，覆盖站里绝大多数词；
+   再长的由上面的 flex-wrap 换行接住，不会再横向溢出。 */
+@media (max-width:430px){
+  /* 卡片左右内边距从 20 收到 10：390px 屏上原来左右各被吃掉 49px，只剩 292px 可用，
+     10 个格子（vielleicht）必然折行。收窄后可用宽度 328px，
+     10×28 + 9×5 = 325px 刚好一行装下 —— 站里绝大多数词都在 10 个字母以内。
+     再长的（Selbstverständlich 18 个）由 .sp-word 的 flex-wrap 换行接住，不横向溢出。 */
+  .sp-card{padding:22px 10px}
+  .sp-slots{gap:5px}
+  .sp-slot{width:28px;height:40px;font-size:20px;border-radius:8px}
+  .sp-slots.sent .sp-slot{width:22px;height:32px;font-size:15px}
+}
 .sp-slot.auto{background:transparent;border-color:transparent;color:var(--text-faint)}
 @keyframes spShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 .sp-input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;background:transparent;font-size:16px;z-index:2;cursor:text}
@@ -1766,7 +1781,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
 .sp-uml button{width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);font-size:18px;font-family:Georgia,serif;cursor:pointer;color:var(--text)}
 .sp-uml button:active{background:var(--gold);color:var(--on-brand)}
 .sp-ctrl{display:flex;gap:10px;justify-content:center;margin:18px auto 0;max-width:520px}
-.sp-ctrl button{flex:1;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text-dim);font-size:14px;font-family:inherit;cursor:pointer}
+.sp-ctrl button{flex:1;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text-dim);font-size:20px;line-height:1;font-family:inherit;cursor:pointer;min-height:44px}
 /* gap 至少 10：按钮 34px 高，行距不到 44 的话上下两排热区会互相抢，实测只剩 42 */
 .sp-levels{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px auto 18px;max-width:460px}
 .sp-levels button{padding:7px 16px;border:1px solid var(--border);border-radius:16px;background:var(--surface);color:var(--text-dim);font-size:13px;font-family:inherit;cursor:pointer}
@@ -5166,7 +5181,8 @@ function spBeep(freq,dur,type){if(!SP.sound)return;try{if(!_spAC)_spAC=new(windo
 function spOK(){spBeep(880,0.06,'triangle');}
 function spBad(){spBeep(150,0.14,'sawtooth');}
 function spDing(){spBeep(660,0.09,'sine');setTimeout(function(){spBeep(990,0.14,'sine');},90);}
-function spToggleSound(){SP.sound=!SP.sound;try{localStorage.setItem('spSound',SP.sound?'1':'0');}catch(e){}var b=document.getElementById('spSoundBtn');if(b)b.textContent=SP.sound?'🔔 音效':'🔕 静音';if(SP.sound)spOK();}
+function _spSoundBtn(b){if(!b)return;b.textContent=SP.sound?'🔔':'🔕';b.setAttribute('aria-label',SP.sound?'音效：开（点击关闭）':'音效：关（点击开启）');}
+function spToggleSound(){SP.sound=!SP.sound;try{localStorage.setItem('spSound',SP.sound?'1':'0');}catch(e){}_spSoundBtn(document.getElementById('spSoundBtn'));if(SP.sound)spOK();}
 function spSetDiff(d){SP.diff=d;var b=document.getElementById('spDiffs').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-d')===d);}
 // 错词本：跨会话持久化（敲错过的词），一次全对自动移出
 function _spStoreKey(k){return k+'_'+(LANG==='en'?'en':'de');}
@@ -5290,7 +5306,7 @@ var L=[['0',_m['0']],['a1',_m.a1],['a2',_m.a2],['b1',_m.b1],['b2',_m.b2],['all',
 function spSetLevel(l){SP.level=l;spRenderLevels();spUpdatePoolInfo();}
 function spSetMode(m){SP.mode=m;var b=document.getElementById('spModes').querySelectorAll('button'),i;for(i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-m')===m);}
 function spUpdatePoolInfo(){var el=document.getElementById('spPoolInfo');if(!spEnsure(spUpdatePoolInfo,function(retry){if(!el)return;el.innerHTML='⚠️ 词库加载失败 <button type="button" class="btn" id="spRetryBtn" style="margin-left:6px;padding:4px 12px;font-size:12px">点击重试</button>';var rb=document.getElementById('spRetryBtn');if(rb)rb.onclick=retry;})){if(el)el.innerHTML='词库加载中… ⏳';return;}var n=spBuildPool(SP.level).length;var wn=0,dn=0;try{wn=Object.keys(_spWrongGet()).length;}catch(e){}try{dn=srsDueList().length;}catch(e){}var _st=' style="width:auto;display:inline-block;margin:10px 4px 0;padding:7px 18px" onclick="';var btns='';if(dn)btns+='<button type="button" class="acct-btn"'+_st+'spStartReview()">📆 到期复习（'+dn+'）</button>';if(wn)btns+='<button type="button" class="oauth-btn"'+_st+'spStartWrong()">🔁 错词本（'+wn+'）</button>';el.innerHTML=(n?('待记 '+n+' 词（已掌握的自动跳过）· 每组 '+Math.min(SP.size,n)+' 词'):'这个级别的词都掌握啦，换一个级别试试 🎉')+(btns?'<br>'+btns:'');}
-function spInit(){var en=LANG==='en',t=document.getElementById('spTitle'),intro=document.getElementById('spIntro'),inp=document.getElementById('spInput'),uml=document.getElementById('spUml');if(t)t.textContent=en?'⌨️ 英语拼写':'⌨️ 拼写记忆';if(intro)intro.textContent=en?'看中文 / 听发音 → 键盘敲出英语拼写。逐字母强校验，已掌握的词自动跳过，专攻没记牢的。':'看中文 / 听发音 → 键盘敲出德语拼写。逐字母强校验，敲错原地纠正；已掌握的词自动跳过，专攻没记牢的。';if(inp)inp.setAttribute('aria-label',en?'输入英语拼写':'输入德语拼写');if(uml)uml.style.display=en?'none':'';spRenderLevels();spSetMode(SP.mode);spSetUnit(SP.unit||'word');spSetDiff(SP.diff);document.getElementById('spSetup').style.display='';document.getElementById('spDrill').style.display='none';document.getElementById('spDone').style.display='';document.getElementById('spDone').style.display='none';var sb=document.getElementById('spSoundBtn');if(sb)sb.textContent=SP.sound?'🔔 音效':'🔕 静音';spUpdatePoolInfo();if(inp&&!inp._b){inp._b=1;inp.addEventListener('input',spOnInput);}}
+function spInit(){var en=LANG==='en',t=document.getElementById('spTitle'),intro=document.getElementById('spIntro'),inp=document.getElementById('spInput'),uml=document.getElementById('spUml');if(t)t.textContent=en?'⌨️ 英语拼写':'⌨️ 拼写记忆';if(intro)intro.textContent=en?'看中文 / 听发音 → 键盘敲出英语拼写。逐字母强校验，已掌握的词自动跳过，专攻没记牢的。':'看中文 / 听发音 → 键盘敲出德语拼写。逐字母强校验，敲错原地纠正；已掌握的词自动跳过，专攻没记牢的。';if(inp)inp.setAttribute('aria-label',en?'输入英语拼写':'输入德语拼写');if(uml)uml.style.display=en?'none':'';spRenderLevels();spSetMode(SP.mode);spSetUnit(SP.unit||'word');spSetDiff(SP.diff);document.getElementById('spSetup').style.display='';document.getElementById('spDrill').style.display='none';document.getElementById('spDone').style.display='';document.getElementById('spDone').style.display='none';_spSoundBtn(document.getElementById('spSoundBtn'));spUpdatePoolInfo();if(inp&&!inp._b){inp._b=1;inp.addEventListener('input',spOnInput);}}
 function _spShuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
 function spStart(){if(!spEnsure(spStart))return;var pool=_spShuf(spBuildPool(SP.level));if(!pool.length){spUpdatePoolInfo();return;}try{_lastStudySet({spell:1,level:SP.level,name:(LANG==='en'?'英语拼写':'拼写记忆')+' · '+(levelName(SP.level)||'全部')});}catch(e){}SP.review=false;SP.daily=false;SP.q=pool.slice(0,SP.size);_spGo();}
 function spLoad(){if(SP.i>=SP.q.length){spFinish();return;}var it=SP.q[SP.i];SP.item=it;SP.word=it.de;SP.zh=it.zh;SP.py=it.py;SP.pos=0;SP.miss=0;SP.revealed=false;document.getElementById('spBar').style.width=(SP.i/SP.q.length*100)+'%';document.getElementById('spCount').textContent=(SP.i+1)+' / '+SP.q.length;var listen=SP.mode==='listen';document.getElementById('spZh').textContent=listen?'🎧 听发音，拼出这个词':SP.zh;document.getElementById('spPy').textContent=listen?'':(SP.py||'');document.getElementById('spTrace').textContent=SP.diff==='trace'?SP.word:'';spRenderSlots();_spAutoAdvance();var inp=document.getElementById('spInput');inp.value='';setTimeout(function(){try{inp.focus();}catch(e){}},30);spReplay();}

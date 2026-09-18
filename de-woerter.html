@@ -24,7 +24,7 @@
 {"@type":"ListItem","position":1,"name":"德语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"主题词表"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:ac80fff66742 -->
+<!-- src-hash:970bcb159ef4 -->
 <style>
 :root{
   /* 底部标签栏占用的高度（含 iPhone 安全区）。所有 fixed/sticky 贴底的浮动元素
@@ -601,9 +601,22 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
 .sp-slot.filled{background:rgba(88,204,2,.14);color:var(--gold-text)}
 .sp-slot.bad{animation:spShake .3s;border-color:var(--red-text);background:rgba(255,75,75,.15)}
 /* 整句模式：字母槽更小、按词分组避免词中折行、标点弱化自动填 */
-.sp-word{display:inline-flex;gap:5px}
+.sp-word{display:inline-flex;flex-wrap:wrap;gap:5px;justify-content:center}
 .sp-slots.sent{gap:6px 14px}
 .sp-slots.sent .sp-slot{width:26px;height:38px;font-size:18px;border-radius:8px}
+/* 窄屏收窄格子：390px 宽的手机上，34px 格子 + 8px 间距最多排 9 个，
+   vielleicht（10 字母）直接冲出屏幕。28px 时能排 11 个，覆盖站里绝大多数词；
+   再长的由上面的 flex-wrap 换行接住，不会再横向溢出。 */
+@media (max-width:430px){
+  /* 卡片左右内边距从 20 收到 10：390px 屏上原来左右各被吃掉 49px，只剩 292px 可用，
+     10 个格子（vielleicht）必然折行。收窄后可用宽度 328px，
+     10×28 + 9×5 = 325px 刚好一行装下 —— 站里绝大多数词都在 10 个字母以内。
+     再长的（Selbstverständlich 18 个）由 .sp-word 的 flex-wrap 换行接住，不横向溢出。 */
+  .sp-card{padding:22px 10px}
+  .sp-slots{gap:5px}
+  .sp-slot{width:28px;height:40px;font-size:20px;border-radius:8px}
+  .sp-slots.sent .sp-slot{width:22px;height:32px;font-size:15px}
+}
 .sp-slot.auto{background:transparent;border-color:transparent;color:var(--text-faint)}
 @keyframes spShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 .sp-input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;background:transparent;font-size:16px;z-index:2;cursor:text}
@@ -612,7 +625,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
 .sp-uml button{width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);font-size:18px;font-family:Georgia,serif;cursor:pointer;color:var(--text)}
 .sp-uml button:active{background:var(--gold);color:var(--on-brand)}
 .sp-ctrl{display:flex;gap:10px;justify-content:center;margin:18px auto 0;max-width:520px}
-.sp-ctrl button{flex:1;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text-dim);font-size:14px;font-family:inherit;cursor:pointer}
+.sp-ctrl button{flex:1;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text-dim);font-size:20px;line-height:1;font-family:inherit;cursor:pointer;min-height:44px}
 /* gap 至少 10：按钮 34px 高，行距不到 44 的话上下两排热区会互相抢，实测只剩 42 */
 .sp-levels{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px auto 18px;max-width:460px}
 .sp-levels button{padding:7px 16px;border:1px solid var(--border);border-radius:16px;background:var(--surface);color:var(--text-dim);font-size:13px;font-family:inherit;cursor:pointer}
