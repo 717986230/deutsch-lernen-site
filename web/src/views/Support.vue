@@ -4,8 +4,8 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
-const qr = import.meta.env.BASE_URL + 'support-qr.png';
-const wxQr = import.meta.env.BASE_URL + 'support-wechat.png';
+const qr = import.meta.env.BASE_URL + 'support-qr.jpg';
+const wxQr = import.meta.env.BASE_URL + 'support-wechat.jpg';
 const copied = ref(false);
 
 // 与旧站 copyShare 同行为：复制站点网址，按钮短暂变成已复制
