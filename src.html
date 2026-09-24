@@ -261,10 +261,13 @@ mark.sh{background:rgba(88,204,2,.32);color:inherit;border-radius:3px;padding:0 
 .rule-py{font-size:12px;color:var(--gold-text)88;flex:1;min-width:80px}
 /* QUIZ */
 .quiz-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center;max-width:520px;margin:0 auto}
-.quiz-q{font-size:32px;color:var(--gold-text);font-weight:700;margin-bottom:8px}
+.quiz-q{font-size:32px;color:var(--gold-text);font-weight:700;margin-bottom:8px;overflow-wrap:anywhere;hyphens:auto}
 .quiz-hint{font-size:13px;color:var(--text-dim);margin-bottom:24px}
-.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.quiz-opt{padding:12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:15px;cursor:pointer;font-family:inherit;transition:all .2s}
+/* 必须是 minmax(0,1fr)：裸写 1fr 等于 minmax(auto,1fr)，一个不能断行的长德语词
+   （die Geschwindigkeitsbeschränkung，32 字符）会把所在列撑得比半屏还宽，整页横向溢出。
+   只在抽到长词、且干扰项组合不巧时才出现 —— 360px 屏实测页宽被撑到 376～383。 */
+.quiz-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.quiz-opt{padding:12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:15px;cursor:pointer;font-family:inherit;transition:all .2s;overflow-wrap:anywhere;hyphens:auto}
 .quiz-opt:hover{border-color:var(--gold-dim);background:rgba(88,204,2,.08)}
 .quiz-opt.correct{border-color:var(--green);background:rgba(88,204,2,.15);color:var(--gold-text)}
 .quiz-opt.wrong{border-color:var(--red);background:rgba(255,75,75,.12);color:var(--red-text)}
@@ -455,7 +458,7 @@ body.lang-en .phfab{display:none}
 /* min-width 至少 44：单字母选项（比如 d）只有 37px 宽，和同样窄的邻项并排时
    两边的 44px 热区会互相咬掉一点，实测只剩 43.4px。把短选项直接撑到 44，
    热区就等于视觉尺寸，不再依赖邻项有多宽。 */
-.gq-opt{min-width:44px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 14px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .15s;line-height:1.4}
+.gq-opt{min-width:44px;max-width:100%;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 14px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .15s;line-height:1.4;overflow-wrap:anywhere}
 .gq-opt:hover{border-color:var(--gold-dim)}
 .gq-opt.ok{background:rgba(88,204,2,.14);border-color:#58cc02;color:var(--gold-text);font-weight:700}
 .gq-opt.bad{background:rgba(255,75,75,.1);border-color:var(--red-text);color:var(--red-text)}
@@ -1087,10 +1090,10 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     </table>
     <div class="rule-box" style="line-height:1.6">
       <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px">同一个词「der Mann 男人」走遍四个格，看冠词怎么变：</div>
-      <div style="font-size:15px" lang="de"><b style="color:var(--gold-text)">Der Mann</b> ist hier. <button class="speak-btn" type="button" onclick="speakDE('Der Mann ist hier.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">这个男人在这里（一格·谁）</span></div>
-      <div style="font-size:15px" lang="de">Ich sehe <b style="color:var(--gold-text)">den Mann</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich sehe den Mann.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我看见这个男人（四格·做什么）</span></div>
-      <div style="font-size:15px" lang="de">Ich gebe <b style="color:var(--red-text)">dem Mann</b> ein Buch. <button class="speak-btn" type="button" onclick="speakDE('Ich gebe dem Mann ein Buch.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我给这个男人一本书（三格·给谁）</span></div>
-      <div style="font-size:15px" lang="de">das Auto <b style="color:var(--blue-text)">des Mannes</b> <button class="speak-btn" type="button" onclick="speakDE('das Auto des Mannes',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">这个男人的车（二格·谁的）</span></div>
+      <div style="font-size:15px" lang="de"><b style="color:var(--gold-text)">Der Mann</b> ist hier. <button class="speak-btn" type="button" onclick="speakDE('Der Mann ist hier.',this)" aria-label="朗读：Der Mann ist hier." style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">这个男人在这里（一格·谁）</span></div>
+      <div style="font-size:15px" lang="de">Ich sehe <b style="color:var(--gold-text)">den Mann</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich sehe den Mann.',this)" aria-label="朗读：Ich sehe den Mann." style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我看见这个男人（四格·做什么）</span></div>
+      <div style="font-size:15px" lang="de">Ich gebe <b style="color:var(--red-text)">dem Mann</b> ein Buch. <button class="speak-btn" type="button" onclick="speakDE('Ich gebe dem Mann ein Buch.',this)" aria-label="朗读：Ich gebe dem Mann ein Buch." style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我给这个男人一本书（三格·给谁）</span></div>
+      <div style="font-size:15px" lang="de">das Auto <b style="color:var(--blue-text)">des Mannes</b> <button class="speak-btn" type="button" onclick="speakDE('das Auto des Mannes',this)" aria-label="朗读：das Auto des Mannes" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">这个男人的车（二格·谁的）</span></div>
     </div>
     <div class="tip-card"><div class="tip-title">快速记忆：只有阳性der变化最多</div><div class="tip-body">阴性/中性/复数：第三格加m，第四格阴中不变。<b>初学先掌握第一格和第四格</b>，日常交流够用了！</div></div>
 
@@ -1138,8 +1141,8 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     </div></details><details class="gram-group"><summary>③ 两大难点 · 形容词词尾 / 介词支配格</summary><div class="gram-body"><div class="sec-title"><span class="sec-title-icon">🎨</span><span class="sec-title-text">形容词词尾（先懂逻辑，再记形）</span></div>
     <div class="tip-card"><div class="tip-title">🔑 只有一种情况要变尾</div><div class="tip-body">形容词<b>放在名词前面（做定语）才加词尾</b>；放在动词后面（做表语）<b>原形不变</b>。</div></div>
     <div class="rule-box" style="line-height:1.6">
-      <div style="font-size:15px" lang="de">Der Kaffee ist <b style="color:var(--gold-text)">heiß</b>. <button class="speak-btn" type="button" onclick="speakDE('Der Kaffee ist heiß.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">咖啡是热的（表语·不变）</span></div>
-      <div style="font-size:15px" lang="de">Ich trinke <b style="color:var(--gold-text)">heißen</b> Kaffee. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke heißen Kaffee.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我喝热咖啡（定语·加尾）</span></div>
+      <div style="font-size:15px" lang="de">Der Kaffee ist <b style="color:var(--gold-text)">heiß</b>. <button class="speak-btn" type="button" onclick="speakDE('Der Kaffee ist heiß.',this)" aria-label="朗读：Der Kaffee ist heiß." style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">咖啡是热的（表语·不变）</span></div>
+      <div style="font-size:15px" lang="de">Ich trinke <b style="color:var(--gold-text)">heißen</b> Kaffee. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke heißen Kaffee.',this)" aria-label="朗读：Ich trinke heißen Kaffee." style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我喝热咖啡（定语·加尾）</span></div>
     </div>
     <div class="rule-box">
       <h3>最常用：单数 · 主格</h3>
@@ -1160,9 +1163,9 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
       </div>
     </div>
     <div class="rule-box" style="line-height:1.6">
-      <div style="font-size:15px" lang="de">Er ist größer <b style="color:var(--gold-text)">als</b> ich. <button class="speak-btn" type="button" onclick="speakDE('Er ist größer als ich.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">他比我高（比较用 als，不是 wie）</span></div>
-      <div style="font-size:15px" lang="de">Ich trinke <b style="color:var(--gold-text)">lieber</b> Tee. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke lieber Tee.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我更爱喝茶（gern 的比较级）</span></div>
-      <div style="font-size:15px" lang="de">Am liebsten esse ich Nudeln. <button class="speak-btn" type="button" onclick="speakDE('Am liebsten esse ich Nudeln.',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我最爱吃面条。</span></div>
+      <div style="font-size:15px" lang="de">Er ist größer <b style="color:var(--gold-text)">als</b> ich. <button class="speak-btn" type="button" onclick="speakDE('Er ist größer als ich.',this)" aria-label="朗读：Er ist größer als ich." style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">他比我高（比较用 als，不是 wie）</span></div>
+      <div style="font-size:15px" lang="de">Ich trinke <b style="color:var(--gold-text)">lieber</b> Tee. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke lieber Tee.',this)" aria-label="朗读：Ich trinke lieber Tee." style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我更爱喝茶（gern 的比较级）</span></div>
+      <div style="font-size:15px" lang="de">Am liebsten esse ich Nudeln. <button class="speak-btn" type="button" onclick="speakDE('Am liebsten esse ich Nudeln.',this)" aria-label="朗读：Am liebsten esse ich Nudeln." style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">我最爱吃面条。</span></div>
     </div>
 
     <div class="sec-title"><span class="sec-title-icon">🧭</span><span class="sec-title-text">介词支配格（介词自带固定的格）</span></div>
@@ -1173,11 +1176,11 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     </div>
     <div class="rule-box">
       <h3 style="color:var(--red-text)">只支配第三格 Dativ</h3>
-      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">aus</b>(从里) · <b lang="de">außer</b>(除外) · <b lang="de">bei</b>(在…处) · <b lang="de">mit</b>(和/用) · <b lang="de">nach</b>(向/之后) · <b lang="de">seit</b>(自从) · <b lang="de">von</b>(从/属于) · <b lang="de">zu</b>(向) · <b lang="de">gegenüber</b>(对面)<br><span style="color:var(--text-dim)">口诀：aus bei mit nach seit von zu</span><br><span lang="de" style="color:var(--text)">Ich fahre <b style="color:var(--red-text)">mit dem</b> Bus.</span> <button class="speak-btn" type="button" onclick="speakDE('Ich fahre mit dem Bus.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="color:var(--text-dim)">我坐公交（mit + 第三格 dem）</span></div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">aus</b>(从里) · <b lang="de">außer</b>(除外) · <b lang="de">bei</b>(在…处) · <b lang="de">mit</b>(和/用) · <b lang="de">nach</b>(向/之后) · <b lang="de">seit</b>(自从) · <b lang="de">von</b>(从/属于) · <b lang="de">zu</b>(向) · <b lang="de">gegenüber</b>(对面)<br><span style="color:var(--text-dim)">口诀：aus bei mit nach seit von zu</span><br><span lang="de" style="color:var(--text)">Ich fahre <b style="color:var(--red-text)">mit dem</b> Bus.</span> <button class="speak-btn" type="button" onclick="speakDE('Ich fahre mit dem Bus.',this)" aria-label="朗读：Ich fahre mit dem Bus." style="width:22px;height:22px;font-size:11px">🔊</button> <span style="color:var(--text-dim)">我坐公交（mit + 第三格 dem）</span></div>
     </div>
     <div class="rule-box">
       <h3 style="color:var(--gold-text)">只支配第四格 Akkusativ</h3>
-      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">durch</b>(穿过) · <b lang="de">für</b>(为了) · <b lang="de">gegen</b>(反对) · <b lang="de">ohne</b>(没有) · <b lang="de">um</b>(围绕/在…时) · <b lang="de">bis</b>(到) · <b lang="de">entlang</b>(沿着) · <b lang="de">wider</b>(违反)<br><span style="color:var(--text-dim)">口诀：durch für gegen ohne um</span><br><span lang="de" style="color:var(--text)">Das ist <b style="color:var(--gold-text)">für dich</b>.</span> <button class="speak-btn" type="button" onclick="speakDE('Das ist für dich.',this)" style="width:22px;height:22px;font-size:11px">🔊</button> <span style="color:var(--text-dim)">这是给你的（für + 第四格 dich）</span></div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">durch</b>(穿过) · <b lang="de">für</b>(为了) · <b lang="de">gegen</b>(反对) · <b lang="de">ohne</b>(没有) · <b lang="de">um</b>(围绕/在…时) · <b lang="de">bis</b>(到) · <b lang="de">entlang</b>(沿着) · <b lang="de">wider</b>(违反)<br><span style="color:var(--text-dim)">口诀：durch für gegen ohne um</span><br><span lang="de" style="color:var(--text)">Das ist <b style="color:var(--gold-text)">für dich</b>.</span> <button class="speak-btn" type="button" onclick="speakDE('Das ist für dich.',this)" aria-label="朗读：Das ist für dich." style="width:22px;height:22px;font-size:11px">🔊</button> <span style="color:var(--text-dim)">这是给你的（für + 第四格 dich）</span></div>
     </div>
     <div class="rule-box">
       <h3 style="color:var(--blue-text)">支配第二格 Genitiv</h3>
@@ -1199,22 +1202,22 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <div class="rule-box" style="line-height:1.5">
       <div style="display:flex;flex-direction:column;gap:12px">
         <div><div style="font-size:12px;color:var(--text-dim)"><b>① 现在时</b> Präsens · 现在／经常／事实</div>
-          <div style="font-size:16px" lang="de">Ich <b style="color:var(--gold-text)">lerne</b> Deutsch. <button class="speak-btn" type="button" onclick="speakDE('Ich lerne Deutsch.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:var(--gold-text)">lerne</b> Deutsch. <button class="speak-btn" type="button" onclick="speakDE('Ich lerne Deutsch.',this)" aria-label="朗读：Ich lerne Deutsch." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">我（在）学德语。</div></div>
         <div><div style="font-size:12px;color:var(--text-dim)"><b>② 现在完成时</b> Perfekt · <b>口语里说"过去"就用它</b></div>
-          <div style="font-size:16px" lang="de">Ich <b style="color:var(--blue-text)">habe</b> Deutsch <b style="color:var(--gold-text)">gelernt</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich habe Deutsch gelernt.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:var(--blue-text)">habe</b> Deutsch <b style="color:var(--gold-text)">gelernt</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich habe Deutsch gelernt.',this)" aria-label="朗读：Ich habe Deutsch gelernt." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">我学过德语了。（助动词 habe + 分词 gelernt 甩句尾）</div></div>
         <div><div style="font-size:12px;color:var(--text-dim)"><b>③ 过去时</b> Präteritum · 书面／讲故事的过去</div>
-          <div style="font-size:16px" lang="de">Ich <b style="color:var(--gold-text)">lernte</b> Deutsch. <button class="speak-btn" type="button" onclick="speakDE('Ich lernte Deutsch.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:var(--gold-text)">lernte</b> Deutsch. <button class="speak-btn" type="button" onclick="speakDE('Ich lernte Deutsch.',this)" aria-label="朗读：Ich lernte Deutsch." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">我（当时）学德语。（多见于书、新闻）</div></div>
         <div><div style="font-size:12px;color:var(--text-dim)"><b>④ 过去完成时</b> Plusquamperfekt · "过去的过去"</div>
-          <div style="font-size:16px" lang="de">Ich <b style="color:var(--blue-text)">hatte</b> Deutsch <b style="color:var(--gold-text)">gelernt</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich hatte Deutsch gelernt.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:var(--blue-text)">hatte</b> Deutsch <b style="color:var(--gold-text)">gelernt</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich hatte Deutsch gelernt.',this)" aria-label="朗读：Ich hatte Deutsch gelernt." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">（在那之前）我已经学过德语了。</div></div>
         <div><div style="font-size:12px;color:var(--text-dim)"><b>⑤ 将来时</b> Futur I · 将来／打算／推测</div>
-          <div style="font-size:16px" lang="de">Ich <b style="color:var(--blue-text)">werde</b> Deutsch <b style="color:var(--gold-text)">lernen</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich werde Deutsch lernen.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:var(--blue-text)">werde</b> Deutsch <b style="color:var(--gold-text)">lernen</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich werde Deutsch lernen.',this)" aria-label="朗读：Ich werde Deutsch lernen." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">我将要学德语。（口语里也常直接用现在时 + 时间词）</div></div>
         <div><div style="font-size:12px;color:var(--text-dim)"><b>⑥ 将来完成时</b> Futur II · 将来某刻"已完成"（少用）</div>
-          <div style="font-size:16px" lang="de">Ich <b style="color:var(--blue-text)">werde</b> Deutsch <b style="color:var(--gold-text)">gelernt haben</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich werde Deutsch gelernt haben.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:16px" lang="de">Ich <b style="color:var(--blue-text)">werde</b> Deutsch <b style="color:var(--gold-text)">gelernt haben</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich werde Deutsch gelernt haben.',this)" aria-label="朗读：Ich werde Deutsch gelernt haben." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">（到那时）我将已经学完德语。</div></div>
       </div>
     </div>
@@ -1288,9 +1291,9 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <div class="sec-title"><span class="sec-title-icon">🧩</span><span class="sec-title-text">句子结构 · 一条铁律 + 常用骨架</span></div>
     <div class="tip-card"><div class="tip-title">🔑 铁律：陈述句里，变位动词永远在「第二位」</div><div class="tip-body">不管句首放的是主语、时间还是地点，<b style="color:var(--gold-text)">动词都是第二个成分</b>，主语跟着动词走。记住这一条，德语语序就稳了。</div></div>
     <div class="rule-box" style="line-height:1.5">
-      <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold-text)">spiele</b> heute Fußball. <button class="speak-btn" type="button" onclick="speakDE('Ich spiele heute Fußball.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+      <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold-text)">spiele</b> heute Fußball. <button class="speak-btn" type="button" onclick="speakDE('Ich spiele heute Fußball.',this)" aria-label="朗读：Ich spiele heute Fußball." style="width:24px;height:24px;font-size:12px">🔊</button></div>
       <div style="font-size:13px;color:var(--text-dim);margin-bottom:10px">我今天踢球。（主语在第一位，动词第二位）</div>
-      <div style="font-size:15px" lang="de">Heute <b style="color:var(--gold-text)">spiele</b> ich Fußball. <button class="speak-btn" type="button" onclick="speakDE('Heute spiele ich Fußball.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+      <div style="font-size:15px" lang="de">Heute <b style="color:var(--gold-text)">spiele</b> ich Fußball. <button class="speak-btn" type="button" onclick="speakDE('Heute spiele ich Fußball.',this)" aria-label="朗读：Heute spiele ich Fußball." style="width:24px;height:24px;font-size:12px">🔊</button></div>
       <div style="font-size:13px;color:var(--text-dim)">今天我踢球。（时间提到句首 → <b>动词仍在第二位</b>，主语 ich 退到动词后面）</div>
     </div>
 
@@ -1298,19 +1301,19 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <div class="rule-box" style="line-height:1.5">
       <div style="display:flex;flex-direction:column;gap:12px">
         <div><div style="font-size:12px;color:var(--text-dim)">① 主 + 谓（不及物）</div>
-          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold-text)">schlafe</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich schlafe.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold-text)">schlafe</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich schlafe.',this)" aria-label="朗读：Ich schlafe." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">我睡觉。</div></div>
         <div><div style="font-size:12px;color:var(--text-dim)">② 主 + 谓 + <b style="color:var(--red-text)">第四格</b>宾语（做什么）</div>
-          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold-text)">trinke</b> <b style="color:var(--red-text)">Wasser</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke Wasser.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold-text)">trinke</b> <b style="color:var(--red-text)">Wasser</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich trinke Wasser.',this)" aria-label="朗读：Ich trinke Wasser." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">我喝水。（宾语用<b style="color:var(--red-text)">第四格 Akkusativ</b>）</div></div>
         <div><div style="font-size:12px;color:var(--text-dim)">③ 给<b style="color:var(--blue-text)">某人</b>(三格)<b style="color:var(--red-text)">某物</b>(四格)</div>
-          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold-text)">gebe</b> <b style="color:var(--blue-text)">dir</b> <b style="color:var(--red-text)">das Buch</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich gebe dir das Buch.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold-text)">gebe</b> <b style="color:var(--blue-text)">dir</b> <b style="color:var(--red-text)">das Buch</b>. <button class="speak-btn" type="button" onclick="speakDE('Ich gebe dir das Buch.',this)" aria-label="朗读：Ich gebe dir das Buch." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">我给你这本书。（人用<b style="color:var(--blue-text)">第三格 dir</b>，物用<b style="color:var(--red-text)">第四格 das Buch</b>）</div></div>
         <div><div style="font-size:12px;color:var(--text-dim)">④ 主 + 系动词 + 表语（是／成为）</div>
-          <div style="font-size:15px" lang="de">Er <b style="color:var(--gold-text)">ist</b> Lehrer. <button class="speak-btn" type="button" onclick="speakDE('Er ist Lehrer.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:15px" lang="de">Er <b style="color:var(--gold-text)">ist</b> Lehrer. <button class="speak-btn" type="button" onclick="speakDE('Er ist Lehrer.',this)" aria-label="朗读：Er ist Lehrer." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">他是老师。（sein / werden 后接表语，表语不变格）</div></div>
         <div><div style="font-size:12px;color:var(--text-dim)">⑤ 主 + 谓 + 介词短语（去哪／在哪）</div>
-          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold-text)">fahre</b> nach Berlin. <button class="speak-btn" type="button" onclick="speakDE('Ich fahre nach Berlin.',this)" style="width:24px;height:24px;font-size:12px">🔊</button></div>
+          <div style="font-size:15px" lang="de">Ich <b style="color:var(--gold-text)">fahre</b> nach Berlin. <button class="speak-btn" type="button" onclick="speakDE('Ich fahre nach Berlin.',this)" aria-label="朗读：Ich fahre nach Berlin." style="width:24px;height:24px;font-size:12px">🔊</button></div>
           <div style="font-size:13px;color:var(--text-dim)">我去柏林。</div></div>
       </div>
     </div>
@@ -1318,9 +1321,9 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <div class="sec-title"><span class="sec-title-icon">❓</span><span class="sec-title-text">两种问句</span></div>
     <div class="rule-box" style="line-height:1.6">
       <div style="font-size:13px;color:var(--text-dim);margin-bottom:2px"><b>W 问句</b>：疑问词 + 动词 + 主语</div>
-      <div style="font-size:15px" lang="de"><b style="color:var(--blue-text)">Wann</b> <b style="color:var(--gold-text)">kommst</b> du? <button class="speak-btn" type="button" onclick="speakDE('Wann kommst du?',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">你什么时候来？</span></div>
+      <div style="font-size:15px" lang="de"><b style="color:var(--blue-text)">Wann</b> <b style="color:var(--gold-text)">kommst</b> du? <button class="speak-btn" type="button" onclick="speakDE('Wann kommst du?',this)" aria-label="朗读：Wann kommst du?" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">你什么时候来？</span></div>
       <div style="font-size:13px;color:var(--text-dim);margin:8px 0 2px"><b>是非问句</b>：动词提到句首（回答 ja/nein）</div>
-      <div style="font-size:15px" lang="de"><b style="color:var(--gold-text)">Kommst</b> du? <button class="speak-btn" type="button" onclick="speakDE('Kommst du?',this)" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">你来吗？</span></div>
+      <div style="font-size:15px" lang="de"><b style="color:var(--gold-text)">Kommst</b> du? <button class="speak-btn" type="button" onclick="speakDE('Kommst du?',this)" aria-label="朗读：Kommst du?" style="width:24px;height:24px;font-size:12px">🔊</button> <span style="font-size:13px;color:var(--text-dim)">你来吗？</span></div>
     </div>
 
     <details class="gram-group" style="margin-top:8px"><summary>📋 全部 11 种句型（术语参考）</summary><div class="gram-body"><div class="rule-box" style="margin-top:8px">
@@ -3010,7 +3013,7 @@ function renderPhTool(){
     out.innerHTML=hits.length
       ?'<div style="font-size:12px;color:var(--text-faint)">找到 '+hits.length+' 条（点德语看拼读）：</div>'+hits.map(p=>{
           const w=p.de.replace(/'/g,"\\'");
-          return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${p.de}</b>${posTag(p.de)} — ${p.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
+          return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${p.de}</b>${posTag(p.de)} — ${p.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)" aria-label="朗读 ${_esc(w)}">🔊</button></div>`;
         }).join('')
       :'<div style="font-size:13px;color:var(--text-dim)">词库没找到「'+v+'」，换个说法试试（比如"你好""谢谢"）。</div>';
     return;
@@ -3033,7 +3036,7 @@ function renderPhTool(){
     const rows=hits.map(e=>{
       shown[e.w.toLowerCase()]=1;
       const w=e.w.replace(/'/g,"\\'");
-      return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e.w}</b>${posTag(e.w)} — ${e.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
+      return `<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e.w}</b>${posTag(e.w)} — ${e.zh} <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)" aria-label="朗读 ${_esc(w)}">🔊</button></div>`;
     }).join('');
     sug='<div id="phSugWrap">'+(rows?'<div style="font-size:12px;color:var(--text-faint);margin-top:10px">联想（点德语看拼读）：</div>'+rows:'')+'</div>';
   }catch(e){}
@@ -3066,7 +3069,7 @@ function renderPhTool(){
         const lw=e[0].toLowerCase();
         if(shown[lw]||lw===q)return;shown[lw]=1;
         const w=e[0].replace(/'/g,"\\'");
-        h+=`<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e[0]}</b>${posTag(e[0])} — ${e[1]} <span style="font-size:11px;color:var(--text-faint)">·词典</span> <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)">🔊</button></div>`;
+        h+=`<div class="ph-zhhit"><b lang="de" onclick="phTry('${w}')">${e[0]}</b>${posTag(e[0])} — ${e[1]} <span style="font-size:11px;color:var(--text-faint)">·词典</span> <button class="speak-btn" type="button" style="width:22px;height:22px;font-size:11px" onclick="speakDE('${w}',this)" aria-label="朗读 ${_esc(w)}">🔊</button></div>`;
       });
       if(!h)return;
       if(!wrap.innerHTML)h='<div style="font-size:12px;color:var(--text-faint);margin-top:10px">联想（点德语看拼读）：</div>'+h;
@@ -4721,7 +4724,7 @@ function picPick(brd,i,cell){
   if(cell)cell.classList.add("active");
   var out=document.getElementById("picOut");
   out.style.display="block";document.body.classList.add("has-picbar");
-  out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+it[3]+'</span> <b lang="de" style="font-size:20px;color:var(--gold-text);vertical-align:middle">'+it[0]+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+it[0].replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+it[1]+' · <span style="color:var(--text-faint)">'+it[2]+'</span></div>';
+  out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+it[3]+'</span> <b lang="de" style="font-size:20px;color:var(--gold-text);vertical-align:middle">'+it[0]+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+it[0].replace(/'/g,"\\'")+'\',this)" aria-label="朗读 '+_esc(it[0])+'" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+it[1]+' · <span style="color:var(--text-faint)">'+it[2]+'</span></div>';
   try{speakDE(it[0]);}catch(e){}
   // 点图看发音不再计入「学了一个词」：那只是浏览，不是学会（站长 2026-09 定）
 }
@@ -4810,7 +4813,7 @@ function bpPick(i){
   document.querySelectorAll('#bodyChips .pic-cell').forEach(function(x,k){x.className='pic-cell'+(k===i?' active':'');});
   var out=document.getElementById('picOut');
   out.style.display='block';document.body.classList.add('has-picbar');
-  out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+p.em+'</span> <b lang="de" style="font-size:20px;color:var(--gold-text);vertical-align:middle">'+p.de+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+p.de.replace(/'/g,"\\'")+'\',this)" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+p.zh+' · <span style="color:var(--text-faint)">'+p.py+'</span></div>';
+  out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+p.em+'</span> <b lang="de" style="font-size:20px;color:var(--gold-text);vertical-align:middle">'+p.de+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+p.de.replace(/'/g,"\\'")+'\',this)" aria-label="朗读 '+_esc(p.de)+'" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+p.zh+' · <span style="color:var(--text-faint)">'+p.py+'</span></div>';
   try{speakDE(p.de);}catch(e){}
   // 同上：点人体图卡也不计数
 }

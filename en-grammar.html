@@ -24,7 +24,7 @@
 {"@type":"ListItem","position":1,"name":"英语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"英语语法速查"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:ab5332f768f3 -->
+<!-- src-hash:9f0a5276f58b -->
 <style>
 :root{
   /* 底部标签栏占用的高度（含 iPhone 安全区）。所有 fixed/sticky 贴底的浮动元素
@@ -237,10 +237,13 @@ mark.sh{background:rgba(88,204,2,.32);color:inherit;border-radius:3px;padding:0 
 .rule-py{font-size:12px;color:var(--gold-text)88;flex:1;min-width:80px}
 /* QUIZ */
 .quiz-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center;max-width:520px;margin:0 auto}
-.quiz-q{font-size:32px;color:var(--gold-text);font-weight:700;margin-bottom:8px}
+.quiz-q{font-size:32px;color:var(--gold-text);font-weight:700;margin-bottom:8px;overflow-wrap:anywhere;hyphens:auto}
 .quiz-hint{font-size:13px;color:var(--text-dim);margin-bottom:24px}
-.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.quiz-opt{padding:12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:15px;cursor:pointer;font-family:inherit;transition:all .2s}
+/* 必须是 minmax(0,1fr)：裸写 1fr 等于 minmax(auto,1fr)，一个不能断行的长德语词
+   （die Geschwindigkeitsbeschränkung，32 字符）会把所在列撑得比半屏还宽，整页横向溢出。
+   只在抽到长词、且干扰项组合不巧时才出现 —— 360px 屏实测页宽被撑到 376～383。 */
+.quiz-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.quiz-opt{padding:12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:15px;cursor:pointer;font-family:inherit;transition:all .2s;overflow-wrap:anywhere;hyphens:auto}
 .quiz-opt:hover{border-color:var(--gold-dim);background:rgba(88,204,2,.08)}
 .quiz-opt.correct{border-color:var(--green);background:rgba(88,204,2,.15);color:var(--gold-text)}
 .quiz-opt.wrong{border-color:var(--red);background:rgba(255,75,75,.12);color:var(--red-text)}
@@ -431,7 +434,7 @@ body.lang-en .phfab{display:none}
 /* min-width 至少 44：单字母选项（比如 d）只有 37px 宽，和同样窄的邻项并排时
    两边的 44px 热区会互相咬掉一点，实测只剩 43.4px。把短选项直接撑到 44，
    热区就等于视觉尺寸，不再依赖邻项有多宽。 */
-.gq-opt{min-width:44px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 14px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .15s;line-height:1.4}
+.gq-opt{min-width:44px;max-width:100%;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 14px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .15s;line-height:1.4;overflow-wrap:anywhere}
 .gq-opt:hover{border-color:var(--gold-dim)}
 .gq-opt.ok{background:rgba(88,204,2,.14);border-color:#58cc02;color:var(--gold-text);font-weight:700}
 .gq-opt.bad{background:rgba(255,75,75,.1);border-color:var(--red-text);color:var(--red-text)}
