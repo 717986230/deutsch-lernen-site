@@ -36,6 +36,11 @@ const DATA_FILES = {
   EN_READINGS: 'data/en_readings.json',
   SERIES: 'data/series.json',
   EN_SERIES: 'data/en_series.json',
+  // 德语对话原来写死在 src.html 里（var DIALOGUES=[…]），和 data/dialogs.json 各存一份。
+  // 结果两份悄悄分叉：json 那份后来改对了 12 处谐音（Euro 奥伊罗、Soße 佐瑟、Karte 卡尔特…），
+  // 但用户看到的一直是 src.html 里的旧版；verify-data / verify-py-consistency 验的又是 json ——
+  // 检查一直在验一份没人看的数据。现在只留 json 这一个源。
+  DIALOGUES: 'data/dialogs.json',
   EN_DIALOGUES: 'data/en_dialogs.json',
   RD_GLOSS: 'data/read_gloss.json',
 };
@@ -79,7 +84,7 @@ async function build() {
   //    categories 首屏可能即用 → 立即解密；其余 4 个用到才解密（懒加载），
   //    尤其英语库最大且很少用，避免首屏白解一大坨。
   // categories 也懒解密：硬登录门槛下登录页用不到词库，解锁后首次访问才解（见 src 的 setLang 上锁早退）
-  const LAZY = new Set(['READINGS', 'SERIES', 'RD_GLOSS']);
+  const LAZY = new Set(['READINGS', 'SERIES', 'RD_GLOSS', 'DIALOGUES']);   // 打开对应版块才解码
   let deFile = 'categories(inline)';
   for (const [name, path] of Object.entries(DATA_FILES)) {
     const json = JSON.stringify(JSON.parse(readFileSync(path, 'utf8'))); // 校验 + 压缩

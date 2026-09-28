@@ -106,6 +106,53 @@ for (const lang of ['de', 'en']) {
   await page.close();
 }
 
+// ── 词句卡背面按需生成 ──
+// 背面（拼读拆解 + 谐音）翻面前是 display:none，以前每张卡建时都算 phonicsHtml ——
+// 4× 降速实测首屏 makeCard 自耗时 105ms、DOM 8179 节点，一半是看不见的背面。
+// 改成首次翻面才生成（_cardBack）后降到 50ms、4686 节点。
+// 但翻面有两个入口：用户点击，和「循环朗读」直接给卡片加 flipped。后者不经过点击，
+// 漏调 _cardBack 背面就是空的 —— 不抛错、不报警，用户只会看到一张翻开的白卡。两条都钉住。
+{
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const errs2 = [];
+  page.on('pageerror', (e) => errs2.push(String(e).split('\n')[0]));
+  await page.addInitScript(() => {
+    try { localStorage.setItem('acct_token', 't1'); } catch (e) {}
+    if (window.speechSynthesis) window.speechSynthesis.speak = (u) => { setTimeout(() => { try { u.onend && u.onend(); } catch (e) {} }, 30); };
+  });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => window._DEC, null, { timeout: 25000 }).catch(() => {});
+  const r = await page.evaluate(async () => {
+    const w = (ms) => new Promise((r2) => setTimeout(r2, ms));
+    showSection('phrases'); await w(900);
+    const cards = [...document.querySelectorAll('#phraseContent .card')];
+    const out = { n: cards.length, prebuilt: cards.filter((c) => c.querySelector('.card-py').firstChild).length };
+    cards[0].click(); await w(60);
+    const py = cards[0].querySelector('.card-py');
+    out.click = { shown: getComputedStyle(py).display !== 'none', text: (py.innerText || '').trim().length };
+    let got = null;
+    try { toggleAutoPlay(); } catch (e) { out.autoErr = e.message; }
+    for (let i = 0; i < 60 && !got; i++) {
+      await w(100);
+      const cur = document.querySelector('#phraseContent .card.speaking-now');
+      if (cur && cur !== cards[0]) {
+        const p = cur.querySelector('.card-py');
+        got = { flipped: cur.classList.contains('flipped'), text: (p.innerText || '').trim().length };
+      }
+    }
+    try { toggleAutoPlay(); } catch (e) {}
+    out.auto = got;
+    return out;
+  });
+  if (r.prebuilt) bad(`词句卡：${r.prebuilt}/${r.n} 张在翻面前就生成了背面 —— 按需生成失效，首屏又会变慢`);
+  if (!r.click.shown || !r.click.text) bad('词句卡：点击翻面后背面是空的');
+  if (r.autoErr) bad(`词句卡：循环朗读启动抛错 ${r.autoErr}`);
+  else if (!r.auto) bad('词句卡：循环朗读没有走到任何卡片');
+  else if (!r.auto.flipped || !r.auto.text) bad('词句卡：循环朗读翻开的卡片背面是空的（程序化翻面漏调 _cardBack）');
+  for (const e of errs2) bad(`词句卡背面检查抛错：${e}`);
+  await page.close();
+}
+
 await browser.close();
 srv.close();
 console.log(`版块回归：${SECS.length} 版块 × 深浅双主题 × 中德/中英，共打开 ${checked} 次；阅读/连载分批渲染各验一遍`);
