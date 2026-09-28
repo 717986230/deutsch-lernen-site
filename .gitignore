@@ -5,3 +5,11 @@ web/public/data/
 .DS_Store
 tools/__pycache__/
 __pycache__/
+
+# D1 备份：含用户账号、邮箱、密码哈希、登录会话。绝不能进仓库（仓库是公开的，Pages 要求）。
+# deploy.sh 默认写到 ./backups/，backup.sh 在 analytics/ 下直接跑则写到 analytics/backups/，
+# 文件名形如 uuoo_analytics-<时间戳>.sql(.gz)。三道都拦上，挪了目录也不怕。
+backups/
+analytics/backups/
+*_analytics-*.sql
+*_analytics-*.sql.gz
