@@ -126,7 +126,9 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
 }
 /* SECTIONS */
-.section{display:none;padding:60px 0 calc(var(--tab-h) + 180px)}
+/* 底部留白只需让开右下角浮钮（最高到 tab-h+172px）；tab-h 已由 body 的 padding-bottom 让出，
+   以前这里又加了一次 tab-h，首页底部平白多出约 60px 空白。 */
+.section{display:none;padding:60px 0 180px}
 .section.active{display:block}
 .container{max-width:900px;margin:0 auto;padding:0 20px}
 /* HERO */
@@ -2988,8 +2990,11 @@ function boostShow(){
     m.style.display='flex';
     try{sessionStorage.setItem('boostSeen','1');}catch(e){}
     try{track('boost',{i:d%pool.length});}catch(e){}
-    // 弹出即朗读一遍：这是「每日一句」，听到才算数
-    try{setTimeout(function(){speakDE(it.de,spk);},350);}catch(e){}
+    // 只在用户已经和页面交互过时才自动朗读（多邻国等站点的做法）。
+    // 以前无条件朗读：冷启动没有用户手势，浏览器直接拒绝，进站第一眼就弹出
+    // 「浏览器拦住了自动朗读」的报错提示。不支持 userActivation 的老浏览器一律不自动读。
+    try{var ua=navigator.userActivation;if(ua&&ua.hasBeenActive)setTimeout(function(){speakDE(it.de,spk);},350);}catch(e){}
+    try{var gb=m.querySelector('.boost-go');if(gb)gb.focus();}catch(e){}
   };
   try{
     if(window._DEC)go(window._DEC);
@@ -2998,7 +3003,7 @@ function boostShow(){
 }
 function phOpen(){var m=document.getElementById('phModal');if(m){m.style.display='flex';var i=document.getElementById('phInput');if(i)setTimeout(function(){i.focus();},50);}}
 function phClose(){var m=document.getElementById('phModal');if(m)m.style.display='none';}
-document.addEventListener('keydown',function(e){if(e.key==='Escape')phClose();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){phClose();var bm=document.getElementById('boostModal');if(bm&&bm.style.display!=='none')boostClose();}});
 function renderPhTool(){
   const v=(document.getElementById('phInput').value||'').trim();
   const out=document.getElementById('phToolOut');if(!out)return;
@@ -4869,7 +4874,9 @@ function acctSetAuth(token,user){ACCT.token=token;ACCT.user=user;try{localStorag
 function _saveUser(){try{localStorage.setItem('acct_user',JSON.stringify(ACCT.user));}catch(e){}}
 function acctClearLocal(){ACCT.token=null;ACCT.user=null;try{localStorage.removeItem('acct_token');localStorage.removeItem('acct_user');}catch(e){}}
 function acctLogout(){try{if(ACCT.token&&API_BASE)apiFetch('/api/logout',{method:'POST'});}catch(e){}acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}
-function acctEnter(){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();try{setTimeout(boostShow,600);}catch(e){}var d=START_SEC;try{if(_deepSec){d=_deepSec;_deepSec=null;}}catch(e){}showSection(d);}
+// 深链（分享出来的 #reading 等）进站时不弹「每日一句」：别人点链接是来看那一页的，
+// 一进来就被整屏弹窗挡住只会让人关掉网页。只有正常打开（落到默认页）才弹。
+function acctEnter(){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();var d=START_SEC,deep=false;try{if(_deepSec){d=_deepSec;_deepSec=null;deep=true;}}catch(e){}if(!deep){try{setTimeout(boostShow,600);}catch(e){}}showSection(d);}
 function acctTab(w){var lg=w==='login';document.getElementById('tabLogin').classList.toggle('on',lg);document.getElementById('tabReg').classList.toggle('on',!lg);document.getElementById('paneLogin').style.display=lg?'':'none';document.getElementById('paneReg').style.display=lg?'none':'';}
 function acctRegister(){var u=(document.getElementById('rgUser').value||'').trim().toLowerCase();var nick=(document.getElementById('rgNick').value||'').trim();var pw=document.getElementById('rgPass').value||'';var err=document.getElementById('rgErr');err.textContent='';if(!/^[a-z0-9_]{3,20}$/.test(u)){err.textContent='用户名 3-20 位，仅小写字母/数字/下划线';return;}if(pw.length<6){err.textContent='密码至少 6 位';return;}var _em=(document.getElementById('rgEmail')||{}).value||'';apiFetch('/api/register',{method:'POST',body:{username:u,nickname:nick,password:pw,email:_em}}).then(function(r){if(!r.ok){err.textContent=r.status===0?'网络不可用，请检查连接后重试':((r.data&&r.data.err)||'注册失败');return;}acctSetAuth(r.data.token,r.data.user);if(r.data.recovery){showRecovery(r.data.recovery,true);}else{acctStartSession();}},function(){err.textContent='网络错误，请重试';});}
 function acctLogin(){var u=(document.getElementById('lgUser').value||'').trim().toLowerCase();var pw=document.getElementById('lgPass').value||'';var err=document.getElementById('lgErr');err.textContent='';if(!u||!pw){err.textContent='请输入用户名和密码';return;}apiFetch('/api/login',{method:'POST',body:{username:u,password:pw}}).then(function(r){if(!r.ok){err.textContent=r.status===0?'网络不可用，请检查连接后重试':((r.data&&r.data.err)||'登录失败');return;}acctSetAuth(r.data.token,r.data.user);acctStartSession();},function(){err.textContent='网络错误，请重试';});}
@@ -5259,7 +5266,7 @@ function spFinish(){document.getElementById('spBar').style.width='100%';document
   <button class="bn-btn" data-sec="account" onclick="showSection('account')"><span class="bn-i">👤</span><span class="bn-t">我的</span></button>
 </nav>
 <button class="phfab" type="button" onclick="phOpen()" aria-label="打开拼读器查词" title="拼读查词">🧩</button>
-<div class="boost-overlay" id="boostModal" style="display:none" role="dialog" aria-label="今日激励" onclick="if(event.target===this)boostClose()">
+<div class="boost-overlay" id="boostModal" style="display:none" role="dialog" aria-modal="true" aria-label="今日激励" onclick="if(event.target===this)boostClose()">
   <div class="boost-card">
     <div class="boost-label">每日一句 · Satz des Tages</div>
     <div class="boost-de" id="boostDe" lang="de"></div>
