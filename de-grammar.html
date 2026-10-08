@@ -24,7 +24,7 @@
 {"@type":"ListItem","position":1,"name":"德语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"德语语法速查"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:6b6b22b5714f -->
+<!-- src-hash:c74f34ee326b -->
 <style>
 :root{
   /* 底部标签栏占用的高度（含 iPhone 安全区）。所有 fixed/sticky 贴底的浮动元素
@@ -379,6 +379,23 @@ body:not(.lang-en) .en-only-block{display:none}
    浮条右端的 🔊（实测浮条右边界 370，按钮占 326~370）。 */
 body.has-picbar #toTop{bottom:calc(var(--tab-h) + 108px)}
 .pic-out{position:sticky;bottom:calc(var(--tab-h) + 12px);margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
+/* 动词变位表：8 列在手机上放不下 → 表格自己横向滚，首列钉住；不撑破页面宽度 */
+.conj-note{font-size:12px;color:var(--text-dim);margin:0 0 8px}
+.conj-irr-key,.conj-tbl .irr,.conj-mini .irr{color:var(--orange-text);font-weight:700}
+.conj-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.conj-tbl{border-collapse:collapse;min-width:600px;width:100%;font-size:14px}
+.conj-tbl th,.conj-tbl td{padding:0;border-bottom:1px solid var(--border);text-align:center;white-space:nowrap}
+.conj-tbl thead th{padding:10px 6px;font-size:13px;color:var(--gold-text);background:var(--surface)}
+.conj-tbl tbody th{position:sticky;left:0;z-index:1;background:var(--surface);text-align:left;padding:6px 10px;border-right:1px solid var(--border)}
+.conj-tbl tbody th small{display:block;font-size:11px;color:var(--text-dim);font-weight:400}
+.conj-tbl .conj-c{cursor:pointer}
+.conj-tbl td.conj-c{height:44px;padding:0 8px;color:var(--text)}
+.conj-tbl td.conj-c.irr{color:var(--orange-text)}
+.conj-tbl tbody th .conj-c{font-weight:700;color:var(--text)}
+.conj-tbl td.conj-c:active{background:var(--gold-faint)}
+.conj-mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px;margin-top:10px;font-size:13px;text-align:left}
+.conj-mini i{font-style:normal;color:var(--text-dim);font-size:11px}
+.conj-mini b{color:var(--text)}
 
 /* 拼读器右侧小浮钮（约为零基础钮一半大）+ 弹窗 */
 /* 原来是贴右边缘的竖排长条，压在网格第三列上；为它让路又要吃掉一整列。

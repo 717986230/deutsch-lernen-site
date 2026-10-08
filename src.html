@@ -403,6 +403,23 @@ body:not(.lang-en) .en-only-block{display:none}
    浮条右端的 🔊（实测浮条右边界 370，按钮占 326~370）。 */
 body.has-picbar #toTop{bottom:calc(var(--tab-h) + 108px)}
 .pic-out{position:sticky;bottom:calc(var(--tab-h) + 12px);margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
+/* 动词变位表：8 列在手机上放不下 → 表格自己横向滚，首列钉住；不撑破页面宽度 */
+.conj-note{font-size:12px;color:var(--text-dim);margin:0 0 8px}
+.conj-irr-key,.conj-tbl .irr,.conj-mini .irr{color:var(--orange-text);font-weight:700}
+.conj-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.conj-tbl{border-collapse:collapse;min-width:600px;width:100%;font-size:14px}
+.conj-tbl th,.conj-tbl td{padding:0;border-bottom:1px solid var(--border);text-align:center;white-space:nowrap}
+.conj-tbl thead th{padding:10px 6px;font-size:13px;color:var(--gold-text);background:var(--surface)}
+.conj-tbl tbody th{position:sticky;left:0;z-index:1;background:var(--surface);text-align:left;padding:6px 10px;border-right:1px solid var(--border)}
+.conj-tbl tbody th small{display:block;font-size:11px;color:var(--text-dim);font-weight:400}
+.conj-tbl .conj-c{cursor:pointer}
+.conj-tbl td.conj-c{height:44px;padding:0 8px;color:var(--text)}
+.conj-tbl td.conj-c.irr{color:var(--orange-text)}
+.conj-tbl tbody th .conj-c{font-weight:700;color:var(--text)}
+.conj-tbl td.conj-c:active{background:var(--gold-faint)}
+.conj-mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px;margin-top:10px;font-size:13px;text-align:left}
+.conj-mini i{font-style:normal;color:var(--text-dim);font-size:11px}
+.conj-mini b{color:var(--text)}
 
 /* 拼读器右侧小浮钮（约为零基础钮一半大）+ 弹窗 */
 /* 原来是贴右边缘的竖排长条，压在网格第三列上；为它让路又要吃掉一整列。
@@ -1011,6 +1028,8 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold)}
     <div id="bodyChips" class="pic-grid"></div>
     </div>
     <div id="boardGrid" class="pic-grid" style="display:none"></div>
+    <!-- 动词变位板专用：完整变位表（其他板为空） -->
+    <div id="boardConj"></div>
     <!-- 底部留白：让最后一行卡片能滚到「选中词」浮条之上，而不是永远压在它下面 -->
     <div style="height:96px" aria-hidden="true"></div>
     <div id="picOut" class="pic-out" style="display:none"></div>
@@ -4612,7 +4631,13 @@ var PIC_BOARDS=[
   ["schön","美丽的","舍恩","🌸"],["stark","强壮的","施塔尔克","💪"],["Bravo!","好样的！","布拉沃","👏"],["der Glückwunsch","祝贺","德尔 格吕克翁什","🎊"],
   ["toll","棒极了的","托尔","👍"],["super","超棒的","祖佩","🌟"],["prima","好极了的","普里马","✨"],["wunderbar","极好的","文德巴尔","🤩"],
   ["großartig","了不起的","格罗斯阿尔提希","🏆"],["perfekt","完美的","佩尔费克特","💯"],["lecker","好吃","勒克尔","😋"],["praktisch","实用的","普拉克提什","🔧"],
-  ["bequem","舒适的","贝克韦姆","🛋️"],["günstig","优惠的","京斯提希","🏷️"],["sauber","干净","扎乌贝尔","🧼"],["interessant","有趣","因特雷桑特","💡"]]}
+  ["bequem","舒适的","贝克韦姆","🛋️"],["günstig","优惠的","京斯提希","🏷️"],["sauber","干净","扎乌贝尔","🧼"],["interessant","有趣","因特雷桑特","💡"]]},
+ {id:"verben",icon:"🔄",name:"动词变位",items:[
+  ["brauchen","需要","布劳黑恩","🧰",["brauche","brauchst","braucht","brauchen","braucht","brauchen"]],["bringen","带来","布林根","📦",["bringe","bringst","bringt","bringen","bringt","bringen"]],["geben","给","盖本","🎁",["gebe","gibst","gibt","geben","gebt","geben"]],
+  ["nehmen","拿/取","内梅恩","✋",["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"]],["schlafen","睡觉","施拉芬","😴",["schlafe","schläfst","schläft","schlafen","schlaft","schlafen"]],["haben","有","哈本","👜",["habe","hast","hat","haben","habt","haben"]],
+  ["sein","是","扎因","🟰",["bin","bist","ist","sind","seid","sind"]],["machen","做/干","马赫恩","🔨",["mache","machst","macht","machen","macht","machen"]],["essen","吃","埃森","🍽️",["esse","isst","isst","essen","esst","essen"]],
+  ["trinken","喝","特灵肯","🥤",["trinke","trinkst","trinkt","trinken","trinkt","trinken"]],["gehen","去/走","盖恩","🚶",["gehe","gehst","geht","gehen","geht","gehen"]],["kommen","来","科门","👋",["komme","kommst","kommt","kommen","kommt","kommen"]],
+  ["sprechen","说","施普雷程","🗣️",["spreche","sprichst","spricht","sprechen","sprecht","sprechen"]],["schreiben","写","施莱本","✍️",["schreibe","schreibst","schreibt","schreiben","schreibt","schreiben"]],["sehen","看","泽恩","👀",["sehe","siehst","sieht","sehen","seht","sehen"]]]}
 ];
 var _curBoard="koerper";
 function renderBoardTabs(){
@@ -4635,6 +4660,7 @@ function switchBoard(id){
   document.getElementById("boardGrid").style.display=isBody?"none":"grid";
   document.getElementById("picOut").style.display="none";
   document.body.classList.remove("has-picbar");
+  var cj=document.getElementById("boardConj");if(cj)cj.innerHTML="";
   if(isBody){renderBody();updateBoardReadBar();buildBoardQuiz();return;}
   var brd=null;for(var i=0;i<PIC_BOARDS.length;i++)if(PIC_BOARDS[i].id===id)brd=PIC_BOARDS[i];
   var g=document.getElementById("boardGrid");
@@ -4644,6 +4670,7 @@ function switchBoard(id){
   g.querySelectorAll(".pic-cell").forEach(function(c){
     c.addEventListener("click",function(){picPick(brd,+c.getAttribute("data-i"),c);});
   });
+  renderConjTable(brd);
   updateBoardReadBar();
   buildBoardQuiz();
 }
@@ -4658,8 +4685,42 @@ function picPick(brd,i,cell){
   var out=document.getElementById("picOut");
   out.style.display="block";document.body.classList.add("has-picbar");
   out.innerHTML='<span style="font-size:30px;vertical-align:middle">'+it[3]+'</span> <b lang="de" style="font-size:20px;color:var(--gold-text);vertical-align:middle">'+it[0]+'</b> <button class="speak-btn" type="button" onclick="speakDE(\''+it[0].replace(/'/g,"\\'")+'\',this)" aria-label="朗读 '+_esc(it[0])+'" style="vertical-align:middle">🔊</button><div style="font-size:14px;color:var(--text);margin-top:4px">'+it[1]+' · <span style="color:var(--text-faint)">'+it[2]+'</span></div>';
+  if(it[4])out.innerHTML+=_conjMini(it);
   try{speakDE(it[0]);}catch(e){}
   // 点图看发音不再计入「学了一个词」：那只是浏览，不是学会（站长 2026-09 定）
+}
+// ── 动词变位板：items 第 5 项是 [ich,du,er/sie/es,wir,ihr,sie/Sie] 六个变位 ──
+var CONJ_PRON=["ich","du","er/sie/es","wir","ihr","sie/Sie"];
+var CONJ_SAY=["ich","du","er","wir","ihr","sie"];   // 朗读用：er/sie/es 读成 er
+// 按规则变位推出来的形式；和实际不同的格标橙 = 不规则（换元音 gibst、sein 整个不规则等）
+function _conjRegular(inf,k){var st=inf.replace(/e?n$/,'');var end=["e","st","t","en","t","en"][k];
+  if(k===3||k===5)return inf;
+  if(/[td]$/.test(st)&&(k===1||k===2||k===4))end="e"+end;      // arbeiten → arbeitest
+  if(/[sßxz]$/.test(st)&&k===1)end="t";                          // essen → esst（规则形）
+  return st+end;}
+function _conjCell(inf,f,k){var irr=f!==_conjRegular(inf,k);
+  return '<td class="conj-c'+(irr?' irr':'')+'" lang="de" data-s="'+CONJ_SAY[k]+' '+f+'">'+f+'</td>';}
+function renderConjTable(brd){
+  var el=document.getElementById("boardConj");if(!el)return;
+  if(!brd||!brd.items||!brd.items.length||!brd.items[0][4]){el.innerHTML="";return;}
+  var h='<div class="sec-title" style="margin-top:20px"><span class="sec-title-icon">📋</span><span class="sec-title-text">现在时变位表</span></div>'
+    +'<p class="conj-note">点任意格子听读音 · <span class="conj-irr-key">橙色</span> = 不规则变位（要单独记）</p>'
+    +'<div class="conj-wrap"><table class="conj-tbl"><thead><tr><th scope="col">动词</th>'
+    +CONJ_PRON.map(function(p){return '<th scope="col" lang="de">'+p+'</th>';}).join('')+'</tr></thead><tbody>'
+    +brd.items.map(function(it){return '<tr><th scope="row"><span lang="de" class="conj-c" data-s="'+it[0]+'">'+it[0]+'</span><small>'+it[1]+'</small></th>'
+      +it[4].map(function(f,k){return _conjCell(it[0],f,k);}).join('')+'</tr>';}).join('')
+    +'</tbody></table></div>';
+  el.innerHTML=h;
+  el.querySelector('.conj-tbl').addEventListener('click',function(e){
+    var c=e.target.closest?e.target.closest('[data-s]'):null;if(!c)return;
+    if(typeof stopPageNarration==='function')stopPageNarration();
+    try{speakDE(c.getAttribute('data-s'));}catch(x){}
+  });
+}
+// 选中某个动词时，浮条里直接给出它的六个变位
+function _conjMini(it){
+  return '<div class="conj-mini">'+it[4].map(function(f,k){var irr=f!==_conjRegular(it[0],k);
+    return '<span><i lang="de">'+CONJ_PRON[k]+'</i> <b lang="de"'+(irr?' class="irr"':'')+'>'+f+'</b></span>';}).join('')+'</div>';
 }
 function _boardItems(){
   // py 是给错题本用的：收录的词要能在拼写/测验里显示谐音，少一个字段就只能显示空白
