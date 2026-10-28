@@ -548,6 +548,24 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
 .dash-daily .dd-go{background:#fffdf8;color:#1a2035;padding:9px 16px}
 #bottomNav{background:var(--nav-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:none}
 #topbar{border-bottom-color:var(--border)}
+/* 按钮统一（仿词光）：筛选/切换类一律是描边胶囊，选中时墨蓝实心（深色主题自动反成米白实心）；
+   次要按钮是描边胶囊；只有真正的主操作（开始、练这段、循环朗读）保留赭红实心。前缀 emoji 由 _tidyBtn 去掉。 */
+body .level-tab,body .cat-tab,body .board-tab,body .sp-levels button,body .rank-tabs button{background:var(--surface);border:1px solid var(--line-strong,rgba(26,32,53,.15));color:var(--text-dim);font-weight:500;border-radius:999px;box-shadow:none}
+body .level-tab.active,body .cat-tab.active,body .board-tab.active,body .sp-levels button.on,body .sp-levels button.active,body .sp-levels button[aria-pressed=true],body .rank-tabs button.on,body .rank-tabs button.active{background:var(--text);border-color:var(--text);color:var(--bg);font-weight:600}
+body .nav-btn{letter-spacing:0;font-size:13px}
+body .nav-btn.active{background:var(--surface-2);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1px var(--border)}
+body .lang-btn.active{background:var(--text);color:var(--bg)}
+body .btn,body .dlg-play,body .read-art-btn,body .gloss-btn{background:var(--surface);border:1px solid var(--line-strong,rgba(26,32,53,.15));color:var(--text);font-weight:600;border-radius:999px}
+body .btn:hover{background:var(--surface-2)}
+body .read-art-btn.speaking,body .btn.playing{background:var(--gold);border-color:var(--gold);color:var(--on-brand)}
+body .dash-cta button{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:999px;font-weight:600}
+body .dash-cta button.on{background:var(--text);border-color:var(--text);color:var(--bg)}
+body .dlg-drill{border-radius:999px}
+body .fab-read{border-radius:999px;box-shadow:0 14px 30px -12px rgba(20,26,46,.45)}
+body .phfab{background:var(--surface);color:var(--text);border:1px solid var(--border);box-shadow:0 10px 24px -12px rgba(20,26,46,.4)}
+:root{--line-strong:rgba(26,32,53,.15)}
+:root[data-theme="dark"]{--line-strong:rgba(242,235,221,.16)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--line-strong:rgba(242,235,221,.16)}}
 </style>
 </head>
 <body>
@@ -5447,6 +5465,19 @@ function spFinish(){document.getElementById('spBar').style.width='100%';document
   }
   window.addEventListener('scroll',onScroll,{passive:true});
   onScroll();
+})();
+</script>
+<script>
+/* 去掉按钮文字前面的 emoji（⭐ A1 → A1、🔊 循环朗读 → 循环朗读），让按钮像词光那样干净。
+   按钮文字有的写在 HTML 里，有的由各版块代码随时改写，所以用 MutationObserver 只盯这些按钮本身和它们的容器。 */
+(function(){
+  var SEL='.level-tab,.cat-tab,.board-tab,.sp-levels button,.rank-tabs button,.nav-btn,.dash-cta button,.read-art-btn,.dlg-play,.dlg-drill,.fab-read,.sec-title>.btn,.gloss-btn';
+  var LEAD=/^(?:[\uD83C-\uD83E][\uDC00-\uDFFF]|[\u2190-\u21FF\u2300-\u23FF\u25A0-\u25FF\u2600-\u27BF\u2B00-\u2BFF]|\uFE0F|\u200D|\s)+/;
+  function tidy(b){var n=b.firstChild;while(n&&n.nodeType===3&&!/\S/.test(n.nodeValue))n=n.nextSibling;if(!n||n.nodeType!==3)return;var t=n.nodeValue,c=t.replace(LEAD,'');if(c!==t&&/\S/.test(c))n.nodeValue=c;}
+  function sweep(root){if(!root||!root.querySelectorAll)return;if(root.matches&&root.matches(SEL))tidy(root);var l=root.querySelectorAll(SEL);for(var i=0;i<l.length;i++)tidy(l[i]);}
+  window._tidyBtn=sweep;
+  function start(){sweep(document.body);if(!window.MutationObserver)return;new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var m=ms[i],t=m.target,a=m.addedNodes,j;if(t.nodeType===3)t=t.parentNode;if(t&&t.matches&&t.matches(SEL)){tidy(t);continue;}for(j=0;j<a.length;j++)if(a[j].nodeType===1)sweep(a[j]);}}).observe(document.body,{childList:true,subtree:true,characterData:true});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 </script>
 </body>
