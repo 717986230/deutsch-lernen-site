@@ -45,10 +45,10 @@ a{color:var(--accent)}
 .tcard .ic{font-size:44px;line-height:1.2}
 .tcard b{display:block;font-size:19px}
 .tcard span{font-size:14px}
-.tcard.soon{opacity:.55;cursor:default}
+.tcard.soon{display:block;text-decoration:none;background:var(--surface);color:var(--dim);min-height:132px}.tcard.soon .ic{opacity:.6}
 .note{margin-top:20px;font-size:13px;color:var(--dim);line-height:1.8}
 .tabs{display:flex;gap:8px;margin:4px 0 12px}
-.tabs button{flex:1;min-height:48px;border-radius:24px;border:2px solid var(--border);background:var(--surface);font-size:15px;font-weight:600}
+.tabs button{flex:1;min-width:0;min-height:48px;padding:0 4px;border-radius:24px;border:2px solid var(--border);background:var(--surface);font-size:14px;font-weight:600;white-space:nowrap}
 .tabs button[aria-selected=true]{border-color:var(--brand);background:var(--brand);color:#14240a}
 .tip{font-size:13px;color:var(--dim);background:var(--surface);border-radius:14px;padding:10px 12px;margin-bottom:12px;border:1px dashed var(--border)}
 /* 场景：可点的物品 */
@@ -107,6 +107,18 @@ a{color:var(--accent)}
 .stars{font-size:26px;letter-spacing:2px;margin-bottom:6px}
 .done{font-size:20px;margin:24px 0 12px}
 .btn{min-height:48px;padding:0 22px;border-radius:24px;border:none;background:var(--brand);color:#14240a;font-weight:700;font-size:16px}
+/* 官方教材伴读 */
+.oif{background:var(--surface);border-radius:20px;padding:14px 16px;box-shadow:var(--shadow);text-align:center}
+.oif-h{font-size:17px;font-weight:700;margin-bottom:10px}.oif-h small{display:block;font-size:13px;font-weight:400;color:var(--dim)}
+.oif-btn{display:flex;align-items:center;justify-content:center;text-decoration:none;width:100%}
+.oif-link{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+.gh{font-size:17px;margin:22px 0 8px}
+.sum{margin:0;padding-left:22px}.sum li{margin-bottom:8px}
+.voc,.gcard{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:4px 12px}
+.gcard{margin-bottom:12px;padding:12px}.gcard p{margin:4px 0 6px;font-size:14px}
+.vrow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.vrow:last-child{border-bottom:none}
+.vrow .de{font-weight:600}
 .foot{margin-top:28px;font-size:12px;color:var(--dim);line-height:1.8;border-top:1px solid var(--border);padding-top:12px}
 </style>
 </head>
@@ -116,7 +128,8 @@ a{color:var(--accent)}
 const THEMES=/*KINDER_DATA*/;
 // 主题清单参照奥地利融合基金会 ÖIF 儿童课程「Ilwa Immerfroh」的 20 个场景；
 // 词句、故事、配音都是本站原创（ÖIF 的材料未经书面许可不得复制或改编）。
-const ALL=[['farben','Farben','颜色','🎨'],['feste','Feste','节日','🎉'],['gruppenraum','Im Gruppenraum','幼儿园教室','🧸'],['zahlen','Zahlen','数字','🔢'],['museum','Im Museum','博物馆','🦖'],['theater','Im Theater','剧院','🎭'],['konzert','Im Konzert','音乐会','🎻'],['zirkus','Im Zirkus','马戏团','🎪'],['ruhe','Ruhe','安静时光','😴'],['wiese','Auf der Wiese','草地','🌼'],['streichelzoo','Im Streichelzoo','小动物园','🐐'],['spielplatz','Am Spielplatz','游乐场','🛝'],['baustelle','Auf der Baustelle','工地','🚧'],['supermarkt','Im Supermarkt','超市','🛒'],['mistplatz','Am Mistplatz','垃圾回收站','♻️'],['verkehr','Im Verkehr','交通','🚦'],['post','Auf der Post','邮局','📮'],['aufraeumen','Aufräumen','收拾房间','🧹'],['gefuehle','Gefühle','心情','😊'],['bad','Im Badezimmer','浴室','🛁']];
+const ALL=[['farben','Farben','颜色','🎨','teil-1-farben'],['feste','Fest','节日聚会','🎉','teil-2-fest'],['gruppenraum','Gruppenraum','幼儿园教室','🧸','teil-3-gruppenraum'],['zahlen','Zahlen','数字','🔢','teil-4-zahlen'],['museum','Museum','博物馆','🦖','teil-5-museum'],['theater','Theater','剧院','🎭','teil-6-theater'],['konzert','Konzert','音乐会','🎻','teil-7-konzert'],['zirkus','Zirkus','马戏团','🎪','teil-8-zirkus'],['stille','Stille','安静','🤫','teil-9-stille'],['wiese','Wiese','草地','🌼','teil-10-wiese'],['streichelzoo','Streichelzoo','小动物园','🐐','teil-11-streichelzoo'],['spielplatz','Spielplatz','游乐场','🛝','teil-12-spielplatz'],['baustelle','Baustelle','工地','🚧','teil-13-baustelle'],['supermarkt','Supermarkt','超市','🛒','teil-14-supermarkt'],['muellplatz','Müllplatz','垃圾回收站','♻️','teil-15-muellplatz'],['verkehr','Straßenverkehr','交通','🚦','teil-16-strassenverkehr'],['post','Post','邮局','📮','teil-17-post'],['aufraeumen','Aufräumen','收拾房间','🧹','teil-18-aufraeumen'],['gefuehle','Gefühle','心情','😊','teil-19-gefuehle'],['bad','Badezimmer','浴室','🛁','teil-20-badezimmer']];
+const OIF='https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const app=$('#app');
@@ -152,11 +165,11 @@ function home(){
   stop();
   document.title='儿童德语：跟小獭 Otti 学德语（中德双语）| 德语学习手册';
   app.innerHTML='<div class="top"><a class="back" href="/">← 手册</a><h1>🧒 儿童德语<small>跟小獭 Otti 学德语 · 中德双语</small></h1></div>'
-   +'<div class="hero"><img src="otti.webp" alt="小獭 Otti" width="84" height="113"><div><p lang="de"><b>Hallo! Ich bin Otti.</b></p><p>你好！我是小獭奥蒂。选一个主题，点图听德语、看故事、玩游戏吧！</p><div class="say">每个词和句子都有中文翻译和谐音，大人小孩都能跟。</div></div></div>'
-   +'<div class="grid">'+ALL.map(([id,de,zh,ic])=>{
+   +'<div class="hero"><img src="otti.webp" alt="小獭 Otti" width="84" height="113"><div><p lang="de"><b>Hallo! Ich bin Otti.</b></p><p>你好！我是小獭奥蒂。选一个主题，点图听德语、看故事、玩游戏吧！</p><div class="say">按奥地利官方儿童课程 Ilwa 的 20 课排列。每课有「官方课」中文伴读：打开官方原版教材，配着中文梗概、生词和语法讲解一起学。</div></div></div>'
+   +'<div class="grid">'+ALL.map(([id,de,zh,ic,slug],k)=>{
       const t=THEMES.find(x=>x.id===id);
-      return t?'<button class="tcard" style="'+bg(t)+'" onclick="location.hash=\''+id+'\'"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>'+zh+'</span></button>'
-              :'<div class="tcard soon" style="background:var(--surface);color:var(--dim)"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>'+zh+' · 制作中</span></div>';
+      return t?'<button class="tcard" style="'+bg(t)+'" onclick="location.hash=\''+id+'\'"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>第 '+(k+1)+' 课 · '+zh+'</span></button>'
+              :'<a class="tcard soon" href="'+OIF+slug+'/"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>第 '+(k+1)+' 课 · '+zh+'<br>中文伴读制作中 · 点开官方原版</span></a>';
     }).join('')+'</div>'
    +foot();
 }
@@ -170,12 +183,31 @@ function theme(id,tab){
   const t=THEMES.find(x=>x.id===id);if(!t)return home();
   stop();
   document.title=t.zh+'（'+t.de+'）· 儿童德语 | 德语学习手册';
-  tab=tab||'look';
-  const tabs=[['look','🔍 看一看'],['story','📖 听故事'],['game','🎮 玩一玩']];
+  tab=tab||(t.guide?'guide':'look');
+  const tabs=(t.guide?[['guide','📘 官方课']]:[]).concat([['look','🔍 看图'],['story','📖 故事'],['game','🎮 游戏']]);
   app.innerHTML='<div class="top"><button class="back" onclick="location.hash=\'\'">← 主题</button><h1>'+t.icon+' <span lang="de">'+t.de+'</span><small>'+t.zh+'</small></h1></div>'
    +'<div class="tabs" role="tablist">'+tabs.map(([k,l])=>'<button role="tab" aria-selected="'+(k===tab)+'" onclick="location.hash=\''+id+'/'+k+'\'">'+l+'</button>').join('')+'</div>'
    +'<div id="pane"></div>'+foot();
-  ({look,story,game})[tab](t,$('#pane'));
+  (({guide,look,story,game})[tab]||look)(t,$('#pane'));
+}
+
+// 官方教材伴读：只放链接 + 自己写的中文讲解（ÖIF 原文不复制）
+function guide(t,el){
+  const g=t.guide,spk=(a,label)=>'<button class="spk" data-a="'+a+'" aria-label="朗读：'+esc(label)+'">🔊</button>';
+  el.innerHTML='<div class="oif"><div class="oif-h">📘 官方第 '+g.teil+' 课 · <span lang="de">'+esc(g.story)+'</span><small>'+esc(g.storyZh)+'</small></div>'
+   +'<a class="btn oif-btn" href="'+g.pdf+'">📄 打开官方教材 PDF</a>'
+   +'<a class="oif-link" href="'+g.url+'">官方本课网页</a>'
+   +'<div class="py" style="margin-top:8px">'+esc(g.pages)+'看完点浏览器的 ← 返回，就回到这里。</div></div>'
+   +'<h2 class="gh">📖 故事讲了什么</h2><ol class="sum">'+g.summary.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol>'
+   +'<h2 class="gh">🔤 本课生词</h2><div class="voc">'+g.vocab.map(v=>{
+      const m=/^(der|die|das) (.+)$/.exec(v.de);
+      const w=m?'<span class="art-'+m[1]+'">'+m[1]+' '+esc(m[2])+'</span>':esc(v.de);
+      return '<div class="vrow"><div style="flex:1;min-width:0"><b lang="de">'+w+'</b> <span>'+esc(v.zh)+'</span><div class="py">'+esc(v.py)+'</div></div>'+spk(v.a,v.de)+'</div>';
+    }).join('')+'</div>'
+   +'<h2 class="gh">🧩 语法点</h2>'+g.grammar.map(gr=>'<div class="gcard"><b>'+esc(gr.t)+'</b><p>'+esc(gr.zh)+'</p>'
+      +gr.ex.map(x=>'<div class="vrow"><div style="flex:1;min-width:0"><div class="de" lang="de">'+esc(x.de)+'</div><div>'+esc(x.zh)+'</div><div class="py">'+esc(x.py)+'</div></div>'+spk(x.a,x.de)+'</div>').join('')+'</div>').join('')
+   +(g.notes&&g.notes.length?'<h2 class="gh">💡 小提示</h2>'+g.notes.map(n=>'<div class="tip">'+esc(n)+'</div>').join(''):'');
+  el.querySelectorAll('.spk[data-a]').forEach(b=>b.onclick=()=>play([b.dataset.a],b));
 }
 
 function look(t,el){

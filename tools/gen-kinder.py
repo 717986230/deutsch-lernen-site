@@ -36,6 +36,13 @@ def main():
             it['sa'] = audio_name(it['s']); texts.append(it['s'])
         for ln in t['story']['lines']:
             ln['a'] = audio_name(ln['de']); texts.append(ln['de'])
+        g = t.get('guide')
+        if g:  # 官方教材伴读：生词和例句也配音
+            for v in g['vocab']:
+                v['a'] = audio_name(v['de']); texts.append(v['de'])
+            for gr in g['grammar']:
+                for x in gr['ex']:
+                    x['a'] = audio_name(x['de']); texts.append(x['de'])
 
     AUDIO.mkdir(exist_ok=True)
     todo = [x for x in dict.fromkeys(texts) if not (AUDIO / audio_name(x)).exists()]

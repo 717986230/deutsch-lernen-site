@@ -4,32 +4,344 @@
     "de": "Farben",
     "zh": "颜色",
     "icon": "🎨",
-    "bg": ["#fff3d6", "#ffd9e8"],
+    "bg": [
+      "#fff3d6",
+      "#ffd9e8"
+    ],
     "focus": "句型：Der Apfel ist rot.（苹果是红色的。）颜色词放在 ist 后面，词形不变。",
     "items": [
-      { "e": "🍎", "de": "rot", "zh": "红色", "py": "罗特", "s": "Der Apfel ist rot.", "sz": "苹果是红色的。", "sp": "戴尔 阿普菲尔 伊斯特 罗特。" },
-      { "e": "🍌", "de": "gelb", "zh": "黄色", "py": "格尔普", "s": "Die Banane ist gelb.", "sz": "香蕉是黄色的。", "sp": "迪 巴纳讷 伊斯特 格尔普。" },
-      { "e": "🐸", "de": "grün", "zh": "绿色", "py": "格吕恩", "s": "Der Frosch ist grün.", "sz": "青蛙是绿色的。", "sp": "戴尔 弗罗施 伊斯特 格吕恩。" },
-      { "e": "🐳", "de": "blau", "zh": "蓝色", "py": "布劳", "s": "Der Wal ist blau.", "sz": "鲸鱼是蓝色的。", "sp": "戴尔 瓦尔 伊斯特 布劳。" },
-      { "e": "🍊", "de": "orange", "zh": "橙色", "py": "奥朗舍", "s": "Die Orange ist orange.", "sz": "橙子是橙色的。", "sp": "迪 奥朗舍 伊斯特 奥朗舍。" },
-      { "e": "🍇", "de": "lila", "zh": "紫色", "py": "利拉", "s": "Die Traube ist lila.", "sz": "葡萄是紫色的。", "sp": "迪 特劳贝 伊斯特 利拉。" },
-      { "e": "🐻", "de": "braun", "zh": "棕色", "py": "布劳恩", "s": "Der Bär ist braun.", "sz": "熊是棕色的。", "sp": "戴尔 贝尔 伊斯特 布劳恩。" },
-      { "e": "⛄", "de": "weiß", "zh": "白色", "py": "魏斯", "s": "Der Schneemann ist weiß.", "sz": "雪人是白色的。", "sp": "戴尔 施内曼 伊斯特 魏斯。" },
-      { "e": "🐈‍⬛", "de": "schwarz", "zh": "黑色", "py": "施瓦尔茨", "s": "Die Katze ist schwarz.", "sz": "猫是黑色的。", "sp": "迪 卡策 伊斯特 施瓦尔茨。" },
-      { "e": "🐷", "de": "rosa", "zh": "粉红色", "py": "罗萨", "s": "Das Schwein ist rosa.", "sz": "小猪是粉红色的。", "sp": "达斯 施魏恩 伊斯特 罗萨。" }
+      {
+        "e": "🍎",
+        "de": "rot",
+        "zh": "红色",
+        "py": "罗特",
+        "s": "Der Apfel ist rot.",
+        "sz": "苹果是红色的。",
+        "sp": "戴尔 阿普菲尔 伊斯特 罗特。"
+      },
+      {
+        "e": "🍌",
+        "de": "gelb",
+        "zh": "黄色",
+        "py": "格尔普",
+        "s": "Die Banane ist gelb.",
+        "sz": "香蕉是黄色的。",
+        "sp": "迪 巴纳讷 伊斯特 格尔普。"
+      },
+      {
+        "e": "🐸",
+        "de": "grün",
+        "zh": "绿色",
+        "py": "格吕恩",
+        "s": "Der Frosch ist grün.",
+        "sz": "青蛙是绿色的。",
+        "sp": "戴尔 弗罗施 伊斯特 格吕恩。"
+      },
+      {
+        "e": "🐳",
+        "de": "blau",
+        "zh": "蓝色",
+        "py": "布劳",
+        "s": "Der Wal ist blau.",
+        "sz": "鲸鱼是蓝色的。",
+        "sp": "戴尔 瓦尔 伊斯特 布劳。"
+      },
+      {
+        "e": "🍊",
+        "de": "orange",
+        "zh": "橙色",
+        "py": "奥朗舍",
+        "s": "Die Orange ist orange.",
+        "sz": "橙子是橙色的。",
+        "sp": "迪 奥朗舍 伊斯特 奥朗舍。"
+      },
+      {
+        "e": "🍇",
+        "de": "lila",
+        "zh": "紫色",
+        "py": "利拉",
+        "s": "Die Traube ist lila.",
+        "sz": "葡萄是紫色的。",
+        "sp": "迪 特劳贝 伊斯特 利拉。"
+      },
+      {
+        "e": "🐻",
+        "de": "braun",
+        "zh": "棕色",
+        "py": "布劳恩",
+        "s": "Der Bär ist braun.",
+        "sz": "熊是棕色的。",
+        "sp": "戴尔 贝尔 伊斯特 布劳恩。"
+      },
+      {
+        "e": "⛄",
+        "de": "weiß",
+        "zh": "白色",
+        "py": "魏斯",
+        "s": "Der Schneemann ist weiß.",
+        "sz": "雪人是白色的。",
+        "sp": "戴尔 施内曼 伊斯特 魏斯。"
+      },
+      {
+        "e": "🐈‍⬛",
+        "de": "schwarz",
+        "zh": "黑色",
+        "py": "施瓦尔茨",
+        "s": "Die Katze ist schwarz.",
+        "sz": "猫是黑色的。",
+        "sp": "迪 卡策 伊斯特 施瓦尔茨。"
+      },
+      {
+        "e": "🐷",
+        "de": "rosa",
+        "zh": "粉红色",
+        "py": "罗萨",
+        "s": "Das Schwein ist rosa.",
+        "sz": "小猪是粉红色的。",
+        "sp": "达斯 施魏恩 伊斯特 罗萨。"
+      }
     ],
     "story": {
       "de": "Ottis buntes Bild",
       "zh": "小獭的彩色画",
       "lines": [
-        { "e": "🌞🦦", "de": "Guten Morgen! Ich bin Otti.", "zh": "早上好！我是小獭奥蒂。", "py": "古腾 摩根！伊希 宾 奥蒂。" },
-        { "e": "🎨🖌️", "de": "Heute male ich ein Bild.", "zh": "今天我要画一幅画。", "py": "霍伊特 马勒 伊希 艾因 比尔特。" },
-        { "e": "🍎", "de": "Ich male einen Apfel. Der Apfel ist rot.", "zh": "我画一个苹果。苹果是红色的。", "py": "伊希 马勒 艾嫩 阿普菲尔。戴尔 阿普菲尔 伊斯特 罗特。" },
-        { "e": "🌳", "de": "Dann male ich einen Baum. Der Baum ist grün.", "zh": "然后我画一棵树。树是绿色的。", "py": "丹 马勒 伊希 艾嫩 鲍姆。戴尔 鲍姆 伊斯特 格吕恩。" },
-        { "e": "☀️", "de": "Die Sonne ist gelb.", "zh": "太阳是黄色的。", "py": "迪 宗讷 伊斯特 格尔普。" },
-        { "e": "🌊", "de": "Und das Wasser ist blau.", "zh": "水是蓝色的。", "py": "翁特 达斯 瓦塞尔 伊斯特 布劳。" },
-        { "e": "🌈", "de": "Rot, gelb, grün, blau – ein Regenbogen!", "zh": "红、黄、绿、蓝——一道彩虹！", "py": "罗特，格尔普，格吕恩，布劳——艾因 雷根博根！" },
-        { "e": "🖼️🦦", "de": "Mein Bild ist fertig. Es ist so bunt!", "zh": "我的画画好了。好多颜色呀！", "py": "迈因 比尔特 伊斯特 费尔蒂希。埃斯 伊斯特 佐 布恩特！" }
+        {
+          "e": "🌞🦦",
+          "de": "Guten Morgen! Ich bin Otti.",
+          "zh": "早上好！我是小獭奥蒂。",
+          "py": "古腾 摩根！伊希 宾 奥蒂。"
+        },
+        {
+          "e": "🎨🖌️",
+          "de": "Heute male ich ein Bild.",
+          "zh": "今天我要画一幅画。",
+          "py": "霍伊特 马勒 伊希 艾因 比尔特。"
+        },
+        {
+          "e": "🍎",
+          "de": "Ich male einen Apfel. Der Apfel ist rot.",
+          "zh": "我画一个苹果。苹果是红色的。",
+          "py": "伊希 马勒 艾嫩 阿普菲尔。戴尔 阿普菲尔 伊斯特 罗特。"
+        },
+        {
+          "e": "🌳",
+          "de": "Dann male ich einen Baum. Der Baum ist grün.",
+          "zh": "然后我画一棵树。树是绿色的。",
+          "py": "丹 马勒 伊希 艾嫩 鲍姆。戴尔 鲍姆 伊斯特 格吕恩。"
+        },
+        {
+          "e": "☀️",
+          "de": "Die Sonne ist gelb.",
+          "zh": "太阳是黄色的。",
+          "py": "迪 宗讷 伊斯特 格尔普。"
+        },
+        {
+          "e": "🌊",
+          "de": "Und das Wasser ist blau.",
+          "zh": "水是蓝色的。",
+          "py": "翁特 达斯 瓦塞尔 伊斯特 布劳。"
+        },
+        {
+          "e": "🌈",
+          "de": "Rot, gelb, grün, blau – ein Regenbogen!",
+          "zh": "红、黄、绿、蓝——一道彩虹！",
+          "py": "罗特，格尔普，格吕恩，布劳——艾因 雷根博根！"
+        },
+        {
+          "e": "🖼️🦦",
+          "de": "Mein Bild ist fertig. Es ist so bunt!",
+          "zh": "我的画画好了。好多颜色呀！",
+          "py": "迈因 比尔特 伊斯特 费尔蒂希。埃斯 伊斯特 佐 布恩特！"
+        }
+      ]
+    },
+    "guide": {
+      "teil": 1,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-1-farben/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-1-Farben.pdf",
+      "story": "Ilwa taucht ab",
+      "storyZh": "伊尔瓦潜进画里",
+      "pages": "故事在 PDF 第 1–2 页，后面是给老师的游戏和练习。",
+      "summary": [
+        "伊尔瓦推开一扇栗棕色的门，来到幼儿园的「彩虹组」。老师 Gernot 欢迎她。两个男孩把蓝色和黄色的水倒进瓶子里摇一摇，水变成了绿色，伊尔瓦觉得像变魔术。",
+        "老师请伊尔瓦一起画「彩虹墙」。孩子们用沾了颜料的手在白纸上按手印。红手和黄手按在一起，变成了橙色——「红加黄变成橙！」",
+        "伊尔瓦把樱桃红和天蓝混在一起，调出了紫色，和她头发一个颜色。她太兴奋了，挥着画笔把紫色溅到了自己鼻子上，大家笑她长了「雀斑」。",
+        "有个孩子画了一座乌黑的火山。小女孩 Aya 用蓝色蜡笔画了一大片海。",
+        "伊尔瓦挥一挥她的魔法袜子，变得很小，跳进 Aya 的画里游泳。小朋友都围过来看，Aya 高兴得脸都红了。",
+        "伊尔瓦从画里跳出来，头发上还挂着海草。她夸 Aya 的海很适合游泳，还偷偷送她一个金棕色的贝壳。贝壳放在耳边，能听到大海的声音。",
+        "大家都想听，伊尔瓦最开心。最后她哼起自己最喜欢的歌。"
+      ],
+      "vocab": [
+        {
+          "de": "mischen",
+          "zh": "混合（颜色）",
+          "py": "米申"
+        },
+        {
+          "de": "schütteln",
+          "zh": "摇",
+          "py": "许特尔恩"
+        },
+        {
+          "de": "rühren",
+          "zh": "搅拌",
+          "py": "吕伦"
+        },
+        {
+          "de": "bekommen",
+          "zh": "得到",
+          "py": "贝科门"
+        },
+        {
+          "de": "anmalen",
+          "zh": "涂上颜色",
+          "py": "安 马伦"
+        },
+        {
+          "de": "hellblau",
+          "zh": "浅蓝",
+          "py": "黑尔 布劳"
+        },
+        {
+          "de": "dunkelrot",
+          "zh": "深红",
+          "py": "敦克尔 罗特"
+        },
+        {
+          "de": "himmelblau",
+          "zh": "天蓝",
+          "py": "希梅尔 布劳"
+        },
+        {
+          "de": "tannengrün",
+          "zh": "墨绿（冷杉绿）",
+          "py": "坦嫩 格吕恩"
+        },
+        {
+          "de": "froschgrün",
+          "zh": "青蛙绿",
+          "py": "弗罗施 格吕恩"
+        },
+        {
+          "de": "kirschrot",
+          "zh": "樱桃红",
+          "py": "基尔施 罗特"
+        },
+        {
+          "de": "zitronengelb",
+          "zh": "柠檬黄",
+          "py": "齐特罗嫩 格尔普"
+        },
+        {
+          "de": "goldbraun",
+          "zh": "金棕",
+          "py": "戈尔特 布劳恩"
+        },
+        {
+          "de": "kastanienbraun",
+          "zh": "栗子棕",
+          "py": "卡斯塔尼恩 布劳恩"
+        },
+        {
+          "de": "schneeweiß",
+          "zh": "雪白",
+          "py": "施内 魏斯"
+        },
+        {
+          "de": "mausgrau",
+          "zh": "鼠灰",
+          "py": "毛斯 格劳"
+        },
+        {
+          "de": "rabenschwarz",
+          "zh": "乌黑（渡鸦黑）",
+          "py": "拉本 施瓦尔茨"
+        },
+        {
+          "de": "flamingorosa",
+          "zh": "火烈鸟粉",
+          "py": "弗拉明戈 罗萨"
+        },
+        {
+          "de": "veilchenlila",
+          "zh": "紫罗兰紫",
+          "py": "法伊尔欣 利拉"
+        },
+        {
+          "de": "fuchsorange",
+          "zh": "狐狸橙",
+          "py": "富克斯 奥朗舍"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "颜色怎么「变」：aus … wird …",
+          "zh": "「用 A 和 B 变出 C」德语说 Aus A und B wird C。wird 是「变成」。",
+          "ex": [
+            {
+              "de": "Aus Rot und Gelb wird Orange.",
+              "zh": "红加黄变成橙。",
+              "py": "奥斯 罗特 翁特 格尔普 维尔特 奥朗舍。"
+            },
+            {
+              "de": "Aus Blau und Gelb wird Grün.",
+              "zh": "蓝加黄变成绿。",
+              "py": "奥斯 布劳 翁特 格尔普 维尔特 格吕恩。"
+            }
+          ]
+        },
+        {
+          "t": "可分动词 anmalen（涂色）",
+          "zh": "anmalen 用在句子里要拆开：malen 放第二位，an 跑到句子最后。",
+          "ex": [
+            {
+              "de": "Ich male den Apfel rot an.",
+              "zh": "我把苹果涂成红色。",
+              "py": "伊希 马勒 登 阿普菲尔 罗特 安。"
+            },
+            {
+              "de": "Wir malen die Wand bunt an.",
+              "zh": "我们把墙涂得五颜六色。",
+              "py": "维尔 马伦 迪 万特 布恩特 安。"
+            }
+          ]
+        },
+        {
+          "t": "组合颜色词：东西 + 颜色",
+          "zh": "德语喜欢把「像什么」直接拼在颜色前面，写成一个词：Zitrone（柠檬）+ gelb → zitronengelb（柠檬黄）。hell- 表示浅，dunkel- 表示深。",
+          "ex": [
+            {
+              "de": "Der Himmel ist himmelblau.",
+              "zh": "天空是天蓝色的。",
+              "py": "戴尔 希梅尔 伊斯特 希梅尔 布劳。"
+            },
+            {
+              "de": "Der Frosch ist froschgrün.",
+              "zh": "青蛙是青蛙绿。",
+              "py": "戴尔 弗罗施 伊斯特 弗罗施 格吕恩。"
+            }
+          ]
+        },
+        {
+          "t": "wenn（如果）和 weil（因为）",
+          "zh": "wenn 和 weil 后面的小句，动词要放到最后。",
+          "ex": [
+            {
+              "de": "Wenn ich Rot und Blau mische, bekomme ich Lila.",
+              "zh": "如果我把红和蓝混在一起，就得到紫色。",
+              "py": "文 伊希 罗特 翁特 布劳 米舍，贝科默 伊希 利拉。"
+            },
+            {
+              "de": "Das Monster ist rot, weil es Kirschen isst.",
+              "zh": "怪兽是红色的，因为它吃樱桃。",
+              "py": "达斯 蒙斯特尔 伊斯特 罗特，魏尔 埃斯 基尔申 伊斯特。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "Ilwa 伊尔瓦：故事主角，头发是紫色的，有一只能变魔术的袜子（Zaubersocke）。",
+        "Kunterbunt：五颜六色，这里是幼儿园小组的名字。"
       ]
     }
   },
@@ -38,32 +350,362 @@
     "de": "Zahlen",
     "zh": "数字",
     "icon": "🔢",
-    "bg": ["#e3f4ff", "#e9e3ff"],
+    "bg": [
+      "#e3f4ff",
+      "#e9e3ff"
+    ],
     "focus": "句型：Der Hund hat vier Beine.（狗有四条腿。）数字放在名词前面；两个以上一般用复数。",
     "items": [
-      { "e": "⚽", "n": 1, "de": "eins", "zh": "一", "py": "艾因斯", "s": "Ein Ball.", "sz": "一个球。", "sp": "艾因 巴尔。" },
-      { "e": "👀", "n": 1, "de": "zwei", "zh": "二", "py": "茨瓦伊", "s": "Ich habe zwei Augen.", "sz": "我有两只眼睛。", "sp": "伊希 哈贝 茨瓦伊 奥根。" },
-      { "e": "🐷", "n": 3, "de": "drei", "zh": "三", "py": "德赖", "s": "Drei kleine Schweine.", "sz": "三只小猪。", "sp": "德赖 克莱讷 施魏讷。" },
-      { "e": "🐕", "n": 1, "de": "vier", "zh": "四", "py": "菲尔", "s": "Der Hund hat vier Beine.", "sz": "狗有四条腿。", "sp": "戴尔 洪特 哈特 菲尔 拜讷。" },
-      { "e": "✋", "n": 1, "de": "fünf", "zh": "五", "py": "芬夫", "s": "Eine Hand hat fünf Finger.", "sz": "一只手有五根手指。", "sp": "艾讷 汉特 哈特 芬夫 芬格尔。" },
-      { "e": "🥚", "n": 6, "de": "sechs", "zh": "六", "py": "泽克斯", "s": "Sechs Eier.", "sz": "六个鸡蛋。", "sp": "泽克斯 艾尔。" },
-      { "e": "🌈", "n": 1, "de": "sieben", "zh": "七", "py": "齐本", "s": "Der Regenbogen hat sieben Farben.", "sz": "彩虹有七种颜色。", "sp": "戴尔 雷根博根 哈特 齐本 法尔本。" },
-      { "e": "🐙", "n": 1, "de": "acht", "zh": "八", "py": "阿赫特", "s": "Der Krake hat acht Arme.", "sz": "章鱼有八条腕足。", "sp": "戴尔 克拉克 哈特 阿赫特 阿尔默。" },
-      { "e": "🎈", "n": 9, "de": "neun", "zh": "九", "py": "诺伊恩", "s": "Neun Luftballons.", "sz": "九个气球。", "sp": "诺伊恩 卢夫特巴隆斯。" },
-      { "e": "🙌", "n": 1, "de": "zehn", "zh": "十", "py": "灿", "s": "Ich habe zehn Finger.", "sz": "我有十根手指。", "sp": "伊希 哈贝 灿 芬格尔。" }
+      {
+        "e": "⚽",
+        "n": 1,
+        "de": "eins",
+        "zh": "一",
+        "py": "艾因斯",
+        "s": "Ein Ball.",
+        "sz": "一个球。",
+        "sp": "艾因 巴尔。"
+      },
+      {
+        "e": "👀",
+        "n": 1,
+        "de": "zwei",
+        "zh": "二",
+        "py": "茨瓦伊",
+        "s": "Ich habe zwei Augen.",
+        "sz": "我有两只眼睛。",
+        "sp": "伊希 哈贝 茨瓦伊 奥根。"
+      },
+      {
+        "e": "🐷",
+        "n": 3,
+        "de": "drei",
+        "zh": "三",
+        "py": "德赖",
+        "s": "Drei kleine Schweine.",
+        "sz": "三只小猪。",
+        "sp": "德赖 克莱讷 施魏讷。"
+      },
+      {
+        "e": "🐕",
+        "n": 1,
+        "de": "vier",
+        "zh": "四",
+        "py": "菲尔",
+        "s": "Der Hund hat vier Beine.",
+        "sz": "狗有四条腿。",
+        "sp": "戴尔 洪特 哈特 菲尔 拜讷。"
+      },
+      {
+        "e": "✋",
+        "n": 1,
+        "de": "fünf",
+        "zh": "五",
+        "py": "芬夫",
+        "s": "Eine Hand hat fünf Finger.",
+        "sz": "一只手有五根手指。",
+        "sp": "艾讷 汉特 哈特 芬夫 芬格尔。"
+      },
+      {
+        "e": "🥚",
+        "n": 6,
+        "de": "sechs",
+        "zh": "六",
+        "py": "泽克斯",
+        "s": "Sechs Eier.",
+        "sz": "六个鸡蛋。",
+        "sp": "泽克斯 艾尔。"
+      },
+      {
+        "e": "🌈",
+        "n": 1,
+        "de": "sieben",
+        "zh": "七",
+        "py": "齐本",
+        "s": "Der Regenbogen hat sieben Farben.",
+        "sz": "彩虹有七种颜色。",
+        "sp": "戴尔 雷根博根 哈特 齐本 法尔本。"
+      },
+      {
+        "e": "🐙",
+        "n": 1,
+        "de": "acht",
+        "zh": "八",
+        "py": "阿赫特",
+        "s": "Der Krake hat acht Arme.",
+        "sz": "章鱼有八条腕足。",
+        "sp": "戴尔 克拉克 哈特 阿赫特 阿尔默。"
+      },
+      {
+        "e": "🎈",
+        "n": 9,
+        "de": "neun",
+        "zh": "九",
+        "py": "诺伊恩",
+        "s": "Neun Luftballons.",
+        "sz": "九个气球。",
+        "sp": "诺伊恩 卢夫特巴隆斯。"
+      },
+      {
+        "e": "🙌",
+        "n": 1,
+        "de": "zehn",
+        "zh": "十",
+        "py": "灿",
+        "s": "Ich habe zehn Finger.",
+        "sz": "我有十根手指。",
+        "sp": "伊希 哈贝 灿 芬格尔。"
+      }
     ],
     "story": {
       "de": "Otti zählt",
       "zh": "小獭数一数",
       "lines": [
-        { "e": "🦦🏞️", "de": "Otti geht zum Fluss.", "zh": "小獭奥蒂去河边。", "py": "奥蒂 盖特 楚姆 弗卢斯。" },
-        { "e": "🦆", "de": "Da schwimmt eine Ente.", "zh": "那儿游着一只鸭子。", "py": "达 施文特 艾讷 恩特。" },
-        { "e": "🦆🦆", "de": "Jetzt sind es zwei Enten.", "zh": "现在有两只鸭子了。", "py": "耶茨特 津特 埃斯 茨瓦伊 恩滕。" },
-        { "e": "🐟🐟🐟", "de": "Im Wasser sind drei Fische.", "zh": "水里有三条鱼。", "py": "伊姆 瓦塞尔 津特 德赖 菲舍。" },
-        { "e": "🪨🪨🪨🪨🪨", "de": "Otti zählt die Steine: eins, zwei, drei, vier, fünf.", "zh": "奥蒂数石头：一、二、三、四、五。", "py": "奥蒂 采尔特 迪 施泰讷：艾因斯，茨瓦伊，德赖，菲尔，芬夫。" },
-        { "e": "🐸", "de": "Ein Frosch springt: hopp, hopp, hopp!", "zh": "一只青蛙在跳：蹦、蹦、蹦！", "py": "艾因 弗罗施 施普林特：霍普，霍普，霍普！" },
-        { "e": "🦦🦦", "de": "Zwei Otter: Otti und ihre Mama.", "zh": "两只水獭：奥蒂和她的妈妈。", "py": "茨瓦伊 奥特尔：奥蒂 翁特 伊勒 妈妈。" },
-        { "e": "🌙⭐", "de": "Gute Nacht! Morgen zählen wir weiter.", "zh": "晚安！明天我们接着数。", "py": "古特 纳赫特！摩根 采伦 维尔 外特尔。" }
+        {
+          "e": "🦦🏞️",
+          "de": "Otti geht zum Fluss.",
+          "zh": "小獭奥蒂去河边。",
+          "py": "奥蒂 盖特 楚姆 弗卢斯。"
+        },
+        {
+          "e": "🦆",
+          "de": "Da schwimmt eine Ente.",
+          "zh": "那儿游着一只鸭子。",
+          "py": "达 施文特 艾讷 恩特。"
+        },
+        {
+          "e": "🦆🦆",
+          "de": "Jetzt sind es zwei Enten.",
+          "zh": "现在有两只鸭子了。",
+          "py": "耶茨特 津特 埃斯 茨瓦伊 恩滕。"
+        },
+        {
+          "e": "🐟🐟🐟",
+          "de": "Im Wasser sind drei Fische.",
+          "zh": "水里有三条鱼。",
+          "py": "伊姆 瓦塞尔 津特 德赖 菲舍。"
+        },
+        {
+          "e": "🪨🪨🪨🪨🪨",
+          "de": "Otti zählt die Steine: eins, zwei, drei, vier, fünf.",
+          "zh": "奥蒂数石头：一、二、三、四、五。",
+          "py": "奥蒂 采尔特 迪 施泰讷：艾因斯，茨瓦伊，德赖，菲尔，芬夫。"
+        },
+        {
+          "e": "🐸",
+          "de": "Ein Frosch springt: hopp, hopp, hopp!",
+          "zh": "一只青蛙在跳：蹦、蹦、蹦！",
+          "py": "艾因 弗罗施 施普林特：霍普，霍普，霍普！"
+        },
+        {
+          "e": "🦦🦦",
+          "de": "Zwei Otter: Otti und ihre Mama.",
+          "zh": "两只水獭：奥蒂和她的妈妈。",
+          "py": "茨瓦伊 奥特尔：奥蒂 翁特 伊勒 妈妈。"
+        },
+        {
+          "e": "🌙⭐",
+          "de": "Gute Nacht! Morgen zählen wir weiter.",
+          "zh": "晚安！明天我们接着数。",
+          "py": "古特 纳赫特！摩根 采伦 维尔 外特尔。"
+        }
+      ]
+    },
+    "guide": {
+      "teil": 4,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-4-zahlen/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-4-Zahlen.pdf",
+      "story": "Ilwa und die zauberhafte Zehn",
+      "storyZh": "伊尔瓦和神奇的十",
+      "pages": "故事在 PDF 开头几页，后面是数数游戏和练习。",
+      "summary": [
+        "秋天刮风，彩色的树叶满天飞，落了伊尔瓦一头。她数了 5 片叶子，分给朋友 Kilian 3 片，自己留 2 片，还把叶子别在耳朵上当耳环。",
+        "孩子们在老栗子树下捡栗子。Fatih 捡了 7 个；另外两个孩子把栗子放在一起，一共 8 个，比他多，Fatih 不高兴了。",
+        "伊尔瓦又找到 4 个栗子，分给 4 个小朋友每人 1 个。Fatih 笑了。",
+        "地上画着跳房子的格子。Fatih 教伊尔瓦一边跳一边数：1、2、3……10。伊尔瓦跳到了她最喜欢的数字：十！",
+        "伊尔瓦把一块小石头放进魔法袜子，变出了一大盒亮晶晶的弹珠，大喊「人人都有弹珠！」大家都来分。分享真开心。",
+        "最后伊尔瓦唱起她的歌：做自己真好，今天是特别的一天。"
+      ],
+      "vocab": [
+        {
+          "de": "die Zahl",
+          "zh": "数字",
+          "py": "迪 察尔"
+        },
+        {
+          "de": "die Ziffer",
+          "zh": "数码（0–9 这些符号）",
+          "py": "迪 齐弗尔"
+        },
+        {
+          "de": "viel",
+          "zh": "多",
+          "py": "菲尔"
+        },
+        {
+          "de": "wenig",
+          "zh": "少",
+          "py": "维尼希"
+        },
+        {
+          "de": "gleich viel",
+          "zh": "一样多",
+          "py": "格莱希 菲尔"
+        },
+        {
+          "de": "ein paar",
+          "zh": "几个",
+          "py": "艾因 帕尔"
+        },
+        {
+          "de": "alle",
+          "zh": "所有人／全部",
+          "py": "阿勒"
+        },
+        {
+          "de": "kein",
+          "zh": "没有",
+          "py": "凯因"
+        },
+        {
+          "de": "zusammen",
+          "zh": "一共／一起",
+          "py": "楚扎门"
+        },
+        {
+          "de": "wie viele",
+          "zh": "多少个",
+          "py": "维 菲勒"
+        },
+        {
+          "de": "mehr",
+          "zh": "更多",
+          "py": "梅尔"
+        },
+        {
+          "de": "weniger",
+          "zh": "更少",
+          "py": "维尼格尔"
+        },
+        {
+          "de": "am meisten",
+          "zh": "最多",
+          "py": "阿姆 迈斯滕"
+        },
+        {
+          "de": "zählen",
+          "zh": "数",
+          "py": "采伦"
+        },
+        {
+          "de": "teilen",
+          "zh": "分享／分",
+          "py": "泰伦"
+        },
+        {
+          "de": "nehmen",
+          "zh": "拿",
+          "py": "内门"
+        },
+        {
+          "de": "geben",
+          "zh": "给",
+          "py": "格本"
+        },
+        {
+          "de": "schenken",
+          "zh": "送（礼物）",
+          "py": "申肯"
+        },
+        {
+          "de": "fehlen",
+          "zh": "缺少",
+          "py": "费伦"
+        },
+        {
+          "de": "das Blatt",
+          "zh": "树叶",
+          "py": "达斯 布拉特"
+        },
+        {
+          "de": "die Kastanie",
+          "zh": "栗子",
+          "py": "迪 卡斯塔尼耶"
+        },
+        {
+          "de": "die Murmel",
+          "zh": "弹珠",
+          "py": "迪 穆尔梅尔"
+        },
+        {
+          "de": "der Stein",
+          "zh": "石头",
+          "py": "戴尔 施泰因"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "问「多少个」：Wie viele …?",
+          "zh": "wie viele 后面接复数名词。回答直接说数字 + 名词。",
+          "ex": [
+            {
+              "de": "Wie viele Kastanien hast du?",
+              "zh": "你有几个栗子？",
+              "py": "维 菲勒 卡斯塔尼恩 哈斯特 杜？"
+            },
+            {
+              "de": "Ich habe sieben Kastanien.",
+              "zh": "我有七个栗子。",
+              "py": "伊希 哈贝 齐本 卡斯塔尼恩。"
+            }
+          ]
+        },
+        {
+          "t": "比多少：mehr / weniger als",
+          "zh": "mehr als = 比……多，weniger als = 比……少。奥地利人常加一个 um：um eins weniger（少一个）。",
+          "ex": [
+            {
+              "de": "Du hast mehr als ich.",
+              "zh": "你的比我多。",
+              "py": "杜 哈斯特 梅尔 阿尔斯 伊希。"
+            },
+            {
+              "de": "Ich habe um ein Blatt weniger als du.",
+              "zh": "我比你少一片叶子。",
+              "py": "伊希 哈贝 乌姆 艾因 布拉特 维尼格尔 阿尔斯 杜。"
+            }
+          ]
+        },
+        {
+          "t": "最多：am meisten",
+          "zh": "viel（多）→ mehr（更多）→ am meisten（最多）。",
+          "ex": [
+            {
+              "de": "Ich habe am meisten gesammelt!",
+              "zh": "我捡得最多！",
+              "py": "伊希 哈贝 阿姆 迈斯滕 格扎梅尔特！"
+            }
+          ]
+        },
+        {
+          "t": "缺几个：mir fehlen …",
+          "zh": "fehlen 的意思是「缺」，缺的东西做主语，「我」用 mir。",
+          "ex": [
+            {
+              "de": "Mir fehlen drei Steine.",
+              "zh": "我还缺三块石头。",
+              "py": "米尔 费伦 德赖 施泰讷。"
+            },
+            {
+              "de": "Teilen macht Spaß!",
+              "zh": "分享真开心！",
+              "py": "泰伦 马赫特 施帕斯！"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "一个变多个要用复数：ein Blatt → zwei Blätter，eine Kastanie → zwei Kastanien，ein Stein → zwei Steine。"
       ]
     }
   },
@@ -72,33 +714,389 @@
     "de": "Supermarkt",
     "zh": "超市",
     "icon": "🛒",
-    "bg": ["#e6f8e0", "#fff6d1"],
+    "bg": [
+      "#e6f8e0",
+      "#fff6d1"
+    ],
     "focus": "句型：Ich kaufe Brot.（我买面包。）/ Wir brauchen Milch.（我们需要牛奶。）名词前的 der / die / das 要和名词一起记。",
     "items": [
-      { "e": "🍞", "art": "das", "de": "Brot", "zh": "面包", "py": "达斯 布罗特", "s": "Ich kaufe Brot.", "sz": "我买面包。", "sp": "伊希 考费 布罗特。" },
-      { "e": "🥛", "art": "die", "de": "Milch", "zh": "牛奶", "py": "迪 米尔希", "s": "Die Milch ist kalt.", "sz": "牛奶是凉的。", "sp": "迪 米尔希 伊斯特 卡尔特。" },
-      { "e": "🧀", "art": "der", "de": "Käse", "zh": "奶酪", "py": "戴尔 凯泽", "s": "Ich mag Käse.", "sz": "我喜欢奶酪。", "sp": "伊希 马克 凯泽。" },
-      { "e": "🥕", "art": "die", "de": "Karotte", "zh": "胡萝卜", "py": "迪 卡罗特", "s": "Der Hase isst eine Karotte.", "sz": "兔子吃一根胡萝卜。", "sp": "戴尔 哈泽 伊斯特 艾讷 卡罗特。" },
-      { "e": "🍅", "art": "die", "de": "Tomate", "zh": "西红柿", "py": "迪 托马特", "s": "Die Tomate ist rot.", "sz": "西红柿是红色的。", "sp": "迪 托马特 伊斯特 罗特。" },
-      { "e": "🥚", "art": "das", "de": "Ei", "zh": "鸡蛋", "py": "达斯 艾", "s": "Wir brauchen sechs Eier.", "sz": "我们需要六个鸡蛋。", "sp": "维尔 布劳亨 泽克斯 艾尔。" },
-      { "e": "🧃", "art": "der", "de": "Saft", "zh": "果汁", "py": "戴尔 扎夫特", "s": "Der Saft ist süß.", "sz": "果汁是甜的。", "sp": "戴尔 扎夫特 伊斯特 聚斯。" },
-      { "e": "🍌", "art": "die", "de": "Banane", "zh": "香蕉", "py": "迪 巴纳讷", "s": "Ich möchte eine Banane.", "sz": "我想要一根香蕉。", "sp": "伊希 默希特 艾讷 巴纳讷。" },
-      { "e": "🍦", "art": "das", "de": "Eis", "zh": "冰淇淋", "py": "达斯 艾斯", "s": "Darf ich ein Eis haben?", "sz": "我可以吃个冰淇淋吗？", "sp": "达尔夫 伊希 艾因 艾斯 哈本？" },
-      { "e": "🛒", "art": "der", "de": "Einkaufswagen", "zh": "购物车", "py": "戴尔 艾因考夫斯瓦根", "s": "Der Einkaufswagen ist voll.", "sz": "购物车装满了。", "sp": "戴尔 艾因考夫斯瓦根 伊斯特 福尔。" },
-      { "e": "💶", "art": "das", "de": "Geld", "zh": "钱", "py": "达斯 格尔特", "s": "Mama bezahlt mit Geld.", "sz": "妈妈用钱付账。", "sp": "妈妈 贝察尔特 米特 格尔特。" }
+      {
+        "e": "🍞",
+        "art": "das",
+        "de": "Brot",
+        "zh": "面包",
+        "py": "达斯 布罗特",
+        "s": "Ich kaufe Brot.",
+        "sz": "我买面包。",
+        "sp": "伊希 考费 布罗特。"
+      },
+      {
+        "e": "🥛",
+        "art": "die",
+        "de": "Milch",
+        "zh": "牛奶",
+        "py": "迪 米尔希",
+        "s": "Die Milch ist kalt.",
+        "sz": "牛奶是凉的。",
+        "sp": "迪 米尔希 伊斯特 卡尔特。"
+      },
+      {
+        "e": "🧀",
+        "art": "der",
+        "de": "Käse",
+        "zh": "奶酪",
+        "py": "戴尔 凯泽",
+        "s": "Ich mag Käse.",
+        "sz": "我喜欢奶酪。",
+        "sp": "伊希 马克 凯泽。"
+      },
+      {
+        "e": "🥕",
+        "art": "die",
+        "de": "Karotte",
+        "zh": "胡萝卜",
+        "py": "迪 卡罗特",
+        "s": "Der Hase isst eine Karotte.",
+        "sz": "兔子吃一根胡萝卜。",
+        "sp": "戴尔 哈泽 伊斯特 艾讷 卡罗特。"
+      },
+      {
+        "e": "🍅",
+        "art": "die",
+        "de": "Tomate",
+        "zh": "西红柿",
+        "py": "迪 托马特",
+        "s": "Die Tomate ist rot.",
+        "sz": "西红柿是红色的。",
+        "sp": "迪 托马特 伊斯特 罗特。"
+      },
+      {
+        "e": "🥚",
+        "art": "das",
+        "de": "Ei",
+        "zh": "鸡蛋",
+        "py": "达斯 艾",
+        "s": "Wir brauchen sechs Eier.",
+        "sz": "我们需要六个鸡蛋。",
+        "sp": "维尔 布劳亨 泽克斯 艾尔。"
+      },
+      {
+        "e": "🧃",
+        "art": "der",
+        "de": "Saft",
+        "zh": "果汁",
+        "py": "戴尔 扎夫特",
+        "s": "Der Saft ist süß.",
+        "sz": "果汁是甜的。",
+        "sp": "戴尔 扎夫特 伊斯特 聚斯。"
+      },
+      {
+        "e": "🍌",
+        "art": "die",
+        "de": "Banane",
+        "zh": "香蕉",
+        "py": "迪 巴纳讷",
+        "s": "Ich möchte eine Banane.",
+        "sz": "我想要一根香蕉。",
+        "sp": "伊希 默希特 艾讷 巴纳讷。"
+      },
+      {
+        "e": "🍦",
+        "art": "das",
+        "de": "Eis",
+        "zh": "冰淇淋",
+        "py": "达斯 艾斯",
+        "s": "Darf ich ein Eis haben?",
+        "sz": "我可以吃个冰淇淋吗？",
+        "sp": "达尔夫 伊希 艾因 艾斯 哈本？"
+      },
+      {
+        "e": "🛒",
+        "art": "der",
+        "de": "Einkaufswagen",
+        "zh": "购物车",
+        "py": "戴尔 艾因考夫斯瓦根",
+        "s": "Der Einkaufswagen ist voll.",
+        "sz": "购物车装满了。",
+        "sp": "戴尔 艾因考夫斯瓦根 伊斯特 福尔。"
+      },
+      {
+        "e": "💶",
+        "art": "das",
+        "de": "Geld",
+        "zh": "钱",
+        "py": "达斯 格尔特",
+        "s": "Mama bezahlt mit Geld.",
+        "sz": "妈妈用钱付账。",
+        "sp": "妈妈 贝察尔特 米特 格尔特。"
+      }
     ],
     "story": {
       "de": "Einkaufen mit Mama",
       "zh": "和妈妈去超市",
       "lines": [
-        { "e": "🦦🛒", "de": "Otti und Mama gehen in den Supermarkt.", "zh": "奥蒂和妈妈去超市。", "py": "奥蒂 翁特 妈妈 盖恩 因 登 祖佩尔马尔克特。" },
-        { "e": "📝", "de": "Mama hat eine Liste.", "zh": "妈妈有一张购物清单。", "py": "妈妈 哈特 艾讷 利斯特。" },
-        { "e": "🍞🥛", "de": "Wir brauchen Brot und Milch.", "zh": "我们需要面包和牛奶。", "py": "维尔 布劳亨 布罗特 翁特 米尔希。" },
-        { "e": "🍅🥕", "de": "Otti holt Tomaten und Karotten.", "zh": "奥蒂去拿西红柿和胡萝卜。", "py": "奥蒂 霍尔特 托马滕 翁特 卡罗滕。" },
-        { "e": "🍦👀", "de": "Mama, darf ich ein Eis haben?", "zh": "妈妈，我可以吃个冰淇淋吗？", "py": "妈妈，达尔夫 伊希 艾因 艾斯 哈本？" },
-        { "e": "🙂", "de": "Ja, aber nur ein kleines!", "zh": "可以，不过只能要个小的！", "py": "亚，阿伯尔 努尔 艾因 克莱讷斯！" },
-        { "e": "💶", "de": "An der Kasse bezahlt Mama.", "zh": "妈妈在收银台付钱。", "py": "安 戴尔 卡塞 贝察尔特 妈妈。" },
-        { "e": "🦦🍦", "de": "Danke, Mama! Das Eis ist lecker!", "zh": "谢谢妈妈！冰淇淋真好吃！", "py": "丹克，妈妈！达斯 艾斯 伊斯特 莱克尔！" }
+        {
+          "e": "🦦🛒",
+          "de": "Otti und Mama gehen in den Supermarkt.",
+          "zh": "奥蒂和妈妈去超市。",
+          "py": "奥蒂 翁特 妈妈 盖恩 因 登 祖佩尔马尔克特。"
+        },
+        {
+          "e": "📝",
+          "de": "Mama hat eine Liste.",
+          "zh": "妈妈有一张购物清单。",
+          "py": "妈妈 哈特 艾讷 利斯特。"
+        },
+        {
+          "e": "🍞🥛",
+          "de": "Wir brauchen Brot und Milch.",
+          "zh": "我们需要面包和牛奶。",
+          "py": "维尔 布劳亨 布罗特 翁特 米尔希。"
+        },
+        {
+          "e": "🍅🥕",
+          "de": "Otti holt Tomaten und Karotten.",
+          "zh": "奥蒂去拿西红柿和胡萝卜。",
+          "py": "奥蒂 霍尔特 托马滕 翁特 卡罗滕。"
+        },
+        {
+          "e": "🍦👀",
+          "de": "Mama, darf ich ein Eis haben?",
+          "zh": "妈妈，我可以吃个冰淇淋吗？",
+          "py": "妈妈，达尔夫 伊希 艾因 艾斯 哈本？"
+        },
+        {
+          "e": "🙂",
+          "de": "Ja, aber nur ein kleines!",
+          "zh": "可以，不过只能要个小的！",
+          "py": "亚，阿伯尔 努尔 艾因 克莱讷斯！"
+        },
+        {
+          "e": "💶",
+          "de": "An der Kasse bezahlt Mama.",
+          "zh": "妈妈在收银台付钱。",
+          "py": "安 戴尔 卡塞 贝察尔特 妈妈。"
+        },
+        {
+          "e": "🦦🍦",
+          "de": "Danke, Mama! Das Eis ist lecker!",
+          "zh": "谢谢妈妈！冰淇淋真好吃！",
+          "py": "丹克，妈妈！达斯 艾斯 伊斯特 莱克尔！"
+        }
+      ]
+    },
+    "guide": {
+      "teil": 14,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-14-supermarkt/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-14-Supermarkt.pdf",
+      "story": "Rutschpartie im Supermarkt",
+      "storyZh": "超市里的滑溜溜大冒险",
+      "pages": "故事在 PDF 开头几页，后面是购物游戏和练习。",
+      "summary": [
+        "伊尔瓦变成了一盒牛奶，藏在超市冷藏柜里、鸡蛋旁边，偷偷看人们买东西。冷柜里好冷，她直打哆嗦。",
+        "一位爸爸带着两个女儿 Lisa 和 Nora 来买东西，手里拿着购物清单。姐妹俩想拿巧克力，爸爸说：先买鸡蛋！",
+        "两个人同时去抓鸡蛋盒，盒子掉在地上，鸡蛋全碎了。伊尔瓦心想：这下成了「炒鸡蛋」！爸爸让孩子们原地别动，他去找人帮忙。",
+        "伊尔瓦从冷柜里跳出来，变回原样。地上滑溜溜的，她提议一起玩「滑滑梯」，姐妹俩很想玩。",
+        "这时一位推着购物车、弯着腰的老奶奶走过来。伊尔瓦赶紧提醒她：小心，冷柜这边地滑！老奶奶谢谢孩子们。",
+        "爸爸带着超市理货员回来，把地上的鸡蛋清理干净。理货员夸孩子们会照顾别人，还说：出点小意外没关系。",
+        "爸爸说还要去面包区，然后去收银台付钱。姐妹俩挥手道别，伊尔瓦唱着歌蹦蹦跳跳地走了。"
+      ],
+      "vocab": [
+        {
+          "de": "der Einkaufswagen",
+          "zh": "购物车",
+          "py": "戴尔 艾因考夫斯 瓦根"
+        },
+        {
+          "de": "das Regal",
+          "zh": "货架",
+          "py": "达斯 雷加尔"
+        },
+        {
+          "de": "die Kassa",
+          "zh": "收银台（奥地利说法）",
+          "py": "迪 卡萨"
+        },
+        {
+          "de": "die Geldbörse",
+          "zh": "钱包",
+          "py": "迪 格尔特 伯尔泽"
+        },
+        {
+          "de": "die Einkaufsliste",
+          "zh": "购物清单",
+          "py": "迪 艾因考夫斯 利斯特"
+        },
+        {
+          "de": "die Lebensmittel",
+          "zh": "食品",
+          "py": "迪 莱本斯 米特尔"
+        },
+        {
+          "de": "die Obstabteilung",
+          "zh": "水果区",
+          "py": "迪 奥普斯特 阿普泰隆"
+        },
+        {
+          "de": "die Gemüseabteilung",
+          "zh": "蔬菜区",
+          "py": "迪 格米泽 阿普泰隆"
+        },
+        {
+          "de": "die Backwaren",
+          "zh": "面包糕点",
+          "py": "迪 巴克 瓦伦"
+        },
+        {
+          "de": "das Kühlregal",
+          "zh": "冷藏柜",
+          "py": "达斯 屈尔 雷加尔"
+        },
+        {
+          "de": "die Süßwaren",
+          "zh": "糖果零食",
+          "py": "迪 聚斯 瓦伦"
+        },
+        {
+          "de": "die Eierspeise",
+          "zh": "炒鸡蛋（奥地利说法）",
+          "py": "迪 艾尔 施拜泽"
+        },
+        {
+          "de": "schieben",
+          "zh": "推",
+          "py": "希本"
+        },
+        {
+          "de": "einkaufen",
+          "zh": "买东西",
+          "py": "艾因 考芬"
+        },
+        {
+          "de": "zurücklegen",
+          "zh": "放回去",
+          "py": "楚吕克 莱根"
+        },
+        {
+          "de": "bezahlen",
+          "zh": "付钱",
+          "py": "贝察伦"
+        },
+        {
+          "de": "auf",
+          "zh": "在……上面",
+          "py": "奥夫"
+        },
+        {
+          "de": "unter",
+          "zh": "在……下面",
+          "py": "温特尔"
+        },
+        {
+          "de": "neben",
+          "zh": "在……旁边",
+          "py": "内本"
+        },
+        {
+          "de": "zwischen",
+          "zh": "在……中间",
+          "py": "茨维申"
+        },
+        {
+          "de": "über",
+          "zh": "在……上方",
+          "py": "于贝尔"
+        },
+        {
+          "de": "zuerst",
+          "zh": "首先",
+          "py": "楚埃尔斯特"
+        },
+        {
+          "de": "dann",
+          "zh": "然后",
+          "py": "丹"
+        },
+        {
+          "de": "nachher",
+          "zh": "之后",
+          "py": "纳赫赫尔"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "先、再、然后：zuerst / dann / nachher",
+          "zh": "讲购物顺序。这些词放在句首时，动词仍然排第二。",
+          "ex": [
+            {
+              "de": "Zuerst brauchen wir Eier.",
+              "zh": "我们先要买鸡蛋。",
+              "py": "楚埃尔斯特 布劳亨 维尔 艾尔。"
+            },
+            {
+              "de": "Dann gehen wir zur Kassa.",
+              "zh": "然后我们去收银台。",
+              "py": "丹 盖恩 维尔 楚尔 卡萨。"
+            }
+          ]
+        },
+        {
+          "t": "没有：kein / keine",
+          "zh": "名词前说「没有」用 kein，阴性和复数用 keine。",
+          "ex": [
+            {
+              "de": "Es gibt keine Karotten.",
+              "zh": "没有胡萝卜了。",
+              "py": "埃斯 吉普特 凯讷 卡罗滕。"
+            },
+            {
+              "de": "Wenn es keine Karotten gibt, kaufen wir Kartoffeln.",
+              "zh": "要是没有胡萝卜，我们就买土豆。",
+              "py": "文 埃斯 凯讷 卡罗滕 吉普特，考芬 维尔 卡尔托弗尔恩。"
+            }
+          ]
+        },
+        {
+          "t": "东西在哪儿：方位介词 + 3 格",
+          "zh": "说东西「在」哪儿，用 auf/unter/neben/zwischen/über + 第 3 格（der→dem，die→der，das→dem）。",
+          "ex": [
+            {
+              "de": "Der Saft steht neben dem Käse.",
+              "zh": "果汁在奶酪旁边。",
+              "py": "戴尔 扎夫特 施泰特 内本 登 凯泽。"
+            },
+            {
+              "de": "Die Zitronen liegen unter dem Mehl.",
+              "zh": "柠檬在面粉下面。",
+              "py": "迪 齐特罗嫩 利根 温特尔 登 梅尔。"
+            }
+          ]
+        },
+        {
+          "t": "把东西放到哪儿：方位介词 + 4 格",
+          "zh": "有「放到……去」的动作时，用第 4 格（der→den，das 不变）。",
+          "ex": [
+            {
+              "de": "Wir legen die Kartoffeln in das Regal.",
+              "zh": "我们把土豆放进货架。",
+              "py": "维尔 莱根 迪 卡尔托弗尔恩 因 达斯 雷加尔。"
+            }
+          ]
+        },
+        {
+          "t": "我想要那个……：der / die 引导的从句",
+          "zh": "「旁边那瓶果汁」德语说成「那瓶果汁，它在奶酪旁边」，从句的动词放最后。Ich hätte gerne … 是礼貌地说「我想要」。",
+          "ex": [
+            {
+              "de": "Ich hätte gerne den Saft, der neben dem Käse steht.",
+              "zh": "我想要奶酪旁边那瓶果汁。",
+              "py": "伊希 黑特 格尔讷 登 扎夫特，戴尔 内本 登 凯泽 施泰特。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "奥地利说法：收银台叫 die Kassa（德国说 die Kasse），炒鸡蛋叫 die Eierspeise（德国说 Rührei）。官方教材是奥地利的，所以用奥地利说法。"
       ]
     }
   }
