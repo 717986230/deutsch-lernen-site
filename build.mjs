@@ -251,6 +251,7 @@ self.addEventListener('activate',e=>{e.waitUntil((async()=>{
 self.addEventListener('fetch',e=>{
   const u=new URL(e.request.url);
   if(u.origin!==location.origin||e.request.method!=='GET')return;
+  if(u.pathname.startsWith('/vido/'))return; // Vido 视频卡是另一个应用（含接口与视频分段请求），不经本站缓存
   if(e.request.mode==='navigate'||u.pathname==='/'||u.pathname.endsWith('/index.html')){
     // 页面：网络优先（保证更新），断网回退缓存
     e.respondWith(fetch(e.request).then(r=>{const cp=r.clone();caches.open(V).then(c=>c.put(e.request,cp));return r;})

@@ -1,0 +1,39 @@
+# 把 Vido 视频卡（717986230/rj-yy 的 gh-pages 构建）同步到本站 vido/ 目录，发布在 www.uuoo.site/vido/。
+# 同域部署 = 与本站共用登录（acct_token）。大视频（media/）不复制，Vido 在本站打开时会去 GitHub Pages 取。
+# vido/ 是同步产物，不要手改；要改 Vido 请到 rj-yy 仓库。
+name: Sync Vido
+
+on:
+  schedule:
+    - cron: '17 * * * *'   # 每小时检查一次；有变化才提交
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-vido
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - name: Fetch Vido build without media/
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch gh-pages --filter=blob:none --no-checkout https://github.com/717986230/rj-yy /tmp/vido
+          git -C /tmp/vido sparse-checkout set --no-cone '/*' '!/media/'
+          git -C /tmp/vido checkout gh-pages
+          test -f /tmp/vido/index.html
+          rsync -a --delete --exclude .git --exclude media/ /tmp/vido/ vido/
+          du -sh vido
+      - name: Commit if changed
+        run: |
+          git add -A vido
+          if git diff --cached --quiet; then echo "Vido 没有变化"; exit 0; fi
+          git -c user.name='github-actions[bot]' -c user.email='41898583+github-actions[bot]@users.noreply.github.com' \
+            commit -m "同步 Vido 视频卡（rj-yy@$(git -C /tmp/vido log -1 --format=%h)）"
+          git push origin HEAD:main
