@@ -1,5 +1,5 @@
 // 自动生成（build.mjs），勿手改。壳网络优先；词典切片持久缓存、跨版本复用。
-const V='de-8e46003b0d',DATA='de-data',KEEP=["de.7ca4718b.dat","en.6723bc5b.dat"];
+const V='de-567c4ee6ea',DATA='de-data',KEEP=["de.7ca4718b.dat","en.6723bc5b.dat"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['index.html','manifest.webmanifest','icon-192.png','icon-512.png'])).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{
   const ks=await caches.keys();
@@ -12,6 +12,7 @@ self.addEventListener('activate',e=>{e.waitUntil((async()=>{
 self.addEventListener('fetch',e=>{
   const u=new URL(e.request.url);
   if(u.origin!==location.origin||e.request.method!=='GET')return;
+  if(u.pathname.startsWith('/vido/'))return; // Vido 视频卡是另一个应用（含接口与视频分段请求），不经本站缓存
   if(e.request.mode==='navigate'||u.pathname==='/'||u.pathname.endsWith('/index.html')){
     // 页面：网络优先（保证更新），断网回退缓存
     e.respondWith(fetch(e.request).then(r=>{const cp=r.clone();caches.open(V).then(c=>c.put(e.request,cp));return r;})

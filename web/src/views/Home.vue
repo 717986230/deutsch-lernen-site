@@ -64,6 +64,8 @@ const CARDS = [
   { to: '/reading', ic: 'fic-teal', t: '阅读·连载', s: '分级短文·留学连续剧' },
   { to: '/quiz', ic: 'fic-red', t: '练习测验', s: '数字·单词·句子·听力' },
   { to: '/boards', ic: 'fic-pink', t: '图解词典', s: '人体·动物·食物·交通…' },
+  // Vido 视频卡（rj-yy 仓库）挂在同域 /vido/，不在本 Vue 应用里，用整页跳转；账号与本站共用
+  { href: '/vido/', ic: 'fic-video', t: '看视频学德语', s: '整部影片·中德双语字幕' },
 ];
 // 英语模式下旧站换成另一组卡（en-only-block），去处相同、文案不同
 const EN_CARDS = [
@@ -74,6 +76,7 @@ const EN_CARDS = [
   { to: '/reading', ic: 'fic-teal', t: '英语短文', s: '分级短文·中英对照' },
 ];
 const cards = computed(() => lang.isEn ? EN_CARDS : CARDS);
+const openCard = (c) => (c.href ? window.location.assign(c.href) : router.push(c.to));
 
 // 按阶段学习的五张卡（文案照搬旧站，颜色走可作正文的令牌）
 const STAGES = [
@@ -188,13 +191,14 @@ const TIPS = [
 
     <!-- 功能卡 -->
     <div class="fgrid">
-      <div v-for="c in cards" :key="c.t" class="card fcard" @click="router.push(c.to)">
+      <div v-for="c in cards" :key="c.t" class="card fcard" @click="openCard(c)">
         <div class="fic" :class="c.ic">
           <svg v-if="c.ic === 'fic-green'" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.2 9H3.5v6h2.7L11 19z" fill="#fff"/><path d="M14.8 9.2a4 4 0 0 1 0 5.6M17.4 6.6a7.6 7.6 0 0 1 0 10.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
           <svg v-else-if="c.ic === 'fic-blue'" viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="16.8" text-anchor="middle" font-size="12.5" font-family="Georgia,serif" font-weight="bold" fill="#fff">123</text></svg>
           <svg v-else-if="c.ic === 'fic-orange'" viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle" font-size="19" font-family="Georgia,serif" font-weight="bold" fill="#fff">§</text></svg>
           <svg v-else-if="c.ic === 'fic-purple'" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 16h3v4l5-4h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 20 4z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="8.5" cy="10" r="1.15" fill="#fff"/><circle cx="12" cy="10" r="1.15" fill="#fff"/><circle cx="15.5" cy="10" r="1.15" fill="#fff"/></svg>
           <svg v-else-if="c.ic === 'fic-teal'" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.2C9.6 4.7 6.6 4.5 4 5.5V19c2.6-1 5.6-.8 8 .7 2.4-1.5 5.4-1.7 8-.7V5.5c-2.6-1-5.6-.8-8 .7z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M12 6.2v13.5" stroke="#fff" stroke-width="2"/></svg>
+          <svg v-else-if="c.ic === 'fic-video'" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="#fff" stroke-width="2"/><path d="M10 9v6l5-3z" fill="#fff"/></svg>
           <svg v-else-if="c.ic === 'fic-red'" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="1.4" fill="#fff"/></svg>
           <svg v-else viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="3.2" fill="#fff"/><path d="M12 10.5c-3 0-4.5 1.6-4.5 3.6V17h2.4l.7 4h2.8l.7-4h2.4v-2.9c0-2-1.5-3.6-4.5-3.6z" fill="#fff"/></svg>
         </div>
@@ -310,6 +314,7 @@ const TIPS = [
 .fic-purple{background:linear-gradient(135deg,#a878ff,#6f3fd6);box-shadow:0 6px 14px rgba(142,92,246,.32)}
 .fic-teal{background:linear-gradient(135deg,#24a58a,#0a736a);box-shadow:0 6px 14px rgba(20,184,166,.32)}
 .fic-red{background:linear-gradient(135deg,#e56d62,#c92c2c);box-shadow:0 6px 14px rgba(255,75,75,.32)}
+.fic-video{background:linear-gradient(135deg,#4fb8c4,#1f7f8c);box-shadow:0 6px 14px rgba(31,127,140,.32)}
 .fic-pink{background:linear-gradient(135deg,#d37696,#b93868);box-shadow:0 6px 14px rgba(224,68,126,.32)}
 .ft{font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px}
 .fs{font-size:12px;color:var(--text-dim)}

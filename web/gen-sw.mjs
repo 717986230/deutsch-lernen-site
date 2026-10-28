@@ -34,6 +34,7 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;            // 后端接口不缓存，始终走网络
+  if (url.pathname.startsWith('/vido/')) return;         // Vido 视频卡是另一个应用（含视频分段请求），不经本站缓存
   // 词库/短文等数据：缓存优先，命中就不再请求（内容变了文件名也会变）
   if (url.pathname.includes('/data/')) {
     e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => {
