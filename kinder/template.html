@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>儿童德语：跟小獭 Otti 学德语（中德双语）| 德语学习手册</title>
+<meta name="description" content="给零基础的孩子和大人：颜色、数字、超市等主题，点图听德语、看中德双语字幕的小故事、听音选图小游戏。每个词句都有中文翻译和谐音。">
+<link rel="canonical" href="https://www.uuoo.site/kinder/">
+<meta name="theme-color" content="#58cc02">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="otti.webp">
+<!-- 由 tools/gen-kinder.py 从 template.html + themes.json 生成，勿手改 kinder/index.html -->
+<style>
+:root{
+  --bg:#fffaf0;--surface:#ffffff;--text:#2b2b2b;--dim:#5f6368;--border:#eadfcb;
+  --brand:#58cc02;--brand-text:#2f7a00;--accent:#1c8fd6;--shadow:0 4px 14px rgba(80,60,20,.10);
+  --der:#1565c0;--die:#c62828;--das:#2e7d32;--sub-bg:rgba(0,0,0,.72);--sub-text:#fff;--sub-zh:#ffe08a;
+  --ok:#2e7d32;--bad:#c62828;
+}
+:root[data-theme=dark]{
+  --bg:#17181a;--surface:#222427;--text:#ececec;--dim:#a9adb3;--border:#34373c;
+  --brand-text:#8be04e;--accent:#6cc1ff;--shadow:0 4px 14px rgba(0,0,0,.4);
+  --der:#82b4ff;--die:#ff8a80;--das:#81d68a;--ok:#81d68a;--bad:#ff8a80;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#17181a;--surface:#222427;--text:#ececec;--dim:#a9adb3;--border:#34373c;
+  --brand-text:#8be04e;--accent:#6cc1ff;--shadow:0 4px 14px rgba(0,0,0,.4);
+  --der:#82b4ff;--die:#ff8a80;--das:#81d68a;--ok:#81d68a;--bad:#ff8a80;
+}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--accent)}
+.wrap{max-width:720px;margin:0 auto;padding:12px 16px calc(24px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;gap:10px;min-height:48px}
+.top a.back,.top button.back{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-radius:22px;border:1px solid var(--border);background:var(--surface);text-decoration:none;color:var(--text);font-size:14px;white-space:nowrap}
+.top h1{flex:1;margin:0;font-size:18px;line-height:1.3;min-width:0}
+.top h1 small{display:block;font-size:12px;font-weight:400;color:var(--dim)}
+.hero{display:flex;align-items:center;gap:12px;margin:8px 0 16px;padding:14px;border-radius:20px;background:var(--surface);box-shadow:var(--shadow)}
+.hero img{width:84px;height:auto;flex-shrink:0}
+.hero p{margin:0;font-size:15px}
+.hero .say{font-size:13px;color:var(--dim);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tcard{border:none;border-radius:20px;padding:18px 10px;text-align:center;box-shadow:var(--shadow);color:#2b2b2b;min-height:132px}
+.tcard .ic{font-size:44px;line-height:1.2}
+.tcard b{display:block;font-size:19px}
+.tcard span{font-size:14px}
+.tcard.soon{display:block;text-decoration:none;background:var(--surface);color:var(--dim);min-height:132px}.tcard.soon .ic{opacity:.6}
+.note{margin-top:20px;font-size:13px;color:var(--dim);line-height:1.8}
+.tabs{display:flex;gap:8px;margin:4px 0 12px}
+.tabs button{flex:1;min-width:0;min-height:48px;padding:0 4px;border-radius:24px;border:2px solid var(--border);background:var(--surface);font-size:14px;font-weight:600;white-space:nowrap}
+.tabs button[aria-selected=true]{border-color:var(--brand);background:var(--brand);color:#14240a}
+.tip{font-size:13px;color:var(--dim);background:var(--surface);border-radius:14px;padding:10px 12px;margin-bottom:12px;border:1px dashed var(--border)}
+/* 场景：可点的物品 */
+.scene{position:relative;border-radius:24px;padding:16px 8px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;min-height:260px;box-shadow:var(--shadow)}
+.obj{width:76px;height:76px;border:none;background:rgba(255,255,255,.55);border-radius:22px;font-size:44px;line-height:1;display:flex;align-items:center;justify-content:center;animation:bob 3s ease-in-out infinite;transition:transform .15s}
+.obj:nth-child(2n){animation-delay:-1s}.obj:nth-child(3n){animation-delay:-2s}
+.obj:active{transform:scale(.9)}
+.obj.on{background:#fff;outline:3px solid var(--brand)}
+.obj .many{font-size:20px;line-height:1.1;display:flex;flex-wrap:wrap;justify-content:center;width:64px}
+@keyframes bob{50%{transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.obj{animation:none}}
+.card{margin-top:12px;background:var(--surface);border-radius:20px;padding:14px 16px;box-shadow:var(--shadow);display:none}
+.card.show{display:block}
+.card .row{display:flex;align-items:center;gap:12px}
+.card .big{font-size:56px;line-height:1}
+.card .w{font-size:28px;font-weight:700;line-height:1.2}
+.art-der{color:var(--der)}.art-die{color:var(--die)}.art-das{color:var(--das)}
+.card .zh{font-size:17px}
+.py{font-size:13px;color:var(--dim)}
+.spk{flex-shrink:0;width:44px;height:44px;border-radius:50%;border:none;background:rgba(88,204,2,.18);font-size:20px}
+.spk.playing{background:var(--brand)}
+.sent{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.sent .de{font-size:18px;font-weight:600}
+/* 故事：画面 + 字幕，像看动画片 */
+.screen{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+.screen .pic{font-size:min(22vw,120px);line-height:1;text-align:center;transition:transform .3s,opacity .3s;padding-bottom:22%}
+.screen .pic.pop{animation:pop .45s}
+@keyframes pop{0%{transform:scale(.6);opacity:.3}100%{transform:scale(1);opacity:1}}
+.subs{position:absolute;left:8px;right:8px;bottom:8px;text-align:center;background:var(--sub-bg);color:var(--sub-text);border-radius:12px;padding:6px 10px}
+.subs .sd{font-size:17px;font-weight:600;line-height:1.35}
+.subs .sz{font-size:15px;color:var(--sub-zh);line-height:1.35}
+.subs .sp{font-size:12px;color:#d8d8d8;line-height:1.35}
+.subs .sp[hidden]{display:none}
+.ctrl{display:flex;gap:10px;justify-content:center;align-items:center;margin:12px 0}
+.ctrl button{min-width:52px;min-height:52px;border-radius:26px;border:none;background:var(--surface);box-shadow:var(--shadow);font-size:20px;padding:0 14px}
+.ctrl button.main{background:var(--brand);color:#14240a;font-weight:700;font-size:17px;padding:0 22px}
+.ctrl label{font-size:14px;display:flex;align-items:center;gap:6px;min-height:44px}
+.lines{list-style:none;margin:0;padding:0}
+.lines li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;cursor:pointer}
+.lines li.cur{background:rgba(88,204,2,.14)}
+.lines .n{font-size:20px;min-width:36px;white-space:nowrap;text-align:center;flex-shrink:0}
+.lines .de{font-weight:600}
+.lines .zh{font-size:14px}
+/* 游戏 */
+.game{text-align:center}
+.game .q{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0 16px;font-size:17px}
+.game .q .spk{width:64px;height:64px;font-size:30px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opts button{min-height:110px;border-radius:22px;border:3px solid transparent;background:var(--surface);box-shadow:var(--shadow);font-size:54px;line-height:1}
+.opts button .many{font-size:22px;display:flex;flex-wrap:wrap;justify-content:center;max-width:120px;margin:0 auto}
+.opts button.ok{border-color:var(--ok);background:rgba(46,125,50,.12)}
+.opts button.bad{border-color:var(--bad);animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{min-height:52px;margin-top:12px;font-size:16px}
+.fb .ok{color:var(--ok);font-weight:700}.fb .bad{color:var(--bad);font-weight:700}
+.stars{font-size:26px;letter-spacing:2px;margin-bottom:6px}
+.done{font-size:20px;margin:24px 0 12px}
+.btn{min-height:48px;padding:0 22px;border-radius:24px;border:none;background:var(--brand);color:#14240a;font-weight:700;font-size:16px}
+/* 官方教材伴读 */
+.oif{background:var(--surface);border-radius:20px;padding:14px 16px;box-shadow:var(--shadow);text-align:center}
+.oif-h{font-size:17px;font-weight:700;margin-bottom:10px}.oif-h small{display:block;font-size:13px;font-weight:400;color:var(--dim)}
+.oif-btn{display:flex;align-items:center;justify-content:center;text-decoration:none;width:100%}
+.oif-link{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+.gh{font-size:17px;margin:22px 0 8px}
+.sum{margin:0;padding-left:22px}.sum li{margin-bottom:8px}
+.voc,.gcard{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:4px 12px}
+.gcard{margin-bottom:12px;padding:12px}.gcard p{margin:4px 0 6px;font-size:14px}
+.vrow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.vrow:last-child{border-bottom:none}
+.vrow .de{font-weight:600}
+.foot{margin-top:28px;font-size:12px;color:var(--dim);line-height:1.8;border-top:1px solid var(--border);padding-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const THEMES=/*KINDER_DATA*/;
+// 主题清单参照奥地利融合基金会 ÖIF 儿童课程「Ilwa Immerfroh」的 20 个场景；
+// 词句、故事、配音都是本站原创（ÖIF 的材料未经书面许可不得复制或改编）。
+const ALL=[['farben','Farben','颜色','🎨','teil-1-farben'],['feste','Fest','节日聚会','🎉','teil-2-fest'],['gruppenraum','Gruppenraum','幼儿园教室','🧸','teil-3-gruppenraum'],['zahlen','Zahlen','数字','🔢','teil-4-zahlen'],['museum','Museum','博物馆','🦖','teil-5-museum'],['theater','Theater','剧院','🎭','teil-6-theater'],['konzert','Konzert','音乐会','🎻','teil-7-konzert'],['zirkus','Zirkus','马戏团','🎪','teil-8-zirkus'],['stille','Stille','安静','🤫','teil-9-stille'],['wiese','Wiese','草地','🌼','teil-10-wiese'],['streichelzoo','Streichelzoo','小动物园','🐐','teil-11-streichelzoo'],['spielplatz','Spielplatz','游乐场','🛝','teil-12-spielplatz'],['baustelle','Baustelle','工地','🚧','teil-13-baustelle'],['supermarkt','Supermarkt','超市','🛒','teil-14-supermarkt'],['muellplatz','Müllplatz','垃圾回收站','♻️','teil-15-muellplatz'],['verkehr','Straßenverkehr','交通','🚦','teil-16-strassenverkehr'],['post','Post','邮局','📮','teil-17-post'],['aufraeumen','Aufräumen','收拾房间','🧹','teil-18-aufraeumen'],['gefuehle','Gefühle','心情','😊','teil-19-gefuehle'],['bad','Badezimmer','浴室','🛁','teil-20-badezimmer']];
+const OIF='https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const app=$('#app');
+
+// —— 声音：全站只用一个 <audio>，iOS 上首次点按之后才能连播 ——
+const au=new Audio();au.preload='auto';
+let chain=null; // 当前连播序列的作废标记
+function play(files,btn){
+  const my=chain={};
+  document.querySelectorAll('.spk.playing').forEach(b=>b.classList.remove('playing'));
+  if(btn)btn.classList.add('playing');
+  return new Promise(res=>{
+    let i=0;
+    const next=()=>{
+      if(chain!==my)return res(false);
+      if(i>=files.length){if(btn)btn.classList.remove('playing');return res(true);}
+      au.src='audio/'+files[i++];
+      au.onended=next;au.onerror=next;
+      au.play().catch(()=>{if(btn)btn.classList.remove('playing');res(false);});
+    };
+    next();
+  });
+}
+function stop(){chain=null;au.pause();document.querySelectorAll('.spk.playing').forEach(b=>b.classList.remove('playing'));}
+
+const emo=it=>it.n>1?'<span class="many">'+it.e.repeat(it.n)+'</span>':it.e;
+const word=it=>it.art?'<span class="art-'+it.art+'">'+it.art+' '+esc(it.de)+'</span>':esc(it.de);
+const bg=t=>'background:linear-gradient(135deg,'+t.bg[0]+','+t.bg[1]+')';
+const lsGet=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+
+function home(){
+  stop();
+  document.title='儿童德语：跟小獭 Otti 学德语（中德双语）| 德语学习手册';
+  app.innerHTML='<div class="top"><a class="back" href="/">← 手册</a><h1>🧒 儿童德语<small>跟小獭 Otti 学德语 · 中德双语</small></h1></div>'
+   +'<div class="hero"><img src="otti.webp" alt="小獭 Otti" width="84" height="113"><div><p lang="de"><b>Hallo! Ich bin Otti.</b></p><p>你好！我是小獭奥蒂。选一个主题，点图听德语、看故事、玩游戏吧！</p><div class="say">按奥地利官方儿童课程 Ilwa 的 20 课排列。每课有「官方课」中文伴读：打开官方原版教材，配着中文梗概、生词和语法讲解一起学。</div></div></div>'
+   +'<div class="grid">'+ALL.map(([id,de,zh,ic,slug],k)=>{
+      const t=THEMES.find(x=>x.id===id);
+      return t?'<button class="tcard" style="'+bg(t)+'" onclick="location.hash=\''+id+'\'"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>第 '+(k+1)+' 课 · '+zh+'</span></button>'
+              :'<a class="tcard soon" href="'+OIF+slug+'/"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>第 '+(k+1)+' 课 · '+zh+'<br>中文伴读制作中 · 点开官方原版</span></a>';
+    }).join('')+'</div>'
+   +foot();
+}
+function foot(){
+  return '<div class="foot">主题参照奥地利融合基金会（ÖIF）儿童德语课程「Ilwa Immerfroh」的 20 个场景，本页词句、故事和配音均为本站原创。想用官方原版：'
+   +'<a href="https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/" target="_blank" rel="noopener">ÖIF Sprachportal · Ilwa</a>（官方 App「ILWA」免费，全德语）。'
+   +'<br>德语配音：Thorsten-Voice（CC0），由 Piper 离线合成。</div>';
+}
+
+function theme(id,tab){
+  const t=THEMES.find(x=>x.id===id);if(!t)return home();
+  stop();
+  document.title=t.zh+'（'+t.de+'）· 儿童德语 | 德语学习手册';
+  tab=tab||(t.guide?'guide':'look');
+  const tabs=(t.guide?[['guide','📘 官方课']]:[]).concat([['look','🔍 看图'],['story','📖 故事'],['game','🎮 游戏']]);
+  app.innerHTML='<div class="top"><button class="back" onclick="location.hash=\'\'">← 主题</button><h1>'+t.icon+' <span lang="de">'+t.de+'</span><small>'+t.zh+'</small></h1></div>'
+   +'<div class="tabs" role="tablist">'+tabs.map(([k,l])=>'<button role="tab" aria-selected="'+(k===tab)+'" onclick="location.hash=\''+id+'/'+k+'\'">'+l+'</button>').join('')+'</div>'
+   +'<div id="pane"></div>'+foot();
+  (({guide,look,story,game})[tab]||look)(t,$('#pane'));
+}
+
+// 官方教材伴读：只放链接 + 自己写的中文讲解（ÖIF 原文不复制）
+function guide(t,el){
+  const g=t.guide,spk=(a,label)=>'<button class="spk" data-a="'+a+'" aria-label="朗读：'+esc(label)+'">🔊</button>';
+  el.innerHTML='<div class="oif"><div class="oif-h">📘 官方第 '+g.teil+' 课 · <span lang="de">'+esc(g.story)+'</span><small>'+esc(g.storyZh)+'</small></div>'
+   +'<a class="btn oif-btn" href="'+g.pdf+'">📄 打开官方教材 PDF</a>'
+   +'<a class="oif-link" href="'+g.url+'">官方本课网页</a>'
+   +'<div class="py" style="margin-top:8px">'+esc(g.pages)+'看完点浏览器的 ← 返回，就回到这里。</div></div>'
+   +'<h2 class="gh">📖 故事讲了什么</h2><ol class="sum">'+g.summary.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol>'
+   +'<h2 class="gh">🔤 本课生词</h2><div class="voc">'+g.vocab.map(v=>{
+      const m=/^(der|die|das) (.+)$/.exec(v.de);
+      const w=m?'<span class="art-'+m[1]+'">'+m[1]+' '+esc(m[2])+'</span>':esc(v.de);
+      return '<div class="vrow"><div style="flex:1;min-width:0"><b lang="de">'+w+'</b> <span>'+esc(v.zh)+'</span><div class="py">'+esc(v.py)+'</div></div>'+spk(v.a,v.de)+'</div>';
+    }).join('')+'</div>'
+   +'<h2 class="gh">🧩 语法点</h2>'+g.grammar.map(gr=>'<div class="gcard"><b>'+esc(gr.t)+'</b><p>'+esc(gr.zh)+'</p>'
+      +gr.ex.map(x=>'<div class="vrow"><div style="flex:1;min-width:0"><div class="de" lang="de">'+esc(x.de)+'</div><div>'+esc(x.zh)+'</div><div class="py">'+esc(x.py)+'</div></div>'+spk(x.a,x.de)+'</div>').join('')+'</div>').join('')
+   +(g.notes&&g.notes.length?'<h2 class="gh">💡 小提示</h2>'+g.notes.map(n=>'<div class="tip">'+esc(n)+'</div>').join(''):'');
+  el.querySelectorAll('.spk[data-a]').forEach(b=>b.onclick=()=>play([b.dataset.a],b));
+}
+
+function look(t,el){
+  el.innerHTML='<div class="tip">👆 点一点图里的东西，听它用德语怎么说。<br>'+esc(t.focus)+'</div>'
+   +'<div class="scene" style="'+bg(t)+'">'+t.items.map((it,i)=>'<button class="obj" data-i="'+i+'" aria-label="'+esc(it.zh)+'">'+emo(it)+'</button>').join('')+'</div>'
+   +'<div class="card" id="card"></div>';
+  el.querySelectorAll('.obj').forEach(b=>b.onclick=()=>{
+    el.querySelectorAll('.obj.on').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    const it=t.items[+b.dataset.i],c=$('#card');
+    c.className='card show';
+    c.innerHTML='<div class="row"><div class="big">'+emo(it)+'</div><div style="flex:1;min-width:0"><div class="w" lang="de">'+word(it)+'</div><div class="zh">'+esc(it.zh)+'</div><div class="py">谐音：'+esc(it.py)+'</div></div><button class="spk" id="sw" aria-label="朗读单词">🔊</button></div>'
+     +'<div class="sent"><div style="flex:1;min-width:0"><div class="de" lang="de">'+esc(it.s)+'</div><div class="zh">'+esc(it.sz)+'</div><div class="py">谐音：'+esc(it.sp)+'</div></div><button class="spk" id="ss" aria-label="朗读句子">🔊</button></div>';
+    $('#sw').onclick=()=>play([it.wa],$('#sw'));
+    $('#ss').onclick=()=>play([it.sa],$('#ss'));
+    play([it.wa,it.sa]);
+  });
+}
+
+function story(t,el){
+  const L=t.story.lines;let cur=0,auto=false;
+  const showPy=lsGet('kinder_py','1')==='1';
+  el.innerHTML='<div class="tip">📺 '+esc(t.story.zh)+'（<span lang="de">'+esc(t.story.de)+'</span>）—— 按 ▶ 连着听，字幕上面德语、下面中文。</div>'
+   +'<div class="screen" style="'+bg(t)+'"><div class="pic" id="pic"></div><div class="subs"><div class="sd" lang="de" id="sd"></div><div class="sz" id="sz"></div><div class="sp" id="spy"></div></div></div>'
+   +'<div class="ctrl"><button id="prev" aria-label="上一句">⏮</button><button class="main" id="pp">▶ 播放</button><button id="nxt" aria-label="下一句">⏭</button></div>'
+   +'<div class="ctrl"><label><input type="checkbox" id="pyt"'+(showPy?' checked':'')+'> 显示谐音</label></div>'
+   +'<ol class="lines">'+L.map((l,i)=>'<li data-i="'+i+'"><span class="n">'+l.e+'</span><div><div class="de" lang="de">'+esc(l.de)+'</div><div class="zh">'+esc(l.zh)+'</div></div></li>').join('')+'</ol>';
+  const pp=$('#pp'),pyt=$('#pyt');
+  const show=i=>{
+    cur=i;const l=L[i],p=$('#pic');
+    p.textContent=l.e;p.classList.remove('pop');void p.offsetWidth;p.classList.add('pop');
+    $('#sd').textContent=l.de;$('#sz').textContent=l.zh;$('#spy').textContent=l.py;$('#spy').hidden=!pyt.checked;
+    el.querySelectorAll('.lines li').forEach((li,k)=>li.classList.toggle('cur',k===i));
+  };
+  const setAuto=v=>{auto=v;pp.textContent=v?'⏸ 暂停':(cur>=L.length-1?'↺ 再听一遍':'▶ 播放');};
+  const run=async i=>{
+    show(i);
+    const done=await play([L[i].a]);
+    if(!done)return;
+    if(auto&&i<L.length-1){setTimeout(()=>{if(auto&&cur===i)run(i+1)},500);}
+    else setAuto(false);
+  };
+  pp.onclick=()=>{
+    if(auto){stop();setAuto(false);return;}
+    const again=pp.textContent.indexOf('↺')===0;setAuto(true);run(again?0:cur);
+  };
+  $('#prev').onclick=()=>{setAuto(false);run(Math.max(0,cur-1));};
+  $('#nxt').onclick=()=>{setAuto(false);run(Math.min(L.length-1,cur+1));};
+  el.querySelectorAll('.lines li').forEach(li=>li.onclick=()=>{setAuto(false);run(+li.dataset.i);});
+  pyt.onchange=()=>{lsSet('kinder_py',pyt.checked?'1':'0');$('#spy').hidden=!pyt.checked;};
+  show(0);
+}
+
+function game(t,el){
+  const ROUNDS=6;let round=0,score=0,qs=shuffle(t.items.slice()).slice(0,ROUNDS);
+  const ask=()=>{
+    if(round>=qs.length){
+      el.innerHTML='<div class="game"><div class="done">'+'⭐'.repeat(score)+'<br><span lang="de">'+(score===qs.length?'Super!':'Gut gemacht!')+'</span> 答对 '+score+' / '+qs.length+'</div><button class="btn" id="again">再玩一次</button></div>';
+      $('#again').onclick=()=>game(t,el);
+      return;
+    }
+    const it=qs[round];
+    const opts=shuffle([it].concat(shuffle(t.items.filter(x=>x!==it)).slice(0,3)));
+    el.innerHTML='<div class="game"><div class="stars" aria-label="第 '+(round+1)+' 题">'+'⭐'.repeat(score)+'☆'.repeat(qs.length-round)+'</div>'
+     +'<div class="q"><button class="spk" id="say" aria-label="再听一遍">🔊</button><span>听一听，点对的图</span></div>'
+     +'<div class="opts">'+opts.map((o,i)=>'<button data-i="'+i+'" aria-label="选项 '+(i+1)+'">'+emo(o)+'</button>').join('')+'</div><div class="fb" id="fb"></div></div>';
+    const say=()=>play([it.wa],$('#say'));
+    $('#say').onclick=say;say();
+    let locked=false,tries=0;
+    el.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{
+      if(locked)return;const o=opts[+b.dataset.i];
+      if(o===it){
+        locked=true;if(!tries)score++;b.classList.add('ok');
+        $('#fb').innerHTML='<span class="ok" lang="de">Richtig!</span> 对了！<b lang="de">'+word(it)+'</b> = '+esc(it.zh)+'<div class="py">谐音：'+esc(it.py)+'</div>';
+        play([it.wa]).then(()=>setTimeout(()=>{round++;ask();},700));
+      }else{
+        tries++;b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');
+        $('#fb').innerHTML='<span class="bad" lang="de">Noch einmal!</span> 再听一遍试试～这个是 '+esc(o.zh);
+        say();
+      }
+    });
+  };
+  ask();
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function route(){
+  const [id,tab]=decodeURIComponent(location.hash.slice(1)).split('/');
+  if(id)theme(id,tab);else home();
+  scrollTo(0,0);
+}
+addEventListener('hashchange',route);
+try{const th=localStorage.getItem('theme');if(th==='dark'||th==='light')document.documentElement.dataset.theme=th;}catch(e){}
+route();
+</script>
+</body>
+</html>
