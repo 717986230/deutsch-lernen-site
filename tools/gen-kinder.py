@@ -30,11 +30,11 @@ def main():
     themes = json.loads((KD / 'themes.json').read_text('utf-8'))
     texts = []
     for t in themes:
-        for it in t['items']:
+        for it in t.get('items', []):
             word = (it['art'] + ' ' + it['de']) if it.get('art') else it['de']
             it['wa'] = audio_name(word); texts.append(word)
             it['sa'] = audio_name(it['s']); texts.append(it['s'])
-        for ln in t['story']['lines']:
+        for ln in t.get('story', {}).get('lines', []):
             ln['a'] = audio_name(ln['de']); texts.append(ln['de'])
         g = t.get('guide')
         if g:  # 官方教材伴读：生词和例句也配音

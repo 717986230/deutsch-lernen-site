@@ -346,6 +346,396 @@
     }
   },
   {
+    "id": "feste",
+    "de": "Fest",
+    "zh": "节日聚会",
+    "icon": "🎉",
+    "bg": [
+      "#fff0d6",
+      "#ffe0f0"
+    ],
+    "guide": {
+      "teil": 2,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-2-fest/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-2-Fest.pdf",
+      "story": "Konfetti überall",
+      "storyZh": "到处都是彩色纸屑",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "下雨天，Levi 没法继续在外面堆沙堡，很失望。伊尔瓦说：人在哪儿都可以开心——我们来办一个「开心派对」吧！",
+        "老师 Gernot 敲响颂钵把孩子们叫过来。大家七嘴八舌提建议：吃什么、放什么音乐、怎么装饰、演什么戏、要什么甜点。老师分好小组，定在一周后办。",
+        "准备的时候，手工角挂满了彩带和花环，有个孩子从家里带来了音乐 CD。戏剧组里两个孩子抢国王的王冠吵了起来，另一个孩子想了个好办法：演两个王国——光明王国和影子王国，这样就有两个国王了。",
+        "派对那天，伊尔瓦早早就来了。大家一起做抹酱面包，伊尔瓦在上面放了红辣椒。桌上摆好杯子、苹果汁、水和气球。",
+        "别的班的孩子也来了。大家跳舞、唱歌、吃点心，然后戏剧组上台表演。一个本来很害羞的小女孩演了月亮和太阳，伊尔瓦为她加油。",
+        "最后伊尔瓦挥挥魔法袜子，变成一台紫色的彩纸机，彩纸屑撒了大家一身。"
+      ],
+      "vocab": [
+        {
+          "de": "feiern",
+          "zh": "庆祝",
+          "py": "法伊恩"
+        },
+        {
+          "de": "planen",
+          "zh": "计划",
+          "py": "普拉嫩"
+        },
+        {
+          "de": "schmücken",
+          "zh": "装饰",
+          "py": "施米肯"
+        },
+        {
+          "de": "wählen",
+          "zh": "选",
+          "py": "韦伦"
+        },
+        {
+          "de": "sich entscheiden",
+          "zh": "做决定",
+          "py": "齐希 恩特沙伊登"
+        },
+        {
+          "de": "mitbringen",
+          "zh": "带来",
+          "py": "米特 布林根"
+        },
+        {
+          "de": "möchten",
+          "zh": "想要",
+          "py": "默希滕"
+        },
+        {
+          "de": "wollen",
+          "zh": "要（想做）",
+          "py": "沃伦"
+        },
+        {
+          "de": "sollen",
+          "zh": "应该",
+          "py": "佐伦"
+        },
+        {
+          "de": "das Getränk",
+          "zh": "饮料",
+          "py": "达斯 格特伦克"
+        },
+        {
+          "de": "der Apfelsaft",
+          "zh": "苹果汁",
+          "py": "戴尔 阿普菲尔 扎夫特"
+        },
+        {
+          "de": "die Würstel",
+          "zh": "小香肠（奥地利说法）",
+          "py": "迪 维尔斯特尔"
+        },
+        {
+          "de": "der Krapfen",
+          "zh": "甜甜圈（奥地利说法）",
+          "py": "戴尔 克拉普芬"
+        },
+        {
+          "de": "der Kuchen",
+          "zh": "蛋糕",
+          "py": "戴尔 库亨"
+        },
+        {
+          "de": "die Girlande",
+          "zh": "花环彩带",
+          "py": "迪 吉尔兰德"
+        },
+        {
+          "de": "die Papierschlange",
+          "zh": "纸彩带",
+          "py": "迪 帕皮尔 施朗厄"
+        },
+        {
+          "de": "das Konfetti",
+          "zh": "彩纸屑",
+          "py": "达斯 孔费蒂"
+        },
+        {
+          "de": "der Luftballon",
+          "zh": "气球",
+          "py": "戴尔 卢夫特 巴隆"
+        },
+        {
+          "de": "die Musik",
+          "zh": "音乐",
+          "py": "迪 穆齐克"
+        },
+        {
+          "de": "das Kasperltheater",
+          "zh": "木偶戏（奥地利）",
+          "py": "达斯 卡斯佩尔 特阿特尔"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "想要：möchten / wollen",
+          "zh": "möchten 是客气的「想要」，wollen 更直接。后面接名词，或者接动词原形放句尾。",
+          "ex": [
+            {
+              "de": "Was möchtest du für unser Fest?",
+              "zh": "你想为我们的派对准备什么？",
+              "py": "瓦斯 默希特斯特 杜 菲尔 翁泽尔 费斯特？"
+            },
+            {
+              "de": "Ich will tanzen.",
+              "zh": "我想跳舞。",
+              "py": "伊希 维尔 坦岑。"
+            }
+          ]
+        },
+        {
+          "t": "可分动词 mitbringen（带来）",
+          "zh": "句子里拆开：bringe 放第二位，mit 放最后。",
+          "ex": [
+            {
+              "de": "Ich bringe Eis mit!",
+              "zh": "我带冰淇淋来！",
+              "py": "伊希 布林厄 艾斯 米特！"
+            },
+            {
+              "de": "Wer bringt die Musik mit?",
+              "zh": "谁带音乐来？",
+              "py": "维尔 布林特 迪 穆齐克 米特？"
+            }
+          ]
+        },
+        {
+          "t": "应该：sollen",
+          "zh": "sollen 表示「应该、被安排去做」，动词原形放句尾。",
+          "ex": [
+            {
+              "de": "Wir sollen den Raum schmücken.",
+              "zh": "我们负责装饰房间。",
+              "py": "维尔 佐伦 登 劳姆 施米肯。"
+            }
+          ]
+        },
+        {
+          "t": "问话的词：wer / was / wie",
+          "zh": "wer＝谁，was＝什么，wie＝怎么样。问句里动词排第二。",
+          "ex": [
+            {
+              "de": "Wer hilft mir?",
+              "zh": "谁来帮我？",
+              "py": "维尔 希尔夫特 米尔？"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "奥地利说法：小香肠叫 Würstel，甜甜圈叫 Krapfen，棒棒糖叫 Schlecker。",
+        "Immerfroh＝「永远开心」，也是伊尔瓦的姓。"
+      ]
+    }
+  },
+  {
+    "id": "gruppenraum",
+    "de": "Gruppenraum",
+    "zh": "幼儿园教室",
+    "icon": "🧸",
+    "bg": [
+      "#fff4d9",
+      "#e3f1ff"
+    ],
+    "guide": {
+      "teil": 3,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-3-gruppenraum/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-3-Gruppenraum.pdf",
+      "story": "Morgenkonzert im Kindergarten",
+      "storyZh": "幼儿园的早晨音乐会",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "一大早，伊尔瓦把自己变成一把吉他，待在幼儿园音乐角的木琴旁边。孩子们陆陆续续来了，老师 Bea 在给两个孩子读恐龙绘本，还有个孩子在休息区的垫子上犯困。",
+        "一位妈妈带着女儿 Nina 来了，今天是 Nina 第一天上幼儿园。老师热情地叫她的名字打招呼，Nina 害羞地把脸埋进妈妈的外套里。",
+        "老师带 Nina 参观教室：手工区（彩笔、印章）、搭建区（有个男孩在重新搭一座摇摇晃晃的塔）、自然科学区。妈妈坐在角色扮演角的椅子上鼓励她。",
+        "Nina 在白纸上试着盖印章，可还是一直回头看妈妈。伊尔瓦看到了，决定给她编一首欢迎歌。",
+        "Nina 发现了音乐角的木琴，说家里也有一个。老师递给她两根小琴槌，她敲出一段好听的旋律。",
+        "越来越多孩子围过来听，有的拿起别的乐器一起演奏，变成了一场早晨音乐会。Nina 脸红红地跟妈妈说：明天我还想来！"
+      ],
+      "vocab": [
+        {
+          "de": "der Gruppenraum",
+          "zh": "（幼儿园）班级活动室",
+          "py": "戴尔 格鲁彭 劳姆"
+        },
+        {
+          "de": "der Musikbereich",
+          "zh": "音乐区",
+          "py": "戴尔 穆齐克 贝赖希"
+        },
+        {
+          "de": "der Kreativbereich",
+          "zh": "手工区",
+          "py": "戴尔 克雷阿蒂夫 贝赖希"
+        },
+        {
+          "de": "der Baubereich",
+          "zh": "搭建区",
+          "py": "戴尔 鲍 贝赖希"
+        },
+        {
+          "de": "der Ruhebereich",
+          "zh": "休息区",
+          "py": "戴尔 鲁厄 贝赖希"
+        },
+        {
+          "de": "der Jausenbereich",
+          "zh": "吃点心的地方（奥地利）",
+          "py": "戴尔 约森 贝赖希"
+        },
+        {
+          "de": "das Xylophon",
+          "zh": "木琴",
+          "py": "达斯 克叙洛丰"
+        },
+        {
+          "de": "die Gitarre",
+          "zh": "吉他",
+          "py": "迪 吉塔勒"
+        },
+        {
+          "de": "die Trommel",
+          "zh": "鼓",
+          "py": "迪 特罗梅尔"
+        },
+        {
+          "de": "das Bilderbuch",
+          "zh": "绘本",
+          "py": "达斯 比尔德尔 布赫"
+        },
+        {
+          "de": "der Polster",
+          "zh": "靠垫（奥地利说法）",
+          "py": "戴尔 波尔斯特尔"
+        },
+        {
+          "de": "das Kuscheltier",
+          "zh": "毛绒玩具",
+          "py": "达斯 库舍尔 蒂尔"
+        },
+        {
+          "de": "die Buntstifte",
+          "zh": "彩色铅笔",
+          "py": "迪 布恩特 施蒂夫特"
+        },
+        {
+          "de": "der Stempel",
+          "zh": "印章",
+          "py": "戴尔 施滕佩尔"
+        },
+        {
+          "de": "die Schere",
+          "zh": "剪刀",
+          "py": "迪 舍勒"
+        },
+        {
+          "de": "die Bausteine",
+          "zh": "积木",
+          "py": "迪 鲍 施泰讷"
+        },
+        {
+          "de": "die Lupe",
+          "zh": "放大镜",
+          "py": "迪 卢佩"
+        },
+        {
+          "de": "die Krone",
+          "zh": "王冠",
+          "py": "迪 克罗讷"
+        },
+        {
+          "de": "bauen",
+          "zh": "搭、建",
+          "py": "包恩"
+        },
+        {
+          "de": "ausschneiden",
+          "zh": "剪下来",
+          "py": "奥斯 施奈登"
+        },
+        {
+          "de": "gehören",
+          "zh": "属于、该放在",
+          "py": "格赫伦"
+        },
+        {
+          "de": "gerne",
+          "zh": "喜欢（做）",
+          "py": "格尔讷"
+        },
+        {
+          "de": "am liebsten",
+          "zh": "最喜欢",
+          "py": "阿姆 利普斯滕"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "喜欢做：gerne / am liebsten",
+          "zh": "动词后面加 gerne 就是「喜欢做」，am liebsten 是「最喜欢」。",
+          "ex": [
+            {
+              "de": "Ich spiele gerne mit Bausteinen.",
+              "zh": "我喜欢玩积木。",
+              "py": "伊希 施皮勒 格尔讷 米特 鲍 施泰嫩。"
+            },
+            {
+              "de": "Am liebsten male ich.",
+              "zh": "我最喜欢画画。",
+              "py": "阿姆 利普斯滕 马勒 伊希。"
+            }
+          ]
+        },
+        {
+          "t": "东西该放哪儿：gehört in + 4 格",
+          "zh": "「属于哪个区」用 gehören in den / die / das …（第 4 格）。",
+          "ex": [
+            {
+              "de": "Die Schere gehört in den Kreativbereich.",
+              "zh": "剪刀该放在手工区。",
+              "py": "迪 舍勒 格赫尔特 因 登 克雷阿蒂夫 贝赖希。"
+            }
+          ]
+        },
+        {
+          "t": "说理由：weil（因为）",
+          "zh": "weil 后面的小句，动词放最后。",
+          "ex": [
+            {
+              "de": "Ich mag den Musikbereich, weil ich gerne singe.",
+              "zh": "我喜欢音乐区，因为我喜欢唱歌。",
+              "py": "伊希 马克 登 穆齐克 贝赖希，魏尔 伊希 格尔讷 津厄。"
+            }
+          ]
+        },
+        {
+          "t": "问去哪儿：wohin / welcher",
+          "zh": "wohin＝去哪儿，welcher/welche/welches＝哪一个。",
+          "ex": [
+            {
+              "de": "Wohin gehst du?",
+              "zh": "你去哪儿？",
+              "py": "沃欣 盖斯特 杜？"
+            },
+            {
+              "de": "Welches Spiel magst du?",
+              "zh": "你喜欢哪个游戏？",
+              "py": "韦尔希斯 施皮尔 马克斯特 杜？"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "奥地利幼儿园把吃点心叫 Jause，靠垫叫 der Polster（德国说 das Kissen）。"
+      ]
+    }
+  },
+  {
     "id": "zahlen",
     "de": "Zahlen",
     "zh": "数字",
@@ -707,6 +1097,1647 @@
       "notes": [
         "一个变多个要用复数：ein Blatt → zwei Blätter，eine Kastanie → zwei Kastanien，ein Stein → zwei Steine。"
       ]
+    }
+  },
+  {
+    "id": "museum",
+    "de": "Museum",
+    "zh": "博物馆",
+    "icon": "🦖",
+    "bg": [
+      "#f1ead9",
+      "#e3ecff"
+    ],
+    "guide": {
+      "teil": 5,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-5-museum/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-5-Museum.pdf",
+      "story": "Museumsluft und Ausstellungsduft",
+      "storyZh": "博物馆的味道",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "下雨天，伊尔瓦在城市图书馆。一个叫 Tanja 的女孩跟着舅舅离开，因为舅舅答应带她去博物馆。",
+        "伊尔瓦问图书管理员博物馆是什么。管理员说：每个博物馆收藏不同的东西，有的放邮票，有的放老飞机，有的放稀有植物。城里有好多博物馆。",
+        "伊尔瓦有了个主意：从各个博物馆借东西来，在图书馆大厅办一个自己的展览！",
+        "接下来几个星期，她跑遍各个博物馆去借：红色的小丑鞋、巨大的巧克力复活节兔子、一副吓了她一跳的恐龙骨架，还有很多滴答响的钟。",
+        "展览那天，大厅里摆满了展台和玻璃柜，还有金色的画、童话舞会的服装、蝴蝶书和模型火车。",
+        "参观的时候，一个男孩把瓷娃娃碰掉了。伊尔瓦用魔法袜子把一个靠垫变到下面接住，娃娃没摔坏。管理员赶紧放了块牌子：「请勿触摸！易碎！」",
+        "Tanja 和舅舅也来了，她说想多了解恐龙，舅舅答应很快带她去恐龙博物馆。"
+      ],
+      "vocab": [
+        {
+          "de": "das Museum",
+          "zh": "博物馆",
+          "py": "达斯 穆泽乌姆"
+        },
+        {
+          "de": "die Ausstellung",
+          "zh": "展览",
+          "py": "迪 奥斯 施特隆"
+        },
+        {
+          "de": "die Vitrine",
+          "zh": "玻璃展柜",
+          "py": "迪 维特里讷"
+        },
+        {
+          "de": "das Gemälde",
+          "zh": "油画",
+          "py": "达斯 格梅尔德"
+        },
+        {
+          "de": "die Zeichnung",
+          "zh": "素描、画",
+          "py": "迪 灿希农"
+        },
+        {
+          "de": "die Fotografie",
+          "zh": "照片",
+          "py": "迪 福托格拉菲"
+        },
+        {
+          "de": "der Bilderrahmen",
+          "zh": "画框",
+          "py": "戴尔 比尔德尔 拉门"
+        },
+        {
+          "de": "das Dinosauriermuseum",
+          "zh": "恐龙博物馆",
+          "py": "达斯 迪诺扎乌里尔 穆泽乌姆"
+        },
+        {
+          "de": "das Spielzeugmuseum",
+          "zh": "玩具博物馆",
+          "py": "达斯 施皮尔措伊克 穆泽乌姆"
+        },
+        {
+          "de": "das Kunstmuseum",
+          "zh": "美术馆",
+          "py": "达斯 昆斯特 穆泽乌姆"
+        },
+        {
+          "de": "die Briefmarke",
+          "zh": "邮票",
+          "py": "迪 布里夫 马尔克"
+        },
+        {
+          "de": "besuchen",
+          "zh": "参观",
+          "py": "贝祖亨"
+        },
+        {
+          "de": "ausstellen",
+          "zh": "展出",
+          "py": "奥斯 施特伦"
+        },
+        {
+          "de": "malen",
+          "zh": "画",
+          "py": "马伦"
+        },
+        {
+          "de": "zeichnen",
+          "zh": "描画",
+          "py": "灿希嫩"
+        },
+        {
+          "de": "herstellen",
+          "zh": "制作",
+          "py": "赫尔 施特伦"
+        },
+        {
+          "de": "sich interessieren für",
+          "zh": "对……感兴趣",
+          "py": "齐希 因特雷西伦 菲尔"
+        },
+        {
+          "de": "man",
+          "zh": "人们（泛指）",
+          "py": "曼"
+        },
+        {
+          "de": "deshalb",
+          "zh": "所以",
+          "py": "德斯哈尔普"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "对……感兴趣：sich interessieren für",
+          "zh": "「我感兴趣」要说 ich interessiere mich，mich 是「我自己」。für 后面接第 4 格。",
+          "ex": [
+            {
+              "de": "Ich interessiere mich für Dinosaurier.",
+              "zh": "我对恐龙感兴趣。",
+              "py": "伊希 因特雷西勒 米希 菲尔 迪诺扎乌里尔。"
+            },
+            {
+              "de": "Interessierst du dich für Bilder?",
+              "zh": "你对画感兴趣吗？",
+              "py": "因特雷西尔斯特 杜 迪希 菲尔 比尔德尔？"
+            }
+          ]
+        },
+        {
+          "t": "组合名词：……+ Museum",
+          "zh": "德语把两个名词拼成一个：Spielzeug（玩具）+ Museum → Spielzeugmuseum（玩具博物馆）。词性看最后一个词。",
+          "ex": [
+            {
+              "de": "Das ist ein Uhrenmuseum.",
+              "zh": "这是一个钟表博物馆。",
+              "py": "达斯 伊斯特 艾因 乌伦 穆泽乌姆。"
+            }
+          ]
+        },
+        {
+          "t": "「人们」：man",
+          "zh": "man 泛指「人」，动词和 er/sie 一样变。",
+          "ex": [
+            {
+              "de": "Im Museum kann man viel sehen.",
+              "zh": "在博物馆里能看到很多东西。",
+              "py": "伊姆 穆泽乌姆 坎 曼 菲尔 泽恩。"
+            },
+            {
+              "de": "Bitte nicht berühren!",
+              "zh": "请勿触摸！",
+              "py": "比特 尼希特 贝吕伦！"
+            }
+          ]
+        },
+        {
+          "t": "所以：deshalb",
+          "zh": "deshalb 放句首时，动词紧跟在后面。",
+          "ex": [
+            {
+              "de": "Es regnet, deshalb gehen wir ins Museum.",
+              "zh": "下雨了，所以我们去博物馆。",
+              "py": "埃斯 雷格内特，德斯哈尔普 盖恩 维尔 因斯 穆泽乌姆。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "奥地利说法：借东西常说 ausborgen（德国多说 ausleihen）。"
+      ]
+    }
+  },
+  {
+    "id": "theater",
+    "de": "Theater",
+    "zh": "剧院",
+    "icon": "🎭",
+    "bg": [
+      "#f6e3ff",
+      "#ffe9d6"
+    ],
+    "guide": {
+      "teil": 6,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-6-theater/",
+      "pdf": null,
+      "story": "Zone Ausflug: Theater",
+      "storyZh": "出游区：剧院",
+      "pages": "",
+      "summary": [],
+      "vocab": [
+        {
+          "de": "das Theater",
+          "zh": "剧院",
+          "py": "达斯 特阿特尔"
+        },
+        {
+          "de": "die Bühne",
+          "zh": "舞台",
+          "py": "迪 比讷"
+        },
+        {
+          "de": "der Vorhang",
+          "zh": "幕布",
+          "py": "戴尔 福尔 杭"
+        },
+        {
+          "de": "das Kostüm",
+          "zh": "戏服",
+          "py": "达斯 科斯蒂姆"
+        },
+        {
+          "de": "die Maske",
+          "zh": "面具",
+          "py": "迪 马斯克"
+        },
+        {
+          "de": "die Krone",
+          "zh": "王冠",
+          "py": "迪 克罗讷"
+        },
+        {
+          "de": "der König",
+          "zh": "国王",
+          "py": "戴尔 克尼希"
+        },
+        {
+          "de": "die Königin",
+          "zh": "王后",
+          "py": "迪 克尼金"
+        },
+        {
+          "de": "die Prinzessin",
+          "zh": "公主",
+          "py": "迪 普林策辛"
+        },
+        {
+          "de": "das Publikum",
+          "zh": "观众",
+          "py": "达斯 普布利库姆"
+        },
+        {
+          "de": "der Applaus",
+          "zh": "掌声",
+          "py": "戴尔 阿普劳斯"
+        },
+        {
+          "de": "spielen",
+          "zh": "演",
+          "py": "施皮伦"
+        },
+        {
+          "de": "sich verkleiden",
+          "zh": "化装、打扮成",
+          "py": "齐希 费尔克莱登"
+        },
+        {
+          "de": "klatschen",
+          "zh": "拍手",
+          "py": "克拉琴"
+        },
+        {
+          "de": "sich verbeugen",
+          "zh": "鞠躬",
+          "py": "齐希 费尔博伊根"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "扮演：Ich spiele …",
+          "zh": "「我演国王」直接说 Ich spiele den König（第 4 格）。",
+          "ex": [
+            {
+              "de": "Ich spiele den König.",
+              "zh": "我演国王。",
+              "py": "伊希 施皮勒 登 克尼希。"
+            },
+            {
+              "de": "Wer spielt die Prinzessin?",
+              "zh": "谁演公主？",
+              "py": "维尔 施皮尔特 迪 普林策辛？"
+            }
+          ]
+        },
+        {
+          "t": "打扮成：sich verkleiden als",
+          "zh": "「我打扮成……」说 Ich verkleide mich als …",
+          "ex": [
+            {
+              "de": "Ich verkleide mich als Tiger.",
+              "zh": "我打扮成老虎。",
+              "py": "伊希 费尔克莱德 米希 阿尔斯 蒂格尔。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "这一课官网暂时没有放 PDF，按钮会打开官方本课网页。下面的词和句子是本站补充的剧院常用词，不是官方生词表。"
+      ]
+    }
+  },
+  {
+    "id": "konzert",
+    "de": "Konzert",
+    "zh": "音乐会",
+    "icon": "🎻",
+    "bg": [
+      "#e6f0ff",
+      "#f3e6ff"
+    ],
+    "guide": {
+      "teil": 7,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-7-konzert/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-7-Konzert.pdf",
+      "story": "Trompete, Triangel und Zaubertrommel",
+      "storyZh": "小号、三角铁和魔法鼓",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "伊尔瓦站在一座露天大舞台门口，看海报上画着好多乐器：镲、手鼓、沙锤、小号。一位拎着小提琴盒的女士邀请她十天后来听儿童音乐会《女巫和魔法鼓》，然后匆匆赶去排练。",
+        "伊尔瓦跟着琴声走进去，悄悄坐在一把空椅子上。指挥挥着指挥棒，乐手们一会儿快一会儿慢。低音提琴低沉的声音让她起了鸡皮疙瘩，她想起了故事里危险的女巫。",
+        "排练结束，大家离开，灯也灭了。伊尔瓦偷偷溜上舞台，按了几下黑色的钢琴：按得越重，声音越响。",
+        "灯又亮了，指挥发现了她。伊尔瓦介绍了自己，指挥给她讲了低音提琴和谱架。这时一页乐谱滑到了钢琴底下，黑乎乎的够不着。",
+        "伊尔瓦用魔法袜子把自己变成手电筒，照亮钢琴底下，帮指挥找回了那页乐谱。",
+        "指挥问她想不想学一种乐器。伊尔瓦说：我更想自己变成乐器——三角铁、沙锤或者钟琴！指挥笑了，邀请她来下一次排练。"
+      ],
+      "vocab": [
+        {
+          "de": "das Konzert",
+          "zh": "音乐会",
+          "py": "达斯 孔采尔特"
+        },
+        {
+          "de": "das Instrument",
+          "zh": "乐器",
+          "py": "达斯 因斯特鲁门特"
+        },
+        {
+          "de": "die Trommel",
+          "zh": "鼓",
+          "py": "迪 特罗梅尔"
+        },
+        {
+          "de": "die Triangel",
+          "zh": "三角铁",
+          "py": "迪 特里昂格尔"
+        },
+        {
+          "de": "die Trompete",
+          "zh": "小号",
+          "py": "迪 特罗姆佩特"
+        },
+        {
+          "de": "die Geige",
+          "zh": "小提琴",
+          "py": "迪 盖格"
+        },
+        {
+          "de": "die Flöte",
+          "zh": "笛子",
+          "py": "迪 弗勒特"
+        },
+        {
+          "de": "das Klavier",
+          "zh": "钢琴",
+          "py": "达斯 克拉维尔"
+        },
+        {
+          "de": "der Kontrabass",
+          "zh": "低音提琴",
+          "py": "戴尔 孔特拉巴斯"
+        },
+        {
+          "de": "die Rassel",
+          "zh": "沙锤",
+          "py": "迪 拉塞尔"
+        },
+        {
+          "de": "das Glockenspiel",
+          "zh": "钟琴",
+          "py": "达斯 格洛肯 施皮尔"
+        },
+        {
+          "de": "die Tschinelle",
+          "zh": "镲（奥地利说法）",
+          "py": "迪 钦内勒"
+        },
+        {
+          "de": "der Dirigent",
+          "zh": "指挥",
+          "py": "戴尔 迪里根特"
+        },
+        {
+          "de": "die Melodie",
+          "zh": "旋律",
+          "py": "迪 梅洛迪"
+        },
+        {
+          "de": "spielen",
+          "zh": "演奏",
+          "py": "施皮伦"
+        },
+        {
+          "de": "schlagen",
+          "zh": "敲",
+          "py": "施拉根"
+        },
+        {
+          "de": "blasen",
+          "zh": "吹",
+          "py": "布拉森"
+        },
+        {
+          "de": "zupfen",
+          "zh": "拨（弦）",
+          "py": "楚普芬"
+        },
+        {
+          "de": "zuhören",
+          "zh": "听",
+          "py": "楚 赫伦"
+        },
+        {
+          "de": "laut",
+          "zh": "大声",
+          "py": "劳特"
+        },
+        {
+          "de": "leise",
+          "zh": "小声",
+          "py": "莱泽"
+        },
+        {
+          "de": "schnell",
+          "zh": "快",
+          "py": "施内尔"
+        },
+        {
+          "de": "langsam",
+          "zh": "慢",
+          "py": "朗扎姆"
+        },
+        {
+          "de": "hoch",
+          "zh": "（音）高",
+          "py": "霍赫"
+        },
+        {
+          "de": "tief",
+          "zh": "（音）低",
+          "py": "蒂夫"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "用什么演奏：mit + 3 格",
+          "zh": "mit 后面用第 3 格：der/das → dem，die → der。",
+          "ex": [
+            {
+              "de": "Ich spiele mit dem Schlägel.",
+              "zh": "我用琴槌敲。",
+              "py": "伊希 施皮勒 米特 登 施莱格尔。"
+            },
+            {
+              "de": "Die Gitarre wird mit den Fingern gezupft.",
+              "zh": "吉他是用手指拨的。",
+              "py": "迪 吉塔勒 维尔特 米特 登 芬格恩 格楚普夫特。"
+            }
+          ]
+        },
+        {
+          "t": "如果……就想到……：wenn … denke ich an …",
+          "zh": "wenn 小句的动词放最后，后半句动词放最前。denken an＝想到，后面接第 4 格。",
+          "ex": [
+            {
+              "de": "Wenn ich die Gitarre höre, denke ich an meinen Geburtstag.",
+              "zh": "我一听到吉他，就想起我的生日。",
+              "py": "文 伊希 迪 吉塔勒 赫勒，登克 伊希 安 迈嫩 格布尔茨 塔克。"
+            }
+          ]
+        },
+        {
+          "t": "可分动词 vorspielen（演奏给人听）",
+          "zh": "Ich spiele dir etwas vor.＝我给你演奏一段。",
+          "ex": [
+            {
+              "de": "Ich spiele euch ein Lied vor.",
+              "zh": "我给你们演奏一首曲子。",
+              "py": "伊希 施皮勒 奥伊希 艾因 利特 福尔。"
+            }
+          ]
+        },
+        {
+          "t": "比较：lauter / leiser",
+          "zh": "形容词加 -er 就是「更……」。",
+          "ex": [
+            {
+              "de": "Ich kann lauter oder leiser spielen.",
+              "zh": "我能弹得更响或更轻。",
+              "py": "伊希 坎 劳特尔 奥德尔 莱泽尔 施皮伦。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "奥地利说法：镲叫 die Tschinelle（德国说 das Becken）。"
+      ]
+    }
+  },
+  {
+    "id": "zirkus",
+    "de": "Zirkus",
+    "zh": "马戏团",
+    "icon": "🎪",
+    "bg": [
+      "#ffe3e3",
+      "#fff3c4"
+    ],
+    "guide": {
+      "teil": 8,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-8-zirkus/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-8-Zirkus.pdf",
+      "story": "Zirkusduft liegt in der Luft",
+      "storyZh": "空气里有马戏团的味道",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "伊尔瓦看到「方块马戏团」的海报，走进了马戏场。她看到卖爆米花的、抛球杂耍的、驯狗的，还认识了走钢丝的 Sorin，他带她到处参观。",
+        "他们走进圆形表演场，灯光师正在试灯：彩色的星星、三角形、六边形在地上跳来跳去。伊尔瓦发现她的小蚯蚓 Ron 在模仿这些形状。",
+        "一个小丑追着光做的星星跑，逗得大家直笑。Sorin 看到 Ron 能摆出各种形状，邀请伊尔瓦下午和他一起上台。",
+        "下午的演出开始了：先是杂技演员，然后是飞刀手瞄准靶子上的心形，接着小丑假装从一个方框「窗户」里爬过去。",
+        "Sorin 在高高的钢丝上走着，突然平衡杆掉了，人摇摇晃晃。伊尔瓦用魔法袜子变成一张网接在下面，Sorin 安全地表演完了。",
+        "最后伊尔瓦带着 Ron 站到聚光灯下，用金色魔法棒在 T 恤上画图形，Ron 跟着摆出正方形、五边形、八边形。观众欢呼，伊尔瓦骄傲地鞠了一躬。"
+      ],
+      "vocab": [
+        {
+          "de": "der Zirkus",
+          "zh": "马戏团",
+          "py": "戴尔 齐尔库斯"
+        },
+        {
+          "de": "der Clown",
+          "zh": "小丑",
+          "py": "戴尔 克劳恩"
+        },
+        {
+          "de": "der Akrobat",
+          "zh": "杂技演员",
+          "py": "戴尔 阿克罗巴特"
+        },
+        {
+          "de": "der Seiltänzer",
+          "zh": "走钢丝的人",
+          "py": "戴尔 赛尔 滕策尔"
+        },
+        {
+          "de": "der Zauberer",
+          "zh": "魔术师",
+          "py": "戴尔 灿贝勒尔"
+        },
+        {
+          "de": "der Zirkusdirektor",
+          "zh": "马戏团团长",
+          "py": "戴尔 齐尔库斯 迪雷克托尔"
+        },
+        {
+          "de": "der Kreis",
+          "zh": "圆形",
+          "py": "戴尔 克赖斯"
+        },
+        {
+          "de": "das Quadrat",
+          "zh": "正方形",
+          "py": "达斯 夸德拉特"
+        },
+        {
+          "de": "das Rechteck",
+          "zh": "长方形",
+          "py": "达斯 雷希特 埃克"
+        },
+        {
+          "de": "das Dreieck",
+          "zh": "三角形",
+          "py": "达斯 德赖 埃克"
+        },
+        {
+          "de": "der Stern",
+          "zh": "星形",
+          "py": "戴尔 施特恩"
+        },
+        {
+          "de": "das Herz",
+          "zh": "心形",
+          "py": "达斯 赫尔茨"
+        },
+        {
+          "de": "die Ecke",
+          "zh": "角",
+          "py": "迪 埃克"
+        },
+        {
+          "de": "rund",
+          "zh": "圆的",
+          "py": "伦特"
+        },
+        {
+          "de": "eckig",
+          "zh": "有角的",
+          "py": "埃基希"
+        },
+        {
+          "de": "quadratisch",
+          "zh": "正方形的",
+          "py": "夸德拉蒂施"
+        },
+        {
+          "de": "sternförmig",
+          "zh": "星形的",
+          "py": "施特恩 弗尔米希"
+        },
+        {
+          "de": "springen",
+          "zh": "跳",
+          "py": "施普林根"
+        },
+        {
+          "de": "balancieren",
+          "zh": "保持平衡",
+          "py": "巴朗西伦"
+        },
+        {
+          "de": "jonglieren",
+          "zh": "抛接杂耍",
+          "py": "容格利伦"
+        },
+        {
+          "de": "zaubern",
+          "zh": "变魔术",
+          "py": "灿贝恩"
+        },
+        {
+          "de": "werfen",
+          "zh": "扔",
+          "py": "韦尔芬"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "先、然后、最后：zuerst / dann / zuletzt",
+          "zh": "讲表演顺序。这些词放句首，动词紧跟着排第二。",
+          "ex": [
+            {
+              "de": "Zuerst kommen die Akrobaten, dann kommt der Clown.",
+              "zh": "先是杂技演员上场，然后是小丑。",
+              "py": "楚埃尔斯特 科门 迪 阿克罗巴滕，丹 科姆特 戴尔 克劳恩。"
+            }
+          ]
+        },
+        {
+          "t": "形状变形容词：Stern → sternförmig",
+          "zh": "名词加 -förmig 就是「……形的」；Quadrat → quadratisch。",
+          "ex": [
+            {
+              "de": "Der Ball ist rund. Er hat keine Ecken.",
+              "zh": "球是圆的，没有角。",
+              "py": "戴尔 巴尔 伊斯特 伦特。埃尔 哈特 凯讷 埃肯。"
+            }
+          ]
+        },
+        {
+          "t": "用……做：mit + 3 格",
+          "zh": "jonglieren mit＝用……杂耍。",
+          "ex": [
+            {
+              "de": "Der Clown jongliert mit einem Ball.",
+              "zh": "小丑用一个球玩杂耍。",
+              "py": "戴尔 克劳恩 容格利尔特 米特 艾嫩 巴尔。"
+            }
+          ]
+        },
+        {
+          "t": "是不是问句：动词放最前",
+          "zh": "回答「是／不是」的问句，把动词放到句首。",
+          "ex": [
+            {
+              "de": "Bist du ein Seiltänzer?",
+              "zh": "你是走钢丝的吗？",
+              "py": "比斯特 杜 艾因 赛尔 滕策尔？"
+            },
+            {
+              "de": "Springt der Hund durch den Reifen?",
+              "zh": "狗会钻过圈吗？",
+              "py": "施普林特 戴尔 洪特 杜尔希 登 赖芬？"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "Manege：马戏团中间的圆形表演场。"
+      ]
+    }
+  },
+  {
+    "id": "stille",
+    "de": "Stille",
+    "zh": "安静",
+    "icon": "🤫",
+    "bg": [
+      "#e3e8ff",
+      "#d9f2ef"
+    ],
+    "guide": {
+      "teil": 9,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-9-stille/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-9-Stille.pdf",
+      "story": "Laterne, Laterne, leuchte still",
+      "storyZh": "灯笼灯笼，静静地亮",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "傍晚，伊尔瓦坐在小池塘边的毛巾上，回想开心的一天。大部分游客都回家了，只有几家人留下来搭帐篷过夜，伊尔瓦也搭了一顶。",
+        "天慢慢安静下来，她听到各种声音：自行车铃、狗叫、远处的驴叫。紫丁香丛后面有一家人生起了篝火，孩子们在玩充气床垫，一只松鼠跑回窝里睡觉。",
+        "那家人钻进帐篷。鸟还在叫，伊尔瓦觉得冷，蚊子还咬了她膝盖一口，她把毯子裹紧。隔壁帐篷传来呼噜声，森林里猫头鹰在叫，池塘里青蛙呱呱叫。",
+        "一只小老鼠在吃最后的饼干渣，月亮从水面升起来。伊尔瓦指给小蚯蚓 Ron 看，一只蝙蝠飞过，Ron 吓得钻进她头发里。",
+        "突然，隔壁帐篷外的沙桶被什么东西撞倒了。孩子们吓坏了，想回家。爸爸妈妈出去一看，原来是一只小刺猬。",
+        "伊尔瓦想帮忙。她晃晃魔法袜子，变成一盏灯笼，柔和的光照着帐篷。孩子们安心了，又睡着了。"
+      ],
+      "vocab": [
+        {
+          "de": "die Stille",
+          "zh": "安静",
+          "py": "迪 施蒂勒"
+        },
+        {
+          "de": "das Geräusch",
+          "zh": "声音、响动",
+          "py": "达斯 格罗伊施"
+        },
+        {
+          "de": "laut",
+          "zh": "吵、大声",
+          "py": "劳特"
+        },
+        {
+          "de": "leise",
+          "zh": "轻声",
+          "py": "莱泽"
+        },
+        {
+          "de": "dunkel",
+          "zh": "黑、暗",
+          "py": "敦克尔"
+        },
+        {
+          "de": "hell",
+          "zh": "亮",
+          "py": "黑尔"
+        },
+        {
+          "de": "das Zelt",
+          "zh": "帐篷",
+          "py": "达斯 采尔特"
+        },
+        {
+          "de": "der Teich",
+          "zh": "池塘",
+          "py": "戴尔 泰希"
+        },
+        {
+          "de": "der Wald",
+          "zh": "森林",
+          "py": "戴尔 瓦尔特"
+        },
+        {
+          "de": "der Mond",
+          "zh": "月亮",
+          "py": "戴尔 蒙特"
+        },
+        {
+          "de": "der Frosch",
+          "zh": "青蛙",
+          "py": "戴尔 弗罗施"
+        },
+        {
+          "de": "die Mücke",
+          "zh": "蚊子",
+          "py": "迪 米克"
+        },
+        {
+          "de": "der Uhu",
+          "zh": "猫头鹰",
+          "py": "戴尔 乌胡"
+        },
+        {
+          "de": "der Igel",
+          "zh": "刺猬",
+          "py": "戴尔 伊格尔"
+        },
+        {
+          "de": "das Eichhörnchen",
+          "zh": "松鼠",
+          "py": "达斯 艾希 赫恩欣"
+        },
+        {
+          "de": "die Fledermaus",
+          "zh": "蝙蝠",
+          "py": "迪 弗莱德尔 毛斯"
+        },
+        {
+          "de": "der Esel",
+          "zh": "驴",
+          "py": "戴尔 埃泽尔"
+        },
+        {
+          "de": "hören",
+          "zh": "听",
+          "py": "赫伦"
+        },
+        {
+          "de": "schnarchen",
+          "zh": "打呼噜",
+          "py": "施纳尔兴"
+        },
+        {
+          "de": "bellen",
+          "zh": "（狗）叫",
+          "py": "贝伦"
+        },
+        {
+          "de": "quaken",
+          "zh": "（青蛙）呱呱叫",
+          "py": "夸肯"
+        },
+        {
+          "de": "summen",
+          "zh": "嗡嗡叫",
+          "py": "祖门"
+        },
+        {
+          "de": "zwitschern",
+          "zh": "（鸟）叽叽喳喳",
+          "py": "茨维琴恩"
+        },
+        {
+          "de": "rascheln",
+          "zh": "沙沙响",
+          "py": "拉舍尔恩"
+        },
+        {
+          "de": "zelten",
+          "zh": "露营",
+          "py": "采尔滕"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "谁发出什么声音",
+          "zh": "每种动物有自己的「叫」：狗 bellt，青蛙 quakt，蚊子 summt，鸟 zwitschert。",
+          "ex": [
+            {
+              "de": "Der Frosch quakt im Teich.",
+              "zh": "青蛙在池塘里呱呱叫。",
+              "py": "戴尔 弗罗施 夸克特 伊姆 泰希。"
+            },
+            {
+              "de": "Die Mücken summen laut.",
+              "zh": "蚊子嗡嗡地叫得很响。",
+              "py": "迪 米肯 祖门 劳特。"
+            }
+          ]
+        },
+        {
+          "t": "我听到……：hören + 4 格",
+          "zh": "听到的东西是第 4 格：der → den。",
+          "ex": [
+            {
+              "de": "Ich höre den Hund.",
+              "zh": "我听到狗叫了。",
+              "py": "伊希 赫勒 登 洪特。"
+            }
+          ]
+        },
+        {
+          "t": "叫别人做：命令句",
+          "zh": "对一个人说「你做……」：动词去掉 -en 放句首（Leg …! Hör …!）。",
+          "ex": [
+            {
+              "de": "Hör mal! Was ist das?",
+              "zh": "听！那是什么？",
+              "py": "赫尔 马尔！瓦斯 伊斯特 达斯？"
+            },
+            {
+              "de": "Sei leise!",
+              "zh": "小声点！",
+              "py": "赛 莱泽！"
+            }
+          ]
+        },
+        {
+          "t": "声音词：叠起来说",
+          "zh": "德语也有拟声词，常常重复两遍：knack knack（咔嚓咔嚓）。",
+          "ex": [
+            {
+              "de": "Das Eichhörnchen knackt Nüsse.",
+              "zh": "松鼠在咔嚓咔嚓地嗑坚果。",
+              "py": "达斯 艾希 赫恩欣 克纳克特 尼塞。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "标题里的 Laterne 是灯笼，奥地利和德国孩子秋天会提灯笼游行（Laternenfest）。"
+      ]
+    }
+  },
+  {
+    "id": "wiese",
+    "de": "Wiese",
+    "zh": "草地",
+    "icon": "🌼",
+    "bg": [
+      "#e8f8d8",
+      "#fff8cf"
+    ],
+    "guide": {
+      "teil": 10,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-10-wiese/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-10-Wiese.pdf",
+      "story": "Eins, zwei, viele … beim Wiesenpicknick",
+      "storyZh": "一、二、好多……草地野餐",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "伊尔瓦在森林边的草地上野餐，把点心摆在毯子上，晒着太阳看花。小蚯蚓 Ron 在她头发里爬来爬去。",
+        "一只瓢虫落在毯子上，伊尔瓦数它的斑点。蜜蜂围着她的坚果牛角包嗡嗡转，一只黄蝴蝶飞过，树上鸟在唱歌。",
+        "伊尔瓦把 Ron 绕在手指上走进森林。树叶下一只马陆匆匆爬走，石头下有一只潮虫，她轻轻把石头放回去。",
+        "她找到两条蚯蚓 Rita 和 Robert，Ron 也跟它们玩去了。伊尔瓦想起放大镜忘在毯子上，就用魔法袜子把自己变小。",
+        "变小的伊尔瓦差点撞进一张巨大的蜘蛛网，蜘蛛丝粗得像绳子。她又碰到一队蚂蚁，正搬着树叶和松针。",
+        "松针太重她搬不动，就搬了一点青苔跟着蚂蚁走。路过一只慢吞吞的蜗牛时，她在黏液上滑了一跤，青苔正好飞到了蚁丘上。她变回原样，一只青蛙惊讶地看着她。",
+        "回家路上，伊尔瓦从蹦来蹦去的蚂蚱旁边跳过，跟 Ron 说：今天野餐碰到了好多小动物！"
+      ],
+      "vocab": [
+        {
+          "de": "die Wiese",
+          "zh": "草地",
+          "py": "迪 维泽"
+        },
+        {
+          "de": "die Ameise",
+          "zh": "蚂蚁",
+          "py": "迪 阿迈泽"
+        },
+        {
+          "de": "die Biene",
+          "zh": "蜜蜂",
+          "py": "迪 比讷"
+        },
+        {
+          "de": "der Schmetterling",
+          "zh": "蝴蝶",
+          "py": "戴尔 施梅特林"
+        },
+        {
+          "de": "der Marienkäfer",
+          "zh": "瓢虫",
+          "py": "戴尔 马里恩 凯弗尔"
+        },
+        {
+          "de": "die Schnecke",
+          "zh": "蜗牛",
+          "py": "迪 施内克"
+        },
+        {
+          "de": "die Spinne",
+          "zh": "蜘蛛",
+          "py": "迪 施宾讷"
+        },
+        {
+          "de": "der Regenwurm",
+          "zh": "蚯蚓",
+          "py": "戴尔 雷根 武尔姆"
+        },
+        {
+          "de": "die Heuschrecke",
+          "zh": "蚂蚱",
+          "py": "迪 霍伊 施雷克"
+        },
+        {
+          "de": "der Tausendfüßler",
+          "zh": "马陆（千足虫）",
+          "py": "戴尔 陶森特 菲斯勒"
+        },
+        {
+          "de": "die Assel",
+          "zh": "潮虫",
+          "py": "迪 阿塞尔"
+        },
+        {
+          "de": "der Frosch",
+          "zh": "青蛙",
+          "py": "戴尔 弗罗施"
+        },
+        {
+          "de": "krabbeln",
+          "zh": "爬（小虫）",
+          "py": "克拉贝尔恩"
+        },
+        {
+          "de": "kriechen",
+          "zh": "爬（蜗牛、蚯蚓）",
+          "py": "克里兴"
+        },
+        {
+          "de": "flattern",
+          "zh": "扑腾着飞",
+          "py": "弗拉特恩"
+        },
+        {
+          "de": "fliegen",
+          "zh": "飞",
+          "py": "弗利根"
+        },
+        {
+          "de": "hüpfen",
+          "zh": "蹦",
+          "py": "许普芬"
+        },
+        {
+          "de": "springen",
+          "zh": "跳",
+          "py": "施普林根"
+        },
+        {
+          "de": "zuerst",
+          "zh": "首先",
+          "py": "楚埃尔斯特"
+        },
+        {
+          "de": "danach",
+          "zh": "之后",
+          "py": "达纳赫"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "谁怎么动：über die Wiese",
+          "zh": "不同的小动物用不同的「动」：蚂蚁 krabbelt，蜗牛 kriecht，蝴蝶 flattert，青蛙 hüpft。",
+          "ex": [
+            {
+              "de": "Die Ameise krabbelt über die Wiese.",
+              "zh": "蚂蚁爬过草地。",
+              "py": "迪 阿迈泽 克拉贝尔特 于贝尔 迪 维泽。"
+            },
+            {
+              "de": "Der Frosch hüpft über die Wiese.",
+              "zh": "青蛙蹦过草地。",
+              "py": "戴尔 弗罗施 许普夫特 于贝尔 迪 维泽。"
+            }
+          ]
+        },
+        {
+          "t": "讲过去的事：ist … gekrabbelt",
+          "zh": "表示移动的动词说过去时用 sein + 过去分词（ge- … -t），分词放句尾。",
+          "ex": [
+            {
+              "de": "Zuerst ist der Schmetterling geflattert.",
+              "zh": "先是蝴蝶扑腾着飞走了。",
+              "py": "楚埃尔斯特 伊斯特 戴尔 施梅特林 格弗拉特尔特。"
+            },
+            {
+              "de": "Danach ist die Spinne gekrabbelt.",
+              "zh": "然后蜘蛛爬走了。",
+              "py": "达纳赫 伊斯特 迪 施宾讷 格克拉贝尔特。"
+            }
+          ]
+        },
+        {
+          "t": "是不是：ob（是否）",
+          "zh": "Ich weiß nicht, ob …＝我不知道是不是……，动词放最后。",
+          "ex": [
+            {
+              "de": "Ich weiß nicht, ob die Schnecke schläft.",
+              "zh": "我不知道蜗牛是不是在睡觉。",
+              "py": "伊希 魏斯 尼希特，奥普 迪 施内克 施莱夫特。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "Nusskipferl：奥地利的坚果牛角小点心。"
+      ]
+    }
+  },
+  {
+    "id": "streichelzoo",
+    "de": "Streichelzoo",
+    "zh": "小动物园",
+    "icon": "🐐",
+    "bg": [
+      "#f3ecd9",
+      "#e3f5e1"
+    ],
+    "guide": {
+      "teil": 11,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-11-streichelzoo/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-11-Streichelzoo.pdf",
+      "story": "Futter für die Tiere",
+      "storyZh": "给动物喂吃的",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "伊尔瓦和 Alina、Alina 的弟弟 Finn，跟着 Alina 的爸爸去一个可以摸小动物的动物园。她看到了豚鼠、小马、两只羊，谷仓边还有小猪。",
+        "在鸭子池塘边，一只绿脑袋的鸭子朝 Finn 游过来，Finn 以为它要咬他，吓坏了。爸爸安慰他：鸭子不会吃你的。",
+        "爸爸想了个办法，带孩子们去饲料机，每人拿到一袋饲料喂饿肚子的动物。",
+        "孩子们想先喂兔子，可兔子都在生菜和胡萝卜中间趴着休息，不过来。大家就去山羊那边。",
+        "一只好奇的山羊把头伸出栅栏，Alina 用手喂它，伊尔瓦摸摸它的头。伊尔瓦把魔法袜子挥三下，变成一只山羊，和它聊天。变回来后她说：山羊在谢谢我们，问我们什么时候再来。",
+        "一头驴也跑过来，大声讨吃的，驴和山羊一起「开演唱会」。爸爸笑着说：我们一定很快再来！"
+      ],
+      "vocab": [
+        {
+          "de": "der Streichelzoo",
+          "zh": "可以摸动物的小动物园",
+          "py": "戴尔 施特赖希尔 措"
+        },
+        {
+          "de": "die Ziege",
+          "zh": "山羊",
+          "py": "迪 齐格"
+        },
+        {
+          "de": "das Pony",
+          "zh": "小马",
+          "py": "达斯 波尼"
+        },
+        {
+          "de": "der Hase",
+          "zh": "兔子",
+          "py": "戴尔 哈泽"
+        },
+        {
+          "de": "das Meerschweinchen",
+          "zh": "豚鼠",
+          "py": "达斯 梅尔 施魏恩欣"
+        },
+        {
+          "de": "das Huhn",
+          "zh": "鸡",
+          "py": "达斯 胡恩"
+        },
+        {
+          "de": "das Schaf",
+          "zh": "羊",
+          "py": "达斯 沙夫"
+        },
+        {
+          "de": "der Esel",
+          "zh": "驴",
+          "py": "戴尔 埃泽尔"
+        },
+        {
+          "de": "das Schwein",
+          "zh": "猪",
+          "py": "达斯 施魏恩"
+        },
+        {
+          "de": "die Ente",
+          "zh": "鸭子",
+          "py": "迪 恩特"
+        },
+        {
+          "de": "das Heu",
+          "zh": "干草",
+          "py": "达斯 霍伊"
+        },
+        {
+          "de": "das Futter",
+          "zh": "饲料",
+          "py": "达斯 富特尔"
+        },
+        {
+          "de": "der Stall",
+          "zh": "棚、圈",
+          "py": "戴尔 施塔尔"
+        },
+        {
+          "de": "der Huf",
+          "zh": "蹄子",
+          "py": "戴尔 胡夫"
+        },
+        {
+          "de": "die Pfote",
+          "zh": "爪子",
+          "py": "迪 普福特"
+        },
+        {
+          "de": "der Flügel",
+          "zh": "翅膀",
+          "py": "戴尔 弗吕格尔"
+        },
+        {
+          "de": "laufen",
+          "zh": "跑",
+          "py": "劳芬"
+        },
+        {
+          "de": "hoppeln",
+          "zh": "（兔子）蹦",
+          "py": "霍佩尔恩"
+        },
+        {
+          "de": "galoppieren",
+          "zh": "飞奔",
+          "py": "加洛皮伦"
+        },
+        {
+          "de": "traben",
+          "zh": "小跑",
+          "py": "特拉本"
+        },
+        {
+          "de": "schwimmen",
+          "zh": "游",
+          "py": "施维门"
+        },
+        {
+          "de": "füttern",
+          "zh": "喂",
+          "py": "菲特恩"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "将来：werden + 动词原形",
+          "zh": "werden 放第二位，动词原形放最后，表示「将要」。",
+          "ex": [
+            {
+              "de": "Morgen werden wir Enten sehen.",
+              "zh": "明天我们会看到鸭子。",
+              "py": "摩根 韦尔登 维尔 恩滕 泽恩。"
+            }
+          ]
+        },
+        {
+          "t": "没有：kein / keine",
+          "zh": "「一只也没有」用 kein/keine。",
+          "ex": [
+            {
+              "de": "Keine Ente will dich beißen.",
+              "zh": "没有一只鸭子想咬你。",
+              "py": "凯讷 恩特 维尔 迪希 拜森。"
+            }
+          ]
+        },
+        {
+          "t": "跑到哪儿去了：ist … gelaufen",
+          "zh": "表示移动的过去时用 sein，分词放句尾。",
+          "ex": [
+            {
+              "de": "Das Pony ist in den Stall galoppiert.",
+              "zh": "小马飞奔进了马棚。",
+              "py": "达斯 波尼 伊斯特 因 登 施塔尔 加洛皮尔特。"
+            },
+            {
+              "de": "Der Hase hoppelt zu den Karotten.",
+              "zh": "兔子蹦向胡萝卜。",
+              "py": "戴尔 哈泽 霍佩尔特 楚 登 卡罗滕。"
+            }
+          ]
+        },
+        {
+          "t": "变小：-chen",
+          "zh": "名词加 -chen 表示「小……」，而且一律变成 das：das Schwein → das Schweinchen。",
+          "ex": [
+            {
+              "de": "Das ist ein Schweinchen.",
+              "zh": "这是一只小猪。",
+              "py": "达斯 伊斯特 艾因 施魏恩欣。"
+            }
+          ]
+        }
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "spielplatz",
+    "de": "Spielplatz",
+    "zh": "游乐场",
+    "icon": "🛝",
+    "bg": [
+      "#e1f3ff",
+      "#fff1d6"
+    ],
+    "guide": {
+      "teil": 12,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-12-spielplatz/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-12-Spielplatz.pdf",
+      "story": "Spielplatz",
+      "storyZh": "游乐场",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "这一课官方 PDF 开头印的故事和第 10 课一样（伊尔瓦在草地野餐，跟着蚂蚁走，最后蚯蚓 Ron 也在）。可以先看第 10 课的中文梗概。",
+        "本课的练习围绕游乐场：滑梯、秋千、跷跷板、攀爬架，重点是学会说「谁更快、谁更高」。"
+      ],
+      "vocab": [
+        {
+          "de": "der Spielplatz",
+          "zh": "游乐场",
+          "py": "戴尔 施皮尔 普拉茨"
+        },
+        {
+          "de": "die Rutsche",
+          "zh": "滑梯",
+          "py": "迪 鲁彻"
+        },
+        {
+          "de": "die Schaukel",
+          "zh": "秋千",
+          "py": "迪 绍克尔"
+        },
+        {
+          "de": "die Wippe",
+          "zh": "跷跷板",
+          "py": "迪 维佩"
+        },
+        {
+          "de": "das Drehkarussell",
+          "zh": "转盘",
+          "py": "达斯 德雷 卡鲁塞尔"
+        },
+        {
+          "de": "die Sandkiste",
+          "zh": "沙坑（奥地利说法）",
+          "py": "迪 赞特 基斯特"
+        },
+        {
+          "de": "das Klettergerüst",
+          "zh": "攀爬架",
+          "py": "达斯 克莱特尔 格吕斯特"
+        },
+        {
+          "de": "das Fußballtor",
+          "zh": "足球门",
+          "py": "达斯 富斯巴尔 托尔"
+        },
+        {
+          "de": "rutschen",
+          "zh": "滑",
+          "py": "鲁琴"
+        },
+        {
+          "de": "schaukeln",
+          "zh": "荡秋千",
+          "py": "绍克尔恩"
+        },
+        {
+          "de": "wippen",
+          "zh": "玩跷跷板",
+          "py": "维喷"
+        },
+        {
+          "de": "klettern",
+          "zh": "爬",
+          "py": "克莱特恩"
+        },
+        {
+          "de": "graben",
+          "zh": "挖",
+          "py": "格拉本"
+        },
+        {
+          "de": "rennen",
+          "zh": "跑",
+          "py": "雷嫩"
+        },
+        {
+          "de": "schnell",
+          "zh": "快",
+          "py": "施内尔"
+        },
+        {
+          "de": "hoch",
+          "zh": "高",
+          "py": "霍赫"
+        },
+        {
+          "de": "tief",
+          "zh": "深",
+          "py": "蒂夫"
+        },
+        {
+          "de": "weit",
+          "zh": "远",
+          "py": "魏特"
+        },
+        {
+          "de": "wild",
+          "zh": "疯、野",
+          "py": "维尔特"
+        },
+        {
+          "de": "sanft",
+          "zh": "轻柔",
+          "py": "赞夫特"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "比较：schneller / am schnellsten",
+          "zh": "形容词加 -er＝「更……」，am …-sten＝「最……」。hoch 特殊：höher, am höchsten。",
+          "ex": [
+            {
+              "de": "Wir schaukeln schneller!",
+              "zh": "我们荡得更快了！",
+              "py": "维尔 绍克尔恩 施内勒尔！"
+            },
+            {
+              "de": "Du bist am höchsten geklettert.",
+              "zh": "你爬得最高。",
+              "py": "杜 比斯特 阿姆 赫希斯滕 格克莱特尔特。"
+            }
+          ]
+        },
+        {
+          "t": "我觉得：Ich glaube, dass …",
+          "zh": "dass 小句里动词放最后。",
+          "ex": [
+            {
+              "de": "Ich glaube, dass Ron am schnellsten rutscht.",
+              "zh": "我觉得 Ron 滑得最快。",
+              "py": "伊希 格劳贝，达斯 龙 阿姆 施内尔斯滕 鲁奇特。"
+            }
+          ]
+        },
+        {
+          "t": "讲玩过的：ist gerutscht / hat geschaukelt",
+          "zh": "移动类（rutschen, klettern）用 sein，其他多用 haben。",
+          "ex": [
+            {
+              "de": "Ich bin gerutscht und habe geschaukelt.",
+              "zh": "我滑了滑梯，还荡了秋千。",
+              "py": "伊希 宾 格鲁奇特 翁特 哈贝 格绍克尔特。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "奥地利说法：沙坑叫 die Sandkiste（德国说 der Sandkasten）。"
+      ]
+    }
+  },
+  {
+    "id": "baustelle",
+    "de": "Baustelle",
+    "zh": "工地",
+    "icon": "🚧",
+    "bg": [
+      "#fff2c4",
+      "#ffe0cc"
+    ],
+    "guide": {
+      "teil": 13,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-13-baustelle/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-13-Baustelle.pdf",
+      "story": "Hasenrettung auf der Baustelle",
+      "storyZh": "工地救兔子",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "伊尔瓦路过一个工地，正在盖一栋大房子，吵得她捂住耳朵。吊车吊着木板，工人用风镐打碎混凝土，还有一台机器，伊尔瓦以为是做棉花糖的。",
+        "风镐停了，伊尔瓦去问工人。工人说：那是混凝土搅拌机；旁边的是叉车，用来卸水泥袋；大压路机是用来把柏油压平的。伊尔瓦开玩笑说：盖坏了的房子也能压平。",
+        "两个孩子 Linda 和 Hassan 抱着一只叫「兔子」的毛绒兔走到围栏边。伊尔瓦指给他们看挖掘机，挖土像挖云朵一样轻松。",
+        "Hassan 看得入迷，手一松，毛绒兔从围栏下滚进了工地的大坑。挖掘机的铲斗离它越来越近，Hassan 哭了起来。",
+        "伊尔瓦喊司机，可他听不见。她用魔法袜子变成一个建筑工人，吹了一声响亮的口哨，挖掘机停下了。她爬进坑里，把兔子救了上来。",
+        "司机夸她救得好，Hassan 谢谢伊尔瓦。伊尔瓦变回原样，跟孩子们说再见，唱着歌蹦蹦跳跳地走了。"
+      ],
+      "vocab": [
+        {
+          "de": "die Baustelle",
+          "zh": "工地",
+          "py": "迪 鲍 施特勒"
+        },
+        {
+          "de": "der Bagger",
+          "zh": "挖掘机",
+          "py": "戴尔 巴格尔"
+        },
+        {
+          "de": "der Kran",
+          "zh": "吊车",
+          "py": "戴尔 克兰"
+        },
+        {
+          "de": "die Walze",
+          "zh": "压路机",
+          "py": "迪 瓦尔策"
+        },
+        {
+          "de": "der Betonmischer",
+          "zh": "混凝土搅拌车",
+          "py": "戴尔 贝通 米舍尔"
+        },
+        {
+          "de": "der Kipplaster",
+          "zh": "自卸卡车",
+          "py": "戴尔 基普 拉斯特尔"
+        },
+        {
+          "de": "der Gabelstapler",
+          "zh": "叉车",
+          "py": "戴尔 加贝尔 施塔普勒"
+        },
+        {
+          "de": "der Presslufthammer",
+          "zh": "风镐",
+          "py": "戴尔 普雷斯卢夫特 哈默尔"
+        },
+        {
+          "de": "der Ziegelstein",
+          "zh": "砖",
+          "py": "戴尔 齐格尔 施泰因"
+        },
+        {
+          "de": "der Helm",
+          "zh": "安全帽",
+          "py": "戴尔 黑尔姆"
+        },
+        {
+          "de": "die Arbeitshandschuhe",
+          "zh": "劳保手套",
+          "py": "迪 阿尔拜茨 汉特舒厄"
+        },
+        {
+          "de": "bauen",
+          "zh": "建造",
+          "py": "包恩"
+        },
+        {
+          "de": "graben",
+          "zh": "挖",
+          "py": "格拉本"
+        },
+        {
+          "de": "heben",
+          "zh": "举、吊",
+          "py": "黑本"
+        },
+        {
+          "de": "abladen",
+          "zh": "卸货",
+          "py": "阿普 拉登"
+        },
+        {
+          "de": "wegschieben",
+          "zh": "推走",
+          "py": "韦克 希本"
+        },
+        {
+          "de": "brauchen",
+          "zh": "需要",
+          "py": "布劳亨"
+        },
+        {
+          "de": "schwer",
+          "zh": "重",
+          "py": "施维尔"
+        },
+        {
+          "de": "tief",
+          "zh": "深",
+          "py": "蒂夫"
+        },
+        {
+          "de": "sicher",
+          "zh": "安全",
+          "py": "齐舍尔"
+        },
+        {
+          "de": "wozu",
+          "zh": "用来干什么",
+          "py": "沃楚"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "干什么用：Wozu …? – Um … zu …",
+          "zh": "问用途用 wozu；回答用 um … zu + 动词原形。",
+          "ex": [
+            {
+              "de": "Wozu braucht man die Walze?",
+              "zh": "压路机是干什么用的？",
+              "py": "沃楚 布劳赫特 曼 迪 瓦尔策？"
+            },
+            {
+              "de": "Um die Straße glatt zu rollen.",
+              "zh": "用来把路压平。",
+              "py": "乌姆 迪 施特拉塞 格拉特 楚 罗伦。"
+            }
+          ]
+        },
+        {
+          "t": "可分动词：lädt … ab",
+          "zh": "abladen（卸下）在句子里拆开：lädt 排第二，ab 放最后。",
+          "ex": [
+            {
+              "de": "Der Gabelstapler lädt die Säcke ab.",
+              "zh": "叉车把袋子卸下来。",
+              "py": "戴尔 加贝尔 施塔普勒 莱特 迪 泽克 阿普。"
+            }
+          ]
+        },
+        {
+          "t": "需要：brauchen + 4 格",
+          "zh": "brauchen 后面的东西用第 4 格：der → den。",
+          "ex": [
+            {
+              "de": "Ich brauche den Helm.",
+              "zh": "我需要安全帽。",
+              "py": "伊希 布劳厄 登 黑尔姆。"
+            }
+          ]
+        },
+        {
+          "t": "用什么做：Damit …",
+          "zh": "damit＝用这个。",
+          "ex": [
+            {
+              "de": "Das ist ein Betonmischer. Damit wird Beton gemischt.",
+              "zh": "这是混凝土搅拌机，用来搅拌混凝土。",
+              "py": "达斯 伊斯特 艾因 贝通 米舍尔。达米特 维尔特 贝通 格米施特。"
+            }
+          ]
+        }
+      ],
+      "notes": []
     }
   },
   {
@@ -1097,6 +3128,1157 @@
       ],
       "notes": [
         "奥地利说法：收银台叫 die Kassa（德国说 die Kasse），炒鸡蛋叫 die Eierspeise（德国说 Rührei）。官方教材是奥地利的，所以用奥地利说法。"
+      ]
+    }
+  },
+  {
+    "id": "muellplatz",
+    "de": "Müllplatz",
+    "zh": "垃圾回收站",
+    "icon": "♻️",
+    "bg": [
+      "#e0f5e9",
+      "#e8f0ff"
+    ],
+    "guide": {
+      "teil": 15,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-15-muellplatz/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-15-Muellplatz.pdf",
+      "story": "Mülli Müllmonster und die Müllmusik",
+      "storyZh": "垃圾怪兽和垃圾音乐",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "伊尔瓦在公园的风铃草里休息，看到一群孩子两两排队往垃圾回收站走，就跳起来问他们去哪儿。",
+        "一个卷头发的男孩说：我们幼儿园收集并分好了垃圾，现在想去看看大的垃圾回收站是什么样。伊尔瓦很兴奋，也跟着去了。",
+        "到了回收站，老师 Bea 给大家介绍各种垃圾桶：黄色的放塑料和金属，旁边是厨余和废纸，两个玻璃回收桶分别放彩色玻璃和白玻璃。破垃圾袋发出臭味，苍蝇嗡嗡飞。",
+        "伊尔瓦看到桶外面扔了好多垃圾：瓶子、罐子、断了的木勺。她想象这里住着一个饿肚子的垃圾怪兽「Mülli」，也许大家只是不知道垃圾该放哪个桶。她决定和孩子们一起来打扫。",
+        "大部分孩子马上开始捡，只有 Jana 不愿意捡别人扔的东西。老师鼓励她：保持环境干净，自己也会觉得很舒服。伊尔瓦用旧勺子敲瓶子和罐子，唱起了打扫歌。",
+        "孩子们把垃圾分进对应的桶里。有个孩子问坏电视放哪儿，老师说放电子垃圾桶，还帮他一起抬过去。",
+        "伊尔瓦变成一把扫帚把地扫干净，大家鼓掌。Jana 说：Mülli 不会很快回来啦！"
+      ],
+      "vocab": [
+        {
+          "de": "der Müll",
+          "zh": "垃圾",
+          "py": "戴尔 米尔"
+        },
+        {
+          "de": "der Plastikmüll",
+          "zh": "塑料垃圾",
+          "py": "戴尔 普拉斯蒂克 米尔"
+        },
+        {
+          "de": "der Biomüll",
+          "zh": "厨余垃圾",
+          "py": "戴尔 比奥 米尔"
+        },
+        {
+          "de": "das Altpapier",
+          "zh": "废纸",
+          "py": "达斯 阿尔特 帕皮尔"
+        },
+        {
+          "de": "das Weißglas",
+          "zh": "白玻璃",
+          "py": "达斯 魏斯 格拉斯"
+        },
+        {
+          "de": "das Buntglas",
+          "zh": "彩色玻璃",
+          "py": "达斯 布恩特 格拉斯"
+        },
+        {
+          "de": "der Restmüll",
+          "zh": "其他垃圾",
+          "py": "戴尔 雷斯特 米尔"
+        },
+        {
+          "de": "der Elektromüll",
+          "zh": "电子垃圾",
+          "py": "戴尔 埃莱克特罗 米尔"
+        },
+        {
+          "de": "der Container",
+          "zh": "大垃圾箱",
+          "py": "戴尔 孔特纳"
+        },
+        {
+          "de": "die Tonne",
+          "zh": "垃圾桶",
+          "py": "迪 托讷"
+        },
+        {
+          "de": "der Mistkübel",
+          "zh": "垃圾桶（奥地利说法）",
+          "py": "戴尔 米斯特 屈贝尔"
+        },
+        {
+          "de": "trennen",
+          "zh": "分开",
+          "py": "特雷嫩"
+        },
+        {
+          "de": "sortieren",
+          "zh": "分类",
+          "py": "佐尔蒂伦"
+        },
+        {
+          "de": "wegwerfen",
+          "zh": "扔掉",
+          "py": "韦克 韦尔芬"
+        },
+        {
+          "de": "einsammeln",
+          "zh": "捡起来",
+          "py": "艾因 扎梅尔恩"
+        },
+        {
+          "de": "schmutzig",
+          "zh": "脏",
+          "py": "施穆齐希"
+        },
+        {
+          "de": "sauber",
+          "zh": "干净",
+          "py": "绍贝尔"
+        },
+        {
+          "de": "wohin",
+          "zh": "往哪儿",
+          "py": "沃欣"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "扔到哪儿：gehört in + 4 格",
+          "zh": "「该扔进……」用 in den / die / das（第 4 格）。问「放哪儿」用 wohin。",
+          "ex": [
+            {
+              "de": "Wohin gehört der Fernseher?",
+              "zh": "电视该放哪儿？",
+              "py": "沃欣 格赫尔特 戴尔 费恩泽尔？"
+            },
+            {
+              "de": "Er gehört in den Container für Elektromüll.",
+              "zh": "它该放进电子垃圾箱。",
+              "py": "埃尔 格赫尔特 因 登 孔特纳 菲尔 埃莱克特罗 米尔。"
+            }
+          ]
+        },
+        {
+          "t": "不是：nicht",
+          "zh": "否定动作或说「不该放这里」用 nicht。",
+          "ex": [
+            {
+              "de": "Die Plastikflasche gehört nicht in die rote Tonne.",
+              "zh": "塑料瓶不该扔进红色的桶。",
+              "py": "迪 普拉斯蒂克 弗拉舍 格赫尔特 尼希特 因 迪 罗特 托讷。"
+            }
+          ]
+        },
+        {
+          "t": "……的那个：der / die / das 从句",
+          "zh": "用 der/die/das 接一句话来说明前面的名词，动词放最后。",
+          "ex": [
+            {
+              "de": "Ich sammle den Müll ein, den andere weggeworfen haben.",
+              "zh": "我捡起别人扔掉的垃圾。",
+              "py": "伊希 扎姆勒 登 米尔 艾因，登 安德勒 韦克格沃尔芬 哈本。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "奥地利说法：垃圾桶叫 der Mistkübel，垃圾回收站叫 der Mistplatz 或 Müllplatz。"
+      ]
+    }
+  },
+  {
+    "id": "verkehr",
+    "de": "Straßenverkehr",
+    "zh": "交通",
+    "icon": "🚦",
+    "bg": [
+      "#e6eef7",
+      "#fff0d9"
+    ],
+    "guide": {
+      "teil": 16,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-16-strassenverkehr/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-16-Strassenverkehr.pdf",
+      "story": "Ilwa sieht grün",
+      "storyZh": "伊尔瓦看见绿灯",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "吃完早饭，伊尔瓦想看看城市的交通，就把自己变成一盏路灯，站在高处往下看。",
+        "她看到汽车、路面上画的线，还有好多行人。一辆有轨电车进站了，一个急匆匆的男人跑向公交站，一个骑车的男孩差点撞上他，及时刹住了车。",
+        "电车门开了，一位推婴儿车的女士下车。伊尔瓦变回原样，帮她把婴儿车抬下来，认识了她的儿子 Felix 和他的朋友 Elani。Elani 的爸爸妈妈上班很早，所以她跟着他们去幼儿园。",
+        "他们说：坐两站电车，然后走路过去。伊尔瓦问能不能一起去，他们说好。",
+        "到了人行横道，是红灯，大家在等。伊尔瓦心想：要是我是红绿灯就好了！她就变成了一盏行人信号灯，给行人亮起绿灯。",
+        "行人安全过马路，司机耐心等着。有一位坐轮椅的先生，伊尔瓦让绿灯多亮了一会儿，没有人按喇叭。最后她开开心心地和两个孩子道别。"
+      ],
+      "vocab": [
+        {
+          "de": "der Straßenverkehr",
+          "zh": "道路交通",
+          "py": "戴尔 施特拉森 费尔克尔"
+        },
+        {
+          "de": "der Bus",
+          "zh": "公交车",
+          "py": "戴尔 布斯"
+        },
+        {
+          "de": "die Straßenbahn",
+          "zh": "有轨电车",
+          "py": "迪 施特拉森 班"
+        },
+        {
+          "de": "die U-Bahn",
+          "zh": "地铁",
+          "py": "迪 乌 班"
+        },
+        {
+          "de": "der Zug",
+          "zh": "火车",
+          "py": "戴尔 楚克"
+        },
+        {
+          "de": "die Schnellbahn",
+          "zh": "城郊快铁",
+          "py": "迪 施内尔 班"
+        },
+        {
+          "de": "das Auto",
+          "zh": "汽车",
+          "py": "达斯 奥托"
+        },
+        {
+          "de": "das Fahrrad",
+          "zh": "自行车",
+          "py": "达斯 法尔 拉特"
+        },
+        {
+          "de": "der Roller",
+          "zh": "滑板车",
+          "py": "戴尔 罗勒尔"
+        },
+        {
+          "de": "das Moped",
+          "zh": "轻便摩托",
+          "py": "达斯 莫佩特"
+        },
+        {
+          "de": "der Stau",
+          "zh": "堵车",
+          "py": "戴尔 施陶"
+        },
+        {
+          "de": "die Ampel",
+          "zh": "红绿灯",
+          "py": "迪 安佩尔"
+        },
+        {
+          "de": "die Haltestelle",
+          "zh": "车站",
+          "py": "迪 哈尔特 施特勒"
+        },
+        {
+          "de": "einsteigen",
+          "zh": "上车",
+          "py": "艾因 施泰根"
+        },
+        {
+          "de": "aussteigen",
+          "zh": "下车",
+          "py": "奥斯 施泰根"
+        },
+        {
+          "de": "umsteigen",
+          "zh": "换乘",
+          "py": "乌姆 施泰根"
+        },
+        {
+          "de": "fahren",
+          "zh": "坐车、开车",
+          "py": "法伦"
+        },
+        {
+          "de": "gehen",
+          "zh": "走",
+          "py": "盖恩"
+        },
+        {
+          "de": "warten",
+          "zh": "等",
+          "py": "瓦尔滕"
+        },
+        {
+          "de": "womit",
+          "zh": "用什么、坐什么",
+          "py": "沃米特"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "坐什么车：mit + 3 格",
+          "zh": "mit der Straßenbahn / mit dem Bus（第 3 格）。问「坐什么」用 womit。",
+          "ex": [
+            {
+              "de": "Womit fährst du?",
+              "zh": "你坐什么车？",
+              "py": "沃米特 费尔斯特 杜？"
+            },
+            {
+              "de": "Ich fahre mit der Straßenbahn.",
+              "zh": "我坐有轨电车。",
+              "py": "伊希 法勒 米特 戴尔 施特拉森 班。"
+            }
+          ]
+        },
+        {
+          "t": "上车、下车：可分动词",
+          "zh": "einsteigen / aussteigen 拆开用：ein、aus 放最后。上车 in + 4 格，下车 aus + 3 格。",
+          "ex": [
+            {
+              "de": "Wir steigen in den Bus ein.",
+              "zh": "我们上公交车。",
+              "py": "维尔 施泰根 因 登 布斯 艾因。"
+            },
+            {
+              "de": "Wir steigen aus dem Bus aus.",
+              "zh": "我们下公交车。",
+              "py": "维尔 施泰根 奥斯 登 布斯 奥斯。"
+            }
+          ]
+        },
+        {
+          "t": "讲过去：ist gefahren / gegangen / gekommen",
+          "zh": "fahren、gehen、kommen 的过去时都用 sein。",
+          "ex": [
+            {
+              "de": "Ich bin mit dem Bus gefahren.",
+              "zh": "我是坐公交车来的。",
+              "py": "伊希 宾 米特 登 布斯 格法伦。"
+            }
+          ]
+        },
+        {
+          "t": "红绿灯规则",
+          "zh": "",
+          "ex": [
+            {
+              "de": "Rot heißt: Wir müssen warten.",
+              "zh": "红灯的意思是：我们得等。",
+              "py": "罗特 海斯特：维尔 米森 瓦尔滕。"
+            },
+            {
+              "de": "Grün heißt: Wir dürfen gehen.",
+              "zh": "绿灯的意思是：我们可以走。",
+              "py": "格吕恩 海斯特：维尔 迪尔芬 盖恩。"
+            }
+          ]
+        }
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "post",
+    "de": "Post",
+    "zh": "邮局",
+    "icon": "📮",
+    "bg": [
+      "#fff3cc",
+      "#e6efff"
+    ],
+    "guide": {
+      "teil": 17,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-17-post/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-17-Post.pdf",
+      "story": "Trari, trara! Das Postauto ist da",
+      "storyZh": "嘀嘀嗒！邮车来啦",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "伊尔瓦吹着口哨走在人行道上，数着一栋公寓楼有四层，这时一辆黄色的邮车停下了。",
+        "邮递员 Ellie 打开车厢，里面装满了包裹、信和明信片。伊尔瓦探头去看，Ellie 笑着问是谁在偷看。伊尔瓦说要帮忙：两个人一起快一倍！",
+        "Ellie 给她一个写着「易碎」的小包裹，送给二楼的 Meyer 太太。老太太猜里面是她订的新茶杯。",
+        "她们一层一层地送包裹，有的包裹特别重，伊尔瓦送得好累。四楼没人开门，Ellie 写了一张取件通知，包裹只好又搬下楼。",
+        "接着她们把信和广告分进各家信箱。伊尔瓦看到一个画着心的信封，想打开看看，Ellie 说：信只能收信人自己拆，这叫通信秘密。",
+        "8 号信箱塞满了，伊尔瓦就用魔法袜子变成一只紫色鸽子，把信从四楼开着的窗户送了进去。看着邮车开走，她希望自己哪天也能收到一封信。"
+      ],
+      "vocab": [
+        {
+          "de": "die Post",
+          "zh": "邮局；邮件",
+          "py": "迪 波斯特"
+        },
+        {
+          "de": "das Paket",
+          "zh": "包裹",
+          "py": "达斯 帕凯特"
+        },
+        {
+          "de": "der Brief",
+          "zh": "信",
+          "py": "戴尔 布里夫"
+        },
+        {
+          "de": "das Kuvert",
+          "zh": "信封（奥地利说法）",
+          "py": "达斯 库韦尔"
+        },
+        {
+          "de": "die Briefmarke",
+          "zh": "邮票",
+          "py": "迪 布里夫 马尔克"
+        },
+        {
+          "de": "das Postauto",
+          "zh": "邮车",
+          "py": "达斯 波斯特 奥托"
+        },
+        {
+          "de": "die Briefträgerin",
+          "zh": "女邮递员",
+          "py": "迪 布里夫 特雷格林"
+        },
+        {
+          "de": "der Briefkasten",
+          "zh": "信箱",
+          "py": "戴尔 布里夫 卡斯滕"
+        },
+        {
+          "de": "die Postkarte",
+          "zh": "明信片",
+          "py": "迪 波斯特 卡尔特"
+        },
+        {
+          "de": "die Einladung",
+          "zh": "请柬",
+          "py": "迪 艾因 拉东"
+        },
+        {
+          "de": "die Werbung",
+          "zh": "广告",
+          "py": "迪 韦尔本"
+        },
+        {
+          "de": "der Empfänger",
+          "zh": "收件人",
+          "py": "戴尔 恩普芬格尔"
+        },
+        {
+          "de": "der Absender",
+          "zh": "寄件人",
+          "py": "戴尔 阿普 森德尔"
+        },
+        {
+          "de": "schicken",
+          "zh": "寄",
+          "py": "希肯"
+        },
+        {
+          "de": "bekommen",
+          "zh": "收到",
+          "py": "贝科门"
+        },
+        {
+          "de": "aufmachen",
+          "zh": "打开",
+          "py": "奥夫 马亨"
+        },
+        {
+          "de": "verpacken",
+          "zh": "包装",
+          "py": "费尔 帕肯"
+        },
+        {
+          "de": "gehören",
+          "zh": "属于",
+          "py": "格赫伦"
+        },
+        {
+          "de": "glauben",
+          "zh": "认为、猜",
+          "py": "格劳本"
+        },
+        {
+          "de": "schwer",
+          "zh": "重",
+          "py": "施维尔"
+        },
+        {
+          "de": "leicht",
+          "zh": "轻",
+          "py": "莱希特"
+        },
+        {
+          "de": "zerbrechlich",
+          "zh": "易碎",
+          "py": "采尔布雷希利希"
+        },
+        {
+          "de": "kaputt",
+          "zh": "坏了",
+          "py": "卡普特"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "这是谁的：gehört mir / dir",
+          "zh": "gehören 后面用第 3 格：mir（我）、dir（你）。",
+          "ex": [
+            {
+              "de": "Das Paket gehört nicht mir. Gehört es dir?",
+              "zh": "这个包裹不是我的。是你的吗？",
+              "py": "达斯 帕凯特 格赫尔特 尼希特 米尔。格赫尔特 埃斯 迪尔？"
+            }
+          ]
+        },
+        {
+          "t": "我的、你的：mein / dein",
+          "zh": "mein＝我的，dein＝你的；阴性名词加 -e。",
+          "ex": [
+            {
+              "de": "Das ist mein Paket, weil mein Name darauf steht.",
+              "zh": "这是我的包裹，因为上面写着我的名字。",
+              "py": "达斯 伊斯特 迈因 帕凯特，魏尔 迈因 纳默 达劳夫 施泰特。"
+            }
+          ]
+        },
+        {
+          "t": "我猜：Ich glaube, dass …",
+          "zh": "dass 小句动词放最后。",
+          "ex": [
+            {
+              "de": "Ich glaube, dass da ein Seil drin ist.",
+              "zh": "我猜里面是一根绳子。",
+              "py": "伊希 格劳贝，达斯 达 艾因 赛尔 德林 伊斯特。"
+            }
+          ]
+        },
+        {
+          "t": "一起更快",
+          "zh": "",
+          "ex": [
+            {
+              "de": "Gemeinsam sind wir doppelt so schnell!",
+              "zh": "我们一起就快一倍！",
+              "py": "格迈因扎姆 津特 维尔 多佩尔特 佐 施内尔！"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "奥地利说法：信封叫 das Kuvert，邮递员口语叫 der Postler，信箱叫 das Postkasterl。"
+      ]
+    }
+  },
+  {
+    "id": "aufraeumen",
+    "de": "Aufräumen",
+    "zh": "收拾房间",
+    "icon": "🧹",
+    "bg": [
+      "#e9f4ff",
+      "#f5ead9"
+    ],
+    "guide": {
+      "teil": 18,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-18-aufraeumen/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-18-Aufraeumen.pdf",
+      "story": "Fatih räumt auf",
+      "storyZh": "Fatih 收拾房间",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "伊尔瓦去 Fatih 家玩，一下扑到他床上：床上堆着靠垫、袜子、点心盒、宝石、绘本和幼儿园书包。Fatih 骄傲地说：九月我就要上学了！",
+        "两个人打起了枕头仗，玩具扔得满屋都是。奶奶端着饼干进来，提醒 Fatih 待会儿要收拾房间。Fatih 翻了个白眼，他不喜欢收拾。",
+        "伊尔瓦问他知不知道东西都该放哪儿。Fatih 说：积木放红箱子，弹珠放小盒子，衣服放衣柜或者五斗柜。伊尔瓦提议把收拾变成游戏，Fatih 不信收拾也能好玩。",
+        "伊尔瓦用魔法袜子把自己变成一台小黄挖掘机。Fatih 开着她在屋里转，把乐高和木头积木铲进对的箱子里，又把衣服分进洗衣篮或衣柜。",
+        "分衣服的时候，Fatih 发现旧的蓝 T 恤和旧魔术帽已经用不上了，决定送给别人。伊尔瓦说：送人是个好主意！",
+        "他们把笔收进笔袋，书包放到桌子底下，纸和剪刀放进抽屉，涂色本放上书架，宝石和硬币放进小盒子，最后铺平床单、摆好靠垫和毛绒玩具、叠好毯子。",
+        "爷爷来了，惊讶房间这么整齐。Fatih 骄傲地说：收拾房间挺好玩的！"
+      ],
+      "vocab": [
+        {
+          "de": "aufräumen",
+          "zh": "收拾",
+          "py": "奥夫 罗伊门"
+        },
+        {
+          "de": "einsammeln",
+          "zh": "收集起来",
+          "py": "艾因 扎梅尔恩"
+        },
+        {
+          "de": "gehören",
+          "zh": "该放在",
+          "py": "格赫伦"
+        },
+        {
+          "de": "schenken",
+          "zh": "送人",
+          "py": "申肯"
+        },
+        {
+          "de": "passen",
+          "zh": "合身",
+          "py": "帕森"
+        },
+        {
+          "de": "der Kleiderschrank",
+          "zh": "衣柜",
+          "py": "戴尔 克莱德尔 施兰克"
+        },
+        {
+          "de": "die Kommode",
+          "zh": "五斗柜",
+          "py": "迪 科莫德"
+        },
+        {
+          "de": "die Lade",
+          "zh": "抽屉（奥地利说法）",
+          "py": "迪 拉德"
+        },
+        {
+          "de": "die Kiste",
+          "zh": "箱子",
+          "py": "迪 基斯特"
+        },
+        {
+          "de": "das Bücherregal",
+          "zh": "书架",
+          "py": "达斯 比歇尔 雷加尔"
+        },
+        {
+          "de": "das Bett",
+          "zh": "床",
+          "py": "达斯 贝特"
+        },
+        {
+          "de": "der Sessel",
+          "zh": "椅子（奥地利说法）",
+          "py": "戴尔 塞塞尔"
+        },
+        {
+          "de": "die Hose",
+          "zh": "裤子",
+          "py": "迪 霍泽"
+        },
+        {
+          "de": "der Pullover",
+          "zh": "毛衣",
+          "py": "戴尔 普洛弗尔"
+        },
+        {
+          "de": "die Socken",
+          "zh": "袜子",
+          "py": "迪 佐肯"
+        },
+        {
+          "de": "die Bausteine",
+          "zh": "积木",
+          "py": "迪 鲍 施泰讷"
+        },
+        {
+          "de": "die Murmeln",
+          "zh": "弹珠",
+          "py": "迪 穆尔梅尔恩"
+        },
+        {
+          "de": "das Kuscheltier",
+          "zh": "毛绒玩具",
+          "py": "达斯 库舍尔 蒂尔"
+        },
+        {
+          "de": "die Schultasche",
+          "zh": "书包",
+          "py": "迪 舒尔 塔舍"
+        },
+        {
+          "de": "das Federpennal",
+          "zh": "笔袋（奥地利说法）",
+          "py": "达斯 费德尔 佩纳尔"
+        },
+        {
+          "de": "die Decke",
+          "zh": "毯子",
+          "py": "迪 德克"
+        },
+        {
+          "de": "wohin",
+          "zh": "放哪儿",
+          "py": "沃欣"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "放到哪儿：in / auf + 4 格",
+          "zh": "有「放进去」的动作，用第 4 格：in den Schrank，auf das Regal。",
+          "ex": [
+            {
+              "de": "Die Socken gehören in die Kommode.",
+              "zh": "袜子该放进五斗柜。",
+              "py": "迪 佐肯 格赫伦 因 迪 科莫德。"
+            },
+            {
+              "de": "Die Bausteine kommen in die rote Kiste.",
+              "zh": "积木放进红箱子。",
+              "py": "迪 鲍 施泰讷 科门 因 迪 罗特 基斯特。"
+            }
+          ]
+        },
+        {
+          "t": "可分动词 aufräumen",
+          "zh": "拆开用：räume 排第二，auf 放最后。",
+          "ex": [
+            {
+              "de": "Ich räume mein Zimmer auf.",
+              "zh": "我收拾我的房间。",
+              "py": "伊希 罗伊默 迈因 齐默尔 奥夫。"
+            },
+            {
+              "de": "Wohin räumst du den Baustein?",
+              "zh": "你把积木放哪儿？",
+              "py": "沃欣 罗伊姆斯特 杜 登 鲍 施泰因？"
+            }
+          ]
+        },
+        {
+          "t": "并排、叠起来：nebeneinander / übereinander",
+          "zh": "nebeneinander＝一个挨一个，übereinander＝一个叠一个。",
+          "ex": [
+            {
+              "de": "Leg die Socken übereinander!",
+              "zh": "把袜子叠在一起放！",
+              "py": "莱克 迪 佐肯 于贝尔 艾南德尔！"
+            },
+            {
+              "de": "Setz die Kuscheltiere nebeneinander!",
+              "zh": "把毛绒玩具并排放好！",
+              "py": "泽茨 迪 库舍尔 蒂勒 内本 艾南德尔！"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "奥地利说法：抽屉叫 die Lade，椅子叫 der Sessel（在德国 Sessel 是扶手沙发），笔袋叫 das Federpennal。"
+      ]
+    }
+  },
+  {
+    "id": "gefuehle",
+    "de": "Gefühle",
+    "zh": "心情",
+    "icon": "😊",
+    "bg": [
+      "#ffe6ea",
+      "#fff6d6"
+    ],
+    "guide": {
+      "teil": 19,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-19-gefuehle/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-19-Gefuehle.pdf",
+      "story": "Ich fühle was, was du nicht fühlst",
+      "storyZh": "我感觉到你感觉不到的",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "Kilian 又饿又渴，抱怨午饭还没好，弟弟也一样。妈妈说：别闹了，来帮忙摆桌子。来做客的伊尔瓦也来帮忙。",
+        "Nada 阿姨和 Malik 叔叔带着小宝宝 Malena 来了，全家都挤到门口看宝宝。Malena 哭了，叔叔给她喂奶，因为她又饿又困。",
+        "大家坐在客厅，阿姨抱着睡着的宝宝讲蜜月旅行。Kilian 小声跟伊尔瓦说：他们总在讲爱情。然后他提议用木头积木搭塔。",
+        "Kilian 搭了一座很高的塔，叔叔也来搭。Kilian 放最后一块的时候，塔晃了晃，倒了。大家都看着他，伊尔瓦问他还好吗。",
+        "爸爸递给他纸巾，妈妈说：换了我也会生气。哥哥说：好丢脸。姐姐猜他是嫉妒，想去推倒叔叔的塔。爷爷开玩笑说：有人就是累了。奶奶小声对他说：不用在意别人怎么想。",
+        "Kilian 又高兴起来：塔倒了正好，可以搭一座更高的！这次塔稳稳地立住了，大家都很开心。伊尔瓦变成塔顶，唱起她最爱的歌。"
+      ],
+      "vocab": [
+        {
+          "de": "das Gefühl",
+          "zh": "感觉、情绪",
+          "py": "达斯 格菲尔"
+        },
+        {
+          "de": "hungrig",
+          "zh": "饿",
+          "py": "洪格里希"
+        },
+        {
+          "de": "durstig",
+          "zh": "渴",
+          "py": "杜尔斯蒂希"
+        },
+        {
+          "de": "müde",
+          "zh": "困、累",
+          "py": "米德"
+        },
+        {
+          "de": "fröhlich",
+          "zh": "开心",
+          "py": "弗勒利希"
+        },
+        {
+          "de": "traurig",
+          "zh": "难过",
+          "py": "特劳里希"
+        },
+        {
+          "de": "wütend",
+          "zh": "生气",
+          "py": "维滕特"
+        },
+        {
+          "de": "ängstlich",
+          "zh": "害怕",
+          "py": "恩斯特利希"
+        },
+        {
+          "de": "aufgeregt",
+          "zh": "激动、紧张",
+          "py": "奥夫格雷克特"
+        },
+        {
+          "de": "verliebt",
+          "zh": "恋爱中",
+          "py": "费尔利普特"
+        },
+        {
+          "de": "einsam",
+          "zh": "孤单",
+          "py": "艾因扎姆"
+        },
+        {
+          "de": "peinlich",
+          "zh": "丢脸、尴尬",
+          "py": "派因利希"
+        },
+        {
+          "de": "neidisch",
+          "zh": "嫉妒",
+          "py": "奈迪施"
+        },
+        {
+          "de": "weinen",
+          "zh": "哭",
+          "py": "魏嫩"
+        },
+        {
+          "de": "sich freuen",
+          "zh": "高兴",
+          "py": "齐希 弗罗伊恩"
+        },
+        {
+          "de": "sich fürchten",
+          "zh": "害怕",
+          "py": "齐希 菲尔希滕"
+        },
+        {
+          "de": "schreien",
+          "zh": "喊叫",
+          "py": "施赖恩"
+        },
+        {
+          "de": "sich fühlen",
+          "zh": "感觉",
+          "py": "齐希 菲伦"
+        },
+        {
+          "de": "der Hunger",
+          "zh": "饥饿",
+          "py": "戴尔 洪格尔"
+        },
+        {
+          "de": "der Durst",
+          "zh": "口渴",
+          "py": "戴尔 杜尔斯特"
+        },
+        {
+          "de": "die Angst",
+          "zh": "害怕",
+          "py": "迪 昂斯特"
+        },
+        {
+          "de": "die Wut",
+          "zh": "怒气",
+          "py": "迪 武特"
+        },
+        {
+          "de": "die Liebe",
+          "zh": "爱",
+          "py": "迪 利贝"
+        },
+        {
+          "de": "die Langeweile",
+          "zh": "无聊",
+          "py": "迪 朗厄 魏勒"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "说心情：Ich bin … / Ich habe …",
+          "zh": "形容词用 Ich bin（Ich bin müde）；名词用 Ich habe（Ich habe Hunger）。",
+          "ex": [
+            {
+              "de": "Ich bin so hungrig!",
+              "zh": "我好饿！",
+              "py": "伊希 宾 佐 洪格里希！"
+            },
+            {
+              "de": "Ich habe Durst.",
+              "zh": "我渴了。",
+              "py": "伊希 哈贝 杜尔斯特。"
+            }
+          ]
+        },
+        {
+          "t": "心情和动作：traurig – weinen",
+          "zh": "难过就哭，开心就笑：把感觉和动作连起来说。",
+          "ex": [
+            {
+              "de": "Wenn ich traurig bin, weine ich.",
+              "zh": "我难过的时候会哭。",
+              "py": "文 伊希 特劳里希 宾，魏讷 伊希。"
+            },
+            {
+              "de": "Wenn du weinen musst, hier ist ein Taschentuch.",
+              "zh": "要是你想哭，这儿有纸巾。",
+              "py": "文 杜 魏嫩 穆斯特，希尔 伊斯特 艾因 塔申 图赫。"
+            }
+          ]
+        },
+        {
+          "t": "不……而是……：statt zu …",
+          "zh": "statt zu + 动词原形＝「不去……」，后面说更好的做法。",
+          "ex": [
+            {
+              "de": "Statt zu brüllen, sage ich: Das macht mich wütend!",
+              "zh": "我不大吼，而是说：这让我很生气！",
+              "py": "施塔特 楚 布吕伦，扎格 伊希：达斯 马赫特 米希 维滕特！"
+            }
+          ]
+        },
+        {
+          "t": "形容词变名词：traurig → die Traurigkeit",
+          "zh": "很多形容词加 -keit 变成名词，都是 die。",
+          "ex": [
+            {
+              "de": "Die Traurigkeit geht vorbei.",
+              "zh": "难过会过去的。",
+              "py": "迪 特劳里希凯特 盖特 福尔拜。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "奥地利说法：嫉妒常说 neidig（德国说 neidisch）。"
+      ]
+    }
+  },
+  {
+    "id": "bad",
+    "de": "Badezimmer",
+    "zh": "浴室",
+    "icon": "🛁",
+    "bg": [
+      "#dff4ff",
+      "#e9e3ff"
+    ],
+    "guide": {
+      "teil": 20,
+      "url": "https://sprachportal.at/deutsch-fuer-kinder/deutsch-lernen-mit-ilwa/teil-20-badezimmer/",
+      "pdf": "https://sprachportal.at/fileadmin/user_upload/meinsprachportal-at/Ilwa/pdf/Teil-20-Badezimmer.pdf",
+      "story": "Auf zur Schaumparty",
+      "storyZh": "泡泡派对出发",
+      "pages": "故事在 PDF 开头几页，后面是给老师的游戏和练习。",
+      "summary": [
+        "伊尔瓦在 Aya 家过夜，看到 Aya 家的大浴缸高兴极了，在水里扑腾个不停。",
+        "两个女孩玩起了泡泡肥皂。伊尔瓦学 Aya 往胳膊和身上抹肥皂，发现自己的脚指甲脏了，Aya 递给她指甲刷，她把指甲刷得干干净净。",
+        "伊尔瓦的头发打结了，她们开始洗头。平时是 Aya 的爸爸帮她洗，今晚伊尔瓦来帮。Aya 用毛巾捂住眼睛，伊尔瓦先冲水，再抹洗发水，再冲干净。",
+        "伊尔瓦用魔法袜子变成一个喷泉，喷出数不清的泡泡。Aya 用泡沫给自己做了长胡子和浓眉毛，两人笑个不停。",
+        "水凉了，她们从浴缸出来，用浴巾擦干，互相吹头发。伊尔瓦试了架子上的面霜，皮肤变得软软的。",
+        "刷完牙，换上睡衣，上床。Aya 的爸爸跟她们说晚安。伊尔瓦说：我觉得被照顾得好好的，干干净净，好开心。"
+      ],
+      "vocab": [
+        {
+          "de": "das Badezimmer",
+          "zh": "浴室",
+          "py": "达斯 巴德 齐默尔"
+        },
+        {
+          "de": "die Haare",
+          "zh": "头发",
+          "py": "迪 哈勒"
+        },
+        {
+          "de": "die Zähne",
+          "zh": "牙齿",
+          "py": "迪 采讷"
+        },
+        {
+          "de": "das Gesicht",
+          "zh": "脸",
+          "py": "达斯 格齐希特"
+        },
+        {
+          "de": "die Hände",
+          "zh": "手",
+          "py": "迪 亨德"
+        },
+        {
+          "de": "die Nase",
+          "zh": "鼻子",
+          "py": "迪 纳泽"
+        },
+        {
+          "de": "die Nägel",
+          "zh": "指甲",
+          "py": "迪 内格尔"
+        },
+        {
+          "de": "der Waschlappen",
+          "zh": "洗澡巾",
+          "py": "戴尔 瓦施 拉喷"
+        },
+        {
+          "de": "das Handtuch",
+          "zh": "毛巾",
+          "py": "达斯 汉特 图赫"
+        },
+        {
+          "de": "die Zahnbürste",
+          "zh": "牙刷",
+          "py": "迪 灿 比尔斯特"
+        },
+        {
+          "de": "die Zahnpasta",
+          "zh": "牙膏",
+          "py": "迪 灿 帕斯塔"
+        },
+        {
+          "de": "das Shampoo",
+          "zh": "洗发水",
+          "py": "达斯 尚普"
+        },
+        {
+          "de": "der Kamm",
+          "zh": "梳子",
+          "py": "戴尔 卡姆"
+        },
+        {
+          "de": "der Föhn",
+          "zh": "吹风机",
+          "py": "戴尔 弗恩"
+        },
+        {
+          "de": "waschen",
+          "zh": "洗",
+          "py": "瓦申"
+        },
+        {
+          "de": "putzen",
+          "zh": "刷、清洁",
+          "py": "普岑"
+        },
+        {
+          "de": "duschen",
+          "zh": "淋浴",
+          "py": "杜申"
+        },
+        {
+          "de": "föhnen",
+          "zh": "吹干",
+          "py": "弗嫩"
+        },
+        {
+          "de": "abtrocknen",
+          "zh": "擦干",
+          "py": "阿普 特罗克嫩"
+        },
+        {
+          "de": "eincremen",
+          "zh": "抹霜",
+          "py": "艾因 克雷门"
+        },
+        {
+          "de": "sauber",
+          "zh": "干净",
+          "py": "绍贝尔"
+        },
+        {
+          "de": "schmutzig",
+          "zh": "脏",
+          "py": "施穆齐希"
+        },
+        {
+          "de": "nass",
+          "zh": "湿",
+          "py": "纳斯"
+        },
+        {
+          "de": "trocken",
+          "zh": "干",
+          "py": "特罗肯"
+        },
+        {
+          "de": "weich",
+          "zh": "软",
+          "py": "魏希"
+        }
+      ],
+      "grammar": [
+        {
+          "t": "我的、我们的：mein / unser",
+          "zh": "mein＝我的，unser＝我们的；复数加 -e：meine Zähne。",
+          "ex": [
+            {
+              "de": "Ich putze meine Zähne.",
+              "zh": "我刷牙。",
+              "py": "伊希 普策 迈讷 采讷。"
+            },
+            {
+              "de": "Wir waschen unser Gesicht.",
+              "zh": "我们洗脸。",
+              "py": "维尔 瓦申 翁泽尔 格齐希特。"
+            }
+          ]
+        },
+        {
+          "t": "为了……：damit",
+          "zh": "damit 说目的，动词放最后。",
+          "ex": [
+            {
+              "de": "Ich putze meine Zähne, damit sie sauber sind.",
+              "zh": "我刷牙，好让牙齿干净。",
+              "py": "伊希 普策 迈讷 采讷，达米特 齐 绍贝尔 津特。"
+            }
+          ]
+        },
+        {
+          "t": "因为：weil",
+          "zh": "weil 说原因，动词放最后。",
+          "ex": [
+            {
+              "de": "Ich föhne meine Haare, weil sie nass sind.",
+              "zh": "我吹头发，因为头发是湿的。",
+              "py": "伊希 弗讷 迈讷 哈勒，魏尔 齐 纳斯 津特。"
+            }
+          ]
+        },
+        {
+          "t": "用什么：mit + 3 格",
+          "zh": "",
+          "ex": [
+            {
+              "de": "Ich kämme mich mit dem Kamm.",
+              "zh": "我用梳子梳头。",
+              "py": "伊希 凯默 米希 米特 登 卡姆。"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "官方练习里有几句是故意写错的句子，让孩子找错，比如「我剪指甲，好让它变长」。看到不通的句子别担心。",
+        "奥地利说法：指甲钳叫 der Nagelzwicker。"
       ]
     }
   }

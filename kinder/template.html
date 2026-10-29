@@ -169,7 +169,7 @@ function home(){
    +'<div class="grid">'+ALL.map(([id,de,zh,ic,slug],k)=>{
       const t=THEMES.find(x=>x.id===id);
       return t?'<button class="tcard" style="'+bg(t)+'" onclick="location.hash=\''+id+'\'"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>第 '+(k+1)+' 课 · '+zh+'</span></button>'
-              :'<a class="tcard soon" href="'+OIF+slug+'/"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>第 '+(k+1)+' 课 · '+zh+'<br>中文伴读制作中 · 点开官方原版</span></a>';
+              :'<a class="tcard soon" href="'+OIF+slug+'/"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>第 '+(k+1)+' 课 · '+zh+'<br></span></a>';
     }).join('')+'</div>'
    +foot();
 }
@@ -184,27 +184,28 @@ function theme(id,tab){
   stop();
   document.title=t.zh+'（'+t.de+'）· 儿童德语 | 德语学习手册';
   tab=tab||(t.guide?'guide':'look');
-  const tabs=(t.guide?[['guide','📘 官方课']]:[]).concat([['look','🔍 看图'],['story','📖 故事'],['game','🎮 游戏']]);
+  const tabs=(t.guide?[['guide','📘 官方课']]:[]).concat(t.items?[['look','🔍 看图'],['story','📖 故事'],['game','🎮 游戏']]:[]);
+  if(!tabs.some(x=>x[0]===tab))tab=tabs[0][0];
   app.innerHTML='<div class="top"><button class="back" onclick="location.hash=\'\'">← 主题</button><h1>'+t.icon+' <span lang="de">'+t.de+'</span><small>'+t.zh+'</small></h1></div>'
-   +'<div class="tabs" role="tablist">'+tabs.map(([k,l])=>'<button role="tab" aria-selected="'+(k===tab)+'" onclick="location.hash=\''+id+'/'+k+'\'">'+l+'</button>').join('')+'</div>'
+   +(tabs.length<2?'':'<div class="tabs" role="tablist">'+tabs.map(([k,l])=>'<button role="tab" aria-selected="'+(k===tab)+'" onclick="location.hash=\''+id+'/'+k+'\'">'+l+'</button>').join('')+'</div>')
    +'<div id="pane"></div>'+foot();
-  (({guide,look,story,game})[tab]||look)(t,$('#pane'));
+  ({guide,look,story,game})[tab](t,$('#pane'));
 }
 
 // 官方教材伴读：只放链接 + 自己写的中文讲解（ÖIF 原文不复制）
 function guide(t,el){
   const g=t.guide,spk=(a,label)=>'<button class="spk" data-a="'+a+'" aria-label="朗读：'+esc(label)+'">🔊</button>';
   el.innerHTML='<div class="oif"><div class="oif-h">📘 官方第 '+g.teil+' 课 · <span lang="de">'+esc(g.story)+'</span><small>'+esc(g.storyZh)+'</small></div>'
-   +'<a class="btn oif-btn" href="'+g.pdf+'">📄 打开官方教材 PDF</a>'
-   +'<a class="oif-link" href="'+g.url+'">官方本课网页</a>'
+   +(g.pdf?'<a class="btn oif-btn" href="'+g.pdf+'">📄 打开官方教材 PDF</a><a class="oif-link" href="'+g.url+'">官方本课网页</a>'
+         :'<a class="btn oif-btn" href="'+g.url+'">🌐 打开官方本课网页</a>')
    +'<div class="py" style="margin-top:8px">'+esc(g.pages)+'看完点浏览器的 ← 返回，就回到这里。</div></div>'
-   +'<h2 class="gh">📖 故事讲了什么</h2><ol class="sum">'+g.summary.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol>'
+   +(g.summary.length?'<h2 class="gh">📖 故事讲了什么</h2><ol class="sum">'+g.summary.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol>':'')
    +'<h2 class="gh">🔤 本课生词</h2><div class="voc">'+g.vocab.map(v=>{
       const m=/^(der|die|das) (.+)$/.exec(v.de);
       const w=m?'<span class="art-'+m[1]+'">'+m[1]+' '+esc(m[2])+'</span>':esc(v.de);
       return '<div class="vrow"><div style="flex:1;min-width:0"><b lang="de">'+w+'</b> <span>'+esc(v.zh)+'</span><div class="py">'+esc(v.py)+'</div></div>'+spk(v.a,v.de)+'</div>';
     }).join('')+'</div>'
-   +'<h2 class="gh">🧩 语法点</h2>'+g.grammar.map(gr=>'<div class="gcard"><b>'+esc(gr.t)+'</b><p>'+esc(gr.zh)+'</p>'
+   +'<h2 class="gh">🧩 语法点</h2>'+g.grammar.map(gr=>'<div class="gcard"><b>'+esc(gr.t)+'</b>'+(gr.zh?'<p>'+esc(gr.zh)+'</p>':'')
       +gr.ex.map(x=>'<div class="vrow"><div style="flex:1;min-width:0"><div class="de" lang="de">'+esc(x.de)+'</div><div>'+esc(x.zh)+'</div><div class="py">'+esc(x.py)+'</div></div>'+spk(x.a,x.de)+'</div>').join('')+'</div>').join('')
    +(g.notes&&g.notes.length?'<h2 class="gh">💡 小提示</h2>'+g.notes.map(n=>'<div class="tip">'+esc(n)+'</div>').join(''):'');
   el.querySelectorAll('.spk[data-a]').forEach(b=>b.onclick=()=>play([b.dataset.a],b));
