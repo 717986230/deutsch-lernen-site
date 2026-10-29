@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 // 「留学连载」——照旧站 #series 重做：一页到底，12 集全文直接铺开，
 // 而不是原来那版「列表点进单集」。底部补上旧站的「正版视频资源」导航。
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
@@ -94,7 +95,7 @@ onBeforeUnmount(stop);
         class="level-tab" :class="{ active: level === k }" @click="level = k">{{ lab }}</button>
     </div>
 
-    <p v-if="loading" class="page-sub">加载中…</p>
+    <Otti v-if="loading" scene="swim" bob>加载中…</Otti>
     <div v-for="(r, ri) in shown" :key="ri" class="card art">
       <div class="art-head">
         <span class="art-title" :lang="langS.isEn ? 'en' : 'de'">{{ r.title }}</span>

@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { api } from '../api';
@@ -19,9 +20,9 @@ const ago = (ts) => { const m = (Date.now() - ts) / 6e4;
   <div class="page">
     <h1 class="page-title">动态</h1>
     <p class="page-sub">你和关注的人的学习进展</p>
-    <p v-if="loading" class="page-sub">加载中…</p>
+    <Otti v-if="loading" scene="swim" bob>加载中…</Otti>
     <p v-else-if="err" class="page-sub">{{ err }}</p>
-    <p v-else-if="!list.length" class="page-sub">还没有动态</p>
+    <Otti v-else-if="!list.length" scene="nap">还没有动态，Otti 先睡一会儿</Otti>
     <div v-for="(a, i) in list" :key="i" class="item fd" @click="router.push('/u/' + a.username)">
       <span class="av" :style="{background: a.av_bg || 'var(--brand)'}">{{ a.avatar || '🦊' }}</span>
       <span class="tx">

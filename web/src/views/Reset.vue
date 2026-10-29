@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 // 一页只做一件事：重置密码。两条找回通道（邮箱验证码 / 恢复码）二选一，
 // 用一个二选一开关切换，同时只出现一条通道对应的输入框。
 import { ref, computed, onUnmounted } from 'vue';
@@ -57,6 +58,7 @@ async function submit() {
 
 <template>
   <div class="auth">
+    <Otti scene="curious" :h="76" />
     <p class="auth-brand">德语学习手册</p>
     <h1 class="auth-h1">重置密码</h1>
     <p class="auth-sub">用邮箱验证码或恢复码验证身份</p>

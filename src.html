@@ -268,7 +268,7 @@ mark.sh{background:rgba(181,73,46,.32);color:inherit;border-radius:3px;padding:0
 .rule-zh{font-size:13px;color:var(--text-dim);width:40px}
 .rule-py{font-size:12px;color:var(--gold-text)88;flex:1;min-width:80px}
 /* QUIZ */
-.quiz-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center;max-width:520px;margin:0 auto}
+.quiz-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center;max-width:520px;margin:0 auto;position:relative}
 .quiz-q{font-size:32px;color:var(--gold-text);font-weight:700;margin-bottom:8px;overflow-wrap:anywhere;hyphens:auto}
 .quiz-hint{font-size:13px;color:var(--text-dim);margin-bottom:24px}
 /* 必须是 minmax(0,1fr)：裸写 1fr 等于 minmax(auto,1fr)，一个不能断行的长德语词
@@ -444,6 +444,20 @@ body.lang-en .phfab{display:none}
   max-width:400px;width:100%;padding:26px 22px 20px;text-align:center;
   box-shadow:0 18px 50px rgba(0,0,0,.34)}
 .boost-label{font-size:12px;letter-spacing:3px;color:var(--gold-text);margin-bottom:14px}
+/* 吉祥物 Otti（水彩水獭女孩，otti/*.webp）：按场景换姿势和表情，见 _otti() */
+.otti{display:block;margin:0 auto;width:auto;max-width:100%;user-select:none;-webkit-user-drag:none}
+.otti-bob{animation:ottiBob 1.6s ease-in-out infinite}
+@keyframes ottiBob{50%{transform:translateY(-4px) rotate(-1.5deg)}}
+.otti-pop{position:absolute;right:10px;top:-34px;height:64px;pointer-events:none;animation:ottiPop .9s ease-out forwards}
+@keyframes ottiPop{0%{opacity:0;transform:translateY(8px) scale(.8)}20%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0;transform:translateY(-4px)}}
+.otti-msg{text-align:center;color:var(--text-faint);font-size:13px;padding:14px 0}
+/* 打招呼：身体和举起的手臂两层，手臂绕肩膀挥两下再停一会儿 */
+.otti-wave{position:relative;display:block;aspect-ratio:450/560;animation:ottiHop 2.6s ease-in-out infinite}
+.otti-wave img{position:absolute;left:0;top:0;width:100%;height:100%;user-select:none;-webkit-user-drag:none}
+.otti-arm{transform-origin:20.8% 46.5%;animation:ottiArm 2.6s ease-in-out infinite}
+@keyframes ottiArm{0%,60%,100%{transform:rotate(0)}12%{transform:rotate(-16deg)}24%{transform:rotate(10deg)}36%{transform:rotate(-14deg)}48%{transform:rotate(6deg)}}
+@keyframes ottiHop{0%,60%,100%{transform:translateY(0)}18%,42%{transform:translateY(-5px)}}
+@media (prefers-reduced-motion:reduce){.otti-bob,.otti-wave,.otti-arm{animation:none}.otti-pop{animation:none;opacity:1}}
 .boost-de{font-size:22px;font-weight:700;color:var(--text);line-height:1.45;margin-bottom:12px;font-style:italic}
 .boost-spk{min-height:44px;padding:8px 20px;margin-bottom:12px;border-radius:22px;
   border:1px solid var(--gold-dim);background:var(--btn-bg);color:var(--gold-text);
@@ -1650,6 +1664,7 @@ body .sp-go{max-width:none;width:100%;max-width:460px;margin:0 auto;border-radiu
   <div class="container">
     <div class="hero-label" style="text-align:center;padding-top:20px">Support</div>
     <h2 class="page-title">支持作者 · 请杯咖啡 ☕</h2>
+    <img class="otti" src="otti/cheers.webp" alt="Otti 捧着小罐子" style="height:120px;margin:4px auto 10px" loading="lazy" draggable="false">
     <p style="text-align:center;font-size:14px;color:var(--text-dim);line-height:1.9;max-width:520px;margin:0 auto">这份手册从词句整理、发音朗读到测验复习，都是<b>业余时间一点点做出来、并持续维护</b>的；域名和时间都是实打实的成本。它<b>一直免费、无广告</b>。<br>如果它在你学外语的路上帮上了忙，欢迎扫码<b>随手打赏一点</b>，让它能继续更新下去 😊<br>一块两块都是心意，谢谢你的支持！</p>
     <div style="max-width:290px;margin:18px auto 0;background:#fff;border-radius:16px;padding:8px;box-shadow:var(--shadow)">
       <img src="support-qr.jpg" alt="微信支付收款二维码" loading="lazy" style="width:100%;height:auto;display:block;border-radius:12px">
@@ -1986,6 +2001,7 @@ body{padding-bottom:var(--tab-h)}
        是 Google 明令禁止的作弊手法，别往那个方向改。
        登录后 showSection('account') 会重定向到 #me，所以这块天然只在未登录时出现。 -->
   <div class="container" style="padding:6px 0 40px">
+    <span class="otti-wave" role="img" aria-label="吉祥物 Otti 挥手打招呼" style="height:120px;margin:0 auto 8px"><img src="otti/hello-body.webp" alt="" draggable="false"><img class="otti-arm" src="otti/hello-arm.webp" alt="" draggable="false"></span>
     <h1 style="font-size:21px;text-align:center;margin:0 0 10px">德语学习手册 · 中国人自学德语</h1>
     <p style="font-size:14px;color:var(--text-dim);line-height:1.9;text-align:center;max-width:560px;margin:0 auto 22px">
       <b style="color:var(--gold-text)">4200+ 词句，每句配中文谐音</b>，点词即听真人朗读；发音与语法速查、分级短文、留学连载、情景对话、拼写记忆与互动测验。<br>完全免费、无广告、可离线使用。
@@ -2057,7 +2073,7 @@ body{padding-bottom:var(--tab-h)}
     </div>
     <!-- 全站人数：和榜上人数口径不同，所以两个数写在一起、把差别说清楚，
          免得像 DB 226 / 页面 88 那样对不上还不知道为什么 -->
-    <div class="rank-list" id="rankList"><p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p></div>
+    <div class="rank-list" id="rankList"><div class="otti-msg"><img class="otti otti-bob" src="otti/swim.webp" alt="" style="height:48px"><div style="margin-top:6px">加载中…</div></div></div>
     <p class="acct-note" id="rankHint" style="max-width:440px;margin:14px auto 0"></p>
 </div>
 </div>
@@ -2352,6 +2368,14 @@ body{padding-bottom:var(--tab-h)}
 </div>
 
 <script>
+/* 吉祥物 Otti：同一个形象按场景换图，不要到处一张。
+   hello 打招呼（登录墙）/ swim 游泳（加载中）/ nap 睡着（空状态）/ happy 开心（答对）/ sorry 难过（答错）/
+   cheers 捧杯（全对、支持作者）/ study 认真看（每日一句、有错题） */
+function _otti(scene,h,cls){return '<img class="otti'+(cls?' '+cls:'')+'" src="otti/'+scene+'.webp" alt="" style="height:'+h+'px" draggable="false">';}
+function _ottiMsg(scene,h,text,bob){return '<div class="otti-msg">'+_otti(scene,h,bob?'otti-bob':'')+'<div style="margin-top:6px">'+text+'</div></div>';}
+/* 答题反馈：在卡片右上角冒出一下就消失 */
+function _ottiPop(box,scene){if(!box)return;try{var old=box.querySelector('.otti-pop');if(old)old.parentNode.removeChild(old);var w=document.createElement('div');w.innerHTML=_otti(scene,64,'otti-pop');box.appendChild(w.firstChild);}catch(e){}}
+
 // ══════════════════════════════════════
 // DATA
 // ══════════════════════════════════════
@@ -2684,6 +2708,7 @@ function checkNumQ(btn){
   box.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
   numQ.total++;
   const correctBtn=box.querySelector('.quiz-opt[data-correct="1"]');
+  _ottiPop(box.querySelector('.quiz-box'),btn===correctBtn?'happy':'sorry');
   if(btn===correctBtn){
     btn.classList.add('correct');burstAt(btn);
     numQ.score++;
@@ -2908,7 +2933,7 @@ function renderPhrases(){
   _rendered.phrases=true;   // 任何渲染路径都视为已渲染，避免切回时重复渲染
   if(!_deReady()){
     const el0=document.getElementById('phraseContent');
-    if(el0)el0.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:48px 0">📖 词库加载中…</div>';
+    if(el0)el0.innerHTML='<div style="grid-column:1/-1">'+_ottiMsg('swim',52,'词库加载中…',1)+'</div>';
     // 加载失败也要给条活路：不然 _rendered.phrases 已经在上面置 true 了，
     // 切走切回来 showSection 不会再调 renderPhrases，页面就永远停在这句「加载中」上
     _deEnsure(renderPhrases,function(retry){
@@ -3674,6 +3699,7 @@ function checkQ(btn){
   box.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
   mq.total++;try{studyTick(1,1);}catch(e){}   // 这是真答题，要计入「测验」统计
   const correctBtn=box.querySelector('.quiz-opt[data-correct="1"]');
+  _ottiPop(box.querySelector('.quiz-box'),btn===correctBtn?'happy':'sorry');
   if(btn===correctBtn){
     btn.classList.add('correct');mq.score++;burstAt(btn);
     // 答对了：如果这个词原本在错题库里，说明这次巩固成功，摘掉它——错题库不是越攒越多，是练一个少一个
@@ -3698,7 +3724,6 @@ function checkQ(btn){
 function showQuizResult(){
   const pct=mq.total?Math.round(mq.score/mq.total*100):0;
   const cls=pct>=80?'good':(pct>=50?'ok':'bad');
-  const emoji=pct>=80?'🎉':(pct>=50?'👍':'💪');
   const msg=pct>=80?'太棒了，掌握得很好！':(pct>=50?'不错，继续加油！':'多练几遍会更熟练！');
   // 词汇类测验：结算页列出本轮错题（德语+中文+🔊），一键写入拼写错词本巩固
   var wr=(_quizIsVocab()&&mq.wrong)?mq.wrong:[];
@@ -3718,7 +3743,7 @@ function showQuizResult(){
   document.getElementById('mainQuizArea').innerHTML=`
     <div class="quiz-box">
       <div class="result-box ${cls}">
-        <div style="font-size:42px;line-height:1">${emoji}</div>
+        ${_otti(pct>=80?'cheers':(pct>=50?'happy':'study'),110)}
         <div style="font-size:24px;color:var(--gold-text);font-weight:700;margin:10px 0">${mq.score} / ${mq.total} <span style="font-size:16px">（${pct}%）</span></div>
         <div style="font-size:13px;color:var(--text-dim)">${msg}</div>
       </div>
@@ -3837,6 +3862,7 @@ function checkConjQ(btn){
   box.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
   mq.total++;
   const correctBtn=box.querySelector('.quiz-opt[data-correct="1"]');
+  _ottiPop(box.querySelector('.quiz-box'),btn===correctBtn?'happy':'sorry');
   if(btn===correctBtn){btn.classList.add('correct');mq.score++;burstAt(btn);}
   else{btn.classList.add('wrong');if(correctBtn)correctBtn.classList.add('correct');}
   try{speakDE(mq.current.de);}catch(e){}
@@ -3848,6 +3874,7 @@ function checkGenderQ(btn){
   box.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
   mq.total++;
   const correctBtn=box.querySelector('.quiz-opt[data-correct="1"]');
+  _ottiPop(box.querySelector('.quiz-box'),btn===correctBtn?'happy':'sorry');
   if(btn===correctBtn){btn.classList.add('correct');mq.score++;burstAt(btn);}
   else{
     btn.classList.add('wrong');
@@ -5024,7 +5051,7 @@ function _badgeNext(){if(!_bq.length){_bshowing=false;return;}_bshowing=true;var
 function acctSyncSoon(){if(!ACCT.token)return;if(_syncT)clearTimeout(_syncT);_syncT=setTimeout(function(){acctSync(true);},4000);}
 function _avatarHtml(u,size){var e=(u&&u.avatar)||'🦊';var bg=(u&&u.av_bg)||'#e4dac8';var fs=Math.round(size*0.55);return '<span class="avatar" style="width:'+size+'px;height:'+size+'px;background:'+bg+';font-size:'+fs+'px">'+e+'</span>';}
 function _badgesHtml(st,earned){earned=earned||[];return '<div class="badge-grid">'+BADGES.map(function(b){var on=earned.indexOf(b.id)>=0||(b.m&&(st[b.m]||0)>=b.n);var tail=on?'<div class="bprog" style="color:var(--gold-text)">已点亮</div>':'<div class="bprog">'+(b.m?(st[b.m]||0)+'/'+b.n:(b.desc||''))+'</div>';return '<div class="badge'+(on?'':' locked')+'"><div class="bemo">'+b.emo+'</div><div class="bname">'+b.name+'</div>'+tail+'</div>';}).join('')+'</div>';}
-var _LD='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:20px">加载中…</p>';
+var _LD=_ottiMsg('swim',48,'加载中…',1);
 // 四格统计块（在线资料卡 / 离线兜底卡共用）
 function _profStats(k,s,b,t){return '<div class="prof-stats"><div class="prof-stat"><b>'+k+'</b><span>掌握词</span></div><div class="prof-stat"><b>'+s+'</b><span>连续打卡</span></div><div class="prof-stat"><b>'+b+'</b><span>最长打卡</span></div><div class="prof-stat"><b>'+t+'</b><span>累计学习</span></div></div>';}
 function _renderProfileCard(el,u,rank,isMe,ex){if(isMe)_meUser=u;ex=ex||{};var st={known:u.known||0,best:u.best_streak||0,total:u.total||0,quiz:u.quiz||0};var earned=String(u.badges||'').split(',').filter(Boolean);var prov=u.provider==='github'?' · GitHub':u.provider==='google'?' · Google':'';var followBtn=(!isMe&&ACCT.token)?'<button class="follow-btn'+(ex.isFollowing?' following':'')+'" data-f="'+(ex.isFollowing?'1':'0')+'" data-u="'+_esc(u.username)+'">'+(ex.isFollowing?'已关注':'+ 关注')+'</button>':'';var followRow='<div class="prof-follow"><span class="pf-n" onclick="showFollowing()"><b>'+(ex.following||0)+'</b> 关注</span><span class="pf-n"><b>'+(ex.followers||0)+'</b> 粉丝</span>'+followBtn+'</div>';el.innerHTML='<div class="acct-card"><div class="prof-head">'+_avatarHtml(u,64)+'<div style="min-width:0"><div class="prof-nick">'+_esc(u.nickname||u.username)+'</div><div class="prof-uname">@'+_esc(u.username)+prov+' · 全站第 '+rank+' 名</div></div></div>'+(u.sig?'<div class="prof-sig">'+_esc(u.sig)+'</div>':'')+followRow+_profStats(u.known||0,u.streak||0,u.best_streak||0,u.total||0)+'<div class="sec-title" style="margin:6px 0 4px"><span class="sec-title-icon">🏅</span><span class="sec-title-text">徽章墙</span></div>'+_badgesHtml(st,earned)+(isMe?'<div style="display:flex;gap:10px;margin-top:18px"><button class="acct-btn" style="flex:1" onclick="meEditOpen()">✏️ 编辑资料</button><button class="oauth-btn" style="flex:1;margin:0" onclick="meSettingsOpen()">⚙️ 账号设置</button></div><button class="oauth-btn" style="width:100%;margin:10px 0 0" onclick="acctLogout()">退出登录</button>':'')+'</div>';_bindUser(el,'.follow-btn[data-u]',function(n,btn){acctFollow(n,btn);});}
@@ -5210,11 +5237,11 @@ function resumeLast(){
 var _rankBy='known',_rankScope='all';
 function rankScope(s){_rankScope=s;var ids={all:'rsAll',friends:'rsFriends',feed:'rsFeed'};for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('on',k===s);}var metrics=document.getElementById('rankMetrics');if(metrics)metrics.style.display=(s==='feed')?'none':'';if(s==='feed')renderFeed();else renderRank();}
 function _tago(ts){var d=Date.now()-ts;if(d<60000)return '刚刚';if(d<3600000)return Math.floor(d/60000)+' 分钟前';if(d<86400000)return Math.floor(d/3600000)+' 小时前';if(d<7*86400000)return Math.floor(d/86400000)+' 天前';var t=new Date(ts);return (t.getMonth()+1)+'月'+t.getDate()+'日';}
-function renderFeed(){var el=document.getElementById('rankList');if(!el)return;if(!ACCT.token){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">登录后可看关注的人的学习动态</p>';return;}el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p>';apiFetch('/api/feed').then(function(r){if(!r||!r.ok||!r.data.list){el.innerHTML='<p class="acct-err">加载失败，请稍后再试</p>';return;}var list=r.data.list;if(!list.length){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">还没有动态——去关注几个学霸，或者自己点亮一枚徽章 🏅</p>';return;}var map={};BADGES.forEach(function(b){map[b.id]=b;});el.innerHTML=list.map(function(a){var txt;if(a.type==='badge'){var b=map[a.data];txt=b?('点亮徽章 '+b.emo+'「'+b.name+'」'):'点亮了一枚徽章';}else if(a.type==='streak'){txt='连续打卡破纪录：🔥 '+_esc(a.data)+' 天';}else{txt='有了新进展';}return '<div class="rank-row" data-u="'+_esc(a.username)+'">'+_avatarHtml(a,38)+'<div class="rank-name"><div class="rank-nick">'+_esc(a.nickname||a.username)+'</div><div class="rank-meta">'+txt+'</div></div><div class="rank-meta" style="flex-shrink:0">'+_tago(a.ts)+'</div></div>';}).join('');_bindUser(el,'.rank-row[data-u]',function(n){openProfile(n);});var hint=document.getElementById('rankHint');if(hint)hint.textContent='动态来自你关注的人和你自己（点亮徽章 / 打卡破纪录）';});}
+function renderFeed(){var el=document.getElementById('rankList');if(!el)return;if(!ACCT.token){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">登录后可看关注的人的学习动态</p>';return;}el.innerHTML=_ottiMsg('swim',48,'加载中…',1);apiFetch('/api/feed').then(function(r){if(!r||!r.ok||!r.data.list){el.innerHTML='<p class="acct-err">加载失败，请稍后再试</p>';return;}var list=r.data.list;if(!list.length){el.innerHTML=_ottiMsg('nap',44,'还没有动态——去关注几个学霸，或者自己点亮一枚徽章 🏅');return;}var map={};BADGES.forEach(function(b){map[b.id]=b;});el.innerHTML=list.map(function(a){var txt;if(a.type==='badge'){var b=map[a.data];txt=b?('点亮徽章 '+b.emo+'「'+b.name+'」'):'点亮了一枚徽章';}else if(a.type==='streak'){txt='连续打卡破纪录：🔥 '+_esc(a.data)+' 天';}else{txt='有了新进展';}return '<div class="rank-row" data-u="'+_esc(a.username)+'">'+_avatarHtml(a,38)+'<div class="rank-name"><div class="rank-nick">'+_esc(a.nickname||a.username)+'</div><div class="rank-meta">'+txt+'</div></div><div class="rank-meta" style="flex-shrink:0">'+_tago(a.ts)+'</div></div>';}).join('');_bindUser(el,'.rank-row[data-u]',function(n){openProfile(n);});var hint=document.getElementById('rankHint');if(hint)hint.textContent='动态来自你关注的人和你自己（点亮徽章 / 打卡破纪录）';});}
 // 排行榜只显示前十。其余不提供展开 —— 名次靠后的具体是谁没人关心，
 // 给个总数让用户知道「榜上还有多少人」就够了。
-function renderRank(by){if(by){_rankBy=by;}var ids={known:'rkKnown',streak:'rkStreak',total:'rkTotal'};for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('on',k===_rankBy);}var el=document.getElementById('rankList');if(!el)return;el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">加载中…</p>';if(!API_BASE){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">排行榜暂未开放</p>';return;}if(_rankScope==='friends'&&!ACCT.token){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">登录后可看好友榜</p>';return;}apiFetch('/api/leaderboard?by='+_rankBy+(_rankScope==='friends'?'&scope=friends':'')).then(function(r){if(!r||!r.ok||!r.data.list){el.innerHTML='<p class="acct-err">加载失败，请稍后再试</p>';return;}var list=r.data.list,total=Number(r.data.total);if(!isFinite(total))total=list.length;
-    var myname=ACCT.user&&ACCT.user.username;var unit=_rankBy==='streak'?'天':(_rankBy==='total'?'次':'词');if(!list.length){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">还没有人上榜，快去学习成为第一名 🎉</p>';}else{var _shown=list.slice(0,10);var _rest=Math.max(0,total-10);el.innerHTML=_shown.map(function(u,i){var no=i+1;var medal=no===1?'🥇':no===2?'🥈':no===3?'🥉':no;return '<div class="rank-row'+(u.username===myname?' me':'')+'" data-u="'+_esc(u.username)+'"><div class="rank-no'+(no<=3?' top':'')+'">'+medal+'</div>'+_avatarHtml(u,38)+'<div class="rank-name"><div class="rank-nick">'+_esc(u.nickname||u.username)+'</div><div class="rank-meta">'+_esc(u.level||'A1')+' · 🏅'+(u.badges||0)+'</div></div><div class="rank-val">'+(u[_rankBy]||0)+'<small>'+unit+'</small></div></div>';}).join('')+(_rest>0?'<p style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-dim)">榜上另有 '+_rest+' 人</p>':'');_bindUser(el,'.rank-row[data-u]',function(n){openProfile(n);});}
+function renderRank(by){if(by){_rankBy=by;}var ids={known:'rkKnown',streak:'rkStreak',total:'rkTotal'};for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('on',k===_rankBy);}var el=document.getElementById('rankList');if(!el)return;el.innerHTML=_ottiMsg('swim',48,'加载中…',1);if(!API_BASE){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px">排行榜暂未开放</p>';return;}if(_rankScope==='friends'&&!ACCT.token){el.innerHTML='<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">登录后可看好友榜</p>';return;}apiFetch('/api/leaderboard?by='+_rankBy+(_rankScope==='friends'?'&scope=friends':'')).then(function(r){if(!r||!r.ok||!r.data.list){el.innerHTML='<p class="acct-err">加载失败，请稍后再试</p>';return;}var list=r.data.list,total=Number(r.data.total);if(!isFinite(total))total=list.length;
+    var myname=ACCT.user&&ACCT.user.username;var unit=_rankBy==='streak'?'天':(_rankBy==='total'?'次':'词');if(!list.length){el.innerHTML=_ottiMsg('nap',44,'还没有人上榜，快去学习成为第一名 🎉');}else{var _shown=list.slice(0,10);var _rest=Math.max(0,total-10);el.innerHTML=_shown.map(function(u,i){var no=i+1;var medal=no===1?'🥇':no===2?'🥈':no===3?'🥉':no;return '<div class="rank-row'+(u.username===myname?' me':'')+'" data-u="'+_esc(u.username)+'"><div class="rank-no'+(no<=3?' top':'')+'">'+medal+'</div>'+_avatarHtml(u,38)+'<div class="rank-name"><div class="rank-nick">'+_esc(u.nickname||u.username)+'</div><div class="rank-meta">'+_esc(u.level||'A1')+' · 🏅'+(u.badges||0)+'</div></div><div class="rank-val">'+(u[_rankBy]||0)+'<small>'+unit+'</small></div></div>';}).join('')+(_rest>0?'<p style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-dim)">榜上另有 '+_rest+' 人</p>':'');_bindUser(el,'.rank-row[data-u]',function(n){openProfile(n);});}
     var hint=document.getElementById('rankHint');if(hint)hint.innerHTML=ACCT.token?'点头像看主页 · 你的学习数据会自动同步上榜':'还没登录？<a href="javascript:showSection(\'account\')" style="color:var(--gold-text)">登录</a>后即可上榜';});}
 // 初始化：接住 OAuth 回跳的 token、拉取自己的资料、离开页面时同步
 (function(){var justOauth=false;
@@ -5412,9 +5439,9 @@ function spHint(){SP.revealed=true;spReveal();try{document.getElementById('spInp
 function spReplay(){try{if(typeof speakDE==='function')speakDE(SP.word);}catch(e){}}
 function spSkip(){SP.i++;spLoad();}
 function spWordDone(){SP.learned++;var flawless=!SP.revealed&&SP.miss===0;if(flawless)SP.perfect++;else if(SP.item){var w=SP.item,dup=false,k;for(k=0;k<SP.wrong.length;k++)if(SP.wrong[k].de===w.de){dup=true;break;}if(!dup)SP.wrong.push(w);}
-if(flawless){_wrongDel(SP.word);burstAt(document.getElementById('spSlots')||document.getElementById('spCard'),30);}else if(SP.item)_wrongAdd(SP.word,SP.item.zh,SP.item.py);var card=document.getElementById('spCard');if(card){card.classList.add('ok');setTimeout(function(){card.classList.remove('ok');},500);}spDing();try{if(SP.review||(SP.item&&SP.item.rev)){srsGrade(SP.word,flawless);}else{var m=getKnown();if(!m[SP.word]){m[SP.word]={b:1,t:Date.now()};saveKnown(m);}}studyTick(1);acctSyncSoon();}catch(e){}SP.i++;setTimeout(spLoad,650);}
+if(flawless){_wrongDel(SP.word);burstAt(document.getElementById('spSlots')||document.getElementById('spCard'),30);}else if(SP.item)_wrongAdd(SP.word,SP.item.zh,SP.item.py);var card=document.getElementById('spCard');_ottiPop(card,flawless?'happy':'sorry');if(card){card.classList.add('ok');setTimeout(function(){card.classList.remove('ok');},500);}spDing();try{if(SP.review||(SP.item&&SP.item.rev)){srsGrade(SP.word,flawless);}else{var m=getKnown();if(!m[SP.word]){m[SP.word]={b:1,t:Date.now()};saveKnown(m);}}studyTick(1);acctSyncSoon();}catch(e){}SP.i++;setTimeout(spLoad,650);}
 function spReviewWrong(){if(!SP.wrong.length)return;SP.q=_spShuf(SP.wrong.slice());SP.i=0;SP.learned=0;SP.perfect=0;SP.wrong=[];document.getElementById('spDone').style.display='none';document.getElementById('spDrill').style.display='';spLoad();}
-function spFinish(){document.getElementById('spBar').style.width='100%';document.getElementById('spDrill').style.display='none';var acc=SP.learned?Math.round(SP.perfect/SP.learned*100):0;var nw=SP.wrong.length;var wasDaily=SP.daily;SP.daily=false;var dailyBanner='';if(wasDaily){_dailyMark();try{if(typeof renderHomeDash==='function')renderHomeDash();}catch(e){}dailyBanner='<div style="font-size:14px;font-weight:800;color:var(--gold-text);margin-top:6px">✅ 今日课程完成！明天继续～</div>';}var d=document.getElementById('spDone');d.style.display='';d.innerHTML='<div class="sp-card"><div style="font-size:44px">🎉</div><div style="font-size:22px;font-weight:800;color:var(--text);margin-top:8px">本组完成！</div>'+dailyBanner+'<div style="font-size:14px;color:var(--text-dim);margin-top:10px">掌握 <b style="color:var(--gold-text);font-size:20px">'+SP.learned+'</b> 词 · 一次全对 <b style="color:var(--gold-text)">'+SP.perfect+'</b> 词（'+acc+'%）'+(nw?'<br>有 <b style="color:var(--red-text)">'+nw+'</b> 个词卡壳了，重练一遍记更牢':'')+'</div><div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">'+(nw?'<button type="button" class="acct-btn" onclick="spReviewWrong()">🔁 重练错词（'+nw+'）</button>':'')+'<div style="display:flex;gap:10px"><button type="button" class="'+(nw?'oauth-btn':'acct-btn')+'" style="flex:1;margin:0" onclick="spStart()">再来一组</button><button type="button" class="oauth-btn" style="flex:1;margin:0" onclick="spInit()">换级别/模式</button></div></div></div>';}
+function spFinish(){document.getElementById('spBar').style.width='100%';document.getElementById('spDrill').style.display='none';var acc=SP.learned?Math.round(SP.perfect/SP.learned*100):0;var nw=SP.wrong.length;var wasDaily=SP.daily;SP.daily=false;var dailyBanner='';if(wasDaily){_dailyMark();try{if(typeof renderHomeDash==='function')renderHomeDash();}catch(e){}dailyBanner='<div style="font-size:14px;font-weight:800;color:var(--gold-text);margin-top:6px">✅ 今日课程完成！明天继续～</div>';}var d=document.getElementById('spDone');d.style.display='';d.innerHTML='<div class="sp-card">'+_otti(nw?'study':'cheers',110)+'<div style="font-size:22px;font-weight:800;color:var(--text);margin-top:8px">本组完成！</div>'+dailyBanner+'<div style="font-size:14px;color:var(--text-dim);margin-top:10px">掌握 <b style="color:var(--gold-text);font-size:20px">'+SP.learned+'</b> 词 · 一次全对 <b style="color:var(--gold-text)">'+SP.perfect+'</b> 词（'+acc+'%）'+(nw?'<br>有 <b style="color:var(--red-text)">'+nw+'</b> 个词卡壳了，重练一遍记更牢':'')+'</div><div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">'+(nw?'<button type="button" class="acct-btn" onclick="spReviewWrong()">🔁 重练错词（'+nw+'）</button>':'')+'<div style="display:flex;gap:10px"><button type="button" class="'+(nw?'oauth-btn':'acct-btn')+'" style="flex:1;margin:0" onclick="spStart()">再来一组</button><button type="button" class="oauth-btn" style="flex:1;margin:0" onclick="spInit()">换级别/模式</button></div></div></div>';}
 </script>
 <nav id="bottomNav" aria-label="底部导航">
   <button class="bn-btn" data-sec="home" onclick="showSection('home')"><span class="bn-i">🏠</span><span class="bn-t">首页</span></button>
@@ -5425,6 +5452,7 @@ function spFinish(){document.getElementById('spBar').style.width='100%';document
 <button class="phfab" type="button" onclick="phOpen()" aria-label="打开拼读器查词" title="拼读查词">🧩</button>
 <div class="boost-overlay" id="boostModal" style="display:none" role="dialog" aria-modal="true" aria-label="今日激励" onclick="if(event.target===this)boostClose()">
   <div class="boost-card">
+    <img class="otti" src="otti/study.webp" alt="" style="height:92px;margin-bottom:6px" draggable="false">
     <div class="boost-label">每日一句 · Satz des Tages</div>
     <div class="boost-de" id="boostDe" lang="de"></div>
     <button class="boost-spk" id="boostSpk" type="button" aria-label="朗读这句" title="朗读">🔊 朗读</button>

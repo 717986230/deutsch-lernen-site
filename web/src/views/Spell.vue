@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { loadData } from '../api';
@@ -111,6 +112,7 @@ function toIdle() { state.value = 'idle'; wrongPool.value = Object.keys(getWrong
         :readonly="!!judged" autocapitalize="off" autocorrect="off" spellcheck="false"
         placeholder="在此输入德语" @keydown.enter.prevent="onEnter">
 
+      <Otti v-if="judged" :scene="judged === 'ok' ? 'happy' : 'sorry'" :h="64" class="fb-otti" />
       <div v-if="judged === 'ok'" class="fb ok">✓ 正确</div>
       <div v-else-if="judged === 'bad'" class="fb bad">
         <div>✗ 正确答案</div>
@@ -127,6 +129,7 @@ function toIdle() { state.value = 'idle'; wrongPool.value = Object.keys(getWrong
     <!-- 结果态 -->
     <template v-else>
       <h1 class="page-title">本轮完成</h1>
+      <Otti :scene="right === total ? 'cheers' : 'study'" :h="120" />
       <div class="res">
         <div class="res-n">{{ right }} / {{ total }}</div>
         <div class="res-l">{{ right === total ? '全对，厉害' : wrongCnt + ' 题需要再练' }}</div>
@@ -155,6 +158,7 @@ function toIdle() { state.value = 'idle'; wrongPool.value = Object.keys(getWrong
 .ans:focus{border-bottom-color:var(--brand)}
 .ans.ok{border-bottom-color:var(--brand)}
 .ans.bad{border-bottom-color:#e5484d}
+.fb-otti{margin:16px 0 -10px}
 .fb{text-align:center;margin:18px 0;font-size:15px}
 .fb.ok{color:var(--brand-text);font-weight:600}
 .fb.bad{color:#c92a2e}

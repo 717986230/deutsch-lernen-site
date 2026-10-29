@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 import { ref, computed, onMounted, watch } from 'vue';
 import { api } from '../api';
 const BY = [['known', '词汇'], ['streak', '连续'], ['total', '总量']];
@@ -30,9 +31,9 @@ const val = (u) => by.value === 'known' ? `${u.known || 0} 词`
       <button v-for="[v, t] in BY" :key="v" class="level-tab" :class="{ active: by === v  }"
         @click="by = v">{{ t }}</button>
     </div>
-    <p v-if="loading" class="page-sub">加载中…</p>
+    <Otti v-if="loading" scene="swim" bob>加载中…</Otti>
     <p v-else-if="err" class="page-sub">{{ err }}</p>
-    <p v-else-if="!rows.length" class="page-sub">还没有人上榜</p>
+    <Otti v-else-if="!rows.length" scene="nap">还没有人上榜</Otti>
     <div v-for="(u, i) in shown" :key="i" class="item rk" @click="$router.push('/u/' + u.username)">
       <span class="no" :class="{ top: i < 3 }">{{ ['🥇','🥈','🥉'][i] || i + 1 }}</span>
       <span class="av" :style="{ background: u.av_bg || 'var(--line)' }">{{ u.avatar || '🦊' }}</span>

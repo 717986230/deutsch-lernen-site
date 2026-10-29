@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 import { ref, computed, onMounted } from 'vue';
 import { loadData } from '../api';
 import { speak } from '../api/speak';
@@ -119,6 +120,7 @@ const cls = (o) => !picked.value ? ''
         :lang="mode==='phrase'||mode==='gender' ? 'de' : null" @click="pick(o)">{{ optText(o) }}</button>
 
       <template v-if="picked">
+        <Otti :scene="keyOf(picked) === keyOf(q.right) ? 'happy' : 'sorry'" :h="64" class="fb-otti" />
         <div class="ex">
           <span lang="de">{{ q.right.de }}</span> — {{ q.right.zh }}
           <div class="ex-py">{{ q.right.py }}</div>
@@ -130,6 +132,7 @@ const cls = (o) => !picked.value ? ''
 
     <template v-else-if="state === 'done'">
       <h1 class="page-title">本轮完成</h1>
+      <Otti :scene="score === ROUND ? 'cheers' : 'study'" :h="120" />
       <div class="res"><div class="res-n">{{ score }} / {{ ROUND }}</div>
         <div class="res-l">{{ score === ROUND ? '全对，厉害' : (ROUND - score) + ' 题答错，已记入错题本' }}</div></div>
       <button class="btn btn-block" @click="start">再来一轮</button>
@@ -167,6 +170,7 @@ const cls = (o) => !picked.value ? ''
 .opt.ok{border-color:var(--brand);background:var(--brand);color:#14240a;font-weight:600}
 .opt.bad{border-color:#e5484d;color:#c92a2e}
 .opt.dim{opacity:.45}
+.fb-otti{margin:14px 0 -8px}
 .ex{text-align:center;font-size:15px;color:var(--text-2);margin:16px 0 18px}
 .ex-py{font-size:13px;color:var(--text-3);margin-top:4px}
 .res{text-align:center;padding:34px 0 30px}

@@ -2,6 +2,9 @@ node_modules/
 dist/
 dev.html
 web/public/data/
+# 构建时由 web/vite.config.js 从仓库根复制过来的打赏二维码
+web/public/support-qr.jpg
+web/public/support-wechat.jpg
 .DS_Store
 tools/__pycache__/
 __pycache__/

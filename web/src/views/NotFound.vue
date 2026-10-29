@@ -1,13 +1,15 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 </script>
 
 <template>
   <div class="page not-found">
+    <Otti scene="bye" :h="150" />
     <p class="hero-label">404</p>
     <h1 class="page-title">这个页面不存在</h1>
-    <p class="page-sub">链接可能已过期，回到学习内容继续即可。</p>
+    <p class="page-sub">Otti 也没找到它，链接可能已过期，回到学习内容继续即可。</p>
     <div class="actions">
       <button class="btn" type="button" @click="router.replace('/phrases')">去语句练习</button>
       <button class="btn btn-plain" type="button" @click="router.replace('/reading')">读短文</button>

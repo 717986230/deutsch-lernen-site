@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { loadData } from '../api';
@@ -116,7 +117,7 @@ function gqPick(btn) {
   <div class="page">
     <h1 class="page-title">{{ meta[0] }}</h1>
     <p class="page-sub">{{ meta[1] }}</p>
-    <p v-if="!data" class="page-sub">加载中…</p>
+    <Otti v-if="!data" scene="swim" bob>加载中…</Otti>
     <div v-else class="ref" v-html="html" @click="onRefClick"></div>
   </div>
 </template>

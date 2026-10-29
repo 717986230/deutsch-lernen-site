@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { api } from '../api';
@@ -14,9 +15,9 @@ onMounted(async () => {
   <div class="page">
     <div class="bar"><button class="back tap" @click="router.back()">‹ 返回</button></div>
     <h1 class="page-title">我关注的人</h1>
-    <p v-if="loading" class="page-sub">加载中…</p>
+    <Otti v-if="loading" scene="swim" bob>加载中…</Otti>
     <p v-else-if="err" class="page-sub">{{ err }}</p>
-    <p v-else-if="!list.length" class="page-sub">还没关注任何人，去排行榜点头像看看</p>
+    <Otti v-else-if="!list.length" scene="walk" :h="110">还没关注任何人，去排行榜点头像看看</Otti>
     <div v-for="(u, i) in list" :key="i" class="item fw" @click="router.push('/u/' + u.username)">
       <span class="av" :style="{background: u.av_bg || 'var(--brand)'}">{{ u.avatar || '🦊' }}</span>
       <span class="tx"><span class="nm">{{ u.nickname || u.username }}</span>
