@@ -1,0 +1,1159 @@
+[
+ {
+  "id": "kursraum-a1",
+  "lv": "A1",
+  "icon": "🏫",
+  "de": "Kursraum A1",
+  "zh": "官方免费网课 A1",
+  "url": "https://sprachportal.at/deutsch-lernen/a1/online-lernen/kursraum-a1/",
+  "btn": "打开官方 Kursraum A1",
+  "what": [
+   "这是奥地利融合基金会（ÖIF）办的免费在线直播课，老师实时上课，你在手机上就能听。",
+   "打开官方页面后选一个时间段报名，到点点进去上课。全程德语，但都是零基础的慢速讲解。",
+   "建议：上课前先把下面的「上课常用句」听几遍，听不懂时就用它们问老师。"
+  ],
+  "vocab": [
+   [
+    "Wie bitte?",
+    "请再说一遍？",
+    "维 比特"
+   ],
+   [
+    "Noch einmal, bitte.",
+    "请再来一次。",
+    "诺赫 艾因马尔 比特"
+   ],
+   [
+    "Langsam, bitte.",
+    "请慢一点。",
+    "朗扎姆，比特。"
+   ],
+   [
+    "Ich verstehe das nicht.",
+    "我不明白。",
+    "伊希 费尔施特黑 达斯 尼希特"
+   ],
+   [
+    "Was bedeutet das?",
+    "这是什么意思？",
+    "瓦斯 贝多伊特 达斯"
+   ],
+   [
+    "Wie schreibt man das?",
+    "这个怎么写？",
+    "维 施莱布特 曼 达斯"
+   ],
+   [
+    "Ich habe eine Frage.",
+    "我有一个问题。",
+    "伊希 哈贝 埃内 弗拉格"
+   ],
+   [
+    "Danke, das ist klar.",
+    "谢谢，明白了。",
+    "当克，达斯 伊斯特 克拉尔。"
+   ],
+   [
+    "die Hausaufgabe",
+    "作业",
+    "迪 豪斯奥夫加贝"
+   ],
+   [
+    "der Kurs",
+    "课程",
+    "德尔 库尔斯"
+   ]
+  ],
+  "grammar": [
+   [
+    "用 Wie / Was 提问",
+    "疑问词放句首，动词紧跟第二位。",
+    [
+     [
+      "Was bedeutet „Termin“?",
+      "Termin 是什么意思？",
+      "瓦斯 贝多伊特 特尔明？"
+     ],
+     [
+      "Wie heißt das auf Deutsch?",
+      "这个用德语怎么说？",
+      "维 海斯特 达斯 奥夫 多伊奇？"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "essen",
+  "lv": "A1",
+  "icon": "🍞",
+  "de": "Essen und Trinken",
+  "zh": "吃和喝",
+  "url": "https://sprachportal.at/alle-angebote/online-uebungen/vokabeltrainer/",
+  "btn": "打开官方词汇训练（选 Essen und Trinken）",
+  "what": [
+   "官方词汇训练是看图选词的小练习，题目和图片都在官方网站上，这里只给中文提示。",
+   "先在这里把核心词听熟，再去官方练习，正确率会高很多。",
+   "奥地利有自己的说法：土豆常说 Erdäpfel，西红柿说 Paradeiser，考试和生活里都会碰到。"
+  ],
+  "vocab": [
+   [
+    "das Brot",
+    "面包",
+    "达斯 布罗特"
+   ],
+   [
+    "die Semmel",
+    "小圆面包（奥地利说法）",
+    "迪 泽梅尔"
+   ],
+   [
+    "die Milch",
+    "牛奶",
+    "迪 米尔希"
+   ],
+   [
+    "das Wasser",
+    "水",
+    "达斯 瓦瑟"
+   ],
+   [
+    "der Kaffee",
+    "咖啡",
+    "德尔 卡菲"
+   ],
+   [
+    "die Kartoffel",
+    "土豆（奥地利也说 der Erdapfel）",
+    "迪 卡托费尔"
+   ],
+   [
+    "die Tomate",
+    "西红柿（奥地利也说 der Paradeiser）",
+    "迪 托马特"
+   ],
+   [
+    "das Fleisch",
+    "肉",
+    "达斯 弗莱什"
+   ],
+   [
+    "der Käse",
+    "奶酪",
+    "德尔 凯泽"
+   ],
+   [
+    "das Obst",
+    "水果",
+    "达斯 奥普斯特"
+   ],
+   [
+    "das Gemüse",
+    "蔬菜",
+    "达斯 格缪泽"
+   ],
+   [
+    "Ich hätte gern …",
+    "我想要……（点餐、买东西）",
+    "伊希 海特 盖恩……"
+   ]
+  ],
+  "grammar": [
+   [
+    "点餐买东西：Ich hätte gern + 第四格",
+    "阳性名词 der 变 einen，阴性和中性不变。",
+    [
+     [
+      "Ich hätte gern einen Kaffee.",
+      "我想要一杯咖啡。",
+      "伊希 海特 盖恩 艾嫩 卡菲。"
+     ],
+     [
+      "Ich hätte gern zwei Semmeln, bitte.",
+      "请给我两个小圆面包。",
+      "伊希 海特 盖恩 茨威 泽梅尔恩，比特。"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "gesundheit",
+  "lv": "A1",
+  "icon": "🩺",
+  "de": "Gesundheit",
+  "zh": "健康·看病",
+  "url": "https://sprachportal.at/alle-angebote/online-uebungen/vokabeltrainer/",
+  "btn": "打开官方词汇训练（选 Gesundheit）",
+  "what": [
+   "看病要先打电话约时间（einen Termin machen），带上保险卡 e-card。",
+   "说哪里疼用「Ich habe …schmerzen」，或者「Mein … tut weh」。",
+   "晚上和周末找 Apotheke 值班药房，急救电话是 144。"
+  ],
+  "vocab": [
+   [
+    "der Arzt",
+    "医生",
+    "德尔 阿尔茨特"
+   ],
+   [
+    "die Ärztin",
+    "女医生",
+    "迪 埃尔茨廷"
+   ],
+   [
+    "der Termin",
+    "预约",
+    "德尔 特尔民"
+   ],
+   [
+    "die e-card",
+    "奥地利医保卡",
+    "迪 伊卡德"
+   ],
+   [
+    "krank",
+    "生病的",
+    "克兰克"
+   ],
+   [
+    "das Fieber",
+    "发烧",
+    "达斯 菲贝尔"
+   ],
+   [
+    "der Kopf",
+    "头",
+    "德尔 科普夫"
+   ],
+   [
+    "der Bauch",
+    "肚子",
+    "德尔 包赫"
+   ],
+   [
+    "die Apotheke",
+    "药房",
+    "迪 阿波泰克"
+   ],
+   [
+    "das Medikament",
+    "药",
+    "达斯 梅迪卡门特"
+   ],
+   [
+    "das Krankenhaus",
+    "医院",
+    "达斯 克兰肯豪斯"
+   ],
+   [
+    "Mir tut der Kopf weh.",
+    "我头疼。",
+    "米尔 图特 德尔 科普夫 韦。"
+   ]
+  ],
+  "grammar": [
+   [
+    "哪里疼：… tut weh / …schmerzen",
+    "单数用 tut weh，复数用 tun weh；也可以直接说 Ich habe Kopfschmerzen。",
+    [
+     [
+      "Mein Bauch tut weh.",
+      "我肚子疼。",
+      "麦因 包赫 图特 韦。"
+     ],
+     [
+      "Ich habe Fieber und Kopfschmerzen.",
+      "我发烧还头疼。",
+      "伊希 哈贝 菲贝尔 温特 科普夫施梅尔岑。"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "verkehr",
+  "lv": "A1",
+  "icon": "🚋",
+  "de": "Verkehr",
+  "zh": "交通",
+  "url": "https://sprachportal.at/alle-angebote/online-uebungen/vokabeltrainer/",
+  "btn": "打开官方词汇训练（选 Verkehr）",
+  "what": [
+   "奥地利城市里最常坐 Straßenbahn（有轨电车）、Bus 和 U-Bahn（地铁）。",
+   "上车前要买 Fahrkarte 或年票，查票时没票要罚款。",
+   "问路三件套：Wo ist …? / Wie komme ich zu …? / Ist das weit?"
+  ],
+  "vocab": [
+   [
+    "der Bus",
+    "公交车",
+    "德尔 布斯"
+   ],
+   [
+    "die Straßenbahn",
+    "有轨电车",
+    "迪 施特拉森班"
+   ],
+   [
+    "die U-Bahn",
+    "地铁",
+    "迪 乌巴恩"
+   ],
+   [
+    "der Zug",
+    "火车",
+    "德尔 粗克"
+   ],
+   [
+    "der Bahnhof",
+    "火车站",
+    "德尔 班霍夫"
+   ],
+   [
+    "die Haltestelle",
+    "车站（公交/电车）",
+    "迪 哈尔特施泰勒"
+   ],
+   [
+    "die Fahrkarte",
+    "车票",
+    "迪 法尔卡尔特"
+   ],
+   [
+    "links",
+    "左边",
+    "林克斯"
+   ],
+   [
+    "rechts",
+    "右边",
+    "雷希茨"
+   ],
+   [
+    "geradeaus",
+    "直走",
+    "格拉德奥斯"
+   ],
+   [
+    "umsteigen",
+    "换乘",
+    "乌姆施泰根"
+   ],
+   [
+    "Wie komme ich zum Bahnhof?",
+    "去火车站怎么走？",
+    "维 科默 伊希 粗姆 班霍夫"
+   ]
+  ],
+  "grammar": [
+   [
+    "坐车用 mit + 第三格",
+    "der/das 变 dem，die 变 der。",
+    [
+     [
+      "Ich fahre mit dem Bus.",
+      "我坐公交车。",
+      "伊希 法雷 米特 登 布斯。"
+     ],
+     [
+      "Ich fahre mit der Straßenbahn zur Arbeit.",
+      "我坐电车去上班。",
+      "伊希 法雷 米特 德尔 施特拉森班 粗尔 阿尔拜特。"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "wetter",
+  "lv": "A1",
+  "icon": "🌦️",
+  "de": "Wetter",
+  "zh": "天气",
+  "url": "https://sprachportal.at/alle-angebote/online-uebungen/vokabeltrainer/",
+  "btn": "打开官方词汇训练（选 Wetter）",
+  "what": [
+   "说天气几乎都用 Es：Es regnet（下雨）、Es schneit（下雪）、Es ist kalt（冷）。",
+   "奥地利把一月叫 Jänner（德国叫 Januar），日历和通知上都会看到。",
+   "温度说 Grad：Es hat zwanzig Grad 是奥地利常见说法（德国多说 Es sind 20 Grad）。"
+  ],
+  "vocab": [
+   [
+    "das Wetter",
+    "天气",
+    "达斯 韦特尔"
+   ],
+   [
+    "die Sonne",
+    "太阳",
+    "迪 佐讷"
+   ],
+   [
+    "der Regen",
+    "雨",
+    "德尔 雷根"
+   ],
+   [
+    "der Schnee",
+    "雪",
+    "德尔 施内"
+   ],
+   [
+    "der Wind",
+    "风",
+    "德尔 温特"
+   ],
+   [
+    "warm",
+    "暖和的",
+    "瓦尔姆"
+   ],
+   [
+    "kalt",
+    "冷的",
+    "卡尔特"
+   ],
+   [
+    "Es regnet.",
+    "下雨了。",
+    "埃斯 雷格内特。"
+   ],
+   [
+    "Es schneit.",
+    "下雪了。",
+    "埃斯 施奈特。"
+   ],
+   [
+    "der Jänner",
+    "一月（奥地利说法）",
+    "德尔 耶讷尔"
+   ],
+   [
+    "der Grad",
+    "度（温度）",
+    "德尔 格拉特"
+   ],
+   [
+    "Wie ist das Wetter heute?",
+    "今天天气怎么样？",
+    "维 伊斯特 达斯 韦特尔 霍伊特？"
+   ]
+  ],
+  "grammar": [
+   [
+    "天气用 es 当主语",
+    "es 不指任何东西，只是占位。",
+    [
+     [
+      "Heute ist es sonnig.",
+      "今天晴天。",
+      "霍伊特 伊斯特 埃斯 佐尼希。"
+     ],
+     [
+      "Morgen regnet es.",
+      "明天下雨。",
+      "摩根 雷格内特 埃斯。"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "arbeit",
+  "lv": "A1",
+  "icon": "💼",
+  "de": "Arbeitswelt",
+  "zh": "工作",
+  "url": "https://sprachportal.at/alle-angebote/online-uebungen/vokabeltrainer/",
+  "btn": "打开官方词汇训练（选 Arbeitswelt）",
+  "what": [
+   "介绍工作：Ich arbeite als … / Ich bin … von Beruf。",
+   "请假、迟到要提前跟 Chef 说：Ich bin krank, ich kann heute nicht kommen。",
+   "AMS 是奥地利的劳动市场服务局，找工作、失业登记都去那里。"
+  ],
+  "vocab": [
+   [
+    "die Arbeit",
+    "工作",
+    "迪 阿尔拜特"
+   ],
+   [
+    "der Beruf",
+    "职业",
+    "德尔 贝鲁夫"
+   ],
+   [
+    "der Chef",
+    "老板",
+    "德尔 斯雪夫"
+   ],
+   [
+    "der Kollege",
+    "同事",
+    "德尔 科勒格"
+   ],
+   [
+    "die Kollegin",
+    "女同事",
+    "迪 科勒金"
+   ],
+   [
+    "arbeiten",
+    "工作",
+    "阿尔拜腾"
+   ],
+   [
+    "der Lohn",
+    "工资",
+    "德尔 洛恩"
+   ],
+   [
+    "der Urlaub",
+    "休假",
+    "德尔 乌尔劳普"
+   ],
+   [
+    "die Bewerbung",
+    "求职申请",
+    "迪 贝韦尔本"
+   ],
+   [
+    "das AMS",
+    "劳动市场服务局",
+    "达斯 阿埃姆埃斯"
+   ],
+   [
+    "Ich arbeite als Koch.",
+    "我当厨师。",
+    "伊希 阿尔拜特 阿尔斯 科赫。"
+   ],
+   [
+    "Ich bin heute krank.",
+    "我今天生病了。",
+    "伊希 宾 霍伊特 克兰克。"
+   ]
+  ],
+  "grammar": [
+   [
+    "职业前不加冠词",
+    "Ich bin Koch，不说 Ich bin ein Koch。",
+    [
+     [
+      "Ich bin Krankenpfleger von Beruf.",
+      "我的职业是护工。",
+      "伊希 宾 克兰肯普弗勒格尔 冯 贝鲁夫。"
+     ],
+     [
+      "Sie arbeitet als Verkäuferin.",
+      "她当售货员。",
+      "齐 阿尔拜特 阿尔斯 费尔科伊费林。"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "schule",
+  "lv": "A1",
+  "icon": "🎒",
+  "de": "Schule",
+  "zh": "学校",
+  "url": "https://sprachportal.at/alle-angebote/online-uebungen/vokabeltrainer/",
+  "btn": "打开官方词汇训练（选 Schule）",
+  "what": [
+   "孩子上学时家长常收到 Elternbrief（家长信）和 Elternabend（家长会）通知。",
+   "请病假要给老师写一句：Mein Kind ist krank und kommt heute nicht。",
+   "奥地利小学叫 Volksschule，读 4 年。"
+  ],
+  "vocab": [
+   [
+    "die Schule",
+    "学校",
+    "迪 舒勒"
+   ],
+   [
+    "die Volksschule",
+    "小学（奥地利）",
+    "迪 福尔克斯舒勒"
+   ],
+   [
+    "der Lehrer",
+    "老师",
+    "德尔 勒勒"
+   ],
+   [
+    "die Lehrerin",
+    "女老师",
+    "迪 勒勒林"
+   ],
+   [
+    "die Klasse",
+    "班级",
+    "迪 克拉瑟"
+   ],
+   [
+    "die Hausaufgabe",
+    "作业",
+    "迪 豪斯奥夫加贝"
+   ],
+   [
+    "das Heft",
+    "本子",
+    "达斯 黑夫特"
+   ],
+   [
+    "der Elternabend",
+    "家长会",
+    "德尔 埃尔滕阿本特"
+   ],
+   [
+    "die Pause",
+    "课间休息",
+    "迪 泡泽"
+   ],
+   [
+    "lernen",
+    "学习",
+    "勒嫩"
+   ],
+   [
+    "Mein Kind ist krank.",
+    "我的孩子生病了。",
+    "麦因 金特 伊斯特 克兰克。"
+   ],
+   [
+    "Wann beginnt die Schule?",
+    "几点上课？",
+    "万 贝金特 迪 舒勒？"
+   ]
+  ],
+  "grammar": [
+   [
+    "我的孩子：mein / meine",
+    "阳性、中性用 mein，阴性和复数用 meine。",
+    [
+     [
+      "Mein Sohn geht in die Volksschule.",
+      "我儿子上小学。",
+      "麦因 佐恩 盖特 因 迪 福尔克斯舒勒。"
+     ],
+     [
+      "Meine Tochter macht Hausaufgaben.",
+      "我女儿在写作业。",
+      "麦讷 托赫特尔 马赫特 豪斯奥夫加本。"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "zusammenleben",
+  "lv": "A1",
+  "icon": "🏘️",
+  "de": "Zusammenleben",
+  "zh": "邻里共处",
+  "url": "https://sprachportal.at/alle-angebote/online-uebungen/vokabeltrainer/",
+  "btn": "打开官方词汇训练（选 Zusammenleben）",
+  "what": [
+   "奥地利人见面常说 Grüß Gott（正式）或 Servus（熟人），告别说 Auf Wiedersehen 或 Baba。",
+   "住楼房要守 Hausordnung（住户守则）：晚上 22 点后安静，垃圾要分类。",
+   "有事找 Hausverwaltung（物业）或 Hausmeister（管理员）。"
+  ],
+  "vocab": [
+   [
+    "Grüß Gott!",
+    "您好！（奥地利正式问候）",
+    "格吕斯 戈特！"
+   ],
+   [
+    "Servus!",
+    "你好／再见（熟人）",
+    "塞尔乌斯！"
+   ],
+   [
+    "der Nachbar",
+    "邻居",
+    "德尔 纳赫巴尔"
+   ],
+   [
+    "die Nachbarin",
+    "女邻居",
+    "迪 纳赫巴林"
+   ],
+   [
+    "die Wohnung",
+    "公寓",
+    "迪 沃农"
+   ],
+   [
+    "die Hausordnung",
+    "住户守则",
+    "迪 豪斯奥尔德农"
+   ],
+   [
+    "die Ruhe",
+    "安静",
+    "迪 鲁厄"
+   ],
+   [
+    "der Müll",
+    "垃圾",
+    "德尔 米尔"
+   ],
+   [
+    "trennen",
+    "分开（垃圾分类）",
+    "特雷能"
+   ],
+   [
+    "die Hausverwaltung",
+    "物业",
+    "迪 豪斯费尔瓦尔通"
+   ],
+   [
+    "Entschuldigung, ist das zu laut?",
+    "抱歉，太吵了吗？",
+    "恩特舒尔迪贡，伊斯特 达斯 粗 劳特？"
+   ],
+   [
+    "Können Sie mir helfen?",
+    "您能帮我一下吗？",
+    "克嫩 齐 米尔 黑尔芬"
+   ]
+  ],
+  "grammar": [
+   [
+    "礼貌请求：Können Sie …?",
+    "情态动词放第一位，实义动词放句末。",
+    [
+     [
+      "Können Sie bitte leiser sein?",
+      "您能小声一点吗？",
+      "克嫩 齐 比特 莱泽尔 扎因？"
+     ],
+     [
+      "Können Sie mir das erklären?",
+      "您能给我解释一下吗？",
+      "克嫩 齐 米尔 达斯 尔克雷伦？"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "test-a1",
+  "lv": "A1",
+  "icon": "📝",
+  "de": "Online-Übungstest A1",
+  "zh": "A1 官方模拟考",
+  "url": "https://sprachportal.at/kurse-und-pruefungen/pruefungen/online-uebungstests/online-uebungstest-a1/",
+  "btn": "开始官方 A1 在线模拟考",
+  "what": [
+   "ÖIF 的 A1 融合考试：笔试 70 分钟（语言填空、听力、听后回答、读写），然后小组口试 20 分钟。带「价值与常识」部分的版本再加 40 分钟。",
+   "官方在线模拟考可以直接在手机上做，做完自动判分。第一次做不出来很正常，先熟悉题型。",
+   "口试常见三步：自我介绍、问别人问题、回答别人的问题。下面这些句子背熟就能开口。"
+  ],
+  "vocab": [
+   [
+    "Ich heiße …",
+    "我叫……",
+    "伊希 海瑟……"
+   ],
+   [
+    "Ich komme aus China.",
+    "我来自中国。",
+    "伊希 科默 奥斯 希纳。"
+   ],
+   [
+    "Ich wohne in Wien.",
+    "我住在维也纳。",
+    "伊希 沃嫩 因 维恩"
+   ],
+   [
+    "Ich bin … Jahre alt.",
+    "我……岁。",
+    "伊希 宾…… 亚雷 阿尔特。"
+   ],
+   [
+    "Ich spreche Chinesisch und ein bisschen Deutsch.",
+    "我说中文和一点德语。",
+    "伊希 施普雷讷 希内西什 温特 艾因 比斯兴 多伊奇。"
+   ],
+   [
+    "Was sind Sie von Beruf?",
+    "您做什么工作？",
+    "瓦斯 辛特 齐 冯 贝鲁夫？"
+   ],
+   [
+    "Haben Sie Kinder?",
+    "您有孩子吗？",
+    "哈本 齐 金德尔？"
+   ],
+   [
+    "Was machen Sie gern?",
+    "您喜欢做什么？",
+    "瓦斯 马赫恩 齐 盖恩？"
+   ]
+  ],
+  "grammar": [
+   [
+    "是非问句：动词放第一位",
+    "把动词提到句首就变成问句，用 Ja / Nein 回答。",
+    [
+     [
+      "Wohnen Sie in Graz?",
+      "您住在格拉茨吗？",
+      "沃嫩 齐 因 格拉茨？"
+     ],
+     [
+      "Ja, ich wohne in Graz.",
+      "是的，我住在格拉茨。",
+      "亚，伊希 沃嫩 因 格拉茨。"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "kursraum-a2",
+  "lv": "A2",
+  "icon": "🏫",
+  "de": "Kursraum A2",
+  "zh": "官方免费网课 A2",
+  "url": "https://sprachportal.at/deutsch-lernen/a2/online-lernen/kursraum-a2/",
+  "btn": "打开官方 Kursraum A2",
+  "what": [
+   "A1 学完就上 A2 直播课，同样免费、手机能上。",
+   "A2 开始要讲过去发生的事（现在完成时）和说理由（weil）。下面先把这两样过一遍。"
+  ],
+  "vocab": [
+   [
+    "gestern",
+    "昨天",
+    "盖斯特恩"
+   ],
+   [
+    "letzte Woche",
+    "上周",
+    "雷茨特 沃赫"
+   ],
+   [
+    "schon",
+    "已经",
+    "肖恩"
+   ],
+   [
+    "noch nicht",
+    "还没有",
+    "诺赫 尼希特"
+   ],
+   [
+    "weil",
+    "因为",
+    "魏尔"
+   ],
+   [
+    "deshalb",
+    "所以",
+    "德斯哈尔普"
+   ],
+   [
+    "zuerst",
+    "首先",
+    "粗埃尔斯特"
+   ],
+   [
+    "danach",
+    "然后",
+    "达纳赫"
+   ],
+   [
+    "am Ende",
+    "最后",
+    "阿姆 恩德"
+   ],
+   [
+    "Ich habe … gemacht.",
+    "我做了……",
+    "伊希 哈贝…… 格马赫特。"
+   ]
+  ],
+  "grammar": [
+   [
+    "现在完成时：haben/sein + 过去分词",
+    "过去分词放句末；表示移动的动词用 sein。",
+    [
+     [
+      "Ich habe gestern Deutsch gelernt.",
+      "我昨天学了德语。",
+      "伊希 哈贝 格斯特恩 多伊奇 格雷尔特。"
+     ],
+     [
+      "Wir sind nach Salzburg gefahren.",
+      "我们去了萨尔茨堡。",
+      "维尔 辛特 纳赫 萨尔茨堡 格法伦。"
+     ]
+    ]
+   ],
+   [
+    "weil 从句：动词跑到最后",
+    "weil 后面的变位动词放在句子末尾。",
+    [
+     [
+      "Ich lerne Deutsch, weil ich in Österreich arbeite.",
+      "我学德语，因为我在奥地利工作。",
+      "伊希 莱尔讷 多伊奇，魏尔 伊希 因 厄斯特赖希 阿尔拜特。"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "test-a2",
+  "lv": "A2",
+  "icon": "📝",
+  "de": "Online-Übungstest A2",
+  "zh": "A2 官方模拟考",
+  "url": "https://sprachportal.at/kurse-und-pruefungen/pruefungen/online-uebungstests/online-uebungstest-a2/",
+  "btn": "开始官方 A2 在线模拟考",
+  "what": [
+   "ÖIF 的 A2 融合考试：笔试 80 分钟（阅读、听力、写作），口试每人 10 分钟；带「价值与常识」的版本再加 40 分钟。A2 通过可以完成融合协议的第 1 模块。",
+   "官方在线模拟考有 4 个阅读部分和 1 个听力部分，手机上能做。",
+   "写作常考写短信／邮件：给朋友、房东或老师写几句，说明事情、提出请求。下面是万能句。"
+  ],
+  "vocab": [
+   [
+    "Liebe … / Lieber …",
+    "亲爱的……（给熟人）",
+    "利贝…… / 利伯……"
+   ],
+   [
+    "Sehr geehrte Damen und Herren,",
+    "尊敬的女士们先生们，（正式）",
+    "泽尔 格尔特 达梅恩 温特 黑伦"
+   ],
+   [
+    "ich schreibe Ihnen, weil …",
+    "我写信给您，因为……",
+    "伊希 施莱贝 伊嫩，魏尔……"
+   ],
+   [
+    "Leider kann ich nicht kommen.",
+    "很遗憾我来不了。",
+    "莱德尔 坎 伊希 尼希特 科门。"
+   ],
+   [
+    "Können wir einen neuen Termin machen?",
+    "我们能重新约个时间吗？",
+    "克嫩 维尔 艾嫩 诺伊恩 特尔明 马赫恩？"
+   ],
+   [
+    "Vielen Dank im Voraus.",
+    "先谢谢您。",
+    "菲伦 当克 伊姆 福尔奥斯。"
+   ],
+   [
+    "Liebe Grüße",
+    "亲切的问候（给熟人结尾）",
+    "利贝 格吕瑟"
+   ],
+   [
+    "Mit freundlichen Grüßen",
+    "此致敬礼（正式结尾）",
+    "米特 弗洛伊恩特利黑恩 格吕森"
+   ]
+  ],
+  "grammar": [
+   [
+    "写信结构：称呼 → 原因 → 请求 → 结尾",
+    "每部分一两句就够，考官看的是任务有没有完成。",
+    [
+     [
+      "Sehr geehrte Frau Huber, leider kann ich am Montag nicht kommen.",
+      "尊敬的胡贝尔女士，很遗憾周一我来不了。",
+      "泽尔 格尔特 弗劳 胡贝尔，莱德尔 坎 伊希 阿姆 蒙塔克 尼希特 科门。"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "werte",
+  "lv": "A2",
+  "icon": "⚖️",
+  "de": "Werte- und Orientierungswissen",
+  "zh": "价值与常识（考试题库）",
+  "url": "https://sprachportal.at/kurse-und-pruefungen/pruefungsmaterialien/fragenkataloge/",
+  "btn": "打开官方题库（Fragenkataloge）",
+  "what": [
+   "融合考试的「价值与常识」部分考奥地利的基本规则，官方公开了题库，可以提前把所有题看一遍。",
+   "常考主题：民主和选举、法治、男女平等、宗教自由、学校义务、医疗和社保、交通规则。",
+   "题目是德语的选择题，先把下面这些关键词弄懂，读题会轻松很多。"
+  ],
+  "vocab": [
+   [
+    "die Demokratie",
+    "民主",
+    "迪 德莫克拉蒂"
+   ],
+   [
+    "die Wahl",
+    "选举",
+    "迪 瓦尔"
+   ],
+   [
+    "das Gesetz",
+    "法律",
+    "达斯 格泽茨"
+   ],
+   [
+    "die Gleichberechtigung",
+    "男女平等",
+    "迪 格莱希贝雷希提贡"
+   ],
+   [
+    "die Religionsfreiheit",
+    "宗教自由",
+    "迪 雷利吉翁斯弗赖海特"
+   ],
+   [
+    "die Schulpflicht",
+    "义务教育",
+    "迪 舒尔普弗利希特"
+   ],
+   [
+    "die Polizei",
+    "警察",
+    "迪 波利蔡"
+   ],
+   [
+    "die Steuer",
+    "税",
+    "迪 施托伊尔"
+   ],
+   [
+    "die Versicherung",
+    "保险",
+    "迪 费尔齐舍龙"
+   ],
+   [
+    "das Bundesland",
+    "联邦州",
+    "达斯 本德斯兰特"
+   ],
+   [
+    "die Verfassung",
+    "宪法",
+    "迪 费尔法松"
+   ],
+   [
+    "Österreich hat neun Bundesländer.",
+    "奥地利有九个联邦州。",
+    "厄斯特赖希 哈特 诺伊因 本德斯伦德尔。"
+   ]
+  ],
+  "grammar": [
+   [
+    "选择题常见句型：Was ist richtig?",
+    "先找题干里的关键词，再看选项里有没有 nicht / kein 这类否定词。",
+    [
+     [
+      "In Österreich sind Frauen und Männer gleichberechtigt.",
+      "在奥地利男女平等。",
+      "因 厄斯特赖希 辛特 弗劳恩 温特 门讷尔 格莱希贝雷希提希特。"
+     ],
+     [
+      "Kinder müssen neun Jahre in die Schule gehen.",
+      "孩子必须上九年学。",
+      "金德尔 米森 诺伊因 亚雷 因 迪 舒勒 盖恩。"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "podcast",
+  "lv": "A2",
+  "icon": "🎧",
+  "de": "Lern-Podcasts „Deutsch im Gepäck“",
+  "zh": "官方学习播客：新移民的故事",
+  "url": "https://sprachportal.at/alle-angebote/audios/lern-podcasts/",
+  "btn": "打开官方播客（6 集）",
+  "what": [
+   "六位在奥地利生活的人讲自己的经历：塞尔维亚的 Snezana（初到维也纳和维也纳方言）、波兰的 Paulina（护工）、意大利的 Giulia（服务员）、波兰的 Lech（钢琴家）、捷克的 Ondrej（理疗师）、斯洛伐克的 Marian（在奥地利工作）。",
+   "每集配官方在线练习。建议先听一遍抓大意，再做练习，最后再听一遍。",
+   "他们会说到不少奥地利说法，下面是听播客、在维也纳生活最常碰到的几个。"
+  ],
+  "vocab": [
+   [
+    "Baba!",
+    "再见（维也纳口语）",
+    "巴巴！"
+   ],
+   [
+    "Grüß Gott!",
+    "您好",
+    "格吕斯 戈特！"
+   ],
+   [
+    "Servus!",
+    "你好／再见",
+    "塞尔乌斯！"
+   ],
+   [
+    "der Jänner",
+    "一月",
+    "德尔 耶讷尔"
+   ],
+   [
+    "die Paradeiser",
+    "西红柿（复数）",
+    "迪 帕拉戴泽尔"
+   ],
+   [
+    "die Erdäpfel",
+    "土豆（复数）",
+    "迪 埃尔德埃普费尔"
+   ],
+   [
+    "das Sackerl",
+    "塑料袋／小袋子",
+    "达斯 萨克尔"
+   ],
+   [
+    "die Semmel",
+    "小圆面包",
+    "迪 泽梅尔"
+   ],
+   [
+    "leiwand",
+    "很棒（维也纳口语）",
+    "莱万德"
+   ],
+   [
+    "Passt!",
+    "行／没问题",
+    "帕斯特"
+   ]
+  ],
+  "grammar": [
+   [
+    "听播客抓大意：先听 wer, wo, was",
+    "谁、在哪、做什么，三件事听出来就算听懂了。",
+    [
+     [
+      "Sie kommt aus Belgrad und wohnt in Wien.",
+      "她来自贝尔格莱德，住在维也纳。",
+      "齐 科姆特 奥斯 贝尔格拉特 温特 沃恩特 因 维恩。"
+     ],
+     [
+      "Er arbeitet als Physiotherapeut in Graz.",
+      "他在格拉茨当理疗师。",
+      "埃尔 阿尔拜特 阿尔斯 菲西奥特拉波伊特 因 格拉茨。"
+     ]
+    ]
+   ]
+  ]
+ }
+]

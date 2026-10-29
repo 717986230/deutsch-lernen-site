@@ -119,6 +119,13 @@ a{color:var(--accent)}
 .vrow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
 .vrow:last-child{border-bottom:none}
 .vrow .de{font-weight:600}
+.tcard{position:relative}.tcard .ok{position:absolute;top:8px;right:10px;font-size:20px}
+.prog{margin:-4px 0 16px;background:var(--surface);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow)}
+.prog .bar{height:10px;border-radius:5px;background:var(--border);overflow:hidden;margin:6px 0 10px}.prog .bar i{display:block;height:100%;background:var(--brand)}
+.prog .btn{width:100%}
+.checkin{margin-top:24px;text-align:center}.checkin .btn{width:100%}
+.checkin .undo{background:var(--surface);color:var(--text);border:2px solid var(--brand)}
+.checkin .next{margin-top:10px;background:var(--surface);color:var(--text);border:1px solid var(--border)}
 .foot{margin-top:28px;font-size:12px;color:var(--dim);line-height:1.8;border-top:1px solid var(--border);padding-top:12px}
 </style>
 </head>
@@ -160,18 +167,47 @@ const word=it=>it.art?'<span class="art-'+it.art+'">'+it.art+' '+esc(it.de)+'</s
 const bg=t=>'background:linear-gradient(135deg,'+t.bg[0]+','+t.bg[1]+')';
 const lsGet=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}};
 const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+// 跟读打卡：{课id: 'YYYY-MM-DD'}，只存在本机
+const getDone=()=>{try{return JSON.parse(lsGet('kinderDone','{}'))||{}}catch(e){return {}}};
+const setDone=d=>lsSet('kinderDone',JSON.stringify(d));
+const ymd=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const ready=()=>ALL.filter(a=>THEMES.some(t=>t.id===a[0]));
+const nextLesson=done=>ready().find(a=>!done[a[0]]);
 
 function home(){
   stop();
   document.title='儿童德语：跟小獭 Otti 学德语（中德双语）| 德语学习手册';
+  const done=getDone();
   app.innerHTML='<div class="top"><a class="back" href="/">← 手册</a><h1>🧒 儿童德语<small>跟小獭 Otti 学德语 · 中德双语</small></h1></div>'
-   +'<div class="hero"><img src="otti.webp" alt="小獭 Otti" width="84" height="113"><div><p lang="de"><b>Hallo! Ich bin Otti.</b></p><p>你好！我是小獭奥蒂。选一个主题，点图听德语、看故事、玩游戏吧！</p><div class="say">按奥地利官方儿童课程 Ilwa 的 20 课排列。每课有「官方课」中文伴读：打开官方原版教材，配着中文梗概、生词和语法讲解一起学。</div></div></div>'
+   +'<div class="hero"><img src="otti.webp" alt="小獭 Otti" width="84" height="113"><div><p lang="de"><b>Hallo! Ich bin Otti.</b></p><p>你好！我是小獭奥蒂。选一个主题，点图听德语、看故事、玩游戏吧！</p><div class="say">按奥地利官方儿童课程 Ilwa 的 20 课排列。每课有「官方课」中文伴读：打开官方原版教材，配着中文梗概、生词和语法讲解一起学。</div></div></div>'+progress()
    +'<div class="grid">'+ALL.map(([id,de,zh,ic,slug],k)=>{
       const t=THEMES.find(x=>x.id===id);
-      return t?'<button class="tcard" style="'+bg(t)+'" onclick="location.hash=\''+id+'\'"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>第 '+(k+1)+' 课 · '+zh+'</span></button>'
+      return t?'<button class="tcard" style="'+bg(t)+'" onclick="location.hash=\''+id+'\'">'+(done[id]?'<span class="ok" aria-label="已打卡">✅</span>':'')+'<div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>第 '+(k+1)+' 课 · '+zh+'</span></button>'
               :'<a class="tcard soon" href="'+OIF+slug+'/"><div class="ic">'+ic+'</div><b lang="de">'+de+'</b><span>第 '+(k+1)+' 课 · '+zh+'<br></span></a>';
     }).join('')+'</div>'
    +foot();
+}
+function progress(){
+  const done=getDone(),all=ready(),n=all.filter(a=>done[a[0]]).length,nx=nextLesson(done);
+  const k=nx?ALL.indexOf(nx)+1:0;
+  const say=!n?'还没开始打卡。从第 1 课学起，学完一课点「打卡」，我帮你记着。'
+    :nx?'你已经学完 '+n+' 课啦！下一课是第 '+k+' 课「'+nx[2]+'」。'
+    :'20 课全部学完，太厉害了！🎉 可以挑喜欢的课再复习一遍。';
+  return '<div class="prog"><b>🦦 Otti 记着：已学完 '+n+' / '+all.length+' 课</b><div class="bar"><i style="width:'+Math.round(n/all.length*100)+'%"></i></div>'
+   +'<div style="font-size:14px;margin-bottom:10px">'+say+'</div>'
+   +(nx?'<button class="btn" onclick="location.hash=\''+nx[0]+'\'">▶ '+(n?'继续':'开始')+'第 '+k+' 课 · '+nx[2]+'</button>':'')+'</div>';
+}
+function checkin(t){
+  const done=getDone(),d=done[t.id];
+  const nx=ready().slice(ready().findIndex(a=>a[0]===t.id)+1).find(a=>!done[a[0]]&&a[0]!==t.id);
+  return '<div class="checkin">'+(d
+    ?'<div style="font-size:15px;margin-bottom:8px">✅ 这课 '+d+' 已打卡</div><button class="btn undo" id="ck">取消打卡</button>'
+    :'<button class="btn" id="ck">✅ 这课学完了，打卡</button>')
+   +(d&&nx?'<button class="btn next" onclick="location.hash=\''+nx[0]+'\'">下一课：第 '+(ALL.indexOf(nx)+1)+' 课 '+nx[2]+' →</button>':'')+'</div>';
+}
+function bindCheckin(t,el){
+  const b=el.querySelector('#ck');if(!b)return;
+  b.onclick=()=>{const done=getDone();if(done[t.id])delete done[t.id];else done[t.id]=ymd();setDone(done);theme(t.id,'guide');};
 }
 function foot(){
   return '<div class="foot">主题参照奥地利融合基金会（ÖIF）儿童德语课程「Ilwa Immerfroh」的 20 个场景，本页词句、故事和配音均为本站原创。想用官方原版：'
@@ -207,8 +243,10 @@ function guide(t,el){
     }).join('')+'</div>'
    +'<h2 class="gh">🧩 语法点</h2>'+g.grammar.map(gr=>'<div class="gcard"><b>'+esc(gr.t)+'</b>'+(gr.zh?'<p>'+esc(gr.zh)+'</p>':'')
       +gr.ex.map(x=>'<div class="vrow"><div style="flex:1;min-width:0"><div class="de" lang="de">'+esc(x.de)+'</div><div>'+esc(x.zh)+'</div><div class="py">'+esc(x.py)+'</div></div>'+spk(x.a,x.de)+'</div>').join('')+'</div>').join('')
-   +(g.notes&&g.notes.length?'<h2 class="gh">💡 小提示</h2>'+g.notes.map(n=>'<div class="tip">'+esc(n)+'</div>').join(''):'');
+   +(g.notes&&g.notes.length?'<h2 class="gh">💡 小提示</h2>'+g.notes.map(n=>'<div class="tip">'+esc(n)+'</div>').join(''):'')
+   +checkin(t);
   el.querySelectorAll('.spk[data-a]').forEach(b=>b.onclick=()=>play([b.dataset.a],b));
+  bindCheckin(t,el);
 }
 
 function look(t,el){

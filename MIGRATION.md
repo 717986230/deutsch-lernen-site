@@ -64,7 +64,7 @@ Vue 端改为：**语言是内容维度，不是全局开关**。页面自己决
 | 情景对话 | ✅ | `dialogs.json` / `en_dialogs.json` |
 | 短文 | ✅ | `readings.json` / `en_readings.json` |
 | 发音 / 数字 / 语法 | ✅ | `reference.json`（含 de/en 两份）|
-| 连载 | ❌ 仅德语 | 待补 `en_series.json` |
+| 连载 | ✅ | `series.json` / `en_series.json`（各 12 集） |
 | 拼写 / 测验 / 排行 | ❌ 不适用 | — |
 
 朗读也跟着切（`de-DE` / `en-US`），切语言会退回列表页，避免停在另一语言的详情页上。

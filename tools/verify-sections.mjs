@@ -13,7 +13,7 @@ import { getChromium, skipNoBrowser } from './_browser.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8738;
-const SECS = 'home phrases reading series dialog spell quiz rank grammar pronunciation numbers support me'.split(' ');
+const SECS = 'home phrases reading series dialog spell quiz rank grammar pronunciation numbers support me wordbook stats'.split(' ');
 let fail = 0;
 const bad = (m) => { console.error('ERROR ' + m); fail++; };
 
