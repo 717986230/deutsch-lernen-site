@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 // 「情景对话」——照旧站 #dialog 重做：10 段对话一页铺开（原来那版是列表点进单段）。
 // 每段：场景标题 + 级别徽章 + ▶播放全部 + ⌨️练这段；下面是左右分列的气泡，
 // 每条气泡带 德语 / 🔊 / 中文 / 谐音。
@@ -60,7 +61,7 @@ onBeforeUnmount(stop);
     </div>
     <p class="page-sub">真实场景 · 一问一答 · 🔊 逐句朗读 · 每句带谐音</p>
 
-    <p v-if="loading" class="page-sub">加载中…</p>
+    <Otti v-if="loading" scene="swim" bob>加载中…</Otti>
     <div v-for="(d, i) in list" :key="i" class="card dlg">
       <div class="dlg-head">
         <span class="dlg-scene">{{ d.icon }} {{ d.scene }}

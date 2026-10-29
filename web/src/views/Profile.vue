@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 import { ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { api } from '../api';
@@ -31,7 +32,7 @@ const lit = (u, b) => earned(u).includes(b.id);
   <div class="page">
     <div class="bar"><button class="back tap" @click="router.back()">‹ 返回</button></div>
     <p v-if="err" class="page-sub">{{ err }}</p>
-    <p v-else-if="!d" class="page-sub">加载中…</p>
+    <Otti v-else-if="!d" scene="swim" bob>加载中…</Otti>
     <template v-else>
       <div class="hd">
         <span class="av" :style="{background: d.user.av_bg || 'var(--brand)'}">{{ d.user.avatar || '🦊' }}</span>

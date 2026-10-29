@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 // 结构逐块照搬旧站 #home：hero → 学习看板 → 语音包提示 → 零基础入门 → 功能卡九宫格
 // → 学习方法折叠区 → 支持作者。文案、图标、顺序都不改。
 import { ref, computed, onMounted } from 'vue';
@@ -123,6 +124,7 @@ const TIPS = [
   <div class="page home">
     <!-- HERO：标题 + 德国三色条 + 一句话介绍 -->
     <div class="hero">
+      <Otti scene="hello" :h="120" class="hero-otti" />
       <div class="hero-label">{{ lang.isEn ? 'English · 英语学习' : 'Deutsche Sprache · 德语学习' }}</div>
       <h1>{{ lang.isEn ? '英语学习手册' : '德语学习手册' }}</h1>
       <div v-if="!lang.isEn" class="flag-strip" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -242,6 +244,7 @@ const TIPS = [
 .hero{margin-left:-20px;margin-right:-20px;
   text-align:center;padding:38px 16px 32px;
   background:linear-gradient(180deg,rgba(88,204,2,.07) 0%,transparent 100%)}
+.hero-otti{margin-bottom:10px}
 .hero-label{font-size:12px;letter-spacing:8px;color:var(--gold-text);text-transform:uppercase;margin-bottom:12px}
 .hero h1{font-size:clamp(26px,6vw,46px);font-weight:400;letter-spacing:3px;color:var(--text);margin:0 0 8px}
 .hero p{font-size:14px;color:var(--text-dim);line-height:1.6;margin:0}

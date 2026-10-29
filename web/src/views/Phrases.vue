@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 // 「词句大全」——**照旧站 #phrases 重做**，结构与控件逐项对齐 src.html：
 //   hero-label / 标题 / 副标题 → 词性上色图例 → 搜索框 + 最近搜索 → 级别标签
 //   → 级别说明 → 分类横滑标签 → 循环朗读 + 朗读设置 → 只看没学会的 → 结果数 → 卡片流
@@ -252,7 +253,7 @@ function step(myGen) {
     </div>
     <label class="only-unknown"><input v-model="onlyUnknown" type="checkbox"> 只看没学会的（藏起已打✓的词，专攻生词）</label>
 
-    <p v-if="loading" class="page-sub">📖 词库加载中…</p>
+    <Otti v-if="loading" scene="swim" bob>词库加载中…</Otti>
     <div v-else class="results">{{ searching ? `找到 ${hits.length} 条` : `共 ${shownCount} 条` }}</div>
 
     <!-- 卡片流：搜索时平铺，否则按分类分段；两种都走同一条分批渲染的一维列表 -->
@@ -282,7 +283,7 @@ function step(myGen) {
     <!-- 哨兵：进视口就再放一批（rootMargin 700px，滚到之前就备好了） -->
     <div ref="sentinel" style="height:1px"></div>
     <p v-if="more" class="page-sub">继续下滑加载更多…（已显示 {{ visible.length }} / {{ flat.length }}）</p>
-    <p v-if="!loading && !flat.length" class="page-sub">这个筛选下没有词条，换个级别试试 🙂</p>
+    <Otti v-if="!loading && !flat.length" scene="nap">这个筛选下没有词条，换个级别试试</Otti>
   </div>
 </template>
 

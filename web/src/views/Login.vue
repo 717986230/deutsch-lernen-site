@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 // 一页只做一件事：登录。注册在 /register，重置密码在 /reset。
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -35,6 +36,7 @@ async function submit() {
 
 <template>
   <div class="auth">
+    <Otti scene="face" :h="76" />
     <p class="auth-brand">德语学习手册</p>
     <h1 class="auth-h1">登录</h1>
 

@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 // 「支持作者」——照旧站 #support 补全：正文说明 → 收款码 → 词典来源致谢
 // → 分享按钮 → 联系作者 → 隐私政策。之前这页只有标题 + 二维码，缺了一半。
 import { ref } from 'vue';
@@ -29,6 +30,7 @@ async function copyShare() {
   <div class="page">
     <div class="hero-label">Support</div>
     <h1 class="page-title">支持作者 · 请杯咖啡 ☕</h1>
+    <Otti scene="cheers" :h="130" />
 
     <p class="sp-p">
       这份手册从词句整理、发音朗读到测验复习，都是<b>业余时间一点点做出来、并持续维护</b>的；

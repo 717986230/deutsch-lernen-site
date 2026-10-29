@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 // 一页只做一件事：注册。必填只有 2 个；昵称/邮箱收进「选填」区，
 // 但隐私告知常驻在选填区外 —— 折叠起来的告知不成立为「同意」。
 import { ref } from 'vue';
@@ -34,6 +35,7 @@ async function submit() {
 
 <template>
   <div class="auth">
+    <Otti scene="curious" :h="76" />
     <p class="auth-brand">德语学习手册</p>
     <h1 class="auth-h1">注册</h1>
     <p class="auth-sub">用户名和密码，两项必填</p>

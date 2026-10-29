@@ -9,6 +9,7 @@ import { speak } from '../api/speak';
 import { useAccount } from '../store/account';
 import { useLang } from '../store/lang';
 import { track } from '../api/track';
+import Otti from './Otti.vue';
 
 const acct = useAccount(); const lang = useLang();
 const item = ref(null);
@@ -63,6 +64,7 @@ function close(muteToday) {
 <template>
   <div v-if="item" class="boost-overlay" role="dialog" aria-label="每日一句" @click.self="close(false)">
     <div class="boost-card">
+      <Otti scene="study" :h="96" class="boost-otti" />
       <div class="boost-label">每日一句 · Satz des Tages</div>
       <div class="boost-de" lang="de">{{ item.de }}</div>
       <button class="boost-spk" type="button" aria-label="朗读这句" @click="say">🔊 朗读</button>
@@ -75,6 +77,7 @@ function close(muteToday) {
 </template>
 
 <style scoped>
+.boost-otti{margin:-4px auto 6px}
 /* z-index 要高过固定顶栏(200) 和底部标签栏(300)，否则遮罩底下会露出一条导航 */
 .boost-overlay{position:fixed;inset:0;z-index:1400;background:rgba(0,0,0,.5);
   display:flex;align-items:center;justify-content:center;padding:24px}

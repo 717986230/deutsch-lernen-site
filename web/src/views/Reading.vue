@@ -1,4 +1,5 @@
 <script setup>
+import Otti from '../components/Otti.vue';
 // 「阅读 · 连载」——照旧站 #reading 重做：一页到底，不是「列表点进详情」。
 //   四个入口标签（短文/餐厅/连载/对话）→ 循环朗读 + 语速 → 隐藏词义
 //   → 级别标签 → 篇数 → 每篇一张卡（标题+级别徽章+中文+▶朗读，下面逐句 🔊/德语/中文/谐音）
@@ -119,7 +120,7 @@ const say = (t) => { stop(); loopMode.value = ''; speak(t, langS.isEn ? 'en-US' 
     </div>
     <div class="count">共 {{ shown.length }} 篇短文</div>
 
-    <p v-if="loading" class="page-sub">加载中…</p>
+    <Otti v-if="loading" scene="swim" bob>加载中…</Otti>
     <div v-for="(r, ri) in visible" :key="ri" class="card art">
       <div class="art-head">
         <span class="art-title" :lang="langS.isEn ? 'en' : 'de'">{{ r.title }}</span>
