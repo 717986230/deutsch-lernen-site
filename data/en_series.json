@@ -1,1 +1,566 @@
-[{"level":"a1","title":"Student Life 1: Arrival","zh":"留学生活·第1集 到达","paras":[["My name is Lin and I come from China.","我叫琳，来自中国。"],["Today I arrived in London.","今天我到了伦敦。"],["The flight took twelve hours.","飞行花了十二个小时。"],["I am tired but excited.","我很累，但很兴奋。"],["A student from the university met me.","一位大学的学生来接我。"],["We took the train to the city.","我们坐火车进城。"],["Everything looks new to me.","一切对我来说都是新的。"],["Tomorrow I will see my room.","明天我要去看我的房间。"]]},{"level":"a1","title":"Student Life 2: The Room","zh":"留学生活·第2集 找住处","paras":[["My room is small but bright.","我的房间小但明亮。"],["There is a bed, a desk and a shelf.","有一张床、一张桌子和一个架子。"],["I share the kitchen with three people.","我和三个人共用厨房。"],["My neighbour is from Spain.","我的邻居来自西班牙。"],["He showed me the supermarket.","他带我去了超市。"],["The rent is four hundred a month.","房租每月四百。"],["It is not cheap, but it is close to school.","不便宜，但离学校近。"],["Tonight I will cook for the first time.","今晚我要第一次做饭。"]]},{"level":"a2","title":"Student Life 3: First Day","zh":"留学生活·第3集 开学第一天","paras":[["Today was my first day at university.","今天是我在大学的第一天。"],["I got lost twice on campus.","我在校园里迷路了两次。"],["The lecture hall was full of students.","阶梯教室里坐满了学生。"],["The professor spoke very fast.","教授讲得很快。"],["I understood maybe half of it.","我大概听懂了一半。"],["A girl next to me lent me her notes.","旁边的女生把笔记借给了我。"],["We had coffee together afterwards.","之后我们一起喝了咖啡。"],["I think I will like it here.","我想我会喜欢这里的。"]]},{"level":"a2","title":"Student Life 4: The Job","zh":"留学生活·第4集 打工","paras":[["I need money, so I look for a job.","我需要钱，所以在找工作。"],["A café near the station is hiring.","车站附近的咖啡馆在招人。"],["I sent an email and they called me.","我发了邮件，他们打来电话。"],["The interview was short and friendly.","面试很短，气氛友好。"],["I start next Monday, three days a week.","我下周一开始，每周三天。"],["My English gets better every shift.","每上一次班英语都进步一点。"],["Customers speak fast, but I ask them to repeat.","客人说得快，但我会请他们重复。"],["Working here is harder than studying.","在这儿工作比学习还累。"]]},{"level":"b1","title":"Student Life 5: Homesick","zh":"留学生活·第5集 想家","paras":[["Last week I felt homesick for the first time.","上周我第一次感到想家。"],["It was raining and I had no plans.","当时在下雨，我也没什么安排。"],["I called my parents for an hour.","我给父母打了一个小时电话。"],["My mother asked whether I was eating well.","妈妈问我有没有好好吃饭。"],["I said yes, but she did not believe me.","我说有，但她不信。"],["Afterwards I cooked a dish from home.","之后我做了一道家乡菜。"],["The smell alone made me feel better.","光是那个味道就让我好受多了。"],["Missing home does not mean I want to go back.","想家并不代表我想回去。"]]},{"level":"b1","title":"Student Life 6: One Year Later","zh":"留学生活·第6集 一年之后","paras":[["A year has passed since I arrived.","我到这里已经一年了。"],["I no longer get lost on campus.","我在校园里不会再迷路了。"],["I can follow a whole lecture now.","现在我能听懂整节课。"],["My accent is still there, and that is fine.","我的口音还在，这没什么。"],["I have friends from four different countries.","我有来自四个国家的朋友。"],["We argue about food and agree about exams.","我们为食物争论，为考试达成一致。"],["Next year I want to do an internship.","明年我想去实习。"],["The person who arrived last year would not recognise me.","去年刚到的那个我，恐怕认不出现在的我。"]]}]
+[
+ {
+  "level": "a1",
+  "title": "Student Life 1: Arrival",
+  "zh": "留学生活·第1集 到达英国",
+  "paras": [
+   [
+    "My name is Lin and I come from China.",
+    "我叫琳，来自中国。",
+    "麦 内姆 伊兹 林 安德 艾 康 弗罗姆 柴呢。"
+   ],
+   [
+    "Today I arrive in England.",
+    "今天我到达英国。",
+    "特戴 艾 阿莱夫 因 英格兰德。"
+   ],
+   [
+    "The plane lands in London in the morning.",
+    "飞机早上降落在伦敦。",
+    "泽 普冷 伦德兹 因 兰登 因 泽 莫宁。"
+   ],
+   [
+    "I am tired, but very happy.",
+    "我很累，但非常开心。",
+    "艾 埃姆 泰尔德，巴特 维瑞 哈皮。"
+   ],
+   [
+    "At the airport I wait for my bags.",
+    "在机场我等我的行李。",
+    "艾特 泽 埃泡特 艾 威特 佛 麦 贝格兹。"
+   ],
+   [
+    "Then I take the train into the city.",
+    "然后我坐火车进城。",
+    "泽恩 艾 太克 泽 特莱因 因图 泽 西提。"
+   ],
+   [
+    "London is big and everything is new to me.",
+    "伦敦很大，一切对我都是新的。",
+    "兰登 伊兹 比格 安德 埃夫瑞辛 伊兹 纽 图 米。"
+   ],
+   [
+    "My new life starts now.",
+    "我的新生活现在开始了。",
+    "麦 纽 莱夫 斯塔特斯 瑙。"
+   ]
+  ]
+ },
+ {
+  "level": "a1",
+  "title": "Student Life 2: Looking for a Room",
+  "zh": "留学生活·第2集 找房子",
+  "paras": [
+   [
+    "I am looking for a room in London.",
+    "我在伦敦找一个房间。",
+    "艾 埃姆 鲁金 佛 厄 鲁姆 因 兰登。"
+   ],
+   [
+    "The rent is very high, sadly.",
+    "房租可惜很贵。",
+    "泽 润特 伊兹 维瑞 海，塞德利。"
+   ],
+   [
+    "I find a lot of offers online.",
+    "我在网上找到很多房源。",
+    "艾 凡德 厄 拉特 奥夫 奥佛兹 昂莱恩。"
+   ],
+   [
+    "Today I visit a shared flat.",
+    "今天我去看一间合租房。",
+    "特戴 艾 维斯特 厄 谢德 弗莱特。"
+   ],
+   [
+    "The room is small, but bright.",
+    "房间很小，但很亮。",
+    "泽 鲁姆 伊兹 斯莫尔，巴特 布赖特。"
+   ],
+   [
+    "My new flatmates are nice and friendly.",
+    "新室友们友好又亲切。",
+    "麦 纽 弗莱特梅茨 阿 奈斯 安德 弗兰德利。"
+   ],
+   [
+    "We share the kitchen and the bathroom.",
+    "厨房和卫生间我们一起共用。",
+    "威 谢尔 泽 基陈 安德 泽 巴斯鲁姆。"
+   ],
+   [
+    "I say: “I will take the room!”",
+    "我说：“我要这个房间！”",
+    "艾 塞：艾 威尔 太克 泽 鲁姆！"
+   ]
+  ]
+ },
+ {
+  "level": "a1",
+  "title": "Student Life 3: At the University",
+  "zh": "留学生活·第3集 大学注册",
+  "paras": [
+   [
+    "Today I go to the university for the first time.",
+    "今天我第一次去大学。",
+    "特戴 艾 高 图 泽 尤尼弗瑟提 佛 泽 佛斯特 泰姆。"
+   ],
+   [
+    "First I have to register.",
+    "首先我得办注册。",
+    "佛斯特 艾 海夫 图 瑞吉斯特。"
+   ],
+   [
+    "In the office I fill in a form.",
+    "在办公室我填一张表格。",
+    "因 泽 奥菲斯 艾 菲尔 因 厄 丰。"
+   ],
+   [
+    "The woman at the desk needs my passport.",
+    "工作人员需要我的护照。",
+    "泽 乌门 艾特 泽 德斯克 尼兹 麦 佩斯泡特。"
+   ],
+   [
+    "“Here is your student card,” she says.",
+    "“这是您的学生证，”她说。",
+    "希 伊兹 尤 斯图登特 卡德，希 塞兹。"
+   ],
+   [
+    "With the card I get cheaper bus tickets.",
+    "凭学生证我坐公交更便宜。",
+    "威兹 泽 卡德 艾 盖特 奇珀 巴斯 提克特斯。"
+   ],
+   [
+    "The campus is big and modern.",
+    "校园又大又现代。",
+    "泽 肯珀斯 伊兹 比格 安德 马登。"
+   ],
+   [
+    "I am looking forward to my studies.",
+    "我期待着学习生活。",
+    "艾 埃姆 鲁金 佛沃德 图 麦 斯塔迪兹。"
+   ]
+  ]
+ },
+ {
+  "level": "a2",
+  "title": "Student Life 4: The First Class",
+  "zh": "留学生活·第4集 第一节课",
+  "paras": [
+   [
+    "My first day of classes has started.",
+    "我的第一天课开始了。",
+    "麦 佛斯特 戴 奥夫 克莱瑟兹 海兹 斯塔提德。"
+   ],
+   [
+    "I spent a long time looking for the right room.",
+    "我找对教室找了很久。",
+    "艾 斯潘特 厄 龙 泰姆 鲁金 佛 泽 赖特 鲁姆。"
+   ],
+   [
+    "The professor speaks fast but clearly.",
+    "教授讲得又快又清楚。",
+    "泽 普惹费瑟 斯皮克斯 法斯特 巴特 克利利。"
+   ],
+   [
+    "At first I don't understand everything.",
+    "一开始我没全听懂。",
+    "艾特 佛斯特 艾 东特 安德斯坦德 埃夫瑞辛。"
+   ],
+   [
+    "Luckily, a student next to me helps me.",
+    "幸好旁边一个同学帮了我。",
+    "拉克利，厄 斯图登特 奈克斯特 图 米 海尔普斯 米。"
+   ],
+   [
+    "In the break we talk about the lecture.",
+    "课间我们聊起这堂课。",
+    "因 泽 布瑞克 威 托克 阿包特 泽 莱克澈。"
+   ],
+   [
+    "She explains the most important points to me.",
+    "她给我讲了最重要的几点。",
+    "希 伊克斯普冷兹 泽 莫斯特 因波坦特 波因茨 图 米。"
+   ],
+   [
+    "After the class I feel much more confident.",
+    "下课后我感觉踏实多了。",
+    "阿夫特 泽 克莱斯 艾 菲尔 马奇 莫 康菲登特。"
+   ]
+  ]
+ },
+ {
+  "level": "a2",
+  "title": "Student Life 5: At the Supermarket",
+  "zh": "留学生活·第5集 超市购物",
+  "paras": [
+   [
+    "After class I go shopping.",
+    "下课后我去购物。",
+    "阿夫特 克莱斯 艾 高 沙品。"
+   ],
+   [
+    "The supermarket has a huge choice.",
+    "超市里选择很多。",
+    "泽 苏珀马基特 海兹 厄 休吉 乔伊斯。"
+   ],
+   [
+    "I look for rice, vegetables and some fruit.",
+    "我找米、蔬菜和一些水果。",
+    "艾 鲁克 佛 赖斯，维吉特宝兹 安德 萨姆 弗鲁特。"
+   ],
+   [
+    "Many shops have self-service checkouts.",
+    "很多超市都有自助收银台。",
+    "门尼 沙普斯 海夫 塞尔夫瑟弗斯 切考茨。"
+   ],
+   [
+    "I forgot to bring a bag with me.",
+    "我忘了带袋子。",
+    "艾 佛嘎特 图 布润 厄 贝格 威兹 米。"
+   ],
+   [
+    "So I buy a cloth bag for fifty pence.",
+    "所以我花五十便士买了一个布袋。",
+    "索 艾 拜 厄 克洛斯 贝格 佛 菲夫提 彭斯。"
+   ],
+   [
+    "Next time I will bring my own bag.",
+    "下次我会带自己的袋子。",
+    "奈克斯特 泰姆 艾 威尔 布润 麦 欧恩 贝格。"
+   ],
+   [
+    "This way I save a little money.",
+    "这样我能省一点钱。",
+    "泽斯 韦 艾 塞夫 厄 利头 马尼。"
+   ]
+  ]
+ },
+ {
+  "level": "a2",
+  "title": "Student Life 6: At the Doctor's",
+  "zh": "留学生活·第6集 看医生",
+  "paras": [
+   [
+    "I haven't felt well since yesterday.",
+    "从昨天起我感觉不舒服。",
+    "艾 哈芬特 费尔特 威尔 辛斯 耶斯特戴。"
+   ],
+   [
+    "I have a sore throat and a fever.",
+    "我嗓子疼、发烧。",
+    "艾 海夫 厄 索 斯罗特 安德 厄 菲弗。"
+   ],
+   [
+    "So I go to the doctor today.",
+    "所以我今天去看医生。",
+    "索 艾 高 图 泽 多克特 特戴。"
+   ],
+   [
+    "At the surgery I have to wait a little.",
+    "在诊所我得等一会儿。",
+    "艾特 泽 瑟杰瑞 艾 海夫 图 威特 厄 利头。"
+   ],
+   [
+    "The doctor asks: “Where does it hurt?”",
+    "医生问：“哪里疼？”",
+    "泽 多克特 阿斯克斯：威 达兹 伊特 赫特？"
+   ],
+   [
+    "She examines me and writes a prescription.",
+    "她给我检查并开了处方。",
+    "希 伊格泽门兹 米 安德 赖茨 厄 普瑞斯克里普申。"
+   ],
+   [
+    "“Drink lots of tea and get some rest.”",
+    "“多喝茶，好好休息。”",
+    "德林克 拉茨 奥夫 提 安德 盖特 萨姆 瑞斯特。"
+   ],
+   [
+    "Then I pick up the medicine at the chemist's.",
+    "然后我去药房取药。",
+    "泽恩 艾 皮克 阿普 泽 梅德森 艾特 泽 凯米斯茨。"
+   ]
+  ]
+ },
+ {
+  "level": "a2",
+  "title": "Student Life 7: New Friends",
+  "zh": "留学生活·第7集 交新朋友",
+  "paras": [
+   [
+    "Slowly I am getting to know new people.",
+    "我慢慢认识了新朋友。",
+    "斯洛利 艾 埃姆 盖廷 图 诺 纽 皮宝。"
+   ],
+   [
+    "A classmate invites me to dinner.",
+    "一个同学请我吃晚饭。",
+    "厄 克莱斯梅特 因外特斯 米 图 丁纳。"
+   ],
+   [
+    "She cooks a typical English dish.",
+    "她做了一道典型的英国菜。",
+    "希 库克斯 厄 提珀克尔 因格利什 迪什。"
+   ],
+   [
+    "We talk about culture, studies and languages.",
+    "我们聊文化、学习和语言。",
+    "威 托克 阿包特 卡尔澈，斯塔迪兹 安德 伦格沃哲兹。"
+   ],
+   [
+    "At first my English is not perfect.",
+    "起初我的英语还不完美。",
+    "艾特 佛斯特 麦 因格利什 伊兹 纳特 珀费克特。"
+   ],
+   [
+    "But everyone is patient and listens to me.",
+    "但大家都很耐心，听我说。",
+    "巴特 埃夫瑞万 伊兹 佩申特 安德 利森兹 图 米。"
+   ],
+   [
+    "We laugh a lot and the evening goes by fast.",
+    "我们笑了很多，晚上过得很快。",
+    "威 莱夫 厄 拉特 安德 泽 伊夫宁 戈兹 拜 法斯特。"
+   ],
+   [
+    "At last I don't feel alone any more.",
+    "我终于不再感到孤单。",
+    "艾特 拉斯特 艾 东特 菲尔 厄龙 埃尼 莫。"
+   ]
+  ]
+ },
+ {
+  "level": "a2",
+  "title": "Student Life 8: A Part-time Job",
+  "zh": "留学生活·第8集 打工",
+  "paras": [
+   [
+    "Life in London is not cheap.",
+    "伦敦的生活不便宜。",
+    "莱夫 因 兰登 伊兹 纳特 奇普。"
+   ],
+   [
+    "So I am looking for a part-time job.",
+    "所以我找一份兼职。",
+    "索 艾 埃姆 鲁金 佛 厄 帕特泰姆 乔布。"
+   ],
+   [
+    "A café needs someone to help.",
+    "一家咖啡馆需要一名帮手。",
+    "厄 卡菲 尼兹 桑万 图 海尔普。"
+   ],
+   [
+    "I apply and have a short interview.",
+    "我去应聘，做了简短面谈。",
+    "艾 厄普莱 安德 海夫 厄 肖特 因特夫尤。"
+   ],
+   [
+    "I can start the very next day.",
+    "第二天我就能开始。",
+    "艾 坎 斯塔特 泽 维瑞 奈克斯特 戴。"
+   ],
+   [
+    "At first I sometimes mix up the orders.",
+    "一开始我有时弄混订单。",
+    "艾特 佛斯特 艾 萨姆泰姆兹 米克斯 阿普 泽 奥德兹。"
+   ],
+   [
+    "But after a week everything goes well.",
+    "但一周后一切顺利。",
+    "巴特 阿夫特 厄 威克 埃夫瑞辛 戈兹 威尔。"
+   ],
+   [
+    "I am proud of the money I earn myself.",
+    "靠自己挣的钱，我很自豪。",
+    "艾 埃姆 普饶德 奥夫 泽 马尼 艾 恩 麦塞尔夫。"
+   ]
+  ]
+ },
+ {
+  "level": "a2",
+  "title": "Student Life 9: The Bank Account",
+  "zh": "留学生活·第9集 办银行卡",
+  "paras": [
+   [
+    "Today I open a bank account.",
+    "今天我开一个银行账户。",
+    "特戴 艾 欧盆 厄 本克 厄康特。"
+   ],
+   [
+    "At the bank I have to fill in a form.",
+    "在银行我得填一张表。",
+    "艾特 泽 本克 艾 海夫 图 菲尔 因 厄 丰。"
+   ],
+   [
+    "The bank needs my passport and my address.",
+    "银行需要我的护照和住址。",
+    "泽 本克 尼兹 麦 佩斯泡特 安德 麦 诶德瑞斯。"
+   ],
+   [
+    "I will get a bank card and a PIN.",
+    "我会拿到一张银行卡和一个密码。",
+    "艾 威尔 盖特 厄 本克 卡德 安德 厄 品。"
+   ],
+   [
+    "“The card will come by post in a week,” he says.",
+    "“卡会在一周后邮寄过来，”他说。",
+    "泽 卡德 威尔 康 拜 坡斯特 因 厄 威克，希 塞兹。"
+   ],
+   [
+    "With the account I can pay my rent.",
+    "有了账户我就能付房租。",
+    "威兹 泽 厄康特 艾 坎 佩 麦 润特。"
+   ],
+   [
+    "Online banking is easy and fast.",
+    "网上银行又方便又快。",
+    "昂莱恩 本金 伊兹 伊齐 安德 法斯特。"
+   ],
+   [
+    "Now my money is safe.",
+    "现在我的钱安全了。",
+    "瑙 麦 马尼 伊兹 塞夫。"
+   ]
+  ]
+ },
+ {
+  "level": "b1",
+  "title": "Student Life 10: The Exam",
+  "zh": "留学生活·第10集 考试",
+  "paras": [
+   [
+    "Soon I have my first big exam.",
+    "很快我就要迎来第一场大考。",
+    "孙 艾 海夫 麦 佛斯特 比格 伊格泽姆。"
+   ],
+   [
+    "For weeks I have been studying almost every day.",
+    "几周以来我几乎每天都在学习。",
+    "佛 威克斯 艾 海夫 宾 斯塔迪因 奥尔莫斯特 埃夫瑞 戴。"
+   ],
+   [
+    "In the library I finally find some peace and quiet.",
+    "在图书馆我终于找到了安静。",
+    "因 泽 莱布莱瑞 艾 法呢利 凡德 萨姆 皮斯 安德 夸耶特。"
+   ],
+   [
+    "Sometimes I study together with friends.",
+    "有时我和朋友一起学习。",
+    "萨姆泰姆兹 艾 斯塔迪 图盖泽 威兹 弗兰兹。"
+   ],
+   [
+    "On the day of the exam I am quite nervous.",
+    "考试那天我相当紧张。",
+    "昂 泽 戴 奥夫 泽 伊格泽姆 艾 埃姆 克怀特 讷弗斯。"
+   ],
+   [
+    "The questions are hard, but I can manage.",
+    "题目很难，但还做得来。",
+    "泽 克威斯陈兹 阿 哈德，巴特 艾 坎 梅呢吉。"
+   ],
+   [
+    "After two hours I hand in my paper.",
+    "两小时后我交了卷。",
+    "阿夫特 图 阿沃兹 艾 汉德 因 麦 佩珀。"
+   ],
+   [
+    "Whatever the result, I have done my best.",
+    "不管结果如何，我已尽了全力。",
+    "瓦特弗 泽 瑞扎尔特，艾 海夫 当 麦 拜斯特。"
+   ]
+  ]
+ },
+ {
+  "level": "b1",
+  "title": "Student Life 11: A Holiday Trip",
+  "zh": "留学生活·第11集 假期旅行",
+  "paras": [
+   [
+    "In the holidays I go on a trip.",
+    "假期里我去旅行。",
+    "因 泽 哈勒戴兹 艾 高 昂 厄 特瑞普。"
+   ],
+   [
+    "I take the train to Edinburgh.",
+    "我坐火车去爱丁堡。",
+    "艾 太克 泽 特莱因 图 爱丁伯勒。"
+   ],
+   [
+    "The countryside on the way is beautiful.",
+    "沿途的风景非常美。",
+    "泽 康特瑞赛德 昂 泽 韦 伊兹 比尤提佛。"
+   ],
+   [
+    "I stay in a small youth hostel.",
+    "我住在一家小青年旅舍。",
+    "艾 斯泰 因 厄 斯莫尔 尤斯 哈斯特尔。"
+   ],
+   [
+    "During the day I visit museums and old churches.",
+    "白天我参观博物馆和古老的教堂。",
+    "杜润 泽 戴 艾 维斯特 缪齐厄姆兹 安德 欧德 澈奇兹。"
+   ],
+   [
+    "In the evening I try the local food.",
+    "晚上我尝试当地的菜肴。",
+    "因 泽 伊夫宁 艾 特莱 泽 洛克尔 富德。"
+   ],
+   [
+    "On the way I meet travellers from all over the world.",
+    "旅途中我认识了来自世界各地的旅行者。",
+    "昂 泽 韦 艾 米特 特瑞弗勒兹 弗罗姆 奥尔 欧弗 泽 沃尔德。"
+   ],
+   [
+    "I will never forget this trip.",
+    "这次旅行我永远不会忘记。",
+    "艾 威尔 内弗 佛盖特 泽斯 特瑞普。"
+   ]
+  ]
+ },
+ {
+  "level": "b1",
+  "title": "Student Life 12: Finding a Job after Graduation",
+  "zh": "留学生活·第12集 毕业找工作",
+  "paras": [
+   [
+    "My studies are almost over.",
+    "我的学业快结束了。",
+    "麦 斯塔迪兹 阿 奥尔莫斯特 欧弗。"
+   ],
+   [
+    "Now I am looking for a real job.",
+    "现在我找一份正式工作。",
+    "瑙 艾 埃姆 鲁金 佛 厄 瑞尔 乔布。"
+   ],
+   [
+    "I send out lots of applications and wait.",
+    "我投了很多求职申请，然后等待。",
+    "艾 森德 奥特 拉茨 奥夫 诶普勒凯申兹 安德 威特。"
+   ],
+   [
+    "At last I am invited to an interview.",
+    "终于我收到了一个面试邀请。",
+    "艾特 拉斯特 艾 埃姆 因外特德 图 恩 因特夫尤。"
+   ],
+   [
+    "I prepare carefully for the interview.",
+    "我认真准备面试。",
+    "艾 普瑞佩 凯佛利 佛 泽 因特夫尤。"
+   ],
+   [
+    "A week later the good news arrives.",
+    "一周后好消息来了。",
+    "厄 威克 雷特 泽 古德 努兹 阿莱夫斯。"
+   ],
+   [
+    "“We would like to offer you the job,” the company writes.",
+    "“我们很愿意录用您，”公司写道。",
+    "威 伍德 莱克 图 奥弗 优 泽 乔布，泽 康珀尼 赖茨。"
+   ],
+   [
+    "A new chapter of my life in England begins.",
+    "我在英国的新篇章开始了。",
+    "厄 纽 切普特 奥夫 麦 莱夫 因 英格兰德 比金兹。"
+   ]
+  ]
+ }
+]
