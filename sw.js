@@ -1,5 +1,5 @@
 // 自动生成（build.mjs），勿手改。壳网络优先；词典切片持久缓存、跨版本复用。
-const V='de-76010f3e45',DATA='de-data',KEEP=["de.7ca4718b.dat","en.6723bc5b.dat"];
+const V='de-0e7b65d26f',DATA='de-data',KEEP=["de.7ca4718b.dat","en.6723bc5b.dat"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['index.html','manifest.webmanifest','icon-192.png','icon-512.png'])).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{
   const ks=await caches.keys();
@@ -13,7 +13,8 @@ self.addEventListener('fetch',e=>{
   const u=new URL(e.request.url);
   if(u.origin!==location.origin||e.request.method!=='GET')return;
   if(u.pathname.startsWith('/vido/'))return; // Vido 视频卡是另一个应用（含接口与视频分段请求），不经本站缓存
-  if(e.request.mode==='navigate'||u.pathname==='/'||u.pathname.endsWith('/index.html')){
+  // 独立页（kinder/ oeif/ ielts/）的 .json 内容会单独更新，同样网络优先，免得改了内容还读旧缓存
+  if(e.request.mode==='navigate'||u.pathname==='/'||u.pathname.endsWith('/index.html')||u.pathname.endsWith('.json')){
     // 页面：网络优先（保证更新），断网回退缓存
     e.respondWith(fetch(e.request).then(r=>{const cp=r.clone();caches.open(V).then(c=>c.put(e.request,cp));return r;})
       .catch(()=>caches.match(e.request).then(r=>r||caches.match('index.html'))));

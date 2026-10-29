@@ -706,6 +706,12 @@ body .sp-go{max-width:none;width:100%;max-width:460px;margin:0 auto;border-radiu
         <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">儿童德语</div>
         <div style="font-size:12px;color:var(--text-dim)">点图听词·双语小故事·游戏</div>
       </a>
+      <!-- 奥地利官方 A1/A2 伴读（oeif/，独立页面，只链接 ÖIF 原版 + 本站中文讲解） -->
+      <a class="card" href="/oeif/" style="display:block;text-decoration:none;text-align:center;padding:24px 16px">
+        <div class="fic fic-red" style="font-size:22px;line-height:1">🇦🇹</div>
+        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">奥地利官方 A1/A2</div>
+        <div style="font-size:12px;color:var(--text-dim)">ÖIF 网课·模拟考·中文伴读</div>
+      </a>
       <!-- 雅思词汇（ielts/，独立页面，词库由 tools/gen-ielts.py 从 Word Atlas 生成） -->
       <a class="card" href="/ielts/" style="display:block;text-decoration:none;text-align:center;padding:24px 16px">
         <div class="fic fic-blue" style="font-size:22px;line-height:1">🇬🇧</div>
@@ -5318,7 +5324,7 @@ function renderStats(){
   var run=0;for(i=(today>=60?0:1);i<400;i++){if((o[_stKey(new Date(Date.now()-i*864e5))]||0)>=60)run++;else break;}
   var streak=Math.max(run,(s.last===t||s.last===_yday())?(s.streak||0):0),best=Math.max(s.best||0,streak);
   var wb=0,due=0;try{wb=Object.keys(_wbGet()).length;due=wbDue().length;}catch(e){}
-  var kd=0;try{kd=Object.keys(JSON.parse(localStorage.getItem('kinderDone')||'{}')).length;}catch(e){}
+  var kd=0;try{kd=Object.keys(JSON.parse(localStorage.getItem('kinderDone')||'{}')).length;}catch(e){}var od=0;try{od=Object.keys(JSON.parse(localStorage.getItem('oeifDone')||'{}')).length;}catch(e){}
   var cal='';for(i=34;i>=0;i--){var d=new Date(Date.now()-i*864e5),m=_stMin(o[_stKey(d)]);cal+='<i class="st-c'+(m>=30?' l3':m>=10?' l2':m>=1?' l1':'')+(i===0?' today':'')+'" title="'+(d.getMonth()+1)+'/'+d.getDate()+'：'+m+' 分钟"></i>';}
   var wd=['日','一','二','三','四','五','六'];
   el.innerHTML='<div class="dash"><div class="dash-stats">'
@@ -5335,6 +5341,7 @@ function renderStats(){
     +'<div><span>累计练习次数</span><b>'+(s.total||0)+' 次</b></div>'
     +'<div onclick="showSection(\'wordbook\')" style="cursor:pointer"><span>📒 生词本</span><b>'+wb+' 词'+(due?' · '+due+' 个待复习 →':'')+'</b></div>'
     +'<div onclick="location.href=\'/kinder/\'" style="cursor:pointer"><span>🧒 儿童课打卡</span><b>'+kd+' / 20 课 →</b></div>'
+    +'<div onclick="location.href=\'/oeif/\'" style="cursor:pointer"><span>🇦🇹 官方 A1/A2 打卡</span><b>'+od+' / 13 单元 →</b></div>'
     +'</div><p style="font-size:12px;color:var(--text-faint);margin-top:12px;line-height:1.7">只在本站页面打开、且 1 分钟内有操作或正在朗读时计时。数据只存在这台手机的浏览器里。</p></div>';
 }
 function _dashTrend(s,today){

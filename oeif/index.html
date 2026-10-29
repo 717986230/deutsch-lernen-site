@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>奥地利官方 A1/A2 德语：中文伴读（ÖIF 网课·词汇·模拟考）| 德语学习手册</title>
+<meta name="description" content="跟着奥地利融合基金会 ÖIF 的免费官方材料学德语：A1/A2 直播网课、词汇训练、在线模拟考、价值与常识题库、学习播客。每个单元配中文讲解、生词、谐音和朗读。">
+<link rel="canonical" href="https://www.uuoo.site/oeif/">
+<meta name="theme-color" content="#f6f1e7">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/icon-192.png">
+<!-- 手写页面；内容在 oeif/units.json（谐音由 units.src.json 补全，见 CHANGELOG） -->
+<style>
+:root{
+  --bg:#f6f1e7;--surface:#fffdf8;--surface-2:#faf5ec;--text:#1a2035;--dim:#434b65;--faint:#5f6374;--border:rgba(26,32,53,.12);
+  --accent:#b5492e;--accent-text:#983b24;--on-accent:#fffdf8;--ok:#3a5c34;--der:#2f6189;--die:#b13a2c;--das:#3f6b38;
+  --shadow:0 1px 2px rgba(30,38,64,.05),0 18px 40px -24px rgba(30,38,64,.28);
+}
+:root[data-theme=dark]{
+  --bg:#0d1120;--surface:#131a2b;--surface-2:#19213a;--text:#f2ebdd;--dim:#c8c1b3;--faint:#9c9aa2;--border:rgba(242,235,221,.12);
+  --accent:#e57c5a;--accent-text:#f29a7b;--on-accent:#1a1206;--ok:#b5d1ac;--der:#8fb2cc;--die:#f29a7b;--das:#a9c99f;--shadow:0 20px 40px -24px rgba(0,0,0,.7);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0d1120;--surface:#131a2b;--surface-2:#19213a;--text:#f2ebdd;--dim:#c8c1b3;--faint:#9c9aa2;--border:rgba(242,235,221,.12);
+  --accent:#e57c5a;--accent-text:#f29a7b;--on-accent:#1a1206;--ok:#b5d1ac;--der:#8fb2cc;--die:#f29a7b;--das:#a9c99f;--shadow:0 20px 40px -24px rgba(0,0,0,.7);
+}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--accent-text)}
+.wrap{max-width:640px;margin:0 auto;padding:12px 16px calc(28px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;gap:10px;min-height:48px}
+.back{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--border);background:var(--surface);text-decoration:none;color:var(--text);font-size:14px;white-space:nowrap}
+h1{flex:1;margin:0;font:700 19px/1.3 Georgia,"Songti SC","Noto Serif SC",serif;min-width:0}
+h1 small{display:block;font:400 12px/1.4 -apple-system,sans-serif;color:var(--faint)}
+.intro{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px 16px;margin:12px 0 6px;font-size:14px;color:var(--dim);box-shadow:var(--shadow)}
+.intro b{color:var(--text)}
+.bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin:8px 0 2px}.bar i{display:block;height:100%;background:var(--accent)}
+.lvh{font:700 17px/1.3 Georgia,serif;margin:22px 0 10px}
+.unit{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px 14px;margin-bottom:10px;min-height:64px}
+.unit .ic{font-size:28px;flex-shrink:0}
+.unit .t{flex:1;min-width:0}.unit b{display:block;font-size:15px}.unit span{font-size:13px;color:var(--faint)}
+.unit .ok{font-size:18px}
+.box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);margin-bottom:14px}
+.main{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;border-radius:25px;border:none;background:var(--accent);color:var(--on-accent);font-weight:700;font-size:16px;text-decoration:none;text-align:center;padding:0 16px}
+.ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.hint{font-size:12px;color:var(--faint);margin-top:8px;text-align:center}
+h2{font-size:17px;margin:22px 0 8px}
+ol{margin:0;padding-left:22px}ol li{margin-bottom:8px}
+.vrow{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.vrow:last-child{border-bottom:none}
+.vrow .t{flex:1;min-width:0}.vrow .de{font-weight:600}.vrow .py{font-size:12px;color:var(--faint)}
+.art-der{color:var(--der)}.art-die{color:var(--die)}.art-das{color:var(--das)}
+.spk,.add{flex-shrink:0;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface-2);font-size:17px}
+.add.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-size:15px}
+.gcard{margin-bottom:12px}.gcard p{margin:4px 0 6px;font-size:14px;color:var(--dim)}
+.checkin{margin-top:22px}
+.checkin .main+.main{margin-top:10px}
+.foot{margin-top:28px;font-size:12px;color:var(--faint);line-height:1.8;border-top:1px solid var(--border);padding-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+var UNITS=[],$=function(s){return document.querySelector(s);};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+function lsGet(k,d){try{var v=localStorage.getItem(k);return v==null?d:v;}catch(e){return d;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+try{var th=localStorage.getItem('theme');if(th==='dark'||th==='light')document.documentElement.dataset.theme=th;}catch(e){}
+function getDone(){try{return JSON.parse(lsGet('oeifDone','{}'))||{};}catch(e){return {};}}
+function ymd(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+// 生词本与手册主站共用同一个 localStorage 键（同域），在这里收的词回主站「📒 生词本」复习
+function wb(){try{return JSON.parse(lsGet('wordBook','{}'))||{};}catch(e){return {};}}
+var voice=null;
+function pickVoice(){try{var vs=speechSynthesis.getVoices();voice=vs.filter(function(v){return /^de[-_]AT/i.test(v.lang);})[0]||vs.filter(function(v){return /^de/i.test(v.lang);})[0]||null;}catch(e){}}
+try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}catch(e){}
+function speak(t,btn){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t.replace(/…/g,''));u.lang=voice?voice.lang:'de-DE';if(voice)u.voice=voice;u.rate=.85;speechSynthesis.speak(u);}catch(e){}}
+function word(de){var m=/^(der|die|das) (.+)$/.exec(de);return m?'<span class="art-'+m[1]+'">'+m[1]+' '+esc(m[2])+'</span>':esc(de);}
+function row(v){var k=v[0].toLowerCase(),inWb=!!wb()[k];
+  return '<div class="vrow"><div class="t"><div class="de" lang="de">'+word(v[0])+'</div><div>'+esc(v[1])+'</div><div class="py">'+esc(v[2])+'</div></div>'
+   +'<button class="spk" data-s="'+esc(v[0])+'" aria-label="朗读：'+esc(v[0])+'">🔊</button>'
+   +'<button class="add'+(inWb?' on':'')+'" data-k="'+esc(v[0])+'" data-z="'+esc(v[1])+'" aria-label="'+(inWb?'已在生词本：':'加入生词本：')+esc(v[0])+'">'+(inWb?'✓':'📒')+'</button></div>';}
+
+function home(){
+  var done=getDone(),n=UNITS.filter(function(u){return done[u.id];}).length,next=UNITS.filter(function(u){return !done[u.id];})[0];
+  document.title='奥地利官方 A1/A2 德语：中文伴读 | 德语学习手册';
+  var html='<div class="top"><a class="back" href="/">← 手册</a><h1>🇦🇹 奥地利官方 A1/A2<small>ÖIF 免费官方材料 · 中文伴读</small></h1></div>'
+   +'<div class="intro">奥地利融合基金会（<b>ÖIF</b>）在 sprachportal.at 上免费提供德语网课、练习和考试材料，全是德语。这里每个单元：<b>一个按钮打开官方原版</b>，配上中文讲解、要用到的生词（谐音 + 朗读），学完点打卡。'
+   +'<div class="bar"><i style="width:'+Math.round(n/UNITS.length*100)+'%"></i></div>已学完 '+n+' / '+UNITS.length+' 个单元'
+   +(next?'<button class="main" style="margin-top:10px" onclick="location.hash=\''+next.id+'\'">▶ '+(n?'继续':'开始')+'：'+esc(next.zh)+'</button>':'<div style="margin-top:8px;color:var(--ok);font-weight:600">🎉 全部学完了！可以去做官方模拟考检验一下。</div>')+'</div>';
+  ['A1','A2'].forEach(function(lv){
+    html+='<div class="lvh">'+lv+(lv==='A1'?' · 入门':' · 进阶')+'</div>'+UNITS.filter(function(u){return u.lv===lv;}).map(function(u){
+      return '<button class="unit" onclick="location.hash=\''+u.id+'\'"><span class="ic">'+u.icon+'</span><span class="t"><b>'+esc(u.zh)+'</b><span lang="de">'+esc(u.de)+'</span></span><span class="ok">'+(done[u.id]?'✅':'›')+'</span></button>';}).join('');
+  });
+  $('#app').innerHTML=html+foot();
+}
+function unit(id){
+  var u=UNITS.filter(function(x){return x.id===id;})[0];if(!u)return home();
+  var i=UNITS.indexOf(u),nx=UNITS[i+1],d=getDone()[u.id];
+  document.title=u.zh+'（'+u.de+'）· 奥地利官方 A1/A2 | 德语学习手册';
+  $('#app').innerHTML='<div class="top"><button class="back" onclick="location.hash=\'\'">← 目录</button><h1>'+u.icon+' '+esc(u.zh)+'<small lang="de">'+u.lv+' · '+esc(u.de)+'</small></h1></div>'
+   +'<div class="box" style="margin-top:12px"><a class="main" href="'+u.url+'">'+(/考/.test(u.btn)?'📝 ':'🌐 ')+esc(u.btn)+'</a><div class="hint">在本页打开官方网站，看完点浏览器的 ← 返回，就回到这里。</div></div>'
+   +'<h2>📖 中文讲解</h2><ol>'+u.what.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ol>'
+   +'<h2>🔤 要用到的词句</h2><div class="box">'+u.vocab.map(row).join('')+'</div>'
+   +'<h2>🧩 语法点</h2>'+u.grammar.map(function(g){return '<div class="box gcard"><b>'+esc(g[0])+'</b><p>'+esc(g[1])+'</p>'+g[2].map(row).join('')+'</div>';}).join('')
+   +'<div class="checkin">'+(d?'<div style="text-align:center;margin-bottom:8px">✅ '+d+' 已打卡</div><button class="main ghost" id="ck">取消打卡</button>':'<button class="main" id="ck">✅ 这个单元学完了，打卡</button>')
+   +(nx?'<button class="main ghost" onclick="location.hash=\''+nx.id+'\'">下一单元：'+esc(nx.zh)+' →</button>':'')+'</div>'+foot();
+  $('#ck').onclick=function(){var o=getDone();if(o[u.id])delete o[u.id];else o[u.id]=ymd();lsSet('oeifDone',JSON.stringify(o));var y=scrollY;unit(u.id);scrollTo(0,y);};
+  $('#app').querySelectorAll('.spk').forEach(function(b){b.onclick=function(){speak(b.getAttribute('data-s'),b);};});
+  $('#app').querySelectorAll('.add').forEach(function(b){b.onclick=function(){
+    var o=wb(),de=b.getAttribute('data-k'),k=de.toLowerCase();
+    if(o[k])delete o[k];else o[k]={w:de,zh:b.getAttribute('data-z'),ctx:null,t:Date.now(),lv:0,due:Date.now()};
+    lsSet('wordBook',JSON.stringify(o));var on=!!o[k];b.classList.toggle('on',on);b.textContent=on?'✓':'📒';b.setAttribute('aria-label',(on?'已在生词本：':'加入生词本：')+de);
+  };});
+}
+function foot(){return '<div class="foot">官方材料版权归奥地利融合基金会（ÖIF）所有，本页只放链接和本站自己写的中文讲解、词句，不复制官方内容。官方网站：<a href="https://sprachportal.at/" target="_blank" rel="noopener">sprachportal.at</a>。<br>朗读用手机自带的德语语音（有奥地利德语语音时优先用它）。点 📒 把词句收进手册的生词本，回首页「📒 生词本」复习。</div>';}
+function route(){var id=decodeURIComponent(location.hash.slice(1));if(id)unit(id);else home();scrollTo(0,0);}
+addEventListener('hashchange',route);
+fetch('units.json').then(function(r){return r.json();}).then(function(d){UNITS=d;route();})
+.catch(function(){$('#app').innerHTML='<p style="text-align:center;padding:40px 0">内容没下载下来，请检查网络后<a href="">刷新</a>。</p>';});
+</script>
+</body>
+</html>
