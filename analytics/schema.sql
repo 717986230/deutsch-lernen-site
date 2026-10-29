@@ -113,6 +113,16 @@ CREATE TABLE IF NOT EXISTS user_progress_documents (
   FOREIGN KEY (uid) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- Vido（/vido/ 看视频学德语）的个人数据：{hidden:[卡片id], videos:[自己加的视频]}，带 rev 防多设备覆盖。
+-- 2026-10 起 Vido 并入本后端，原来的 vido-api Worker 和 D1 vido 下线。
+CREATE TABLE IF NOT EXISTS vido_state (
+  uid INTEGER PRIMARY KEY,
+  rev INTEGER NOT NULL DEFAULT 0,
+  document TEXT NOT NULL DEFAULT '{}',
+  updated INTEGER NOT NULL,
+  FOREIGN KEY (uid) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- GitHub OAuth 临时 state（防 CSRF，10 分钟过期）
 CREATE TABLE IF NOT EXISTS oauth_state (
   state TEXT PRIMARY KEY,

@@ -316,11 +316,12 @@ export default {
       } else { // OAuth 账号：必须输入自己的用户名确认（不接受 password 绕过）
         if (String(b.confirm || '') !== u.username) return json({ err: '确认信息不符' }, 400, cors);
       }
-      // 硬删：会话 → 关注关系（双向）→ 动态 → 账号本体。匿名埋点与账号无关联，不动。
+      // 硬删：会话 → 关注关系（双向）→ 动态 → Vido 数据 → 账号本体。匿名埋点与账号无关联，不动。
       await env.DB.batch([
         env.DB.prepare('DELETE FROM sessions WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM follows WHERE follower=?1 OR followee=?1').bind(uid),
         env.DB.prepare('DELETE FROM activity WHERE uid=?1').bind(uid),
+        env.DB.prepare('DELETE FROM vido_state WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM users WHERE id=?1').bind(uid),
       ]);
       return json({ ok: 1 }, 200, cors);
@@ -547,6 +548,48 @@ export default {
         if (updated.meta && updated.meta.changes) return json({ ok: 1, rev: rev + 1 }, 200, cors);
       }
       const current = await env.DB.prepare('SELECT rev,document,updated FROM user_progress_documents WHERE uid=? AND lang=?').bind(uid, lang).first();
+      let document = {};
+      try { document = current && JSON.parse(current.document); } catch (_) {}
+      return json({ err: '同步冲突', rev: current ? current.rev : 0, document, updated: current && current.updated }, 409, cors);
+    }
+
+    // ───────── Vido（www.uuoo.site/vido/）的个人数据：隐藏的卡片 + 自己加的视频 ─────────
+    // 2026-10 起 Vido 不再有自己的后端，登录手册账号的人把这两样存在这里，换设备也在。
+    // 同 /api/progress：一份带 rev 的文档，冲突返回 409 + 服务端版本，由客户端合并。
+    if (M === 'GET' && path === '/api/vido') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const row = await env.DB.prepare('SELECT rev,document,updated FROM vido_state WHERE uid=?').bind(uid).first();
+      if (!row) return json({ rev: 0, document: null }, 200, cors);
+      let document;
+      try { document = JSON.parse(row.document); } catch (_) { document = {}; }
+      return json({ rev: row.rev, document, updated: row.updated }, 200, cors);
+    }
+    if (M === 'PUT' && path === '/api/vido') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const vidoRate = await rateHit(env, 'vido:' + uid, 30, 60000);
+      if (!vidoRate.ok) return tooMany(cors, vidoRate.retry);
+      const b = await body(req);
+      const rev = Number.isInteger(b.rev) && b.rev >= 0 ? b.rev : -1;
+      const d = b.document;
+      if (!d || typeof d !== 'object' || Array.isArray(d) || !Array.isArray(d.hidden) || !Array.isArray(d.videos)) {
+        return json({ err: '数据格式错误' }, 400, cors);
+      }
+      if (d.hidden.length > 5000 || d.videos.length > 300) return json({ err: '数据过多' }, 413, cors);
+      const encoded = JSON.stringify({ hidden: d.hidden, videos: d.videos });
+      if (encoded.length > 900000) return json({ err: '数据过大' }, 413, cors);
+      const now = Date.now();
+      if (rev === 0) {
+        const inserted = await env.DB.prepare('INSERT OR IGNORE INTO vido_state (uid,rev,document,updated) VALUES (?,?,?,?)')
+          .bind(uid, 1, encoded, now).run();
+        if (inserted.meta && inserted.meta.changes) return json({ ok: 1, rev: 1 }, 200, cors);
+      } else {
+        const updated = await env.DB.prepare('UPDATE vido_state SET document=?,rev=rev+1,updated=? WHERE uid=? AND rev=?')
+          .bind(encoded, now, uid, rev).run();
+        if (updated.meta && updated.meta.changes) return json({ ok: 1, rev: rev + 1 }, 200, cors);
+      }
+      const current = await env.DB.prepare('SELECT rev,document,updated FROM vido_state WHERE uid=?').bind(uid).first();
       let document = {};
       try { document = current && JSON.parse(current.document); } catch (_) {}
       return json({ err: '同步冲突', rev: current ? current.rev : 0, document, updated: current && current.updated }, 409, cors);
