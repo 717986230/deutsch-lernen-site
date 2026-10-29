@@ -566,6 +566,18 @@ body .phfab{background:var(--surface);color:var(--text);border:1px solid var(--b
 :root{--line-strong:rgba(26,32,53,.15)}
 :root[data-theme="dark"]{--line-strong:rgba(242,235,221,.16)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--line-strong:rgba(242,235,221,.16)}}
+/* 拼写设置：一张卡里四行「标签 + 选项」，每行都是等宽分段开关（仿词光的筛选区） */
+body .sp-setup{max-width:460px;margin:14px auto 10px;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow)}
+body .sp-row{display:flex;align-items:center;gap:10px;padding:10px 0}
+body .sp-row+.sp-row{border-top:1px solid var(--border)}
+body .sp-lbl{flex:none;width:30px;font-size:12px;font-weight:600;color:var(--text-faint);letter-spacing:.5px}
+body .sp-setup .sp-levels{margin:0;max-width:none;flex:1;min-width:0}
+body .sp-seg.sp-seg6{grid-template-columns:repeat(6,1fr)}
+body .sp-seg.sp-seg6 button{padding:7px 0;font-size:12.5px;white-space:nowrap}
+body .sp-seg{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:3px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px}
+body .sp-seg button{border:0;background:transparent;border-radius:999px;padding:7px 0;color:var(--text-dim);font-weight:500;box-shadow:none}
+body .sp-seg button.on{background:var(--text);color:var(--bg);font-weight:600}
+body .sp-go{max-width:none;width:100%;max-width:460px;margin:0 auto;border-radius:999px}
 </style>
 </head>
 <body>
@@ -1654,21 +1666,23 @@ body .phfab{background:var(--surface);color:var(--text);border:1px solid var(--b
     <h2 class="page-title" id="spTitle">⌨️ 拼写记忆</h2>
     <p id="spIntro" style="text-align:center;font-size:13px;color:var(--text-dim);max-width:470px;margin:0 auto 4px">看中文 / 听发音 → 键盘敲出德语拼写。逐字母强校验，敲错原地纠正；已掌握的词自动跳过，专攻没记牢的。</p>
     <div id="spSetup">
-      <div class="sp-levels" id="spLevels"></div>
-      <div class="sp-levels" id="spModes">
-        <button class="on" data-m="zh" onclick="spSetMode('zh')">👀 看中文拼</button>
-        <button data-m="listen" onclick="spSetMode('listen')">🎧 听写（更难）</button>
-      </div>
-      <div class="sp-levels" id="spUnits">
-        <button class="on" data-u="word" onclick="spSetUnit('word')">🔤 单词</button>
-        <button data-u="sent" onclick="spSetUnit('sent')">📝 整句（连词成句）</button>
-      </div>
-      <div class="sp-levels" id="spDiffs">
-        <button class="on" data-d="blind" onclick="spSetDiff('blind')">✍️ 默写</button>
-        <button data-d="trace" onclick="spSetDiff('trace')">📋 描摹（照着敲）</button>
+      <div class="sp-setup">
+        <div class="sp-row"><span class="sp-lbl" id="spLblLv">级别</span><div class="sp-levels sp-seg sp-seg6" id="spLevels" role="group" aria-labelledby="spLblLv"></div></div>
+        <div class="sp-row"><span class="sp-lbl" id="spLblM">方式</span><div class="sp-levels sp-seg" id="spModes" role="group" aria-labelledby="spLblM">
+          <button class="on" data-m="zh" onclick="spSetMode('zh')">看中文</button>
+          <button data-m="listen" onclick="spSetMode('listen')" title="只听发音，更难">听写</button>
+        </div></div>
+        <div class="sp-row"><span class="sp-lbl" id="spLblU">内容</span><div class="sp-levels sp-seg" id="spUnits" role="group" aria-labelledby="spLblU">
+          <button class="on" data-u="word" onclick="spSetUnit('word')">单词</button>
+          <button data-u="sent" onclick="spSetUnit('sent')" title="连词成句">整句</button>
+        </div></div>
+        <div class="sp-row"><span class="sp-lbl" id="spLblD">提示</span><div class="sp-levels sp-seg" id="spDiffs" role="group" aria-labelledby="spLblD">
+          <button class="on" data-d="blind" onclick="spSetDiff('blind')">默写</button>
+          <button data-d="trace" onclick="spSetDiff('trace')" title="照着原词敲">描摹</button>
+        </div></div>
       </div>
       <p id="spPoolInfo" style="text-align:center;font-size:12px;color:var(--text-faint);margin:2px 0 16px"></p>
-      <div style="text-align:center"><button class="acct-btn" style="max-width:240px;margin:0 auto" onclick="spStart()">开始拼写</button></div>
+      <div style="text-align:center"><button class="acct-btn sp-go" onclick="spStart()">开始拼写</button></div>
     </div>
     <div id="spDrill" style="display:none">
       <div class="sp-prog"><i id="spBar"></i></div>
