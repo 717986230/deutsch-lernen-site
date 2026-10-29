@@ -71,6 +71,8 @@ wrangler deploy                                                 # 部署新版 w
 - `POST /api/login` `{username,password}` → `{token,user}`
 - `GET /api/progress?lang=de|en`（带 token）→ 取得该语言的词汇掌握、复习、错词、日课与最近学习明细
 - `PUT /api/progress`（带 token）`{lang,rev,document}` → 写入该语言学习明细；版本冲突返回 `409` 及服务端版本，客户端合并后重试
+- `GET /api/vido`（带 token）→ `{rev,document}`，Vido（`/vido/`）里隐藏的卡片和自己加的视频；没存过时 `document` 为 `null`
+- `PUT /api/vido`（带 token）`{rev,document:{hidden,videos}}` → 写入；冲突返回 `409` 及服务端版本。上限 5000 个隐藏、300 个视频、900KB
 - `POST /api/sync`（带 token）`{lang,known,streak,best,total,quiz,level}` → 更新排行榜/徽章用的摘要，明细由 `/api/progress` 单独恢复
   - 数值上限：`known` ≤ 20000、`streak`/`best` ≤ 3650、`total`/`quiz` ≤ 1000000。这几列入库走 `MAX()`（多设备合并必需，换设备时不能让本地的 0 清空云端），**代价是只能往上不能往下**，所以上限必须说得通 —— 德语 4253 条 + 英语 7192 条词，20000 已是「全站都认识」还富余一倍。彻底杜绝刷分要服务端记分，本站是离线优先、客户端权威，做不到。
   - 学习动态（`activity`）**只在 `lang=de` 时写**：去重靠 `users.badges` / `users.best_streak`，而这两列只有德语分支回写。英语分支下 `old.badges` 永远是旧值，同一批徽章每同步一次就重插一次（实测同内容连同步 9 次，`activity` 从 6 行涨到 54 行）。写入前还会查一次已有动态兜底。
