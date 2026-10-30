@@ -156,6 +156,13 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
    contain-intrinsic-size 取实测平均卡高（短文≈1000px、连载≈900px）；auto 让浏览器记住真实高度，
    滚动条不会来回跳。不支持的浏览器（Safari<18）忽略此属性，行为与原来一致。 */
 #readList>.card{content-visibility:auto;contain-intrinsic-size:auto 1000px}
+/* 短文/连载默认折叠成标题行：59 篇全展开时阅读页有 6 万多 px 高，找文章只能狂刷 */
+#readList>.card.rd-fold,#seriesList>.card.rd-fold{contain-intrinsic-size:auto 76px}
+.rd-head{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.rd-fold .rd-head{margin-bottom:0}.rd-fold .rd-body{display:none}
+.rd-tog{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;flex:1 1 180px;min-height:44px;padding:0 0 0 20px;margin:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.rd-tog::before{content:"";position:absolute;left:2px;top:17px;width:7px;height:7px;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:rotate(45deg);transition:transform .2s}
+.rd-fold .rd-tog::before{transform:rotate(-45deg)}
 #seriesList>.card{content-visibility:auto;contain-intrinsic-size:auto 900px}
 .read-para.rp-on{background:rgba(181,73,46,.12)}
 .rd-word{cursor:pointer;border-radius:3px;transition:background .12s}
@@ -253,12 +260,15 @@ mark.sh{background:rgba(181,73,46,.32);color:inherit;border-radius:3px;padding:0
 .level-card .lc-arrow{position:absolute;right:16px;bottom:14px;font-size:18px;color:var(--gold-text);opacity:.6}
 /* NUMBER SECTION */
 .num-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:20px}
-.num-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s}
+.num-card{min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s}
 .num-card:hover{border-color:var(--gold-dim);background:rgba(181,73,46,.07)}
 .num-card.active{border-color:var(--gold);background:rgba(181,73,46,.15)}
 .num-big{font-size:28px;font-weight:700;color:var(--gold-text);margin-bottom:4px}
-.num-de{font-size:14px;color:var(--text);font-style:italic;margin-bottom:3px}
+.num-de{font-size:14px;color:var(--text);font-style:italic;margin-bottom:3px;overflow-wrap:anywhere}
+/* 手机上一行 3 张：原来一行 2 张、每张 140px 高，数字页 6800px；「hunderttausend」这类长词会把卡片撑出屏幕 */
+@media(max-width:480px){.num-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.num-card{padding:10px 4px}.num-big{font-size:24px}}
 .num-py{font-size:12px;color:var(--text-dim)}
+.num-big.num-long{font-size:18px;line-height:34px;letter-spacing:-.3px}.num-big.num-xlong{font-size:16px;line-height:1.3}
 /* RULES BOX */
 .rule-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
 .rule-box h3{font-size:14px;color:var(--gold-text);margin-bottom:12px;letter-spacing:1px}
@@ -2547,7 +2557,9 @@ function renderNumGrid(containerId, data, lang){
   data.forEach(item=>{
     const d=document.createElement('div');
     d.className='num-card';
-    d.innerHTML=`<div class="num-big">${item.n}</div><div class="num-de" lang="${lang||'de'}">${item.de}</div><div class="num-py">${item.py}</div><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${item.de}" style="margin-top:6px">🔊</button>`;
+    // 大数按当地写法分组（德 1.000.000，英 1,000,000），长的缩小字号：10 位数原样会撑出卡片
+    var nt=(typeof item.n==='number'&&item.n>=10000)?String(item.n).replace(/\B(?=(\d{3})+(?!\d))/g,lang==='en'?',':'.'):String(item.n);
+    d.innerHTML=`<div class="num-big${nt.length>6?(nt.length>10?' num-long num-xlong':' num-long'):''}">${nt.length>10?nt.replace(/([.,])/g,'$1<wbr>'):nt}</div><div class="num-de" lang="${lang||'de'}">${item.de}</div><div class="num-py">${item.py}</div><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${item.de}" style="margin-top:6px">🔊</button>`;
     d.querySelector('.speak-btn').addEventListener('click',(e)=>{e.stopPropagation();speakNumber(item.de,lang||'de',e.currentTarget);});
     g.appendChild(d);
   });
@@ -4169,6 +4181,8 @@ function rdToast(msg){
   clearTimeout(_rdToastT); _rdToastT=setTimeout(()=>t.classList.remove('show'),1800);
 }
 var _rdGen=0;
+// 折叠/展开一篇；open=true 只展开（朗读走到这篇时用）
+function rdFold(id,open){var c=document.getElementById(id);if(!c)return;var f=open?false:!c.classList.contains('rd-fold');c.classList.toggle('rd-fold',f);var t=c.querySelector('.rd-tog');if(t)t.setAttribute('aria-expanded',f?'false':'true');}
 function renderReadings(){
   const list=_getReadList();
   const isEn=LANG==='en', readingLang=isEn?'en':'de';
@@ -4179,14 +4193,14 @@ function renderReadings(){
   // 所以**按批建**，不要一次性把 69 篇全建出来再插。
   const build=(r,ri)=>{
     const body=r.paras.map((p,pi)=>`<div class="read-para" id="rp_${ri}_${pi}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="${readingLang}">${isEn?p[0]:wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div>${p[2]?`<div style="font-size:12px;color:var(--text-faint);margin-top:1px">${p[2]}</div>`:''}</div></div></div>`).join('');
-    return `<div class="card" id="rcard_${ri}" style="cursor:default;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-        <span style="font-size:17px;font-weight:600;color:var(--gold-text)" lang="${readingLang}">${r.title}</span>
+    return `<div class="card${ri?' rd-fold':''}" id="rcard_${ri}" style="cursor:default;margin-bottom:14px">
+      <div class="rd-head">
+        <button class="rd-tog" type="button" aria-expanded="${ri?'false':'true'}" onclick="rdFold('rcard_${ri}')"><span style="font-size:17px;font-weight:600;color:var(--gold-text)" lang="${readingLang}">${r.title}</span>
         <span class="level-badge ${READ_LB[r.level]}">${readLevelName(r.level)}</span>
-        <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span>
+        <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span></button>
         <button class="read-art-btn" id="rab_${ri}" type="button" title="朗读全文" aria-label="朗读全文：${r.title}" style="margin-left:auto" onclick="toggleArticle(this,${ri})">▶ 朗读</button>
         <button class="read-art-btn" type="button" title="用这篇练拼写" aria-label="用这篇练拼写：${r.title}" onclick="spStartReading(${ri})">⌨️ 练这篇</button>
-      </div>${body}</div>`;
+      </div><div class="rd-body">${body}</div></div>`;
   };
   // 分批渲染：先同步出前 6 篇，其余每帧建好再追加（低端机首开不卡）
   // 带渲染代号：快速切换标签/级别时，上一次的追加循环必须立即作废，
@@ -4236,6 +4250,7 @@ function _playNext(){
     if(q.mode==='one'){stopReading();return;}
     q.ri++;q.pi=0;return _playNext();
   }
+  if(q.pi===0)rdFold('rcard_'+q.ri,true);
   const el=document.getElementById('rp_'+q.ri+'_'+q.pi);
   if(el){el.classList.add('rp-on');el.scrollIntoView({behavior:'smooth',block:'center'});}
   // ⚠️ Safari/WebKit 的 speechSynthesis.cancel() 会**同步**给当前 utterance 派发
@@ -4291,14 +4306,14 @@ function renderSeries(){
   // 1152ms 的单一长任务 —— 主线程整整卡死一秒多，点什么都没反应。
   const build=(r,i)=>{
     const body=r.paras.map((p,j)=>`<div class="read-para" id="srp_${i}_${j}"><div style="display:flex;align-items:start;gap:8px"><button class="para-spk" type="button" title="朗读本句" aria-label="朗读本句" onclick="speakSeriesPara(this,'${escSpk(p[0])}')">🔊</button><div style="flex:1"><div style="font-size:15px;color:var(--text);line-height:1.6" lang="${itemLang}">${isEn?p[0]:wrapWords(p[0])}</div><div style="font-size:13px;color:var(--text-dim);margin-top:2px">${p[1]}</div>${p[2]?`<div style="font-size:12px;color:var(--text-faint);margin-top:1px">${p[2]}</div>`:''}</div></div></div>`).join('');
-    return `<div class="card" id="scard_${i}" style="cursor:default;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-        <span style="font-size:17px;font-weight:600;color:var(--gold-text)" lang="${itemLang}">${r.title}</span>
+    return `<div class="card${i?' rd-fold':''}" id="scard_${i}" style="cursor:default;margin-bottom:14px">
+      <div class="rd-head">
+        <button class="rd-tog" type="button" aria-expanded="${i?'false':'true'}" onclick="rdFold('scard_${i}')"><span style="font-size:17px;font-weight:600;color:var(--gold-text)" lang="${itemLang}">${r.title}</span>
         <span class="level-badge ${READ_LB[r.level]}">${readLevelName(r.level)}</span>
-        <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span>
+        <span style="font-size:13px;color:var(--text-dim)">${r.zh}</span></button>
         <button class="read-art-btn" id="srab_${i}" type="button" title="朗读整集" aria-label="朗读整集：${r.title}" style="margin-left:auto" onclick="toggleEpisode(this,${i})">▶ 朗读</button>
         <button class="read-art-btn" type="button" title="用这集练拼写" aria-label="用这集练拼写：${r.title}" onclick="spStartSeries(${i})">⌨️ 练这集</button>
-      </div>${body}</div>`;
+      </div><div class="rd-body">${body}</div></div>`;
   };
   // 带渲染代号：切语言/重进版块时上一轮追加循环必须立即作废，否则旧集会继续追进新列表。
   // ⚠️ i 必须是在 list 里的真实下标：元素 id（scard_/srp_/srab_）和 toggleEpisode(i)
@@ -4346,6 +4361,7 @@ function _playSeriesNext(){
     if(q.mode==='one'){stopSeries();return;}
     q.i++;q.j=0;return _playSeriesNext();
   }
+  if(q.j===0)rdFold('scard_'+q.i,true);
   const el=document.getElementById('srp_'+q.i+'_'+q.j);
   if(el){el.classList.add('rp-on');el.scrollIntoView({behavior:'smooth',block:'center'});}
   // 与 _playNext 同一个 WebKit 竞态，同样的防法（见那边的注释）

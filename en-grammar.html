@@ -24,7 +24,7 @@
 {"@type":"ListItem","position":1,"name":"英语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"英语语法速查"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:33628bad92ec -->
+<!-- src-hash:c18bdba9bd61 -->
 <style>
 :root{
   /* 底部标签栏占用的高度（含 iPhone 安全区）。所有 fixed/sticky 贴底的浮动元素
@@ -132,6 +132,13 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
    contain-intrinsic-size 取实测平均卡高（短文≈1000px、连载≈900px）；auto 让浏览器记住真实高度，
    滚动条不会来回跳。不支持的浏览器（Safari<18）忽略此属性，行为与原来一致。 */
 #readList>.card{content-visibility:auto;contain-intrinsic-size:auto 1000px}
+/* 短文/连载默认折叠成标题行：59 篇全展开时阅读页有 6 万多 px 高，找文章只能狂刷 */
+#readList>.card.rd-fold,#seriesList>.card.rd-fold{contain-intrinsic-size:auto 76px}
+.rd-head{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.rd-fold .rd-head{margin-bottom:0}.rd-fold .rd-body{display:none}
+.rd-tog{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;flex:1 1 180px;min-height:44px;padding:0 0 0 20px;margin:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.rd-tog::before{content:"";position:absolute;left:2px;top:17px;width:7px;height:7px;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:rotate(45deg);transition:transform .2s}
+.rd-fold .rd-tog::before{transform:rotate(-45deg)}
 #seriesList>.card{content-visibility:auto;contain-intrinsic-size:auto 900px}
 .read-para.rp-on{background:rgba(181,73,46,.12)}
 .rd-word{cursor:pointer;border-radius:3px;transition:background .12s}
@@ -229,12 +236,15 @@ mark.sh{background:rgba(181,73,46,.32);color:inherit;border-radius:3px;padding:0
 .level-card .lc-arrow{position:absolute;right:16px;bottom:14px;font-size:18px;color:var(--gold-text);opacity:.6}
 /* NUMBER SECTION */
 .num-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:20px}
-.num-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s}
+.num-card{min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s}
 .num-card:hover{border-color:var(--gold-dim);background:rgba(181,73,46,.07)}
 .num-card.active{border-color:var(--gold);background:rgba(181,73,46,.15)}
 .num-big{font-size:28px;font-weight:700;color:var(--gold-text);margin-bottom:4px}
-.num-de{font-size:14px;color:var(--text);font-style:italic;margin-bottom:3px}
+.num-de{font-size:14px;color:var(--text);font-style:italic;margin-bottom:3px;overflow-wrap:anywhere}
+/* 手机上一行 3 张：原来一行 2 张、每张 140px 高，数字页 6800px；「hunderttausend」这类长词会把卡片撑出屏幕 */
+@media(max-width:480px){.num-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.num-card{padding:10px 4px}.num-big{font-size:24px}}
 .num-py{font-size:12px;color:var(--text-dim)}
+.num-big.num-long{font-size:18px;line-height:34px;letter-spacing:-.3px}.num-big.num-xlong{font-size:16px;line-height:1.3}
 /* RULES BOX */
 .rule-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
 .rule-box h3{font-size:14px;color:var(--gold-text);margin-bottom:12px;letter-spacing:1px}
