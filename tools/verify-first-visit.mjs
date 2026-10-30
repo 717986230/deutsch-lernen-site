@@ -5,6 +5,8 @@
 //      于是每个人进站第一眼就是一条「浏览器拦住了自动朗读」的报错提示。
 //   ② 分享出来的 #reading 等深链，点进来也被整屏弹窗挡住。
 //   ③ 弹窗不响应 Esc（同页的拼读器弹窗是响应的）。
+// 2026-10-30 站长嫌东西太多：「每日一句」不再弹窗，改成首页里的一张卡。
+//   现在验的是：任何入口都没有整屏弹层、冷启动不自动朗读、首页卡片有句子。
 import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -40,28 +42,26 @@ async function visit(hash) {
   await page.waitForTimeout(1800);
   const st = await page.evaluate(() => {
     const t = document.getElementById('__ttsh');
-    return { modal: getComputedStyle(document.getElementById('boostModal')).display,
-      toast: t && getComputedStyle(t).opacity !== '0' ? t.textContent : '' };
+    return { overlay: !!document.querySelector('.boost-overlay'),
+      toast: t && getComputedStyle(t).display !== 'none' && getComputedStyle(t).opacity !== '0' ? t.textContent : '' };
   });
   return { page, st, errs };
 }
 
-{
-  const { page, st, errs } = await visit('');
-  if (st.modal !== 'flex') bad('正常打开时「每日一句」没有弹出');
-  if (st.toast) bad(`冷启动就弹出提示「${st.toast}」—— 无手势时不该自动朗读`);
-  await page.keyboard.press('Escape');
-  if (await page.evaluate(() => getComputedStyle(document.getElementById('boostModal')).display) !== 'none') bad('按 Esc 关不掉「每日一句」弹窗');
-  for (const e of new Set(errs)) bad('页面抛错：' + e);
-  await page.close();
-}
-{
-  const { page, st, errs } = await visit('#reading');
-  if (st.modal !== 'none') bad('从 #reading 深链进站，被「每日一句」弹窗挡住了');
+for (const hash of ['', '#reading']) {
+  const { page, st, errs } = await visit(hash);
+  if (st.overlay) bad(`${hash || '正常打开'}：还有「每日一句」整屏弹层`);
+  if (st.toast) bad(`${hash || '正常打开'}：冷启动就弹出提示「${st.toast}」—— 无手势时不该自动朗读`);
+  if (!hash) {
+    await page.evaluate(() => showSection('home'));
+    await page.waitForTimeout(400);
+    const de = await page.evaluate(() => { const b = document.getElementById('homeBoost'); return b && b.style.display !== 'none' ? document.getElementById('boostDe').textContent : ''; });
+    if (!de) bad('首页没有显示「每日一句」卡片');
+  }
   for (const e of new Set(errs)) bad('页面抛错：' + e);
   await page.close();
 }
 await browser.close(); srv.close();
-console.log('进站体检：冷启动无报错提示 · 深链不弹窗 · Esc 可关');
+console.log('进站体检：冷启动无报错提示 · 无弹窗 · 首页有每日一句');
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 进站第一眼干净');

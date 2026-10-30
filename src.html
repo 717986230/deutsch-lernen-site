@@ -438,12 +438,6 @@ body.lang-en .phfab{display:none}
 .ph-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;max-width:560px;width:100%;max-height:82vh;overflow:auto;padding:14px 16px;box-shadow:0 14px 44px rgba(0,0,0,.32)}
 .ph-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;color:var(--text)}
 /* 每次打开站点弹一次的激励卡 */
-.boost-overlay{position:fixed;inset:0;z-index:460;background:rgba(0,0,0,.5);
-  display:flex;align-items:center;justify-content:center;padding:24px}
-.boost-card{background:var(--surface);border:1px solid var(--gold-dim);border-radius:20px;
-  max-width:400px;width:100%;padding:26px 22px 20px;text-align:center;
-  box-shadow:0 18px 50px rgba(0,0,0,.34)}
-.boost-label{font-size:12px;letter-spacing:3px;color:var(--gold-text);margin-bottom:14px}
 /* 吉祥物 Otti（水彩水獭女孩，otti/*.webp）：按场景换姿势和表情，见 _otti() */
 .otti{display:block;margin:0 auto;width:auto;max-width:100%;user-select:none;-webkit-user-drag:none}
 .otti-bob{animation:ottiBob 1.6s ease-in-out infinite}
@@ -458,20 +452,6 @@ body.lang-en .phfab{display:none}
 @keyframes ottiArm{0%,60%,100%{transform:rotate(0)}12%{transform:rotate(-16deg)}24%{transform:rotate(10deg)}36%{transform:rotate(-14deg)}48%{transform:rotate(6deg)}}
 @keyframes ottiHop{0%,60%,100%{transform:translateY(0)}18%,42%{transform:translateY(-5px)}}
 @media (prefers-reduced-motion:reduce){.otti-bob,.otti-wave,.otti-arm{animation:none}.otti-pop{animation:none;opacity:1}}
-.boost-de{font-size:22px;font-weight:700;color:var(--text);line-height:1.45;margin-bottom:12px;font-style:italic}
-.boost-spk{min-height:44px;padding:8px 20px;margin-bottom:12px;border-radius:22px;
-  border:1px solid var(--gold-dim);background:var(--btn-bg);color:var(--gold-text);
-  font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
-.boost-spk:active{transform:scale(.96)}
-.boost-spk.speaking{background:var(--gold);color:var(--on-brand)}
-.boost-zh{font-size:16px;color:var(--text-dim);line-height:1.7;margin-bottom:6px}
-.boost-py{font-size:13px;color:var(--gold-text);line-height:1.7;margin-bottom:20px}
-.boost-go{width:100%;min-height:48px;border:none;border-radius:24px;background:var(--gold);
-  color:var(--on-brand);font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;
-  box-shadow:0 4px 14px var(--gold-dim)}
-.boost-go:active{transform:translateY(1px)}
-.boost-skip{margin-top:10px;background:none;border:none;color:var(--text-faint);
-  font-size:12px;font-family:inherit;cursor:pointer;padding:10px;min-height:44px}
 .ph-close{border:none;background:transparent;font-size:18px;color:var(--text-faint);cursor:pointer;padding:2px 8px;font-family:inherit}
 .ph-zhhit{margin:7px 0;font-size:14px;color:var(--text-dim)}
 /* 词性 / 冠词小标签：der 蓝 die 红 das 绿，与学习秘诀⑬的「给名词上色」一致 */
@@ -592,6 +572,38 @@ body .sp-seg{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:3px;backgr
 body .sp-seg button{border:0;background:transparent;border-radius:999px;padding:7px 0;color:var(--text-dim);font-weight:500;box-shadow:none}
 body .sp-seg button.on{background:var(--text);color:var(--bg);font-weight:600}
 body .sp-go{max-width:none;width:100%;max-width:460px;margin:0 auto;border-radius:999px}
+/* 首页 · 每日一句卡片 */
+.boost-inline{position:relative;margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px 60px 14px 16px;box-shadow:var(--shadow)}
+.boost-label{font-size:11px;letter-spacing:2px;color:var(--gold-text);margin-bottom:6px}
+.boost-de{font-size:18px;font-weight:700;color:var(--text);line-height:1.45;font-style:italic}
+.boost-zh{font-size:14px;color:var(--text-dim);line-height:1.6;margin-top:4px}
+.boost-py{font-size:12px;color:var(--gold-text);line-height:1.6}
+.boost-spk{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface-2);font-size:18px;cursor:pointer}
+.boost-spk.speaking{background:var(--gold);color:var(--on-brand)}
+/* 首页 · 分组入口（4 列小图标） */
+.hg-title{font-size:13px;font-weight:700;color:var(--text-faint);letter-spacing:1px;margin:22px 2px 10px}
+.hg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.hg-tile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 2px 10px;border-radius:16px;background:var(--surface);border:1px solid var(--border);text-decoration:none;color:var(--text);font-size:12.5px;font-weight:600;text-align:center;line-height:1.3;min-height:44px}
+.hg-tile:active{background:var(--surface-2)}
+.hg-tile .fic{width:42px;height:42px;border-radius:13px;margin:0;font-size:20px!important}
+.hg-tile .fic svg{width:22px;height:22px}
+/* 顶栏站名 */
+.tb-brand{flex:1 1 auto;display:flex;align-items:center;gap:6px;min-height:44px;padding:0 6px;color:var(--text);font-weight:700;font-size:15px;text-decoration:none}
+.tb-brand img{height:28px;width:auto}
+/* 练习页：拼写 / 测验 切换 */
+.prac-seg{display:grid;grid-template-columns:1fr 1fr;max-width:320px;margin:16px auto 0;padding:3px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px}
+.prac-seg button{border:0;background:transparent;border-radius:999px;min-height:44px;color:var(--text-dim);font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.prac-seg button.on{background:var(--text);color:var(--bg);font-weight:600}
+/* 每日一句取自德语词库，英语模式下不显示；练习页有切换条，原来的小标签与「练习测验」大标题就重复了 */
+body.lang-en #homeBoost{display:none!important}
+#spell .hero-label,#quiz .hero-label,#quiz .page-title{display:none}
+/* 我的 · 菜单 */
+.me-menu{margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.me-menu a{display:flex;align-items:center;gap:12px;min-height:52px;padding:0 16px;color:var(--text);text-decoration:none;font-size:15px}
+.me-menu a+a{border-top:1px solid var(--border)}
+.me-menu a span{font-size:18px;width:24px;text-align:center}
+.me-menu a i{margin-left:auto;font-style:normal;color:var(--text-faint);font-size:20px}
+.me-menu a:active{background:var(--surface-2)}
 </style>
 </head>
 <body>
@@ -603,28 +615,14 @@ body .sp-go{max-width:none;width:100%;max-width:460px;margin:0 auto;border-radiu
   try{window.addEventListener('unhandledrejection',function(e){try{box().textContent='⚠️ Promise 出错（截图发我）\n'+(((e.reason)&&(e.reason.message||e.reason))||'unknown');}catch(_){}}); }catch(e){}
 })();
 </script>
-<a href="#nav" class="skip-link">跳到导航</a>
+<a href="#bottomNav" class="skip-link">跳到导航</a>
 
 <button id="pwaInstall" type="button" onclick="pwaInstall()" style="display:none">⬇️ 安装到桌面</button>
 
 <!-- 顶栏：版块条（横滑）+ 语言/主题（固定一列，不再浮在导航之上）
      首页/词句大全/阅读 三项已在底部导航常驻，此处不再重复，省出横向空间 -->
 <div id="topbar">
-<nav id="nav" aria-label="主导航">
-  <button class="nav-btn nav-de-only" onclick="showSection('pronunciation')">🔤 发音</button>
-  <button class="nav-btn nav-de-only" onclick="showSection('numbers')">🔢 数字</button>
-  <button class="nav-btn nav-de-only" onclick="showSection('reading')">📖 短文</button>
-  <button class="nav-btn nav-de-only" onclick="showSection('grammar')">📐 语法</button>
-  <button class="nav-btn nav-de-only" onclick="showSection('spell')">⌨️ 拼写</button>
-  <button class="nav-btn nav-en-only" onclick="showSection('en-pron')">🔤 发音</button>
-  <button class="nav-btn nav-en-only" onclick="showSection('en-num')">🔢 数字</button>
-  <button class="nav-btn nav-en-only" onclick="showSection('reading')">📖 短文</button>
-  <button class="nav-btn nav-en-only" onclick="showSection('en-grammar')">📐 语法</button>
-  <button class="nav-btn nav-en-only" onclick="showSection('spell')">⌨️ 拼写</button>
-  <button class="nav-btn" onclick="showSection('quiz')">🎯 测验</button>
-  <button class="nav-btn" onclick="showSection('rank')">🏆 排行榜</button>
-  <button class="nav-btn" onclick="showSection('support')">❤️ 支持</button>
-</nav>
+<a class="tb-brand" href="#home" onclick="showSection('home');return false"><img src="otti/study.webp" alt="" draggable="false">学习手册</a>
 <div class="lang-switch">
   <button class="lang-btn active" data-lang="de" onclick="setLang('de')" title="德语">🇩🇪</button>
   <button class="lang-btn" data-lang="en" onclick="setLang('en')" title="英语">🇬🇧</button>
@@ -639,6 +637,7 @@ body .sp-go{max-width:none;width:100%;max-width:460px;margin:0 auto;border-radiu
        不受这里影响。 -->
   <div class="container" style="padding-top:14px">
    <div id="homeDash"></div>
+   <div class="boost-inline" id="homeBoost" style="display:none"><div class="boost-label">每日一句 · Satz des Tages</div><div class="boost-de" id="boostDe" lang="de"></div><div class="boost-zh" id="boostZh"></div><div class="boost-py" id="boostPy"></div><button class="boost-spk" id="boostSpk" type="button" aria-label="朗读这句" title="朗读">🔊</button></div>
    <div class="voice-tip" id="voiceTip" onclick="var g=document.getElementById('voiceGuide');g.style.display=g.style.display==='none'?'block':'none'">
      <span style="font-size:22px;flex-shrink:0">🎧</span>
      <div><b>发音不地道？</b>一次装好系统语音包（免费 · 离线），朗读从"机器腔"变接近真人 <span style="color:var(--gold-text);font-weight:700">▸</span></div>
@@ -658,199 +657,30 @@ body .sp-go{max-width:none;width:100%;max-width:460px;margin:0 auto;border-radiu
      <div style="font-size:12px;color:var(--text-faint);margin-top:10px">装好后回到本页刷新，🔊 会自动选用新语音。</div>
    </div>
    <div class="de-only-block">
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(150px,100%),1fr));gap:12px;margin-top:22px">
-      <div class="card" onclick="showSection('pronunciation')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.2 9H3.5v6h2.7L11 19z" fill="#fff"/><path d="M14.8 9.2a4 4 0 0 1 0 5.6M17.4 6.6a7.6 7.6 0 0 1 0 10.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">发音规律</div>
-        <div style="font-size:12px;color:var(--text-dim)">字母发音·变音·组合音</div>
-      </div>
-      <div class="card" onclick="showSection('numbers')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-blue"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="16.8" text-anchor="middle" font-size="12.5" font-family="Georgia,serif" font-weight="bold" fill="#fff">123</text></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">数字规律</div>
-        <div style="font-size:12px;color:var(--text-dim)">0-100万·规律·测验</div>
-      </div>
-      <div class="card" onclick="showSection('grammar')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-orange"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle" font-size="19" font-family="Georgia,serif" font-weight="bold" fill="#fff">§</text></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">语法速记</div>
-        <div style="font-size:12px;color:var(--text-dim)">冠词·动词变位·格</div>
-      </div>
-      <div class="card" onclick="showSection('phrases')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-purple"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 16h3v4l5-4h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 20 4z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="8.5" cy="10" r="1.15" fill="#fff"/><circle cx="12" cy="10" r="1.15" fill="#fff"/><circle cx="15.5" cy="10" r="1.15" fill="#fff"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">词句大全</div>
-        <div style="font-size:12px;color:var(--text-dim)" id="homePhraseSub">词句大全·含谐音</div>
-      </div>
-      <div class="card" onclick="showSection('reading')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-teal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.2C9.6 4.7 6.6 4.5 4 5.5V19c2.6-1 5.6-.8 8 .7 2.4-1.5 5.4-1.7 8-.7V5.5c-2.6-1-5.6-.8-8 .7z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M12 6.2v13.5" stroke="#fff" stroke-width="2"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">阅读·连载</div>
-        <div style="font-size:12px;color:var(--text-dim)">分级短文·留学连续剧</div>
-      </div>
-      <div class="card" onclick="showSection('quiz')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-red"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="1.4" fill="#fff"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">练习测验</div>
-        <div style="font-size:12px;color:var(--text-dim)">数字·单词·句子·听力</div>
-      </div>
-      <div class="card" onclick="showSection('body')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-pink"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="3.2" fill="#fff"/><path d="M12 10.5c-3 0-4.5 1.6-4.5 3.6V17h2.4l.7 4h2.8l.7-4h2.4v-2.9c0-2-1.5-3.6-4.5-3.6z" fill="#fff"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">图解词典</div>
-        <div style="font-size:12px;color:var(--text-dim)">人体·动物·食物·交通…</div>
-      </div>
-      <!-- Vido 视频卡（rj-yy 仓库）挂在同域 /vido/，账号与本站共用 -->
-      <a class="card" href="/vido/" style="display:block;text-decoration:none;text-align:center;padding:24px 16px">
-        <div class="fic fic-video"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="#fff" stroke-width="2"/><path d="M10 9v6l5-3z" fill="#fff"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">看视频学德语</div>
-        <div style="font-size:12px;color:var(--text-dim)">整部影片·中德双语字幕</div>
-      </a>
-      <!-- 儿童德语（kinder/，独立页面，由 tools/gen-kinder.py 生成） -->
-      <a class="card" href="/kinder/" style="display:block;text-decoration:none;text-align:center;padding:24px 16px">
-        <div class="fic fic-video" style="font-size:24px;line-height:1">🦦</div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">儿童德语</div>
-        <div style="font-size:12px;color:var(--text-dim)">点图听词·双语小故事·游戏</div>
-      </a>
-      <!-- 奥地利官方 A1/A2 伴读（oeif/，独立页面，只链接 ÖIF 原版 + 本站中文讲解） -->
-      <a class="card" href="/oeif/" style="display:block;text-decoration:none;text-align:center;padding:24px 16px">
-        <div class="fic fic-red" style="font-size:22px;line-height:1">🇦🇹</div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">奥地利官方 A1/A2</div>
-        <div style="font-size:12px;color:var(--text-dim)">ÖIF 网课·模拟考·中文伴读</div>
-      </a>
-      <!-- 雅思词汇（ielts/，独立页面，词库由 tools/gen-ielts.py 从 Word Atlas 生成） -->
-      <a class="card" href="/ielts/" style="display:block;text-decoration:none;text-align:center;padding:24px 16px">
-        <div class="fic fic-blue" style="font-size:22px;line-height:1">🇬🇧</div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">雅思词汇</div>
-        <div style="font-size:12px;color:var(--text-dim)">7298 词·分级·每天背一组</div>
-      </a>
+    <div class="hg-title">基础</div>
+    <div class="hg-grid">
+      <a class="hg-tile" href="#pronunciation" onclick="showSection('pronunciation');return false"><div class="fic fic-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.2 9H3.5v6h2.7L11 19z" fill="#fff"/><path d="M14.8 9.2a4 4 0 0 1 0 5.6M17.4 6.6a7.6 7.6 0 0 1 0 10.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div><span>发音</span></a>
+      <a class="hg-tile" href="#numbers" onclick="showSection('numbers');return false"><div class="fic fic-blue"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="16.8" text-anchor="middle" font-size="12.5" font-family="Georgia,serif" font-weight="bold" fill="#fff">123</text></svg></div><span>数字</span></a>
+      <a class="hg-tile" href="#grammar" onclick="showSection('grammar');return false"><div class="fic fic-orange"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle" font-size="19" font-family="Georgia,serif" font-weight="bold" fill="#fff">§</text></svg></div><span>语法</span></a>
+      <a class="hg-tile" href="#body" onclick="showSection('body');return false"><div class="fic fic-pink"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="3.2" fill="#fff"/><path d="M12 10.5c-3 0-4.5 1.6-4.5 3.6V17h2.4l.7 4h2.8l.7-4h2.4v-2.9c0-2-1.5-3.6-4.5-3.6z" fill="#fff"/></svg></div><span>图解词典</span></a>
     </div>
-
-    <div class="sec-title" style="margin-top:36px"><span class="sec-title-icon">🎯</span><span class="sec-title-text">按阶段学习 · 点击进入</span></div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:8px">
-      <div class="level-card" onclick="goLevel('0')">
-        <div class="lc-stage" style="color:var(--gold-text)">🌱 零基础 · 第1天</div>
-        <div class="lc-title">打招呼就能开口</div>
-        <div class="lc-desc">问候、道别、礼貌用语<br>134个词句 · 8个分类</div>
-        <div class="lc-arrow">→</div>
-      </div>
-      <div class="level-card" onclick="goLevel('a1')">
-        <div class="lc-stage" style="color:var(--blue-text)">⭐ A1 初级 · 第1-2周</div>
-        <div class="lc-title">简单日常交流</div>
-        <div class="lc-desc">自我介绍、时间、天气、家庭、高频词<br>1214个词句 · 30个分类</div>
-        <div class="lc-arrow">→</div>
-      </div>
-      <div class="level-card" onclick="goLevel('a2')">
-        <div class="lc-stage" style="color:var(--gold-text)">⭐⭐ A2 基础 · 第1-2月</div>
-        <div class="lc-title">熟悉场景顺畅沟通</div>
-        <div class="lc-desc">购物、餐厅、交通、旅行、菜单<br>1279个词句 · 33个分类</div>
-        <div class="lc-arrow">→</div>
-      </div>
-      <div class="level-card" onclick="goLevel('b1')">
-        <div class="lc-stage" style="color:var(--orange-text)">🔥 B1 中级 · 第3-6月</div>
-        <div class="lc-title">理解生活主要内容</div>
-        <div class="lc-desc">情感、医疗、银行、社会、抽象词汇<br>870个词句 · 19个分类</div>
-        <div class="lc-arrow">→</div>
-      </div>
-      <div class="level-card" onclick="goLevel('b2')">
-        <div class="lc-stage" style="color:var(--red-text)">💎 B2 中高级 · 第6月+</div>
-        <div class="lc-title">接近流利交流</div>
-        <div class="lc-desc">政府、科技、经济、历史、学术<br>223个词句 · 9个分类</div>
-        <div class="lc-arrow">→</div>
-      </div>
+    <div class="hg-title">更多内容</div>
+    <div class="hg-grid">
+      <a class="hg-tile" href="/vido/"><div class="fic fic-video"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="#fff" stroke-width="2"/><path d="M10 9v6l5-3z" fill="#fff"/></svg></div><span>看视频</span></a>
+      <a class="hg-tile" href="/kinder/"><div class="fic fic-video" style="font-size:24px;line-height:1">🦦</div><span>儿童德语</span></a>
+      <a class="hg-tile" href="/oeif/"><div class="fic fic-red" style="font-size:22px;line-height:1">🇦🇹</div><span>奥地利 A1/A2</span></a>
+      <a class="hg-tile" href="/ielts/"><div class="fic fic-blue" style="font-size:22px;line-height:1">🇬🇧</div><span>雅思词汇</span></a>
     </div>
-
-    <details class="home-more" style="margin-top:24px"><summary>💡 学习方法 & 秘诀（点开查看）</summary><div class="home-more-body">
-    <div class="sec-title" style="margin-top:8px"><span class="sec-title-icon">🔑</span><span class="sec-title-text">学习秘诀 · 中国人学德语最优方法</span></div>
-    <div class="tip-card"><div class="tip-title">① 发音先行，规则极强</div><div class="tip-body">德语<b>"所见即所读"</b>，1-2天拿下字母表+变音(ä ö ü)+组合音(ei/ie/ch/sch)，看词就能拼读。<b>谐音只是拐杖，尽早换成模仿真人发音。</b></div></div>
-    <div class="tip-card"><div class="tip-title">② 名词永远连冠词一起背</div><div class="tip-body">der/die/das 决定格与词尾。背单词=<b>冠词+名词+复数</b>三件套。规律：-ung/-heit/-ion→die；-er/-ling/-ismus→der；-chen/-lein/-um→das。</div></div>
-    <div class="tip-card"><div class="tip-title">③ 借英语同源词滚雪球</div><div class="tip-body">德英同源词极多：Haus/house、Wasser/water、Buch/book、gut/good、trinken/drink、Hand/hand。<b>有英语底子可快速白嫖上千词。</b></div></div>
-    <div class="tip-card"><div class="tip-title">④ 死磕高频词，别啃生僻</div><div class="tip-body">约 <b>600-800 高频词覆盖日常 80%</b>。先把 Goethe A1/A2 核心词吃透（本手册已收录），扩词比求全更重要。</div></div>
-    <div class="tip-card"><div class="tip-title">⑤ 抓动词框架这根骨架</div><div class="tip-body">陈述句<b>动词永远第二位</b>，可分动词前缀甩句尾，从句动词到句末。记牢 sein/haben/können/möchten + 万能句型，半数日常句就能拼。</div></div>
-    <div class="tip-card"><div class="tip-title">⑥ 四个格先攻"第一格+第四格"</div><div class="tip-body">日常主要用主格和宾语(第四格)，二三格后补。<b>别被"4格×3性"吓住，先够用再求全。</b></div></div>
-    <div class="tip-card"><div class="tip-title">⑦ 数字记规律不硬背</div><div class="tip-body">1-12硬记，13-19=数字+zehn，整十=词根+zig，<b>21-99是个位+und+十位（倒序！）</b></div></div>
-    <div class="tip-card"><div class="tip-title">⑧ 场景化 + 每天开口跟读</div><div class="tip-body">按场景成块学（问候/点餐/问路），<b>影子跟读(Shadowing)模仿语调</b>。开口比默记有效10倍。</div></div>
-    <div class="tip-card"><div class="tip-title">⑨ 间隔重复，少量多次</div><div class="tip-body">按遗忘曲线复习，<b>每天15-20分钟，胜过周末突击3小时。</b></div></div>
-    <div class="tip-card"><div class="tip-title">⑩ 磨耳朵：先熟语流再听懂</div><div class="tip-body">听德语慢速新闻(langsam gesprochene Nachrichten / DW)、儿歌、播客。<b>先求"听惯节奏"，别一开始追求字字听懂。</b></div></div>
-    <div class="tip-card"><div class="tip-title">⑪ 长词是"拼"出来的，会拆就会懂</div><div class="tip-body">德语复合词<b>从右往左读，最后一节是核心</b>：Handschuh=Hand(手)+Schuh(鞋)→手套；Krankenhaus=Kranke(病人)+Haus(房)→医院；Geschwindigkeitsbegrenzung 再长也是拼的。<b>这是德语记词最强外挂——拆开记，词汇量翻倍。</b></div></div>
-    <div class="tip-card"><div class="tip-title">⑫ 句中大写的词，基本就是名词</div><div class="tip-body">德语<b>所有名词首字母大写</b>。这不是麻烦，是<b>阅读路标</b>——一眼挑出名词、快速抓住句子主干。</div></div>
-    <div class="tip-card"><div class="tip-title">⑬ 给名词"上色"记性别</div><div class="tip-body">背单词时脑内给冠词上色：<b style="color:var(--blue-text)">der 蓝</b> / <b style="color:var(--red-text)">die 红</b> / <b style="color:var(--gold-text)">das 绿</b>（与本手册语法版块一致）。<b>视觉记忆比硬背 der/die/das 牢得多。</b></div></div>
-    <div class="tip-card"><div class="tip-title">⑭ 可分动词：前缀甩到句尾</div><div class="tip-body">aufstehen(起床)→「Ich <b>stehe</b> um 7 Uhr <b>auf</b>」。<b>听句子别急着下结论——前缀常在最后才蹦出来</b>，它能彻底改变词义(stehen 站 / aufstehen 起床)。</div></div>
-    <div class="tip-card"><div class="tip-title">⑮ 把手机系统语言切成德语</div><div class="tip-body">制造<b>被动沉浸</b>：每天自然接触几十个高频词(Einstellungen 设置、Senden 发送、Löschen 删除…)。零成本、全天候磨语感。</div></div>
-    <div class="tip-card"><div class="tip-title">⑯ 称呼先分清 du / Sie</div><div class="tip-body">朋友家人用 <b>du</b>，陌生人·长辈·正式场合用 <b>Sie</b>(动词跟着变)。<b>用错比语法错更扎眼</b>——这是礼貌问题，优先记牢。</div></div>
-    <div class="tip-card"><div class="tip-title">⑱ 别怕开口犯错</div><div class="tip-body">德国人欣赏"敢说"。<b>说错→被纠正→记住，正是进步最快的循环</b>。沉默才是最大的障碍，每天逼自己开口几句。</div></div>
-    </div></details>
-    <div style="text-align:center;margin:22px 0 6px"><button class="btn" onclick="showSection('support')" style="border-color:rgba(255,75,75,.4);color:var(--red-text);background:rgba(255,75,75,.08)">❤️ 支持作者 · 请我一杯咖啡</button></div>
    </div><!-- /de-only-block -->
 
    <div class="en-only-block">
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(150px,100%),1fr));gap:12px;margin-top:22px">
-      <div class="card" onclick="showSection('en-pron')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.2 9H3.5v6h2.7L11 19z" fill="#fff"/><path d="M14.8 9.2a4 4 0 0 1 0 5.6M17.4 6.6a7.6 7.6 0 0 1 0 10.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">英语发音</div>
-        <div style="font-size:12px;color:var(--text-dim)">元音·组合音·谐音示例</div>
-      </div>
-      <div class="card" onclick="showSection('en-num')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-blue"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="16.8" text-anchor="middle" font-size="12.5" font-family="Georgia,serif" font-weight="bold" fill="#fff">123</text></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">英语数字</div>
-        <div style="font-size:12px;color:var(--text-dim)">teen/ty·大数·序数词</div>
-      </div>
-      <div class="card" onclick="showSection('en-grammar')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-orange"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle" font-size="19" font-family="Georgia,serif" font-weight="bold" fill="#fff">§</text></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">英语语法</div>
-        <div style="font-size:12px;color:var(--text-dim)">be动词·冠词·时态·语序</div>
-      </div>
-      <div class="card" onclick="showSection('phrases')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-purple"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 16h3v4l5-4h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 20 4z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="8.5" cy="10" r="1.15" fill="#fff"/><circle cx="12" cy="10" r="1.15" fill="#fff"/><circle cx="15.5" cy="10" r="1.15" fill="#fff"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">词句大全</div>
-        <div style="font-size:12px;color:var(--text-dim)">常用英语·含中文谐音</div>
-      </div>
-      <div class="card" onclick="showSection('reading')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-teal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.2C9.6 4.7 6.6 4.5 4 5.5V19c2.6-1 5.6-.8 8 .7 2.4-1.5 5.4-1.7 8-.7V5.5c-2.6-1-5.6-.8-8 .7z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M12 6.2v13.5" stroke="#fff" stroke-width="2"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">英语短文</div>
-        <div style="font-size:12px;color:var(--text-dim)">分级阅读·中英对照</div>
-      </div>
-      <div class="card" onclick="showSection('quiz')" style="text-align:center;padding:24px 16px">
-        <div class="fic fic-red"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="1.4" fill="#fff"/></svg></div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">练习测验</div>
-        <div style="font-size:12px;color:var(--text-dim)">看中文·选英语</div>
-      </div>
-      <!-- 雅思词汇（ielts/，独立页面，词库由 tools/gen-ielts.py 从 Word Atlas 生成） -->
-      <a class="card" href="/ielts/" style="display:block;text-decoration:none;text-align:center;padding:24px 16px">
-        <div class="fic fic-blue" style="font-size:22px;line-height:1">🇬🇧</div>
-        <div style="font-size:15px;color:var(--text);font-weight:700;margin-bottom:6px">雅思词汇</div>
-        <div style="font-size:12px;color:var(--text-dim)">7298 词·分级·每天背一组</div>
-      </a>
+    <div class="hg-title">基础</div>
+    <div class="hg-grid">
+      <a class="hg-tile" href="#en-pron" onclick="showSection('en-pron');return false"><div class="fic fic-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.2 9H3.5v6h2.7L11 19z" fill="#fff"/><path d="M14.8 9.2a4 4 0 0 1 0 5.6M17.4 6.6a7.6 7.6 0 0 1 0 10.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div><span>发音</span></a>
+      <a class="hg-tile" href="#en-num" onclick="showSection('en-num');return false"><div class="fic fic-blue"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="16.8" text-anchor="middle" font-size="12.5" font-family="Georgia,serif" font-weight="bold" fill="#fff">123</text></svg></div><span>数字</span></a>
+      <a class="hg-tile" href="#en-grammar" onclick="showSection('en-grammar');return false"><div class="fic fic-orange"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle" font-size="19" font-family="Georgia,serif" font-weight="bold" fill="#fff">§</text></svg></div><span>语法</span></a>
+      <a class="hg-tile" href="/ielts/"><div class="fic fic-blue" style="font-size:22px;line-height:1">🇬🇧</div><span>雅思词汇</span></a>
     </div>
-
-    <div class="sec-title" style="margin-top:36px"><span class="sec-title-icon">🎯</span><span class="sec-title-text">按阶段学习 · 点击进入</span></div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:8px">
-      <div class="level-card" onclick="goLevel('0')">
-        <div class="lc-stage" style="color:var(--gold-text)">🌱 入门</div>
-        <div class="lc-title">开口说第一句</div>
-        <div class="lc-desc">问候、数字、最常用日常表达</div><div class="lc-arrow">→</div>
-      </div>
-      <div class="level-card" onclick="goLevel('a1')">
-        <div class="lc-stage" style="color:var(--blue-text)">⭐ 中考</div>
-        <div class="lc-title">初中水平</div>
-        <div class="lc-desc">自我介绍、时间、家庭、高频词</div><div class="lc-arrow">→</div>
-      </div>
-      <div class="level-card" onclick="goLevel('a2')">
-        <div class="lc-stage" style="color:var(--gold-text)">⭐⭐ 高考</div>
-        <div class="lc-title">高中水平</div>
-        <div class="lc-desc">购物、餐厅、旅行、天气等场景</div><div class="lc-arrow">→</div>
-      </div>
-      <div class="level-card" onclick="goLevel('b1')">
-        <div class="lc-stage" style="color:var(--orange-text)">🔥 四级 CET-4</div>
-        <div class="lc-title">大学四级</div>
-        <div class="lc-desc">更广的词汇与表达（持续扩充中）</div><div class="lc-arrow">→</div>
-      </div>
-      <div class="level-card" onclick="goLevel('b2')">
-        <div class="lc-stage" style="color:var(--red-text)">💎 六级 CET-6</div>
-        <div class="lc-title">大学六级</div>
-        <div class="lc-desc">进阶词汇（持续扩充中）</div><div class="lc-arrow">→</div>
-      </div>
-    </div>
-
-    <div class="sec-title" style="margin-top:36px"><span class="sec-title-icon">🔑</span><span class="sec-title-text">学习秘诀 · 中国人学英语</span></div>
-    <div class="tip-card"><div class="tip-title">① 谐音只是拐杖，尽早换成真人发音</div><div class="tip-body">英语很多音中文没有（th、卷舌 r、æ）。先用谐音敢开口，但<b>务必点 🔊 跟读模仿</b>，别长期依赖谐音。</div></div>
-    <div class="tip-card"><div class="tip-title">② 死磕高频词，别贪多</div><div class="tip-body"><b>约 800–1000 高频词覆盖日常 80%</b>。先把入门/中考词吃透，再上四级六级，扩词比求全重要。</div></div>
-    <div class="tip-card"><div class="tip-title">③ 成块记句子，别只背单词</div><div class="tip-body">按场景整句记（问候/点餐/问路），开口就能用。<b>影子跟读(Shadowing)模仿语调</b>最练口语。</div></div>
-    <div class="tip-card"><div class="tip-title">④ 磨耳朵 + 别怕犯错</div><div class="tip-body">多听慢速英语、儿歌、播客先熟节奏；<b>说错→被纠正→记住</b>是进步最快的循环，沉默才是最大障碍。</div></div>
    </div><!-- /en-only-block -->
   </div>
 </div>
@@ -1504,6 +1334,7 @@ body .sp-go{max-width:none;width:100%;max-width:460px;margin:0 auto;border-radiu
 <!-- ══════════════ QUIZ ══════════════ -->
 <div id="quiz" class="section">
   <div class="container">
+    <div class="prac-seg" role="tablist"><button type="button" class="" onclick="showSection('spell')">拼写记忆</button><button type="button" class="on" onclick="showSection('quiz')">选择测验</button></div>
     <div class="hero-label" style="text-align:center;padding-top:20px">Übungen</div>
     <h2 class="page-title">练习测验</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px">
@@ -1708,6 +1539,7 @@ body .sp-go{max-width:none;width:100%;max-width:460px;margin:0 auto;border-radiu
 <!-- ══════════════ 拼写记忆（键盘输入记单词）══════════════ -->
 <div id="spell" class="section">
   <div class="container">
+    <div class="prac-seg" role="tablist"><button type="button" class="on" onclick="showSection('spell')">拼写记忆</button><button type="button" class="" onclick="showSection('quiz')">选择测验</button></div>
     <div class="hero-label" style="text-align:center;padding-top:20px">Typing</div>
     <h2 class="page-title" id="spTitle">⌨️ 拼写记忆</h2>
     <p id="spIntro" style="text-align:center;font-size:13px;color:var(--text-dim);max-width:470px;margin:0 auto 4px">看中文 / 听发音 → 键盘敲出德语拼写。逐字母强校验，敲错原地纠正；已掌握的词自动跳过，专攻没记牢的。</p>
@@ -2124,6 +1956,42 @@ body{padding-bottom:var(--tab-h)}
     <div class="acct-wrap" style="max-width:560px">
       <div id="meView"></div>
       <div id="meEdit" style="display:none"></div>
+    <div class="me-menu">
+      <a href="#wordbook" onclick="showSection('wordbook');return false"><span>📒</span>生词本<i>›</i></a>
+      <a href="#stats" onclick="showSection('stats');return false"><span>📊</span>学习统计<i>›</i></a>
+      <a href="#rank" onclick="showSection('rank');return false"><span>🏆</span>排行榜<i>›</i></a>
+      <a href="#support" onclick="showSection('support');return false"><span>❤️</span>支持作者<i>›</i></a>
+    </div>
+    <div class="de-only-block">
+    <details class="home-more" style="margin-top:16px"><summary>💡 学习方法 & 秘诀（点开查看）</summary><div class="home-more-body">
+    <div class="sec-title" style="margin-top:8px"><span class="sec-title-icon">🔑</span><span class="sec-title-text">学习秘诀 · 中国人学德语最优方法</span></div>
+    <div class="tip-card"><div class="tip-title">① 发音先行，规则极强</div><div class="tip-body">德语<b>"所见即所读"</b>，1-2天拿下字母表+变音(ä ö ü)+组合音(ei/ie/ch/sch)，看词就能拼读。<b>谐音只是拐杖，尽早换成模仿真人发音。</b></div></div>
+    <div class="tip-card"><div class="tip-title">② 名词永远连冠词一起背</div><div class="tip-body">der/die/das 决定格与词尾。背单词=<b>冠词+名词+复数</b>三件套。规律：-ung/-heit/-ion→die；-er/-ling/-ismus→der；-chen/-lein/-um→das。</div></div>
+    <div class="tip-card"><div class="tip-title">③ 借英语同源词滚雪球</div><div class="tip-body">德英同源词极多：Haus/house、Wasser/water、Buch/book、gut/good、trinken/drink、Hand/hand。<b>有英语底子可快速白嫖上千词。</b></div></div>
+    <div class="tip-card"><div class="tip-title">④ 死磕高频词，别啃生僻</div><div class="tip-body">约 <b>600-800 高频词覆盖日常 80%</b>。先把 Goethe A1/A2 核心词吃透（本手册已收录），扩词比求全更重要。</div></div>
+    <div class="tip-card"><div class="tip-title">⑤ 抓动词框架这根骨架</div><div class="tip-body">陈述句<b>动词永远第二位</b>，可分动词前缀甩句尾，从句动词到句末。记牢 sein/haben/können/möchten + 万能句型，半数日常句就能拼。</div></div>
+    <div class="tip-card"><div class="tip-title">⑥ 四个格先攻"第一格+第四格"</div><div class="tip-body">日常主要用主格和宾语(第四格)，二三格后补。<b>别被"4格×3性"吓住，先够用再求全。</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑦ 数字记规律不硬背</div><div class="tip-body">1-12硬记，13-19=数字+zehn，整十=词根+zig，<b>21-99是个位+und+十位（倒序！）</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑧ 场景化 + 每天开口跟读</div><div class="tip-body">按场景成块学（问候/点餐/问路），<b>影子跟读(Shadowing)模仿语调</b>。开口比默记有效10倍。</div></div>
+    <div class="tip-card"><div class="tip-title">⑨ 间隔重复，少量多次</div><div class="tip-body">按遗忘曲线复习，<b>每天15-20分钟，胜过周末突击3小时。</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑩ 磨耳朵：先熟语流再听懂</div><div class="tip-body">听德语慢速新闻(langsam gesprochene Nachrichten / DW)、儿歌、播客。<b>先求"听惯节奏"，别一开始追求字字听懂。</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑪ 长词是"拼"出来的，会拆就会懂</div><div class="tip-body">德语复合词<b>从右往左读，最后一节是核心</b>：Handschuh=Hand(手)+Schuh(鞋)→手套；Krankenhaus=Kranke(病人)+Haus(房)→医院；Geschwindigkeitsbegrenzung 再长也是拼的。<b>这是德语记词最强外挂——拆开记，词汇量翻倍。</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑫ 句中大写的词，基本就是名词</div><div class="tip-body">德语<b>所有名词首字母大写</b>。这不是麻烦，是<b>阅读路标</b>——一眼挑出名词、快速抓住句子主干。</div></div>
+    <div class="tip-card"><div class="tip-title">⑬ 给名词"上色"记性别</div><div class="tip-body">背单词时脑内给冠词上色：<b style="color:var(--blue-text)">der 蓝</b> / <b style="color:var(--red-text)">die 红</b> / <b style="color:var(--gold-text)">das 绿</b>（与本手册语法版块一致）。<b>视觉记忆比硬背 der/die/das 牢得多。</b></div></div>
+    <div class="tip-card"><div class="tip-title">⑭ 可分动词：前缀甩到句尾</div><div class="tip-body">aufstehen(起床)→「Ich <b>stehe</b> um 7 Uhr <b>auf</b>」。<b>听句子别急着下结论——前缀常在最后才蹦出来</b>，它能彻底改变词义(stehen 站 / aufstehen 起床)。</div></div>
+    <div class="tip-card"><div class="tip-title">⑮ 把手机系统语言切成德语</div><div class="tip-body">制造<b>被动沉浸</b>：每天自然接触几十个高频词(Einstellungen 设置、Senden 发送、Löschen 删除…)。零成本、全天候磨语感。</div></div>
+    <div class="tip-card"><div class="tip-title">⑯ 称呼先分清 du / Sie</div><div class="tip-body">朋友家人用 <b>du</b>，陌生人·长辈·正式场合用 <b>Sie</b>(动词跟着变)。<b>用错比语法错更扎眼</b>——这是礼貌问题，优先记牢。</div></div>
+    <div class="tip-card"><div class="tip-title">⑱ 别怕开口犯错</div><div class="tip-body">德国人欣赏"敢说"。<b>说错→被纠正→记住，正是进步最快的循环</b>。沉默才是最大的障碍，每天逼自己开口几句。</div></div>
+    </div></details>
+    </div>
+    <div class="en-only-block">
+    <details class="home-more" style="margin-top:16px"><summary>💡 学习方法（点开查看）</summary><div class="home-more-body">
+    <div class="tip-card"><div class="tip-title">① 谐音只是拐杖，尽早换成真人发音</div><div class="tip-body">英语很多音中文没有（th、卷舌 r、æ）。先用谐音敢开口，但<b>务必点 🔊 跟读模仿</b>，别长期依赖谐音。</div></div>
+    <div class="tip-card"><div class="tip-title">② 死磕高频词，别贪多</div><div class="tip-body"><b>约 800–1000 高频词覆盖日常 80%</b>。先把入门/中考词吃透，再上四级六级，扩词比求全重要。</div></div>
+    <div class="tip-card"><div class="tip-title">③ 成块记句子，别只背单词</div><div class="tip-body">按场景整句记（问候/点餐/问路），开口就能用。<b>影子跟读(Shadowing)模仿语调</b>最练口语。</div></div>
+    <div class="tip-card"><div class="tip-title">④ 磨耳朵 + 别怕犯错</div><div class="tip-body">多听慢速英语、儿歌、播客先熟节奏；<b>说错→被纠正→记住</b>是进步最快的循环，沉默才是最大障碍。</div></div>
+    </div></details>
+    </div>
     </div>
   </div>
 </div>
@@ -2633,10 +2501,10 @@ function showSection(id){
   if(id==='wordbook'&&typeof renderWordBook==='function')renderWordBook();
   if(id==='stats'&&typeof renderStats==='function')renderStats();
   if(id==='dialog'&&typeof renderDialogues==='function')renderDialogues();
-  var _bsec=(id==='me'||id==='account')?'account':(id==='series'||id==='dialog'?'reading':id);
+  var _bsec={me:'account',account:'account',wordbook:'account',stats:'account',rank:'account',support:'account',series:'reading',dialog:'reading',quiz:'spell',pronunciation:'home',numbers:'home',grammar:'home',body:'home','en-pron':'home','en-num':'home','en-grammar':'home'}[id]||id;
   document.querySelectorAll('#bottomNav .bn-btn').forEach(function(b){var on=b.getAttribute('data-sec')===_bsec;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   // 图解页(body)自己就是查词界面，再挂一个「拼读查词」既重复又和选中词浮条抢位置
-  document.body.classList.toggle('hide-fab',id==='account'||id==='me'||id==='rank'||id==='spell'||id==='body');
+  document.body.classList.toggle('hide-fab',id==='home'||id==='account'||id==='me'||id==='rank'||id==='spell'||id==='body');
   try{track('view',{s:id});}catch(e){}
   if(id==='reading'){setReadTopic(readTopic);_rendered.reading=true;}
   if(id==='series'&&!_rendered.series){renderSeries();renderSeriesLinks();_rendered.series=true;}
@@ -3119,12 +2987,9 @@ function buildPhSug(){ // 联想表：单词（去标点、去重）+ 日常短�
 }
 
 // ══════════════════════════════════════
-// 打开站点时的激励卡
+// 每日一句（首页卡片）
 // ══════════════════════════════════════
 // 文案在 data/boosts.json，构建时明文注入（不是词库，无需加密）。
-// 频率：**每次打开站点弹一次**（sessionStorage 标记，同一次浏览里切版块不再弹）；
-// 点「今天不再提示」则按自然日静音，避免变成每次都要手动关的骚扰。
-function _boostToday(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 // 从词库里挑「完整的日常句」：多词、首字母大写、以 . ! ? 收尾、有谐音、长度适中。
 // 实测 4016 条词条里有 779 条合格，覆盖入门/A1/A2/B1。
 function _boostPool(cats){
@@ -3145,35 +3010,19 @@ function _boostPool(cats){
   out.sort(function(a,b){return a.de<b.de?-1:(a.de>b.de?1:0);});
   return out;
 }
-function boostClose(muteToday){
-  var m=document.getElementById('boostModal');if(m)m.style.display='none';
-  try{if(muteToday)localStorage.setItem('boostMute',_boostToday());}catch(e){}
-}
+// 每日一句：首页里的一张卡（以前是进站弹窗，挡路，2026-10 改为常驻卡片）
 function boostShow(){
-  try{
-    if(sessionStorage.getItem('boostSeen'))return;        // 本次会话已经弹过
-    if(localStorage.getItem('boostMute')===_boostToday())return;  // 今天被静音
-  }catch(e){}
-  // 词库是懒加载的（de.<hash>.dat），到货后才挑句
   var go=function(cats){
     var pool=_boostPool(cats||[]);
     if(!pool.length)return;
     // 按天取：同一天所有人看到同一句，换天才换 —— 刷新一次换一句会显得很随机
     var d=Math.floor(Date.now()/864e5),it=pool[d%pool.length];
-    var de=document.getElementById('boostDe'),zh=document.getElementById('boostZh'),
-        py=document.getElementById('boostPy'),m=document.getElementById('boostModal'),
-        spk=document.getElementById('boostSpk');
-    if(!de||!m)return;
+    var box=document.getElementById('homeBoost'),de=document.getElementById('boostDe'),zh=document.getElementById('boostZh'),
+        py=document.getElementById('boostPy'),spk=document.getElementById('boostSpk');
+    if(!box||!de)return;
     de.textContent=it.de;zh.textContent=it.zh;py.textContent='谐音：'+it.py;
     if(spk)spk.onclick=function(){try{speakDE(it.de,spk);}catch(e){}};
-    m.style.display='flex';
-    try{sessionStorage.setItem('boostSeen','1');}catch(e){}
-    try{track('boost',{i:d%pool.length});}catch(e){}
-    // 只在用户已经和页面交互过时才自动朗读（多邻国等站点的做法）。
-    // 以前无条件朗读：冷启动没有用户手势，浏览器直接拒绝，进站第一眼就弹出
-    // 「浏览器拦住了自动朗读」的报错提示。不支持 userActivation 的老浏览器一律不自动读。
-    try{var ua=navigator.userActivation;if(ua&&ua.hasBeenActive)setTimeout(function(){speakDE(it.de,spk);},350);}catch(e){}
-    try{var gb=m.querySelector('.boost-go');if(gb)gb.focus();}catch(e){}
+    box.style.display='';
   };
   try{
     if(window._DEC)go(window._DEC);
@@ -3182,7 +3031,7 @@ function boostShow(){
 }
 function phOpen(){var m=document.getElementById('phModal');if(m){m.style.display='flex';var i=document.getElementById('phInput');if(i)setTimeout(function(){i.focus();},50);}}
 function phClose(){var m=document.getElementById('phModal');if(m)m.style.display='none';}
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){phClose();var bm=document.getElementById('boostModal');if(bm&&bm.style.display!=='none')boostClose();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')phClose();});
 function renderPhTool(){
   const v=(document.getElementById('phInput').value||'').trim();
   const out=document.getElementById('phToolOut');if(!out)return;
@@ -5100,7 +4949,7 @@ function acctClearLocal(){ACCT.token=null;ACCT.user=null;try{localStorage.remove
 function acctLogout(){try{if(ACCT.token&&API_BASE)apiFetch('/api/logout',{method:'POST'});}catch(e){}acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}
 // 深链（分享出来的 #reading 等）进站时不弹「每日一句」：别人点链接是来看那一页的，
 // 一进来就被整屏弹窗挡住只会让人关掉网页。只有正常打开（落到默认页）才弹。
-function acctEnter(){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();var d=START_SEC,deep=false;try{if(_deepSec){d=_deepSec;_deepSec=null;deep=true;}}catch(e){}if(!deep){try{setTimeout(boostShow,600);}catch(e){}}showSection(d);}
+function acctEnter(){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();var d=START_SEC,deep=false;try{if(_deepSec){d=_deepSec;_deepSec=null;deep=true;}}catch(e){}showSection(d);}
 function acctTab(w){var lg=w==='login';document.getElementById('tabLogin').classList.toggle('on',lg);document.getElementById('tabReg').classList.toggle('on',!lg);document.getElementById('paneLogin').style.display=lg?'':'none';document.getElementById('paneReg').style.display=lg?'none':'';}
 function acctRegister(){var u=(document.getElementById('rgUser').value||'').trim().toLowerCase();var nick=(document.getElementById('rgNick').value||'').trim();var pw=document.getElementById('rgPass').value||'';var err=document.getElementById('rgErr');err.textContent='';if(!/^[a-z0-9_]{3,20}$/.test(u)){err.textContent='用户名 3-20 位，仅小写字母/数字/下划线';return;}if(pw.length<6){err.textContent='密码至少 6 位';return;}var _em=(document.getElementById('rgEmail')||{}).value||'';apiFetch('/api/register',{method:'POST',body:{username:u,nickname:nick,password:pw,email:_em}}).then(function(r){if(!r.ok){err.textContent=r.status===0?'网络不可用，请检查连接后重试':((r.data&&r.data.err)||'注册失败');return;}acctSetAuth(r.data.token,r.data.user);if(r.data.recovery){showRecovery(r.data.recovery,true);}else{acctStartSession();}},function(){err.textContent='网络错误，请重试';});}
 function acctLogin(){var u=(document.getElementById('lgUser').value||'').trim().toLowerCase();var pw=document.getElementById('lgPass').value||'';var err=document.getElementById('lgErr');err.textContent='';if(!u||!pw){err.textContent='请输入用户名和密码';return;}apiFetch('/api/login',{method:'POST',body:{username:u,password:pw}}).then(function(r){if(!r.ok){err.textContent=r.status===0?'网络不可用，请检查连接后重试':((r.data&&r.data.err)||'登录失败');return;}acctSetAuth(r.data.token,r.data.user);acctStartSession();},function(){err.textContent='网络错误，请重试';});}
@@ -5359,7 +5208,7 @@ function _dashStreak(s,t){try{var y=_yday();if(s.last===y&&(s.streak||0)>=1)retu
 function _dashWb(){try{var n=wbDue().length;return n?'<div class="dash-nudge" onclick="showSection(\'wordbook\')">📒 生词本有 '+n+' 个词该复习了 →</div>':'';}catch(e){return '';}}
 function _dashDue(){try{var dn=srsDueList().length;return dn?'<div style="font-size:12px;color:#e8930c;margin-top:10px;cursor:pointer" onclick="showSection(\'spell\')">📆 有 '+dn+' 个学过的词到期了，去复习巩固 →</div>':'';}catch(e){return '';}}
 // 首页学习仪表盘：本地数据即时渲染（打卡/掌握词/徽章 + 今日目标 + 快捷入口）
-function renderHomeDash(){var el=document.getElementById('homeDash');if(!el)return;var s={};try{s=getStudy();}catch(e){}var t='';try{t=_today();}catch(e){}var todayN=(s.d===t)?(s.n||0):0;var goal=s.goal||20;var streak=(s.last===t||s.last===_yday())?(s.streak||0):0;var known=0;try{known=Object.keys(getKnown()).length;}catch(e){}var badges=0;try{badges=_badgeSeen().length;}catch(e){}var pct=Math.min(100,Math.round(todayN/goal*100));var nick=(ACCT.user&&(ACCT.user.nickname||ACCT.user.username))||'同学';var av=ACCT.user?_avatarHtml(ACCT.user,44):'<span class="avatar" style="width:44px;height:44px;background:#e4dac8;font-size:24px">🦉</span>';var goalPick='<div class="dash-cta" id="dashGoalPick" style="display:none">'+[10,20,50,100].map(function(g){return '<button type="button" class="'+(goal===g?'on':'')+'" onclick="setDailyGoal('+g+')">'+g+'</button>';}).join('')+'</div>';var lastHtml='';try{var _ls=JSON.parse(localStorage.getItem(_migrateDeLocal('lastStudy'))||'null');if(_ls&&_ls.name)lastHtml='<div class="dash-last" onclick="resumeLast()">▶ 继续上次：'+_esc(_ls.name)+'</div>';}catch(e){}var _dp={total:0,rev:0,neu:0},_dd=false;try{_dp=dailyPlan();_dd=_dailyDone();}catch(e){}var dailyCard=_dd?'<div class="dash-daily done">✅ 今日课程已完成，明天见！</div>':'<div class="dash-daily" onclick="spStartDaily()"><div class="dd-txt"><b>📅 今日课程</b><span>'+_dp.total+' 词 · '+_dp.rev+' 复习 + '+_dp.neu+' 新词'+((_dp.lv&&_dp.lv!=='all'&&levelName(_dp.lv))?' · '+levelName(_dp.lv):'')+'</span></div><span class="dd-go">▶ 开始</span></div>';el.innerHTML='<div class="dash"><div class="dash-top">'+av+'<div class="dash-hi">'+(LANG==='en'?'Hello, ':'Hallo, ')+_esc(nick)+'！<small>'+(pct>=100?'今日目标已达成，太棒了 🎉':(todayN>0?'继续保持，今天已学 '+todayN+' 次':'今天还没开始，来一组拼写吧'))+'</small></div></div>'+dailyCard+'<div class="dash-stats"><div class="dash-stat" onclick="showSection(\'me\')"><b>'+streak+'</b><span>🔥 连续打卡</span></div><div class="dash-stat" onclick="showSection(\'spell\')"><b>'+known+'</b><span>📖 掌握词</span></div><div class="dash-stat" onclick="showSection(\'me\')"><b>'+badges+'</b><span>🏅 徽章</span></div></div><div class="dash-goal"><div class="dash-goal-row" onclick="dashGoalToggle()" style="cursor:pointer" title="调整每日目标"><span>今日目标 ✏️</span><span>'+todayN+' / '+goal+'</span></div><div class="dash-goal-bar"><i style="width:'+pct+'%"></i></div>'+goalPick+'</div>'+_dashTrend(s,t)+_dashStreak(s,t)+_dashDue()+_dashWb()+lastHtml+'<div class="dash-cta"><button type="button" onclick="showSection(\'spell\')">⌨️ 拼写记忆</button><button type="button" onclick="showSection(\'quiz\')">🎯 练习测验</button><button type="button" onclick="showSection(\'rank\')">🏆 排行榜</button></div><div class="dash-cta"><button type="button" onclick="showSection(\'wordbook\')">📒 生词本</button><button type="button" onclick="showSection(\'stats\')">📊 学习统计</button></div></div>';}
+function renderHomeDash(){var el=document.getElementById('homeDash');if(!el)return;var s={};try{s=getStudy();}catch(e){}var t='';try{t=_today();}catch(e){}var todayN=(s.d===t)?(s.n||0):0;var goal=s.goal||20;var streak=(s.last===t||s.last===_yday())?(s.streak||0):0;var known=0;try{known=Object.keys(getKnown()).length;}catch(e){}var badges=0;try{badges=_badgeSeen().length;}catch(e){}var pct=Math.min(100,Math.round(todayN/goal*100));var nick=(ACCT.user&&(ACCT.user.nickname||ACCT.user.username))||'同学';var av=ACCT.user?_avatarHtml(ACCT.user,44):'<span class="avatar" style="width:44px;height:44px;background:#e4dac8;font-size:24px">🦉</span>';var goalPick='<div class="dash-cta" id="dashGoalPick" style="display:none">'+[10,20,50,100].map(function(g){return '<button type="button" class="'+(goal===g?'on':'')+'" onclick="setDailyGoal('+g+')">'+g+'</button>';}).join('')+'</div>';var lastHtml='';try{var _ls=JSON.parse(localStorage.getItem(_migrateDeLocal('lastStudy'))||'null');if(_ls&&_ls.name)lastHtml='<div class="dash-last" onclick="resumeLast()">▶ 继续上次：'+_esc(_ls.name)+'</div>';}catch(e){}var _dp={total:0,rev:0,neu:0},_dd=false;try{_dp=dailyPlan();_dd=_dailyDone();}catch(e){}var dailyCard=_dd?'<div class="dash-daily done">✅ 今日课程已完成，明天见！</div>':'<div class="dash-daily" onclick="spStartDaily()"><div class="dd-txt"><b>📅 今日课程</b><span>'+_dp.total+' 词 · '+_dp.rev+' 复习 + '+_dp.neu+' 新词'+((_dp.lv&&_dp.lv!=='all'&&levelName(_dp.lv))?' · '+levelName(_dp.lv):'')+'</span></div><span class="dd-go">▶ 开始</span></div>';el.innerHTML='<div class="dash"><div class="dash-top">'+av+'<div class="dash-hi">'+(LANG==='en'?'Hello, ':'Hallo, ')+_esc(nick)+'！<small>'+(pct>=100?'今日目标已达成，太棒了 🎉':(todayN>0?'继续保持，今天已学 '+todayN+' 次':'今天还没开始，来一组拼写吧'))+'</small></div></div>'+dailyCard+'<div class="dash-stats"><div class="dash-stat" onclick="showSection(\'stats\')"><b>'+streak+'</b><span>🔥 连续打卡</span></div><div class="dash-stat" onclick="showSection(\'spell\')"><b>'+known+'</b><span>📖 掌握词</span></div><div class="dash-stat" onclick="showSection(\'me\')"><b>'+badges+'</b><span>🏅 徽章</span></div></div><div class="dash-goal"><div class="dash-goal-row" onclick="dashGoalToggle()" style="cursor:pointer" title="调整每日目标"><span>今日目标 ✏️</span><span>'+todayN+' / '+goal+'</span></div><div class="dash-goal-bar"><i style="width:'+pct+'%"></i></div>'+goalPick+'</div>'+_dashStreak(s,t)+_dashDue()+_dashWb()+lastHtml+'</div>';try{boostShow();}catch(e){}}
 // 今日目标可调：点「今日目标」行展开 10/20/50/100 四档
 function dashGoalToggle(){var p=document.getElementById('dashGoalPick');if(p)p.style.display=(p.style.display==='none')?'':'none';}
 function setDailyGoal(g){var s=getStudy();s.goal=g;saveStudy(s);try{track('goal',{g:g});}catch(e){}renderHomeDash();}
@@ -5600,23 +5449,12 @@ function spFinish(){document.getElementById('spBar').style.width='100%';document
 </script>
 <nav id="bottomNav" aria-label="底部导航">
   <button class="bn-btn" data-sec="home" onclick="showSection('home')"><span class="bn-i">🏠</span><span class="bn-t">首页</span></button>
-  <button class="bn-btn" data-sec="phrases" onclick="showSection('phrases')"><span class="bn-i">💬</span><span class="bn-t">语句</span></button>
+  <button class="bn-btn" data-sec="phrases" onclick="showSection('phrases')"><span class="bn-i">💬</span><span class="bn-t">词句</span></button>
   <button class="bn-btn" data-sec="reading" onclick="showSection('reading')"><span class="bn-i">📖</span><span class="bn-t">短文</span></button>
+  <button class="bn-btn" data-sec="spell" onclick="showSection('spell')"><span class="bn-i">✏️</span><span class="bn-t">练习</span></button>
   <button class="bn-btn" data-sec="account" onclick="showSection('account')"><span class="bn-i">👤</span><span class="bn-t">我的</span></button>
 </nav>
 <button class="phfab" type="button" onclick="phOpen()" aria-label="打开拼读器查词" title="拼读查词">🧩</button>
-<div class="boost-overlay" id="boostModal" style="display:none" role="dialog" aria-modal="true" aria-label="今日激励" onclick="if(event.target===this)boostClose()">
-  <div class="boost-card">
-    <img class="otti" src="otti/study.webp" alt="" style="height:92px;margin-bottom:6px" draggable="false">
-    <div class="boost-label">每日一句 · Satz des Tages</div>
-    <div class="boost-de" id="boostDe" lang="de"></div>
-    <button class="boost-spk" id="boostSpk" type="button" aria-label="朗读这句" title="朗读">🔊 朗读</button>
-    <div class="boost-zh" id="boostZh"></div>
-    <div class="boost-py" id="boostPy"></div>
-    <button class="boost-go" type="button" onclick="boostClose()">开始今天的学习</button>
-    <button class="boost-skip" type="button" onclick="boostClose(true)">今天不再提示</button>
-  </div>
-</div>
 <div class="ph-overlay" id="phModal" style="display:none" onclick="if(event.target===this)phClose()">
   <div class="ph-card" role="dialog" aria-label="拼读器">
     <div class="ph-card-head">

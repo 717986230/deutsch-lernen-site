@@ -24,7 +24,7 @@
 {"@type":"ListItem","position":1,"name":"德语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"主题词表"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:c6dbb31b7adb -->
+<!-- src-hash:33628bad92ec -->
 <style>
 :root{
   /* 底部标签栏占用的高度（含 iPhone 安全区）。所有 fixed/sticky 贴底的浮动元素
@@ -414,12 +414,6 @@ body.lang-en .phfab{display:none}
 .ph-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;max-width:560px;width:100%;max-height:82vh;overflow:auto;padding:14px 16px;box-shadow:0 14px 44px rgba(0,0,0,.32)}
 .ph-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;color:var(--text)}
 /* 每次打开站点弹一次的激励卡 */
-.boost-overlay{position:fixed;inset:0;z-index:460;background:rgba(0,0,0,.5);
-  display:flex;align-items:center;justify-content:center;padding:24px}
-.boost-card{background:var(--surface);border:1px solid var(--gold-dim);border-radius:20px;
-  max-width:400px;width:100%;padding:26px 22px 20px;text-align:center;
-  box-shadow:0 18px 50px rgba(0,0,0,.34)}
-.boost-label{font-size:12px;letter-spacing:3px;color:var(--gold-text);margin-bottom:14px}
 /* 吉祥物 Otti（水彩水獭女孩，otti/*.webp）：按场景换姿势和表情，见 _otti() */
 .otti{display:block;margin:0 auto;width:auto;max-width:100%;user-select:none;-webkit-user-drag:none}
 .otti-bob{animation:ottiBob 1.6s ease-in-out infinite}
@@ -434,20 +428,6 @@ body.lang-en .phfab{display:none}
 @keyframes ottiArm{0%,60%,100%{transform:rotate(0)}12%{transform:rotate(-16deg)}24%{transform:rotate(10deg)}36%{transform:rotate(-14deg)}48%{transform:rotate(6deg)}}
 @keyframes ottiHop{0%,60%,100%{transform:translateY(0)}18%,42%{transform:translateY(-5px)}}
 @media (prefers-reduced-motion:reduce){.otti-bob,.otti-wave,.otti-arm{animation:none}.otti-pop{animation:none;opacity:1}}
-.boost-de{font-size:22px;font-weight:700;color:var(--text);line-height:1.45;margin-bottom:12px;font-style:italic}
-.boost-spk{min-height:44px;padding:8px 20px;margin-bottom:12px;border-radius:22px;
-  border:1px solid var(--gold-dim);background:var(--btn-bg);color:var(--gold-text);
-  font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
-.boost-spk:active{transform:scale(.96)}
-.boost-spk.speaking{background:var(--gold);color:var(--on-brand)}
-.boost-zh{font-size:16px;color:var(--text-dim);line-height:1.7;margin-bottom:6px}
-.boost-py{font-size:13px;color:var(--gold-text);line-height:1.7;margin-bottom:20px}
-.boost-go{width:100%;min-height:48px;border:none;border-radius:24px;background:var(--gold);
-  color:var(--on-brand);font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;
-  box-shadow:0 4px 14px var(--gold-dim)}
-.boost-go:active{transform:translateY(1px)}
-.boost-skip{margin-top:10px;background:none;border:none;color:var(--text-faint);
-  font-size:12px;font-family:inherit;cursor:pointer;padding:10px;min-height:44px}
 .ph-close{border:none;background:transparent;font-size:18px;color:var(--text-faint);cursor:pointer;padding:2px 8px;font-family:inherit}
 .ph-zhhit{margin:7px 0;font-size:14px;color:var(--text-dim)}
 /* 词性 / 冠词小标签：der 蓝 die 红 das 绿，与学习秘诀⑬的「给名词上色」一致 */
@@ -566,6 +546,38 @@ body .sp-seg{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:3px;backgr
 body .sp-seg button{border:0;background:transparent;border-radius:999px;padding:7px 0;color:var(--text-dim);font-weight:500;box-shadow:none}
 body .sp-seg button.on{background:var(--text);color:var(--bg);font-weight:600}
 body .sp-go{max-width:none;width:100%;max-width:460px;margin:0 auto;border-radius:999px}
+/* 首页 · 每日一句卡片 */
+.boost-inline{position:relative;margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px 60px 14px 16px;box-shadow:var(--shadow)}
+.boost-label{font-size:11px;letter-spacing:2px;color:var(--gold-text);margin-bottom:6px}
+.boost-de{font-size:18px;font-weight:700;color:var(--text);line-height:1.45;font-style:italic}
+.boost-zh{font-size:14px;color:var(--text-dim);line-height:1.6;margin-top:4px}
+.boost-py{font-size:12px;color:var(--gold-text);line-height:1.6}
+.boost-spk{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface-2);font-size:18px;cursor:pointer}
+.boost-spk.speaking{background:var(--gold);color:var(--on-brand)}
+/* 首页 · 分组入口（4 列小图标） */
+.hg-title{font-size:13px;font-weight:700;color:var(--text-faint);letter-spacing:1px;margin:22px 2px 10px}
+.hg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.hg-tile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 2px 10px;border-radius:16px;background:var(--surface);border:1px solid var(--border);text-decoration:none;color:var(--text);font-size:12.5px;font-weight:600;text-align:center;line-height:1.3;min-height:44px}
+.hg-tile:active{background:var(--surface-2)}
+.hg-tile .fic{width:42px;height:42px;border-radius:13px;margin:0;font-size:20px!important}
+.hg-tile .fic svg{width:22px;height:22px}
+/* 顶栏站名 */
+.tb-brand{flex:1 1 auto;display:flex;align-items:center;gap:6px;min-height:44px;padding:0 6px;color:var(--text);font-weight:700;font-size:15px;text-decoration:none}
+.tb-brand img{height:28px;width:auto}
+/* 练习页：拼写 / 测验 切换 */
+.prac-seg{display:grid;grid-template-columns:1fr 1fr;max-width:320px;margin:16px auto 0;padding:3px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px}
+.prac-seg button{border:0;background:transparent;border-radius:999px;min-height:44px;color:var(--text-dim);font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.prac-seg button.on{background:var(--text);color:var(--bg);font-weight:600}
+/* 每日一句取自德语词库，英语模式下不显示；练习页有切换条，原来的小标签与「练习测验」大标题就重复了 */
+body.lang-en #homeBoost{display:none!important}
+#spell .hero-label,#quiz .hero-label,#quiz .page-title{display:none}
+/* 我的 · 菜单 */
+.me-menu{margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.me-menu a{display:flex;align-items:center;gap:12px;min-height:52px;padding:0 16px;color:var(--text);text-decoration:none;font-size:15px}
+.me-menu a+a{border-top:1px solid var(--border)}
+.me-menu a span{font-size:18px;width:24px;text-align:center}
+.me-menu a i{margin-left:auto;font-style:normal;color:var(--text-faint);font-size:20px}
+.me-menu a:active{background:var(--surface-2)}
 
 
 .acct-wrap{max-width:420px;margin:0 auto}
