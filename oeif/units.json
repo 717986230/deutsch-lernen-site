@@ -1155,5 +1155,1283 @@
     ]
    ]
   ]
+ },
+ {
+  "id": "kursraum-b1",
+  "lv": "B1",
+  "icon": "🏫",
+  "de": "Kursraum B1",
+  "zh": "官方免费网课 B1",
+  "url": "https://sprachportal.at/deutsch-lernen/b1/online-lernen/kursraum-b1/",
+  "btn": "打开官方 Kursraum B1",
+  "what": [
+   "这是 ÖIF 的 B1 免费直播网课，周一到周六都有，分三种：普通 B1 课、B1 备考课、B1 口语课（Sprechen B1）。",
+   "B1 课默认你已经能用德语应付日常，老师基本只说德语，语速接近正常。适合学完 A2、准备考 B1 融合考试的人。",
+   "建议先上口语课：B1 口语要你介绍自己、和别人一起商量计划一件事，下面这些句子在课上和考试里都能直接用。"
+  ],
+  "vocab": [
+   [
+    "Meiner Meinung nach …",
+    "我认为……",
+    "麦讷尔 迈农 纳赫"
+   ],
+   [
+    "Ich bin der Meinung, dass …",
+    "我的看法是……",
+    "伊希 宾 德尔 迈农 达斯"
+   ],
+   [
+    "Da bin ich anderer Meinung.",
+    "这点我看法不同。",
+    "达 宾 伊希 安德勒 迈农"
+   ],
+   [
+    "Das sehe ich genauso.",
+    "我也这么看。",
+    "达斯 泽呃 伊希 格瑙佐"
+   ],
+   [
+    "Was hältst du davon?",
+    "你觉得这个怎么样？",
+    "瓦斯 黑尔斯特 度 达冯"
+   ],
+   [
+    "Wie wäre es, wenn wir …?",
+    "我们……怎么样？（提建议）",
+    "维 韦雷 埃斯 文 维尔"
+   ],
+   [
+    "Einverstanden.",
+    "同意。",
+    "艾因费尔施坦登"
+   ],
+   [
+    "Könnten Sie das bitte genauer erklären?",
+    "您能解释得详细一点吗？",
+    "克恩腾 齐 达斯 比特 格瑙尔 尔克雷伦"
+   ],
+   [
+    "die Prüfungsvorbereitung",
+    "备考",
+    "迪 普吕丰斯福尔贝赖通"
+   ],
+   [
+    "die Aussprache",
+    "发音",
+    "迪 奥斯施普拉赫"
+   ]
+  ],
+  "grammar": [
+   [
+    "表达看法：dass 从句，动词放句末",
+    "dass 引出的从句里，变位动词跑到最后。",
+    [
+     [
+      "Ich glaube, dass der Kurs sehr hilfreich ist.",
+      "我觉得这门课很有用。",
+      "伊希 格劳贝 达斯 德尔 库尔斯 泽尔 希尔费莱希 伊斯特"
+     ],
+     [
+      "Ich finde, dass wir mehr sprechen sollten.",
+      "我觉得我们应该多说。",
+      "伊希 芬德 达斯 维尔 梅尔 施普雷兴 佐尔腾"
+     ]
+    ]
+   ],
+   [
+    "提建议：Wie wäre es, wenn … / Sollen wir …?",
+    "wenn 从句同样把动词放句末；Sollen wir 是疑问句，动词放句首。",
+    [
+     [
+      "Wie wäre es, wenn wir am Samstag lernen?",
+      "我们周六一起学怎么样？",
+      "维 韦雷 埃斯 文 维尔 阿姆 扎姆斯塔克 勒嫩"
+     ],
+     [
+      "Sollen wir uns um zehn Uhr treffen?",
+      "我们十点见面好吗？",
+      "佐伦 维尔 温斯 乌姆 岑 乌尔 特雷芬"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "online-b1",
+  "lv": "B1",
+  "icon": "🧩",
+  "de": "Online lernen B1",
+  "zh": "官方在线练习 B1",
+  "url": "https://sprachportal.at/deutsch-lernen/b1/online-lernen/",
+  "btn": "打开官方 B1 在线练习",
+  "what": [
+   "官方 B1 在线练习页里有几类：全景图练习（Panoramabild，看一张大图找词句）、Doodle 小动画、学习播客和互动视频，全部免费、手机能做。",
+   "内容都围绕在奥地利生活：找房子、和房东打交道、去政府部门（Behörde）办事、找工作。",
+   "B1 开始大量出现长复合词，拆开看就不难：Mietvertrag = Miete（租金）+ Vertrag（合同）。先把下面的词听熟再去做题。"
+  ],
+  "vocab": [
+   [
+    "die Wohnung",
+    "住房、公寓",
+    "迪 沃农"
+   ],
+   [
+    "der Mietvertrag",
+    "租房合同",
+    "德尔 米特费尔特拉格"
+   ],
+   [
+    "die Kaution",
+    "押金",
+    "迪 考齐翁"
+   ],
+   [
+    "die Betriebskosten",
+    "房屋杂费（奥地利租房常见）",
+    "迪 贝特里普斯科斯滕"
+   ],
+   [
+    "der Vermieter",
+    "房东",
+    "德尔 费尔米特"
+   ],
+   [
+    "die Behörde",
+    "政府部门",
+    "迪 贝霍尔德"
+   ],
+   [
+    "der Antrag",
+    "申请（表）",
+    "德尔 安特拉克"
+   ],
+   [
+    "einen Antrag stellen",
+    "提交申请",
+    "艾嫩 安特拉克 施特伦"
+   ],
+   [
+    "das Formular",
+    "表格",
+    "达斯 福尔穆拉尔"
+   ],
+   [
+    "der Meldezettel",
+    "户籍登记表（奥地利搬家后 3 天内要登记）",
+    "德尔 梅尔德采特尔"
+   ],
+   [
+    "sich anmelden",
+    "登记、报名",
+    "西希 安梅尔登"
+   ]
+  ],
+  "grammar": [
+   [
+    "被动态：werden + 第二分词",
+    "说「某事被做」，政府通知和表格里特别常见。",
+    [
+     [
+      "Der Antrag wird geprüft.",
+      "申请正在审核。",
+      "德尔 安特拉克 维尔特 格普吕夫特"
+     ],
+     [
+      "Das Formular muss unterschrieben werden.",
+      "表格必须签字。",
+      "达斯 福尔穆拉尔 穆斯 温特施里本 韦尔登"
+     ]
+    ]
+   ],
+   [
+    "复合名词：最后一个词决定词性",
+    "der Mietvertrag 跟着 der Vertrag 是阳性，die Betriebskosten 跟着 die Kosten 是复数。",
+    [
+     [
+      "Der Mietvertrag ist unterschrieben.",
+      "租房合同签好了。",
+      "德尔 米特费尔特拉格 伊斯特 温特施里本"
+     ],
+     [
+      "Die Betriebskosten sind sehr hoch.",
+      "杂费很高。",
+      "迪 贝特里普斯科斯滕 辛特 泽尔 霍赫"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "werte-b1",
+  "lv": "B1",
+  "icon": "⚖️",
+  "de": "Werte- und Orientierungswissen B1",
+  "zh": "价值与常识 B1",
+  "url": "https://werte.sprachportal.at/course/view.php?id=4",
+  "btn": "打开官方 B1 价值与常识练习",
+  "what": [
+   "B1 融合考试除了语言，还有一部分「价值与常识」（Werte- und Orientierungswissen）：奥地利的民主、法治、男女平等、教育、医疗等基本知识。",
+   "官方 B1 练习是互动题，打开后可能要先免费注册账号。题目比 A2 难：不只问「是什么」，还会问「为什么」。",
+   "考前把下面这些关键词弄懂，题目基本都能读明白。"
+  ],
+  "vocab": [
+   [
+    "die Demokratie",
+    "民主",
+    "迪 德莫克拉蒂"
+   ],
+   [
+    "der Rechtsstaat",
+    "法治国家",
+    "德尔 雷希茨施塔特"
+   ],
+   [
+    "die Gleichberechtigung",
+    "平等权利（尤其男女平等）",
+    "迪 格莱希贝雷希提贡"
+   ],
+   [
+    "die Meinungsfreiheit",
+    "言论自由",
+    "迪 迈农斯弗赖海特"
+   ],
+   [
+    "die Religionsfreiheit",
+    "宗教自由",
+    "迪 雷利吉翁斯弗赖海特"
+   ],
+   [
+    "die Wahl",
+    "选举",
+    "迪 瓦尔"
+   ],
+   [
+    "das Parlament",
+    "议会",
+    "达斯 帕尔拉门特"
+   ],
+   [
+    "die Verfassung",
+    "宪法",
+    "迪 费尔法松"
+   ],
+   [
+    "die Schulpflicht",
+    "义务教育",
+    "迪 舒尔普弗利希特"
+   ],
+   [
+    "die Sozialversicherung",
+    "社会保险",
+    "迪 佐察雷费尔济黑荣"
+   ]
+  ],
+  "grammar": [
+   [
+    "规则和义务：dürfen / müssen",
+    "dürfen 是「允许」，nicht dürfen 是「禁止」，müssen 是「必须」。情态动词在第二位，实义动词原形放句末。",
+    [
+     [
+      "In Österreich darf man seine Meinung frei sagen.",
+      "在奥地利可以自由表达意见。",
+      "因 厄斯特赖希 达尔夫 曼 赛讷 迈农 弗莱 扎根"
+     ],
+     [
+      "Kinder müssen neun Jahre in die Schule gehen.",
+      "孩子必须上九年学。",
+      "金德尔 米森 诺伊因 亚雷 因 迪 舒勒 盖恩"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "test-b1",
+  "lv": "B1",
+  "icon": "📝",
+  "de": "Online-Übungstest DTÖ A2/B1",
+  "zh": "B1 在线模拟考",
+  "url": "https://sprachportal.at/kurse-und-pruefungen/pruefungen/online-uebungstests/online-uebungstest-dtoe-a2/b1/",
+  "btn": "开始官方 B1 模拟考",
+  "what": [
+   "奥地利的 B1 融合考试用的是 DTÖ（Deutsch-Test für Österreich）题型：一套卷子同时考 A2 和 B1，按得分判定你是哪一级。",
+   "官方在线模拟考分 11 个部分（Teil 1 到 Teil 11），有听力、阅读等，做完能对答案。写作和口语要自己另外练。",
+   "写作常考写邮件（给房东、老师、同事），下面是邮件里最常用的开头和结尾。"
+  ],
+  "vocab": [
+   [
+    "Sehr geehrte Damen und Herren,",
+    "尊敬的女士们先生们（正式信开头）",
+    "泽尔 格尔特 达梅恩 温特 黑伦"
+   ],
+   [
+    "Liebe Frau Huber,",
+    "亲爱的胡贝尔女士（半正式信开头）",
+    "利贝 弗劳 胡贝尔"
+   ],
+   [
+    "Ich schreibe Ihnen, weil …",
+    "我给您写信，是因为……",
+    "伊希 施莱贝 伊嫩 魏尔"
+   ],
+   [
+    "Ich möchte mich beschweren.",
+    "我想投诉。",
+    "伊希 麦希特 米希 贝施韦伦"
+   ],
+   [
+    "Könnten Sie mir bitte mitteilen, …?",
+    "能请您告诉我……吗？",
+    "克恩腾 齐 米尔 比特 米特泰伦"
+   ],
+   [
+    "Vielen Dank im Voraus.",
+    "先谢谢您。",
+    "菲伦 当克 伊姆 福尔奥斯"
+   ],
+   [
+    "Mit freundlichen Grüßen",
+    "此致敬礼（正式信结尾）",
+    "米特 弗洛伊恩特利黑恩 格吕森"
+   ],
+   [
+    "Liebe Grüße",
+    "祝好（熟人之间结尾）",
+    "利贝 格吕瑟"
+   ],
+   [
+    "die Beschwerde",
+    "投诉",
+    "迪 贝施韦尔德"
+   ],
+   [
+    "die Entschuldigung",
+    "道歉",
+    "迪 恩特舒尔迪贡"
+   ]
+  ],
+  "grammar": [
+   [
+    "weil 和 denn：都是「因为」",
+    "weil 从句动词放句末；denn 后面是正常语序。",
+    [
+     [
+      "Ich komme nicht, weil ich krank bin.",
+      "我不来了，因为我病了。",
+      "伊希 科默 尼希特 魏尔 伊希 克兰克 宾"
+     ],
+     [
+      "Ich komme nicht, denn ich bin krank.",
+      "我不来了，因为我病了。",
+      "伊希 科默 尼希特 登 伊希 宾 克兰克"
+     ]
+    ]
+   ],
+   [
+    "礼貌请求：Könnten Sie …?",
+    "第二虚拟式 könnten 比 können 客气，写信、打电话都用它。",
+    [
+     [
+      "Könnten Sie mir bitte helfen?",
+      "您能帮我一下吗？",
+      "克恩腾 齐 米尔 比特 黑尔芬"
+     ],
+     [
+      "Könnten Sie den Termin verschieben?",
+      "您能把预约改个时间吗？",
+      "克恩腾 齐 登 特尔明 费尔施本"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "osd-b1",
+  "lv": "B1",
+  "icon": "🎓",
+  "de": "ÖSD Zertifikat B1",
+  "zh": "ÖSD B1 官方模拟题",
+  "url": "https://osd.at/portfolio-item/osd-zertifikat-b1-zb1/",
+  "btn": "打开 ÖSD B1 考试页（含免费模拟题）",
+  "what": [
+   "ÖSD（奥地利德语语言证书）是奥地利的官方德语考试机构，和 ÖIF 是两家，考点遍布世界各地，留学、工作常用。",
+   "官方页面的「Modellsatz」可以免费下载一整套模拟题：阅读、听力（音频压缩包）、写作、口语四个模块。",
+   "手机上建议先下阅读和写作的 PDF；听力是 zip 压缩包，要先解压才能播放。"
+  ],
+  "vocab": [
+   [
+    "die Prüfung",
+    "考试",
+    "迪 普吕丰"
+   ],
+   [
+    "das Zertifikat",
+    "证书",
+    "达斯 采尔蒂菲卡特"
+   ],
+   [
+    "die Anmeldung",
+    "报名",
+    "迪 安梅尔农"
+   ],
+   [
+    "die Gebühr",
+    "费用",
+    "迪 格比尔"
+   ],
+   [
+    "das Lesen",
+    "阅读",
+    "达斯 莱森"
+   ],
+   [
+    "das Hören",
+    "听力",
+    "达斯 赫伦"
+   ],
+   [
+    "das Schreiben",
+    "写作",
+    "达斯 施莱本"
+   ],
+   [
+    "das Sprechen",
+    "口语",
+    "达斯 施普雷兴"
+   ],
+   [
+    "bestehen",
+    "通过（考试）",
+    "贝施特恩"
+   ],
+   [
+    "die Punktzahl",
+    "分数",
+    "迪 彭克特察尔"
+   ]
+  ],
+  "grammar": [
+   [
+    "考题指令：Sie 式祈使句",
+    "动词放句首 + Sie，题目要求几乎全是这个句型。",
+    [
+     [
+      "Lesen Sie den Text.",
+      "请阅读这篇文章。",
+      "莱森 齐 登 特克斯特"
+     ],
+     [
+      "Kreuzen Sie die richtige Antwort an.",
+      "请勾出正确答案。",
+      "克罗伊岑 齐 迪 里希提格 安特沃尔特 安"
+     ]
+    ]
+   ],
+   [
+    "讲顺序：zuerst – dann – danach – zum Schluss",
+    "口语讲经历、写作写过程时用。副词放句首，动词仍在第二位。",
+    [
+     [
+      "Zuerst habe ich mich angemeldet.",
+      "我先报了名。",
+      "粗埃尔斯特 哈贝 伊希 米希 安格梅尔德特"
+     ],
+     [
+      "Danach habe ich jeden Tag geübt.",
+      "之后我每天都练。",
+      "达纳赫 哈贝 伊希 耶登 塔克 格于普特"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "kursraum-b2",
+  "lv": "B2",
+  "icon": "🏫",
+  "de": "Kursraum B2",
+  "zh": "官方免费网课 B2",
+  "url": "https://sprachportal.at/deutsch-lernen/b2/online-lernen/kursraum-b2/",
+  "btn": "打开官方 Kursraum B2",
+  "what": [
+   "ÖIF 的 B2 直播网课叫「B2: Leben und mehr」，面向 B1 以上的学习者，周一到周六都有课。",
+   "也分三种：普通 B2 课、B2 备考课、B2 口语课。话题更深：工作、媒体、环境、社会问题。",
+   "B2 口语要能讨论、反驳、权衡利弊，下面这些讨论用语课上一定会用到。"
+  ],
+  "vocab": [
+   [
+    "Einerseits …, andererseits …",
+    "一方面……另一方面……",
+    "艾讷尔扎伊茨 安德雷尔扎伊茨"
+   ],
+   [
+    "Ein Vorteil ist, dass …",
+    "一个好处是……",
+    "艾因 福尔泰尔 伊斯特 达斯"
+   ],
+   [
+    "Ein Nachteil ist, dass …",
+    "一个坏处是……",
+    "艾因 纳赫泰尔 伊斯特 达斯"
+   ],
+   [
+    "Das stimmt zwar, aber …",
+    "这虽然没错，但是……",
+    "达斯 施提姆特 茨瓦尔 阿伯"
+   ],
+   [
+    "Im Gegensatz dazu …",
+    "与此相反……",
+    "伊姆 格根扎茨 达祖"
+   ],
+   [
+    "Zusammenfassend kann man sagen, …",
+    "总的来说……",
+    "楚扎门法森特 坎 曼 扎根"
+   ],
+   [
+    "die Diskussion",
+    "讨论",
+    "迪 迪斯库西昂"
+   ],
+   [
+    "das Argument",
+    "论据",
+    "达斯 阿尔古门特"
+   ],
+   [
+    "überzeugen",
+    "说服",
+    "于贝尔措伊根"
+   ]
+  ],
+  "grammar": [
+   [
+    "双连词：zwar … aber / nicht nur … sondern auch",
+    "B2 写作和口语的加分句型。",
+    [
+     [
+      "Das ist zwar teuer, aber sehr praktisch.",
+      "这虽然贵，但很实用。",
+      "达斯 伊斯特 茨瓦尔 托伊尔 阿伯 泽尔 普拉克提什"
+     ],
+     [
+      "Er spricht nicht nur Deutsch, sondern auch Englisch.",
+      "他不仅会说德语，还会说英语。",
+      "埃尔 斯普里赫特 尼希特 努尔 多伊奇 佐恩德恩 奥赫 英格利什"
+     ]
+    ]
+   ],
+   [
+    "第二虚拟式：说假设和愿望",
+    "würde + 原形，或者用 wäre / hätte。",
+    [
+     [
+      "Wenn ich mehr Zeit hätte, würde ich mehr lesen.",
+      "要是我有更多时间，我会多读书。",
+      "文 伊希 梅尔 采特 海特 维尔德 伊希 梅尔 莱森"
+     ],
+     [
+      "Es wäre besser, früher anzufangen.",
+      "早点开始会更好。",
+      "埃斯 韦雷 贝瑟尔 弗吕尔 安楚凡根"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "hoeren-b2",
+  "lv": "B2",
+  "icon": "🎧",
+  "de": "B2 Hören",
+  "zh": "B2 听力（含奥地利口语）",
+  "url": "https://sprachportal.at/deutsch-unterrichten/b2-hoeren/",
+  "btn": "打开官方 B2 听力练习",
+  "what": [
+   "官方 B2 听力练习单：同一段内容有标准德语、口语（Umgangssprache）和方言三个版本，配套题目为 ÖIF 考试做准备。",
+   "在奥地利生活，最难的往往不是书面德语，而是街上的口语和方言。先听标准版，再听口语版、方言版对照。",
+   "下面是奥地利口语里最常听到的说法，听力里碰到不会懵。"
+  ],
+  "vocab": [
+   [
+    "Grüß Gott!",
+    "你好（奥地利、南德常用问候）",
+    "格吕斯 戈特"
+   ],
+   [
+    "Servus!",
+    "嗨／再见（熟人之间）",
+    "塞尔乌斯"
+   ],
+   [
+    "Baba!",
+    "拜拜（维也纳口语）",
+    "巴巴"
+   ],
+   [
+    "Passt schon.",
+    "没事／行（口头禅）",
+    "帕斯特 肖恩"
+   ],
+   [
+    "a bissl",
+    "一点点（= ein bisschen）",
+    "阿 比瑟尔"
+   ],
+   [
+    "der Jänner",
+    "一月（奥地利说法，= Januar）",
+    "德尔 耶讷尔"
+   ],
+   [
+    "heuer",
+    "今年（奥地利说法，= dieses Jahr）",
+    "霍伊尔"
+   ],
+   [
+    "die Jause",
+    "点心、小餐（奥地利说法）",
+    "迪 尧泽"
+   ],
+   [
+    "leiwand",
+    "很棒（维也纳口语）",
+    "莱万德"
+   ]
+  ],
+  "grammar": [
+   [
+    "口语讲过去：几乎全用现在完成时",
+    "口语里很少说 ging、kam 这种过去式，几乎都说 bin gegangen、bin gekommen。",
+    [
+     [
+      "Ich bin gestern ins Kino gegangen.",
+      "我昨天去看电影了。",
+      "伊希 宾 格斯特恩 因斯 基诺 格甘恩"
+     ],
+     [
+      "Wir haben heuer viel gearbeitet.",
+      "我们今年干了很多活。",
+      "维尔 哈本 霍伊尔 菲尔 格阿尔拜特"
+     ]
+    ]
+   ],
+   [
+    "奥地利特色：sitzen / stehen / liegen 用 sein",
+    "德国说 ich habe gesessen，奥地利说 ich bin gesessen。两种都对，听到别奇怪。",
+    [
+     [
+      "Ich bin lange im Wartezimmer gesessen.",
+      "我在候诊室坐了很久。",
+      "伊希 宾 朗厄 伊姆 瓦尔特齐默 格泽森"
+     ],
+     [
+      "Das Buch ist auf dem Tisch gelegen.",
+      "那本书放在桌上。",
+      "达斯 布赫 伊斯特 奥夫 登 提什 格莱根"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "digital-b2",
+  "lv": "B2",
+  "icon": "💻",
+  "de": "Digitale ÖIF-Prüfung B2",
+  "zh": "B2 电脑考·官方模拟",
+  "url": "https://sprachportal.at/kurse-und-pruefungen/pruefungsmaterialien/digitale-pruefungen/digitale-oeif-pruefung-b2/",
+  "btn": "打开官方 B2 电脑考模拟",
+  "what": [
+   "ÖIF 的 B2 考试现在是电脑考（数字化考试）。官方免费提供讲解视频、1 套模拟考（Modelltest）和 3 套练习卷。",
+   "每套四部分：阅读和语言结构、听力、写作、口语；模拟考还多一部分「价值与常识」。",
+   "⚠️ 官方说明只能在电脑上用 Chrome 或 Edge 做题，手机打不开。手机上先看讲解、背下面的词，有电脑时再做整套。"
+  ],
+  "vocab": [
+   [
+    "der Bildschirm",
+    "屏幕",
+    "德尔 比尔德斯希尔姆"
+   ],
+   [
+    "die Tastatur",
+    "键盘",
+    "迪 塔斯塔图尔"
+   ],
+   [
+    "der Kopfhörer",
+    "耳机",
+    "德尔 科普夫赫勒"
+   ],
+   [
+    "anklicken",
+    "点击",
+    "安克利肯"
+   ],
+   [
+    "markieren",
+    "标记",
+    "马尔基伦"
+   ],
+   [
+    "speichern",
+    "保存",
+    "施派黑恩"
+   ],
+   [
+    "weiter",
+    "下一步",
+    "魏特尔"
+   ],
+   [
+    "zurück",
+    "返回",
+    "粗吕克"
+   ],
+   [
+    "die Aufgabe",
+    "题目、任务",
+    "迪 奥夫加贝"
+   ],
+   [
+    "Die Zeit ist abgelaufen.",
+    "时间到了。",
+    "迪 采特 伊斯特 阿普格劳芬"
+   ]
+  ],
+  "grammar": [
+   [
+    "名词化：动词变名词",
+    "B2 阅读和写作很爱用名词化：动词原形大写当名词，或者加 -ung。",
+    [
+     [
+      "Das Lernen macht mir Spaß.",
+      "学习让我开心。",
+      "达斯 勒嫩 马赫特 米尔 施帕斯"
+     ],
+     [
+      "Die Anmeldung erfolgt online.",
+      "报名在网上进行。",
+      "迪 安梅尔农 埃尔福尔克特 昂莱因"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "werte-b2",
+  "lv": "B2",
+  "icon": "⚖️",
+  "de": "Werte- und Orientierungswissen B2",
+  "zh": "价值与常识 B2",
+  "url": "https://sprachportal.at/kurse-und-pruefungen/pruefungsmaterialien/fragenkataloge/fragen-zum-werte-und-orientierungswissen-b2/",
+  "btn": "打开官方 B2 价值与常识题库",
+  "what": [
+   "B2 考试也考「价值与常识」。官方题库页提供 B2 题目 PDF、答题纸，还链接了互动练习。",
+   "B2 题目更像短阅读：先读一小段关于奥地利法律、历史、社会的文字，再回答问题。",
+   "常考的大词都在下面，认识了它们，读题就轻松一半。"
+  ],
+  "vocab": [
+   [
+    "die Gewaltenteilung",
+    "三权分立",
+    "迪 格瓦尔滕泰隆"
+   ],
+   [
+    "die Neutralität",
+    "中立（奥地利是永久中立国）",
+    "迪 诺伊特拉利泰特"
+   ],
+   [
+    "der Bundespräsident",
+    "联邦总统",
+    "德尔 本德斯普雷齐登特"
+   ],
+   [
+    "der Nationalrat",
+    "国民议会",
+    "德尔 纳齐奥纳尔拉特"
+   ],
+   [
+    "das Bundesland",
+    "联邦州（奥地利有 9 个）",
+    "达斯 本德斯兰特"
+   ],
+   [
+    "die Europäische Union",
+    "欧盟",
+    "迪 欧罗佩伊舍 乌尼翁"
+   ],
+   [
+    "die Menschenrechte",
+    "人权",
+    "迪 门申雷希特"
+   ],
+   [
+    "die Diskriminierung",
+    "歧视",
+    "迪 迪斯克里米尼隆"
+   ],
+   [
+    "das Ehrenamt",
+    "志愿工作",
+    "达斯 埃伦阿姆特"
+   ]
+  ],
+  "grammar": [
+   [
+    "过程被动和状态被动",
+    "wurde + 分词说「当时被做了」，ist + 分词说「现在是……的状态」。",
+    [
+     [
+      "Die Verfassung wurde vom Parlament beschlossen.",
+      "宪法由议会通过。",
+      "迪 费尔法松 乌德 佛姆 帕尔拉门特 贝施洛森"
+     ],
+     [
+      "Die Neutralität ist in der Verfassung festgelegt.",
+      "中立写进了宪法。",
+      "迪 诺伊特拉利泰特 伊斯特 因 德尔 费尔法松 费斯特格莱克特"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "osd-b2",
+  "lv": "B2",
+  "icon": "🎓",
+  "de": "ÖSD Zertifikat B2",
+  "zh": "ÖSD B2 官方模拟题",
+  "url": "https://osd.at/portfolio-item/osd-zertifikat-b2-zb2/",
+  "btn": "打开 ÖSD B2 考试页（含免费模拟题）",
+  "what": [
+   "ÖSD B2 证书常用于工作和职业资格认可。官方页面可以免费下载整套模拟题和听力音频。",
+   "四个模块：阅读、听力、写作、口语。官方还有在线练习「Test-Training digital」，可以按模块在网上练。",
+   "B2 写作常考读者来信、论坛发言、表态文章，关键是用好连接词，下面这些一定要会。"
+  ],
+  "vocab": [
+   [
+    "außerdem",
+    "此外",
+    "奥瑟尔登"
+   ],
+   [
+    "trotzdem",
+    "尽管如此",
+    "特罗茨登"
+   ],
+   [
+    "deshalb",
+    "因此",
+    "德斯哈尔普"
+   ],
+   [
+    "obwohl",
+    "虽然",
+    "奥普沃尔"
+   ],
+   [
+    "während",
+    "而（表对比）；在……期间",
+    "韦伦特"
+   ],
+   [
+    "im Allgemeinen",
+    "一般来说",
+    "伊姆 阿尔格迈嫩"
+   ],
+   [
+    "meines Erachtens",
+    "依我看（书面）",
+    "迈内斯 埃阿赫滕斯"
+   ],
+   [
+    "die Stellungnahme",
+    "表态、意见陈述",
+    "迪 施泰隆纳默"
+   ],
+   [
+    "der Leserbrief",
+    "读者来信",
+    "德尔 莱泽布里夫"
+   ],
+   [
+    "die Folge",
+    "后果",
+    "迪 福尔格"
+   ]
+  ],
+  "grammar": [
+   [
+    "obwohl 和 trotzdem",
+    "obwohl 从句动词放句末；trotzdem 放句首时，后面动词在第二位。",
+    [
+     [
+      "Obwohl es regnet, gehen wir spazieren.",
+      "虽然下雨，我们还是去散步。",
+      "奥普沃尔 埃斯 雷格内特 盖恩 维尔 施帕齐伦"
+     ],
+     [
+      "Es regnet. Trotzdem gehen wir spazieren.",
+      "下雨了。尽管如此，我们还是去散步。",
+      "埃斯 雷格内特 特罗茨登 盖恩 维尔 施帕齐伦"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "hoeren-c1",
+  "lv": "C1",
+  "icon": "🎧",
+  "de": "C1 Hören",
+  "zh": "C1 听力（奥地利话题）",
+  "url": "https://sprachportal.at/deutsch-unterrichten/c1-hoeren/",
+  "btn": "打开官方 C1 听力练习",
+  "what": [
+   "官方 C1 听力围绕几个 C1 话题（比如维也纳的居住与生活、奥地利的医疗、真假新闻），每段都有标准、口语和方言版本，也为 ÖIF C1 考试做准备。",
+   "C1 听的是访谈、讨论、广播节目，语速正常，会有插话和含糊的说法。练法：先不看题听一遍抓大意，再看题听第二遍。",
+   "下面是 C1 听力和讨论里常见的表达。"
+  ],
+  "vocab": [
+   [
+    "die Wohnungsnot",
+    "住房短缺",
+    "迪 沃农斯诺特"
+   ],
+   [
+    "der Gemeindebau",
+    "市政公寓（维也纳特色）",
+    "德尔 格迈恩德包"
+   ],
+   [
+    "die Desinformation",
+    "虚假信息",
+    "迪 德斯因福尔马齐翁"
+   ],
+   [
+    "die Quelle",
+    "来源、出处",
+    "迪 克维勒"
+   ],
+   [
+    "glaubwürdig",
+    "可信的",
+    "格劳普维尔迪希"
+   ],
+   [
+    "hinterfragen",
+    "追问、质疑",
+    "欣特尔弗拉根"
+   ],
+   [
+    "das Gesundheitswesen",
+    "医疗体系",
+    "达斯 格松特海茨韦森"
+   ],
+   [
+    "die Versorgung",
+    "供应、照护",
+    "迪 费尔佐尔贡"
+   ],
+   [
+    "in Bezug auf …",
+    "关于……",
+    "因 贝楚克 奥夫"
+   ],
+   [
+    "Es lässt sich feststellen, dass …",
+    "可以看出……",
+    "埃斯 莱斯特 西希 费斯特施特伦 达斯"
+   ]
+  ],
+  "grammar": [
+   [
+    "sich lassen + 原形：可以被……",
+    "相当于被动 + können，C1 文章里很常见。",
+    [
+     [
+      "Das lässt sich leicht erklären.",
+      "这很容易解释。",
+      "达斯 莱斯特 西希 莱希特 尔克雷伦"
+     ],
+     [
+      "Die Frage lässt sich nicht eindeutig beantworten.",
+      "这个问题没法明确回答。",
+      "迪 弗拉格 莱斯特 西希 尼希特 艾因多伊蒂希 贝安特沃滕"
+     ]
+    ]
+   ],
+   [
+    "分词作定语",
+    "把一整个从句压成名词前的修饰语。读的时候先找名词，再往前看。",
+    [
+     [
+      "die in Wien lebenden Menschen",
+      "住在维也纳的人们",
+      "迪 因 维恩 莱本登 门申"
+     ],
+     [
+      "der vor Kurzem veröffentlichte Bericht",
+      "最近发表的报告",
+      "德尔 佛尔 库尔岑 费尔厄芬特利希特 贝里希特"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "test-c1",
+  "lv": "C1",
+  "icon": "📝",
+  "de": "C1 – ÖIF-Test Modelltest",
+  "zh": "C1 官方模拟考",
+  "url": "https://sprachportal.at/lernmaterial/c1-oeif-test-modelltest/",
+  "btn": "打开官方 C1 模拟考",
+  "what": [
+   "ÖIF 的 C1 考试有一套免费的官方模拟题（Modelltest），可以下载整套卷子来做。",
+   "C1 主要考：读长文章、听访谈和讲座、写一篇有论证的文章、口头表达观点并讨论。",
+   "写作建议：开头点题，中间两三个论点加例子，结尾总结。下面这些句型能撑起整篇文章的结构。"
+  ],
+  "vocab": [
+   [
+    "Im Folgenden möchte ich … erläutern.",
+    "下面我想阐述……",
+    "伊姆 福尔根登 麦希特 伊希 埃尔洛伊特恩"
+   ],
+   [
+    "Zunächst ist festzuhalten, dass …",
+    "首先要指出……",
+    "楚奈希斯特 伊斯特 费斯特粗哈尔滕 达斯"
+   ],
+   [
+    "Dafür spricht, dass …",
+    "支持这一点的理由是……",
+    "达菲尔 斯普里赫特 达斯"
+   ],
+   [
+    "Dagegen lässt sich einwenden, dass …",
+    "对此可以反驳说……",
+    "达盖根 莱斯特 西希 艾因文登 达斯"
+   ],
+   [
+    "Hinzu kommt, dass …",
+    "此外还有……",
+    "欣楚 科姆特 达斯"
+   ],
+   [
+    "Daraus folgt, dass …",
+    "由此可见……",
+    "达劳斯 福尔克特 达斯"
+   ],
+   [
+    "Abschließend lässt sich sagen, …",
+    "最后可以说……",
+    "阿普施利森特 莱斯特 西希 扎根"
+   ],
+   [
+    "die Erörterung",
+    "议论文",
+    "迪 埃尔厄特隆"
+   ],
+   [
+    "die These",
+    "论点",
+    "迪 特泽"
+   ],
+   [
+    "das Fazit",
+    "结论",
+    "达斯 法齐特"
+   ]
+  ],
+  "grammar": [
+   [
+    "sein + zu + 原形：必须／可以被……",
+    "书面语，相当于被动 + müssen 或 können。",
+    [
+     [
+      "Das ist sofort zu erledigen.",
+      "这必须马上处理。",
+      "达斯 伊斯特 索福特 粗 埃尔莱迪根"
+     ],
+     [
+      "Die Kosten sind nicht zu unterschätzen.",
+      "费用不可低估。",
+      "迪 科斯滕 辛特 尼希特 粗 温特舍岑"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "osd-c1",
+  "lv": "C1",
+  "icon": "🎓",
+  "de": "ÖSD Zertifikat C1",
+  "zh": "ÖSD C1 官方模拟题",
+  "url": "https://osd.at/portfolio-item/osd-zertifikat-c1-zc1/",
+  "btn": "打开 ÖSD C1 考试页（含免费模拟题）",
+  "what": [
+   "ÖSD C1 是奥地利大学入学常见的语言证明之一（具体以学校要求为准）。官方页面免费提供整套模拟题、听力音频和说明。",
+   "把四个模块都下载下来，按考试时间计时做一遍，最能看出差距。",
+   "C1 口语要能就一个话题做简短报告并回答提问，下面是报告常用语。"
+  ],
+  "vocab": [
+   [
+    "Ich möchte über … sprechen.",
+    "我想谈谈……",
+    "伊希 麦希特 于伯尔 施普雷兴"
+   ],
+   [
+    "Das Thema meines Vortrags ist …",
+    "我报告的题目是……",
+    "达斯 特马 迈内斯 福尔特拉克斯 伊斯特"
+   ],
+   [
+    "Erstens …, zweitens …",
+    "第一……第二……",
+    "埃尔斯滕斯 茨万滕斯"
+   ],
+   [
+    "Wie Sie auf der Grafik sehen, …",
+    "如图所示……",
+    "维 齐 奥夫 德尔 格拉菲克 泽恩"
+   ],
+   [
+    "Ich komme nun zum nächsten Punkt.",
+    "下面我讲下一点。",
+    "伊希 科默 努恩 粗姆 内希斯滕 彭克特"
+   ],
+   [
+    "Darf ich kurz unterbrechen?",
+    "我可以插一句吗？",
+    "达尔夫 伊希 库尔茨 温特布雷兴"
+   ],
+   [
+    "Das ist eine gute Frage.",
+    "这是个好问题。",
+    "达斯 伊斯特 埃内 古特 弗拉格"
+   ],
+   [
+    "der Vortrag",
+    "报告、讲座",
+    "德尔 福尔特拉克"
+   ],
+   [
+    "die Grafik",
+    "图表",
+    "迪 格拉菲克"
+   ],
+   [
+    "die Schlussfolgerung",
+    "结论",
+    "迪 施卢斯福尔格隆"
+   ]
+  ],
+  "grammar": [
+   [
+    "转述别人的话：第一虚拟式",
+    "新闻和报告里转述用第一虚拟式（sei、habe……），表示「这是他说的」。",
+    [
+     [
+      "Der Experte sagt, die Lage sei ernst.",
+      "专家说情况严重。",
+      "德尔 埃克斯佩特 扎格特 迪 拉格 再 尔恩斯特"
+     ],
+     [
+      "Sie meinte, sie habe keine Zeit.",
+      "她说她没时间。",
+      "齐 迈因特 齐 哈贝 凯讷 采特"
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "osd-c2",
+  "lv": "C2",
+  "icon": "👑",
+  "de": "ÖSD Zertifikat C2",
+  "zh": "ÖSD C2 官方模拟题",
+  "url": "https://osd.at/portfolio-item/osd-zertifikat-c2-zc2/",
+  "btn": "打开 ÖSD C2 考试页（含免费模拟题）",
+  "what": [
+   "ÖIF 的官方材料只做到 C1。C2 已接近母语水平，不在融合考试范围里；奥地利官方的 C2 考试是 ÖSD 的「Zertifikat C2」。",
+   "官方页面免费提供整套 C2 模拟题：阅读、听力（音频 zip）、写作、口语，还有在线练习 Test-Training digital。",
+   "C2 要能听懂读懂几乎所有内容，包括讽刺、比喻和方言，并能精准、地道地表达细微差别。下面是 C2 常见的地道习语。"
+  ],
+  "vocab": [
+   [
+    "Das ist nicht mein Bier.",
+    "这不关我的事。",
+    "达斯 伊斯特 尼希特 麦因 比尔"
+   ],
+   [
+    "Da liegt der Hund begraben.",
+    "问题的症结就在这儿。",
+    "达 利克特 德尔 洪特 贝格拉本"
+   ],
+   [
+    "etwas auf die lange Bank schieben",
+    "把事情一拖再拖",
+    "埃特瓦斯 奥夫 迪 朗厄 班克 施本"
+   ],
+   [
+    "den Nagel auf den Kopf treffen",
+    "一针见血",
+    "登 纳格尔 奥夫 登 科普夫 特雷芬"
+   ],
+   [
+    "ins Fettnäpfchen treten",
+    "说错话、出洋相",
+    "因斯 费特奈普芙兴 特雷腾"
+   ],
+   [
+    "Tomaten auf den Augen haben",
+    "视而不见",
+    "托马滕 奥夫 登 奥根 哈本"
+   ],
+   [
+    "sich kein Blatt vor den Mund nehmen",
+    "直言不讳",
+    "西希 凯因 布拉特 佛尔 登 蒙特 内梅恩"
+   ],
+   [
+    "etwas unter den Teppich kehren",
+    "把事情捂住不提",
+    "埃特瓦斯 温特尔 登 特皮希 克伦"
+   ],
+   [
+    "Schmäh führen",
+    "开玩笑、耍嘴皮子（维也纳）",
+    "施迈 福伦"
+   ]
+  ],
+  "grammar": [
+   [
+    "语气小词：halt / eh / doch",
+    "C2 要听懂口气。halt 和 eh 是奥地利口语特色：halt 是「就是嘛」，eh 是「反正、本来就」。",
+    [
+     [
+      "Das ist halt so.",
+      "就是这样嘛。",
+      "达斯 伊斯特 哈尔特 佐"
+     ],
+     [
+      "Das weiß ich eh.",
+      "这我本来就知道。",
+      "达斯 魏斯 伊希 埃"
+     ],
+     [
+      "Komm doch mit!",
+      "一起来嘛！",
+      "科姆 多赫 米特"
+     ]
+    ]
+   ]
+  ]
  }
 ]
