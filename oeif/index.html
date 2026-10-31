@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>奥地利官方 A1/A2 德语：中文伴读（ÖIF 网课·词汇·模拟考）| 德语学习手册</title>
-<meta name="description" content="跟着奥地利融合基金会 ÖIF 的免费官方材料学德语：A1/A2 直播网课、词汇训练、在线模拟考、价值与常识题库、学习播客。每个单元配中文讲解、生词、谐音和朗读。">
+<title>奥地利官方德语 A1–C2：中文伴读（ÖIF 网课·词汇·模拟考·ÖSD 模拟题）| 德语学习手册</title>
+<meta name="description" content="跟着奥地利官方免费材料学德语，A1 到 C2：ÖIF 直播网课（A1–B2）、词汇训练、在线模拟考、B2 电脑考、价值与常识题库、B2/C1 听力，以及 ÖSD B1–C2 免费模拟题。每个单元配中文讲解、生词、谐音和朗读。">
 <link rel="canonical" href="https://www.uuoo.site/oeif/">
 <meta name="theme-color" content="#f6f1e7">
 <meta name="color-scheme" content="light dark">
@@ -36,7 +36,12 @@ h1 small{display:block;font:400 12px/1.4 -apple-system,sans-serif;color:var(--fa
 .intro{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px 16px;margin:12px 0 6px;font-size:14px;color:var(--dim);box-shadow:var(--shadow)}
 .intro b{color:var(--text)}
 .bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin:8px 0 2px}.bar i{display:block;height:100%;background:var(--accent)}
-.lvh{font:700 17px/1.3 Georgia,serif;margin:22px 0 10px}
+.lvh{font:700 17px/1.3 Georgia,serif;margin:16px 0 10px}
+.lvs{display:flex;gap:6px;margin:16px 0 0;overflow-x:auto;scrollbar-width:none}.lvs::-webkit-scrollbar{display:none}
+.lvs button{flex:1 0 auto;min-width:48px;min-height:44px;border-radius:22px;border:1px solid var(--border);background:var(--surface);font-weight:700;font-size:15px;padding:0 10px}
+.lvs button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.lvs small{display:block;font:400 11px/1 -apple-system,sans-serif;opacity:.8;margin-top:-6px;padding-bottom:6px}
+.lvnote{font-size:13px;color:var(--faint);margin:-4px 0 10px}
 .unit{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px 14px;margin-bottom:10px;min-height:64px}
 .unit .ic{font-size:28px;flex-shrink:0}
 .unit .t{flex:1;min-width:0}.unit b{display:block;font-size:15px}.unit span{font-size:13px;color:var(--faint)}
@@ -81,23 +86,29 @@ function row(v){var k=v[0].toLowerCase(),inWb=!!wb()[k];
    +'<button class="spk" data-s="'+esc(v[0])+'" aria-label="朗读：'+esc(v[0])+'">🔊</button>'
    +'<button class="add'+(inWb?' on':'')+'" data-k="'+esc(v[0])+'" data-z="'+esc(v[1])+'" aria-label="'+(inWb?'已在生词本：':'加入生词本：')+esc(v[0])+'">'+(inWb?'✓':'📒')+'</button></div>';}
 
+var LVS=['A1','A2','B1','B2','C1','C2'],LVN={A1:'入门',A2:'基础',B1:'进阶',B2:'中高级',C1:'高级',C2:'精通'};
+var LVNOTE={B1:'B1 融合考试是申请长期居留常用的门槛。',C1:'ÖIF 的材料到 C1 为止，这里还加了 ÖSD 的 C1 模拟题。',C2:'ÖIF 没有 C2 材料，C2 用奥地利 ÖSD 官方考试的免费模拟题。'};
+// 目录按级别分页签，一次只列一个级别，27 个单元不至于拉成长列表；选过的级别记住
+function curLv(done){var v=lsGet('oeifLv','');if(LVS.indexOf(v)>=0)return v;var nx=UNITS.filter(function(u){return !done[u.id];})[0];return nx?nx.lv:'A1';}
 function home(){
-  var done=getDone(),n=UNITS.filter(function(u){return done[u.id];}).length,next=UNITS.filter(function(u){return !done[u.id];})[0];
-  document.title='奥地利官方 A1/A2 德语：中文伴读 | 德语学习手册';
-  var html='<div class="top"><a class="back" href="/">← 手册</a><h1>🇦🇹 奥地利官方 A1/A2<small>ÖIF 免费官方材料 · 中文伴读</small></h1></div>'
-   +'<div class="intro">奥地利融合基金会（<b>ÖIF</b>）在 sprachportal.at 上免费提供德语网课、练习和考试材料，全是德语。这里每个单元：<b>一个按钮打开官方原版</b>，配上中文讲解、要用到的生词（谐音 + 朗读），学完点打卡。'
+  var done=getDone(),n=UNITS.filter(function(u){return done[u.id];}).length,lv=curLv(done),lvU=UNITS.filter(function(u){return u.lv===lv;}),
+    next=lvU.filter(function(u){return !done[u.id];})[0]||UNITS.filter(function(u){return !done[u.id];})[0];
+  document.title='奥地利官方德语 A1–C2：中文伴读 | 德语学习手册';
+  var html='<div class="top"><a class="back" href="/">← 手册</a><h1>🇦🇹 奥地利官方 A1–C2<small>ÖIF · ÖSD 免费官方材料 · 中文伴读</small></h1></div>'
+   +'<div class="intro">奥地利融合基金会（<b>ÖIF</b>）在 sprachportal.at 上免费提供 A1 到 C1 的德语网课、练习和考试材料，C2 用奥地利官方考试机构 <b>ÖSD</b> 的免费模拟题，全是德语。这里每个单元：<b>一个按钮打开官方原版</b>，配上中文讲解、要用到的生词（谐音 + 朗读），学完点打卡。'
    +'<div class="bar"><i style="width:'+Math.round(n/UNITS.length*100)+'%"></i></div>已学完 '+n+' / '+UNITS.length+' 个单元'
-   +(next?'<button class="main" style="margin-top:10px" onclick="location.hash=\''+next.id+'\'">▶ '+(n?'继续':'开始')+'：'+esc(next.zh)+'</button>':'<div style="margin-top:8px;color:var(--ok);font-weight:600">🎉 全部学完了！可以去做官方模拟考检验一下。</div>')+'</div>';
-  ['A1','A2'].forEach(function(lv){
-    html+='<div class="lvh">'+lv+(lv==='A1'?' · 入门':' · 进阶')+'</div>'+UNITS.filter(function(u){return u.lv===lv;}).map(function(u){
+   +(next?'<button class="main" style="margin-top:10px" onclick="location.hash=\''+next.id+'\'">▶ '+(n?'继续':'开始')+'：'+next.lv+' '+esc(next.zh)+'</button>':'<div style="margin-top:8px;color:var(--ok);font-weight:600">🎉 全部学完了！</div>')+'</div>';
+  html+='<div class="lvs" role="tablist">'+LVS.map(function(l){var t=UNITS.filter(function(u){return u.lv===l;}),d=t.filter(function(u){return done[u.id];}).length;
+    return '<button role="tab" aria-selected="'+(l===lv)+'"'+(l===lv?' class="on"':'')+' data-lv="'+l+'">'+l+'<small>'+d+'/'+t.length+'</small></button>';}).join('')+'</div>';
+  html+='<div class="lvh">'+lv+' · '+LVN[lv]+'</div>'+(LVNOTE[lv]?'<div class="lvnote">'+LVNOTE[lv]+'</div>':'')+lvU.map(function(u){
       return '<button class="unit" onclick="location.hash=\''+u.id+'\'"><span class="ic">'+u.icon+'</span><span class="t"><b>'+esc(u.zh)+'</b><span lang="de">'+esc(u.de)+'</span></span><span class="ok">'+(done[u.id]?'✅':'›')+'</span></button>';}).join('');
-  });
   $('#app').innerHTML=html+foot();
+  $('#app').querySelectorAll('.lvs button').forEach(function(b){b.onclick=function(){lsSet('oeifLv',b.getAttribute('data-lv'));home();};});
 }
 function unit(id){
   var u=UNITS.filter(function(x){return x.id===id;})[0];if(!u)return home();
   var i=UNITS.indexOf(u),nx=UNITS[i+1],d=getDone()[u.id];
-  document.title=u.zh+'（'+u.de+'）· 奥地利官方 A1/A2 | 德语学习手册';
+  document.title=u.zh+'（'+u.de+'）· 奥地利官方 '+u.lv+' | 德语学习手册';lsSet('oeifLv',u.lv);
   $('#app').innerHTML='<div class="top"><button class="back" onclick="location.hash=\'\'">← 目录</button><h1>'+u.icon+' '+esc(u.zh)+'<small lang="de">'+u.lv+' · '+esc(u.de)+'</small></h1></div>'
    +'<div class="box" style="margin-top:12px"><a class="main" href="'+u.url+'">'+(/考/.test(u.btn)?'📝 ':'🌐 ')+esc(u.btn)+'</a><div class="hint">在本页打开官方网站，看完点浏览器的 ← 返回，就回到这里。</div></div>'
    +'<h2>📖 中文讲解</h2><ol>'+u.what.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ol>'
@@ -113,7 +124,7 @@ function unit(id){
     lsSet('wordBook',JSON.stringify(o));var on=!!o[k];b.classList.toggle('on',on);b.textContent=on?'✓':'📒';b.setAttribute('aria-label',(on?'已在生词本：':'加入生词本：')+de);
   };});
 }
-function foot(){return '<div class="foot">官方材料版权归奥地利融合基金会（ÖIF）所有，本页只放链接和本站自己写的中文讲解、词句，不复制官方内容。官方网站：<a href="https://sprachportal.at/" target="_blank" rel="noopener">sprachportal.at</a>。<br>朗读用手机自带的德语语音（有奥地利德语语音时优先用它）。点 📒 把词句收进手册的生词本，回首页「📒 生词本」复习。</div>';}
+function foot(){return '<div class="foot">官方材料版权归奥地利融合基金会（ÖIF）和 ÖSD 所有，本页只放链接和本站自己写的中文讲解、词句，不复制官方内容。官方网站：<a href="https://sprachportal.at/" target="_blank" rel="noopener">sprachportal.at</a>、<a href="https://osd.at/" target="_blank" rel="noopener">osd.at</a>。<br>朗读用手机自带的德语语音（有奥地利德语语音时优先用它）。点 📒 把词句收进手册的生词本，回首页「📒 生词本」复习。</div>';}
 function route(){var id=decodeURIComponent(location.hash.slice(1));if(id)unit(id);else home();scrollTo(0,0);}
 addEventListener('hashchange',route);
 fetch('units.json').then(function(r){return r.json();}).then(function(d){UNITS=d;route();})
