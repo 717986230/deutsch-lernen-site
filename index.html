@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,16 @@
 <meta name="description" content="中国人自学德语，一个网页全搞定：4200+ 词句含中文谐音、点词即听真人朗读、语法全例句拆解、分级阅读+留学连载、互动测验。完全免费、无广告、离线可用。">
 <meta name="theme-color" content="#f6f1e7">
 <meta name="color-scheme" content="light dark">
+<!-- 百度：声明同一套页面同时适配电脑和手机（否则百度会把手机流量导去它自己的转码页），
+     no-transform / no-siteapp 禁止百度转码、加广告框。Google 会忽略这几条，无副作用。 -->
+<meta name="applicable-device" content="pc,mobile">
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="keywords" content="德语学习,自学德语,德语入门,德语发音,德语谐音,德语语法,德语单词,德语A1,奥地利德语,儿童德语,免费学德语">
+<!-- 不跑 JS 的访客（含百度蜘蛛）：所有 .section 默认 display:none，整页一片空白。
+     这里让未登录落地页（#account 下半部分的介绍 + 免登录页链接）直接显示，
+     内容与开了 JS 的未登录访客看到的完全一样，不是给爬虫另做一套。 -->
+<noscript><style>#account{display:block}#account .auth-stage{display:none}</style></noscript>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2358cc02'/%3E%3Ctext x='50' y='70' font-size='54' font-family='Georgia,serif' font-weight='700' text-anchor='middle' fill='white'%3EDE%3C/text%3E%3C/svg%3E">
 <!-- Open Graph / 微信·Twitter 分享卡片 -->
 <meta property="og:type" content="website">
@@ -1903,6 +1913,26 @@ body{padding-bottom:var(--tab-h)}
         <div style="font-size:24px;margin-bottom:6px">🔡</div>
         <div style="color:var(--text);font-weight:700;font-size:14px">英语字母与数字</div>
         <div style="font-size:12px;color:var(--text-dim);margin-top:3px">读法 · 长短音 · 谐音</div>
+      </a>
+      <a class="card" href="/oeif/" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🇦🇹</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">奥地利官方 A1–C2</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">ÖIF 网课 · 模拟考 · 中文伴读</div>
+      </a>
+      <a class="card" href="/kinder/" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🦦</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">儿童德语</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">20 课 · 点图听音 · 小故事</div>
+      </a>
+      <a class="card" href="/vido/" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🎬</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">中德双字幕视频</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">抽卡看片 · 字幕同步</div>
+      </a>
+      <a class="card" href="/ielts/" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🇬🇧</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">雅思词汇</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">7298 词 · A1–C2 分级</div>
       </a>
     </div>
 
