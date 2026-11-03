@@ -41,6 +41,29 @@ for (const f of FILES) {
   if (s.includes('"de":"Guten Morgen')) bad(`${f} 泄漏了明文词库`);
 }
 
+// 免登录专题页（手写/脚本生成，不走 gen-seo-pages）：元信息齐全 + 进了 sitemap
+// oeif/kinder 正文靠 JS 拼，必须带预渲染块，否则百度（不跑 JS）看到的是空白页
+{
+  const sitemap = readFileSync(join(ROOT, 'sitemap.xml'), 'utf8');
+  const STANDALONE = { 'oeif/index.html': true, 'kinder/index.html': true, 'ielts/index.html': false, 'promo/index.html': false };
+  for (const [f, pre] of Object.entries(STANDALONE)) {
+    const s = readFileSync(join(ROOT, f), 'utf8');
+    const url = 'https://www.uuoo.site/' + f.replace(/index\.html$/, '');
+    if (!s.includes(`<link rel="canonical" href="${url}">`)) bad(`${f} 的 canonical 不是 ${url}`);
+    for (const k of ['name="description"', 'property="og:title"', 'property="og:image"', 'property="og:url"', 'name="applicable-device"'])
+      if (!s.includes(k)) bad(`${f} 缺 <meta ${k}>`);
+    if (f !== 'promo/index.html' && !s.includes('application/ld+json')) bad(`${f} 缺 JSON-LD`);
+    if (pre) {
+      const m = s.match(/<!--prerender-->([\s\S]*?)<!--\/prerender-->/);
+      if (!m || m[1].replace(/<[^>]+>/g, '').trim().length < 200) bad(`${f} 没有预渲染正文 —— 跑一次 npm run gen:seo`);
+    }
+    if (!sitemap.includes(`<loc>${url}</loc>`)) bad(`sitemap.xml 漏了 ${url}`);
+  }
+  for (const f of FILES) if (!sitemap.includes(`<loc>https://www.uuoo.site/${f}</loc>`)) bad(`sitemap.xml 漏了 ${f}`);
+  if (!sitemap.includes('<loc>https://www.uuoo.site/vido/</loc>')) bad('sitemap.xml 漏了 /vido/');
+  if (!/^Sitemap: https:\/\/www\.uuoo\.site\/sitemap\.xml$/m.test(readFileSync(join(ROOT, 'robots.txt'), 'utf8'))) bad('robots.txt 没声明 Sitemap');
+}
+
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json',
   '.dat': 'application/octet-stream', '.css': 'text/css', '.png': 'image/png', '.svg': 'image/svg+xml' };
 const srv = createServer((req, res) => {

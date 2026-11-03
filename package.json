@@ -26,7 +26,7 @@
     "verify:loan": "node tools/verify-loanwords.mjs",
     "verify:dup": "node tools/verify-no-dup-words.mjs",
     "verify:sections": "node tools/verify-sections.mjs",
-    "gen:seo": "node tools/gen-seo-pages.mjs",
+    "gen:seo": "node tools/gen-seo-pages.mjs && node tools/prerender-pages.mjs",
     "verify:seo": "node tools/verify-seo-pages.mjs",
     "verify:offline": "node tools/verify-offline.mjs",
     "verify:drill": "node tools/verify-article-drill.mjs",

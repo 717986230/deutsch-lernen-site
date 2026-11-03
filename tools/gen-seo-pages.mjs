@@ -196,7 +196,11 @@ for (const page of PAGES) {
 <link rel="canonical" href="${SITE}/${page.file}">
 <meta name="theme-color" content="#58cc02">
 <meta name="color-scheme" content="light dark">
+<meta name="applicable-device" content="pc,mobile">
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 <meta property="og:type" content="article">
+<meta property="og:site_name" content="德语学习手册">
 <meta property="og:title" content="${esc(page.title)}">
 <meta property="og:description" content="${esc(page.desc)}">
 <meta property="og:url" content="${SITE}/${page.file}">
@@ -225,7 +229,7 @@ ${body}
     <div class="tip-title">这页只是手册的一部分</div>
     <div class="tip-body">完整版还有 <b>4200+ 词句（每句带中文谐音）</b>、点词即听的真人朗读、分级短文与留学连载、拼写记忆和互动测验——<b>完全免费、无广告、可离线使用</b>。<br><a href="/" style="color:var(--gold-text);font-weight:700">→ 打开德语学习手册</a></div>
   </div>
-  <p style="font-size:12px;color:var(--text-faint);margin-top:14px;line-height:2">其他速查页：${others}</p>
+  <p style="font-size:12px;color:var(--text-faint);margin-top:14px;line-height:2">其他速查页：${others}<br>免登录专题：<a href="/oeif/">奥地利官方德语 A1–C2</a> · <a href="/kinder/">儿童德语</a> · <a href="/vido/">中德双字幕视频</a> · <a href="/ielts/">雅思词汇</a></p>
 </div>
 </body>
 </html>`;

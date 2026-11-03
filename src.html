@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,16 @@
 <meta name="description" content="中国人自学德语，一个网页全搞定：4200+ 词句含中文谐音、点词即听真人朗读、语法全例句拆解、分级阅读+留学连载、互动测验。完全免费、无广告、离线可用。">
 <meta name="theme-color" content="#f6f1e7">
 <meta name="color-scheme" content="light dark">
+<!-- 百度：声明同一套页面同时适配电脑和手机（否则百度会把手机流量导去它自己的转码页），
+     no-transform / no-siteapp 禁止百度转码、加广告框。Google 会忽略这几条，无副作用。 -->
+<meta name="applicable-device" content="pc,mobile">
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="keywords" content="德语学习,自学德语,德语入门,德语发音,德语谐音,德语语法,德语单词,德语A1,奥地利德语,儿童德语,免费学德语">
+<!-- 不跑 JS 的访客（含百度蜘蛛）：所有 .section 默认 display:none，整页一片空白。
+     这里让未登录落地页（#account 下半部分的介绍 + 免登录页链接）直接显示，
+     内容与开了 JS 的未登录访客看到的完全一样，不是给爬虫另做一套。 -->
+<noscript><style>#account{display:block}#account .auth-stage{display:none}</style></noscript>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2358cc02'/%3E%3Ctext x='50' y='70' font-size='54' font-family='Georgia,serif' font-weight='700' text-anchor='middle' fill='white'%3EDE%3C/text%3E%3C/svg%3E">
 <!-- Open Graph / 微信·Twitter 分享卡片 -->
 <meta property="og:type" content="website">
@@ -78,6 +88,8 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .dlg-drill{border:none;background:var(--gold);color:var(--on-brand);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
 .dlg-drill:active{transform:scale(.95)}
 .dlg-de-title{font-size:12px;color:var(--text-faint);margin:2px 0 10px}
+/* 对话也折叠：标题行里放场景 + 德语名，正文点开才显示 */
+.rd-tog .dlg-de-title{flex-basis:100%;margin:0}.dlg-card .rd-body{margin-top:10px}
 .dlg-body{display:flex;flex-direction:column;gap:9px}
 .dlg-turn{display:flex}
 .dlg-turn.b{justify-content:flex-end}
@@ -176,7 +188,7 @@ body.no-gloss .rd-word rt{display:none}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(181,73,46,.4)}50%{box-shadow:0 0 0 6px rgba(181,73,46,0)}}
 .card.speaking-now{border-color:#58cc02;background:rgba(181,73,46,.08);box-shadow:0 0 0 2px rgba(181,73,46,.45),0 4px 16px rgba(181,73,46,.2)}
 .btn.playing{background:#ff4b4b;border-bottom-color:#c13a3a}
-.spk-panel{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--surface-2);border:1px solid var(--line,var(--border));border-radius:12px;padding:8px 14px;margin:0 0 10px;font-size:13px;color:var(--text-dim)}
+.spk-panel{display:flex;align-items:center;gap:0 18px;flex-wrap:wrap;background:var(--surface-2);border:1px solid var(--line,var(--border));border-radius:12px;padding:8px 14px;margin:0 0 10px;font-size:13px;color:var(--text-dim)}
 .spk-panel label{display:flex;align-items:center;gap:6px;white-space:nowrap}
 .spk-panel input[type=range]{width:110px;accent-color:var(--gold)}
 .spk-panel input[type=checkbox]{accent-color:var(--gold);width:15px;height:15px}
@@ -678,7 +690,7 @@ body.lang-en #homeBoost{display:none!important}
     <div class="hg-grid">
       <a class="hg-tile" href="/vido/"><div class="fic fic-video"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="#fff" stroke-width="2"/><path d="M10 9v6l5-3z" fill="#fff"/></svg></div><span>看视频</span></a>
       <a class="hg-tile" href="/kinder/"><div class="fic fic-video" style="font-size:24px;line-height:1">🦦</div><span>儿童德语</span></a>
-      <a class="hg-tile" href="/oeif/"><div class="fic fic-red" style="font-size:22px;line-height:1">🇦🇹</div><span>奥地利 A1/A2</span></a>
+      <a class="hg-tile" href="/oeif/"><div class="fic fic-red" style="font-size:22px;line-height:1">🇦🇹</div><span>奥地利 A1–C2</span></a>
       <a class="hg-tile" href="/ielts/"><div class="fic fic-blue" style="font-size:22px;line-height:1">🇬🇧</div><span>雅思词汇</span></a>
     </div>
    </div><!-- /de-only-block -->
@@ -1920,6 +1932,26 @@ body{padding-bottom:var(--tab-h)}
         <div style="font-size:24px;margin-bottom:6px">🔡</div>
         <div style="color:var(--text);font-weight:700;font-size:14px">英语字母与数字</div>
         <div style="font-size:12px;color:var(--text-dim);margin-top:3px">读法 · 长短音 · 谐音</div>
+      </a>
+      <a class="card" href="/oeif/" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🇦🇹</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">奥地利官方 A1–C2</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">ÖIF 网课 · 模拟考 · 中文伴读</div>
+      </a>
+      <a class="card" href="/kinder/" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🦦</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">儿童德语</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">20 课 · 点图听音 · 小故事</div>
+      </a>
+      <a class="card" href="/vido/" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🎬</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">中德双字幕视频</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">抽卡看片 · 字幕同步</div>
+      </a>
+      <a class="card" href="/ielts/" style="display:block;text-decoration:none;padding:16px;text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🇬🇧</div>
+        <div style="color:var(--text);font-weight:700;font-size:14px">雅思词汇</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px">7298 词 · A1–C2 分级</div>
       </a>
     </div>
 
@@ -3872,7 +3904,7 @@ function renderDialogues(){
   for(i=0;i<items.length;i++){var d=items[i];
     var lb={'0':'lb-0','a1':'lb-a1','a2':'lb-a2','b1':'lb-b1','b2':'lb-b2'};
     var badge=d.lv?'<span class="level-badge '+(lb[d.lv]||'')+'">'+(levelName(d.lv)||d.lv)+'</span>':'';
-    h+='<div class="dlg-card"><div class="dlg-head"><span class="dlg-scene">'+d.icon+' '+d.scene+badge+'</span><button type="button" class="dlg-play" id="dlgPlay'+i+'" onclick="dialogPlay('+i+')">▶ 播放全部</button><button type="button" class="dlg-drill" onclick="spStartDialog('+i+')">⌨️ 练这段</button></div><div class="dlg-de-title" lang="'+itemLang+'">'+_esc(d.de)+'</div><div class="dlg-body">';
+    h+='<div class="dlg-card'+(i?' rd-fold':'')+'" id="dcard_'+i+'"><div class="dlg-head"><button class="rd-tog" type="button" aria-expanded="'+(i?'false':'true')+'" onclick="rdFold(\'dcard_'+i+'\')"><span class="dlg-scene">'+d.icon+' '+d.scene+badge+'</span><span class="dlg-de-title" lang="'+itemLang+'">'+_esc(d.de)+'</span></button><button type="button" class="dlg-play" id="dlgPlay'+i+'" onclick="dialogPlay('+i+')">▶ 播放全部</button><button type="button" class="dlg-drill" onclick="spStartDialog('+i+')">⌨️ 练这段</button></div><div class="dlg-body rd-body">';
     for(k=0;k<d.turns.length;k++){var t=d.turns[k];var side=(t.s==='B')?'b':'a';
       h+='<div class="dlg-turn '+side+'" id="dlg'+i+'_'+k+'"><div class="dlg-bubble"><div class="dlg-de-row"><span class="dlg-de" lang="'+itemLang+'">'+_esc(t.de)+'</span><button type="button" class="dlg-spk" aria-label="朗读这句" onclick="dialogSpeak(this,'+i+','+k+')">🔊</button></div><div class="dlg-zh">'+_esc(t.zh)+'</div><div class="dlg-py">'+_esc(t.py)+'</div></div></div>';
     }
@@ -3888,6 +3920,7 @@ function dialogPlay(di){
   if(_dlgPlaying===di){dialogStop();return;}
   dialogStop();_dlgPlaying=di;
   var d=_getDialogues()[di];if(!d)return;
+  rdFold('dcard_'+di,true);
   var btn=document.getElementById('dlgPlay'+di);if(btn)btn.textContent='⏹ 停止';
   var turns=d.turns,k=0;
   function step(){
@@ -5206,7 +5239,7 @@ function renderStats(){
     +'<div><span>累计练习次数</span><b>'+(s.total||0)+' 次</b></div>'
     +'<div onclick="showSection(\'wordbook\')" style="cursor:pointer"><span>📒 生词本</span><b>'+wb+' 词'+(due?' · '+due+' 个待复习 →':'')+'</b></div>'
     +'<div onclick="location.href=\'/kinder/\'" style="cursor:pointer"><span>🧒 儿童课打卡</span><b>'+kd+' / 20 课 →</b></div>'
-    +'<div onclick="location.href=\'/oeif/\'" style="cursor:pointer"><span>🇦🇹 官方 A1/A2 打卡</span><b>'+od+' / 13 单元 →</b></div>'
+    +'<div onclick="location.href=\'/oeif/\'" style="cursor:pointer"><span>🇦🇹 官方 A1–C2 打卡</span><b>'+od+' / 27 单元 →</b></div>'
     +'</div><p style="font-size:12px;color:var(--text-faint);margin-top:12px;line-height:1.7">只在本站页面打开、且 1 分钟内有操作或正在朗读时计时。数据只存在这台手机的浏览器里。</p></div>';
 }
 function _dashTrend(s,today){
