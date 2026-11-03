@@ -47,6 +47,14 @@ for (const f of ['data/categories.json', 'data/readings.json', 'data/series.json
     for (const a of j) for (const p of a.paras) note(p[0], p[2], `${f}[${a.title}]`);
   }
 }
+if (existsSync(join(ROOT, 'data/restaurant.json'))) {
+  const r = rd('data/restaurant.json');
+  for (const u of r.units) {
+    for (const p of u.phrases) note(p.de, p.py, `restaurant.json[${u.name}]`);
+    for (const g of u.dialogs) for (const t of g.turns) note(t.de, t.py, `restaurant.json[${g.title}]`);
+  }
+  for (const g of r.menu) for (const it of g.items) note(it.de, it.py, `restaurant.json[${g.group}]`);
+}
 for (const b of rd('data/boards.json')) for (const it of b.items) note(it[0], it[2], `boards.json[${b.name}]`);
 
 // src.html 里还有几张只存在于代码里的表

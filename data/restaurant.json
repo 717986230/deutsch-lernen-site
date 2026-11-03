@@ -1,0 +1,1196 @@
+{
+ "units": [
+  {
+   "id": "book",
+   "icon": "📞",
+   "name": "询问 · 预订",
+   "tip": "奥地利进门先说 Grüß Gott（您好）。没订位就直接问有没有空桌；打电话订位要说清：哪天、几点、几位、什么名字。注意 halb acht 是 7:30（「到八点的一半」），不是 8:30。",
+   "phrases": [
+    {
+     "de": "Grüß Gott! Haben Sie einen Tisch für zwei Personen?",
+     "zh": "您好！有两位的桌子吗？",
+     "py": "格吕斯 戈特！哈本 齐 艾嫩 提什 菲尔 茨威 佩尔佐能？",
+     "n": "Grüß Gott 是奥地利最常用的「您好」"
+    },
+    {
+     "de": "Wir sind zu dritt.",
+     "zh": "我们三个人。",
+     "py": "维尔 辛特 粗 德里特。"
+    },
+    {
+     "de": "Ist dieser Tisch noch frei?",
+     "zh": "这张桌子还空着吗？",
+     "py": "伊斯特 迪泽尔 提什 诺赫 弗莱？"
+    },
+    {
+     "de": "Ist hier noch frei?",
+     "zh": "这里有人坐吗？",
+     "py": "伊斯特 希尔 诺赫 弗莱？"
+    },
+    {
+     "de": "Ich möchte einen Tisch reservieren.",
+     "zh": "我想订一张桌子。",
+     "py": "伊希 麦希特 艾嫩 提什 雷泽尔维伦。"
+    },
+    {
+     "de": "Für heute Abend, um sieben Uhr.",
+     "zh": "今天晚上，七点。",
+     "py": "菲尔 霍伊特 阿本特，乌姆 西本 乌尔。"
+    },
+    {
+     "de": "Für Samstag, um halb acht.",
+     "zh": "周六，七点半。",
+     "py": "菲尔 扎姆斯塔克，乌姆 哈尔普 阿赫特。",
+     "n": "halb acht = 7:30，不是 8:30！"
+    },
+    {
+     "de": "Für vier Personen, bitte.",
+     "zh": "四位，谢谢。",
+     "py": "菲尔 菲尔 佩尔佐能，比特。"
+    },
+    {
+     "de": "Auf den Namen Wang.",
+     "zh": "名字是王。",
+     "py": "奥夫 登 纳门 王。"
+    },
+    {
+     "de": "Ich habe reserviert, auf den Namen Wang.",
+     "zh": "我订过位，名字是王。",
+     "py": "伊希 哈贝 雷泽尔维尔特，奥夫 登 纳门 王。"
+    },
+    {
+     "de": "Haben Sie einen Tisch am Fenster?",
+     "zh": "有靠窗的桌子吗？",
+     "py": "哈本 齐 艾嫩 提什 阿姆 芬斯特"
+    },
+    {
+     "de": "Können wir draußen sitzen?",
+     "zh": "我们能坐外面吗？",
+     "py": "克嫩 维尔 德劳森 齐岑？"
+    },
+    {
+     "de": "Wie lange müssen wir warten?",
+     "zh": "我们要等多久？",
+     "py": "维 朗厄 米森 维尔 瓦尔滕？"
+    },
+    {
+     "de": "Bis wann haben Sie offen?",
+     "zh": "你们营业到几点？",
+     "py": "比斯 万 哈本 齐 奥芬？"
+    },
+    {
+     "de": "Haben Sie einen Kinderstuhl?",
+     "zh": "有儿童椅吗？",
+     "py": "哈本 齐 艾嫩 金德尔施图尔？"
+    },
+    {
+     "de": "Haben Sie reserviert?",
+     "zh": "您订位了吗？",
+     "py": "哈本 齐 雷泽维尔特",
+     "k": 1
+    },
+    {
+     "de": "Leider sind wir heute ausgebucht.",
+     "zh": "很抱歉，今天订满了。",
+     "py": "莱德尔 辛特 维尔 霍伊特 奥斯格布赫特。",
+     "k": 1
+    },
+    {
+     "de": "Bitte, nehmen Sie Platz.",
+     "zh": "请坐。",
+     "py": "比特，内门 齐 普拉茨。",
+     "k": 1
+    }
+   ],
+   "dialogs": [
+    {
+     "title": "打电话订位",
+     "de": "Am Telefon reservieren",
+     "turns": [
+      {
+       "s": "A",
+       "de": "Gasthaus Huber, grüß Gott!",
+       "zh": "胡贝尔餐馆，您好！",
+       "py": "加斯特豪斯 胡贝尔，格吕斯 戈特！"
+      },
+      {
+       "s": "B",
+       "de": "Grüß Gott! Ich möchte einen Tisch für Samstag reservieren.",
+       "zh": "您好！我想订周六的桌子。",
+       "py": "格吕斯 戈特！伊希 麦希特 艾嫩 提什 菲尔 扎姆斯塔克 雷泽尔维伦。"
+      },
+      {
+       "s": "A",
+       "de": "Gern. Für wie viele Personen?",
+       "zh": "好的。几位客人？",
+       "py": "盖恩。菲尔 维 菲勒 佩尔佐能？"
+      },
+      {
+       "s": "B",
+       "de": "Für drei Personen.",
+       "zh": "三位。",
+       "py": "菲尔 德莱 佩尔佐能。"
+      },
+      {
+       "s": "A",
+       "de": "Und um wie viel Uhr?",
+       "zh": "几点来？",
+       "py": "温特 乌姆 维 菲尔 乌尔？"
+      },
+      {
+       "s": "B",
+       "de": "Um halb acht, wenn möglich.",
+       "zh": "可以的话，七点半。",
+       "py": "乌姆 哈尔普 阿赫特，文 默克利希。"
+      },
+      {
+       "s": "A",
+       "de": "Um halb acht ist leider alles voll. Um acht geht es.",
+       "zh": "七点半很遗憾已经满了。八点可以。",
+       "py": "乌姆 哈尔普 阿赫特 伊斯特 莱德尔 阿勒斯 福尔。乌姆 阿赫特 盖特 埃斯。"
+      },
+      {
+       "s": "B",
+       "de": "Gut, dann um acht. Haben Sie einen Tisch auf der Terrasse?",
+       "zh": "好，那就八点。露台上有桌子吗？",
+       "py": "古特，丹 乌姆 阿赫特。哈本 齐 艾嫩 提什 奥夫 德尔 特拉瑟？"
+      },
+      {
+       "s": "A",
+       "de": "Ja, das geht. Auf welchen Namen, bitte?",
+       "zh": "可以。请问用什么名字订？",
+       "py": "亚，达斯 盖特。奥夫 维尔希恩 纳门，比特？"
+      },
+      {
+       "s": "B",
+       "de": "Auf den Namen Wang.",
+       "zh": "名字是王。",
+       "py": "奥夫 登 纳门 王。"
+      },
+      {
+       "s": "A",
+       "de": "Danke, bis Samstag!",
+       "zh": "谢谢，周六见！",
+       "py": "当克，比斯 扎姆斯塔克！"
+      },
+      {
+       "s": "B",
+       "de": "Danke, auf Wiederhören!",
+       "zh": "谢谢，再见！（电话用语）",
+       "py": "当克，奥夫 维德尔赫伦！"
+      }
+     ]
+    },
+    {
+     "title": "没订位，直接进店",
+     "de": "Ohne Reservierung",
+     "turns": [
+      {
+       "s": "A",
+       "de": "Grüß Gott! Haben Sie reserviert?",
+       "zh": "您好！您订位了吗？",
+       "py": "格吕斯 戈特！哈本 齐 雷泽尔维尔特？"
+      },
+      {
+       "s": "B",
+       "de": "Nein, leider nicht. Haben Sie noch einen Tisch für zwei?",
+       "zh": "很遗憾没有。还有两位的桌子吗？",
+       "py": "耐因，莱德尔 尼希特。哈本 齐 诺赫 艾嫩 提什 菲尔 茨威？"
+      },
+      {
+       "s": "A",
+       "de": "Im Moment ist alles voll. Sie müssen etwa zwanzig Minuten warten.",
+       "zh": "现在都满了。您大约要等二十分钟。",
+       "py": "伊姆 莫门特 伊斯特 阿勒斯 福尔。齐 米森 埃特瓦 茨万齐希 米努滕 瓦尔滕。"
+      },
+      {
+       "s": "B",
+       "de": "Kein Problem, wir warten gern.",
+       "zh": "没问题，我们等。",
+       "py": "凯因 普罗布莱姆，维尔 瓦尔滕 盖恩。"
+      },
+      {
+       "s": "A",
+       "de": "Sie können an der Bar warten.",
+       "zh": "您可以在吧台那边等。",
+       "py": "齐 克嫩 安 德尔 巴尔 瓦尔滕。"
+      },
+      {
+       "s": "B",
+       "de": "Super, danke schön!",
+       "zh": "太好了，谢谢！",
+       "py": "祖佩尔，当克 舜！"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "order",
+   "icon": "🍽️",
+   "name": "点餐",
+   "tip": "点菜最万能的两个句型：Ich hätte gern …（我想要……）和 Ich nehme …（我要……）。奥地利点啤酒说 ein Krügerl（0.5 升）或 ein Seidl（0.3 升）；自来水可以直接喝，说 ein Glas Leitungswasser。",
+   "phrases": [
+    {
+     "de": "Die Speisekarte, bitte.",
+     "zh": "请给我菜单。",
+     "py": "迪 施派泽卡尔特，比特。"
+    },
+    {
+     "de": "Wir brauchen noch einen Moment.",
+     "zh": "我们还要再看看。",
+     "py": "维尔 布劳亨 诺赫 艾嫩 莫门特。"
+    },
+    {
+     "de": "Wir möchten bestellen.",
+     "zh": "我们想点菜。",
+     "py": "维尔 麦希腾 贝施泰伦。"
+    },
+    {
+     "de": "Ich hätte gern ein Wiener Schnitzel.",
+     "zh": "我想要一份维也纳炸肉排。",
+     "py": "伊希 海特 盖恩 艾因 维纳 施尼策尔。"
+    },
+    {
+     "de": "Ich nehme den Tafelspitz.",
+     "zh": "我要清炖牛肉。",
+     "py": "伊希 内默 登 塔弗尔斯皮茨。"
+    },
+    {
+     "de": "Für mich bitte das Gulasch.",
+     "zh": "我要红烩牛肉。",
+     "py": "菲尔 米希 比特 达斯 古拉什。"
+    },
+    {
+     "de": "Als Vorspeise eine Frittatensuppe, bitte.",
+     "zh": "前菜来一份煎饼丝汤。",
+     "py": "阿尔斯 福尔施派泽 埃内 弗里塔滕祖佩，比特。"
+    },
+    {
+     "de": "Kann ich Pommes statt Reis haben?",
+     "zh": "能把米饭换成薯条吗？",
+     "py": "坎 伊希 波姆斯 施塔特 莱斯 哈本？"
+    },
+    {
+     "de": "Ein Krügerl, bitte.",
+     "zh": "来一大杯啤酒（0.5 升）。",
+     "py": "艾因 克吕格尔，比特。",
+     "n": "小杯 0.3 升：ein Seidl"
+    },
+    {
+     "de": "Ein Glas Leitungswasser, bitte.",
+     "zh": "请来一杯自来水。",
+     "py": "艾因 格拉斯 莱通斯瓦瑟，比特。"
+    },
+    {
+     "de": "Ein stilles Mineralwasser, bitte.",
+     "zh": "来一瓶不带气的矿泉水。",
+     "py": "艾因 施蒂勒斯 米内拉尔瓦瑟，比特。",
+     "n": "带气的：prickelnd"
+    },
+    {
+     "de": "Eine Melange, bitte.",
+     "zh": "来一杯米朗琪咖啡。",
+     "py": "埃内 梅朗热，比特。"
+    },
+    {
+     "de": "Noch ein Bier, bitte.",
+     "zh": "再来一杯啤酒。",
+     "py": "诺赫 艾因 比尔 比特"
+    },
+    {
+     "de": "Für mich das Gleiche.",
+     "zh": "我也要一样的。",
+     "py": "菲尔 米希 达斯 格莱赫。"
+    },
+    {
+     "de": "Das ist alles, danke.",
+     "zh": "就这些，谢谢。",
+     "py": "达斯 伊斯特 阿勒斯，当克。"
+    },
+    {
+     "de": "Was darf es sein?",
+     "zh": "您要点什么？",
+     "py": "瓦斯 达尔夫 埃斯 扎因",
+     "k": 1
+    },
+    {
+     "de": "Haben Sie schon gewählt?",
+     "zh": "您选好了吗？",
+     "py": "哈本 齐 肖恩 格韦尔特",
+     "k": 1
+    },
+    {
+     "de": "Was möchten Sie trinken?",
+     "zh": "您想喝点什么？",
+     "py": "瓦斯 麦希腾 齐 特林肯？",
+     "k": 1
+    },
+    {
+     "de": "Sonst noch etwas?",
+     "zh": "还要别的吗？",
+     "py": "宗斯特 诺赫 埃特瓦斯？",
+     "k": 1
+    },
+    {
+     "de": "Kommt sofort!",
+     "zh": "马上就来！",
+     "py": "康姆特 佐佛特！",
+     "k": 1
+    }
+   ],
+   "dialogs": [
+    {
+     "title": "在奥地利餐馆点一顿饭",
+     "de": "Im Gasthaus bestellen",
+     "turns": [
+      {
+       "s": "A",
+       "de": "Grüß Gott! Was möchten Sie trinken?",
+       "zh": "您好！您想喝点什么？",
+       "py": "格吕斯 戈特！瓦斯 麦希腾 齐 特林肯？"
+      },
+      {
+       "s": "B",
+       "de": "Ein Krügerl und ein Glas Leitungswasser, bitte.",
+       "zh": "一大杯啤酒和一杯自来水。",
+       "py": "艾因 克吕格尔 温特 艾因 格拉斯 莱通斯瓦瑟，比特。"
+      },
+      {
+       "s": "A",
+       "de": "Gern. Haben Sie schon gewählt?",
+       "zh": "好的。您选好了吗？",
+       "py": "盖恩。哈本 齐 肖恩 格韦尔特？"
+      },
+      {
+       "s": "B",
+       "de": "Ja. Als Vorspeise nehme ich eine Frittatensuppe.",
+       "zh": "选好了。前菜我要煎饼丝汤。",
+       "py": "亚。阿尔斯 福尔施派泽 内默 伊希 埃内 弗里塔滕祖佩。"
+      },
+      {
+       "s": "A",
+       "de": "Und als Hauptspeise?",
+       "zh": "主菜呢？",
+       "py": "温特 阿尔斯 豪普特施派泽？"
+      },
+      {
+       "s": "B",
+       "de": "Ich hätte gern das Wiener Schnitzel mit Erdäpfelsalat.",
+       "zh": "我想要维也纳炸肉排配土豆沙拉。",
+       "py": "伊希 海特 盖恩 达斯 维纳 施尼策尔 米特 埃尔德埃普费尔萨拉特。"
+      },
+      {
+       "s": "A",
+       "de": "Sehr gern. Sonst noch etwas?",
+       "zh": "好的。还要别的吗？",
+       "py": "泽尔 盖恩。宗斯特 诺赫 埃特瓦斯？"
+      },
+      {
+       "s": "B",
+       "de": "Nein danke, das ist alles.",
+       "zh": "不用了，谢谢，就这些。",
+       "py": "奈因 当克 达斯 伊斯特 阿勒斯"
+      },
+      {
+       "s": "A",
+       "de": "Kommt sofort!",
+       "zh": "马上就来！",
+       "py": "康姆特 佐佛特！"
+      }
+     ]
+    },
+    {
+     "title": "咖啡馆：咖啡和甜点",
+     "de": "Im Kaffeehaus",
+     "turns": [
+      {
+       "s": "B",
+       "de": "Entschuldigung, wir möchten bestellen.",
+       "zh": "打扰一下，我们想点单。",
+       "py": "恩特舒尔迪贡，维尔 麦希腾 贝施泰伦。"
+      },
+      {
+       "s": "A",
+       "de": "Bitte sehr, was darf es sein?",
+       "zh": "请讲，您要点什么？",
+       "py": "比特 泽尔，瓦斯 达尔夫 埃斯 扎因？"
+      },
+      {
+       "s": "B",
+       "de": "Eine Melange und einen Verlängerten, bitte.",
+       "zh": "一杯米朗琪，一杯加长咖啡。",
+       "py": "埃内 梅朗热 温特 艾嫩 费尔伦格尔滕，比特。"
+      },
+      {
+       "s": "A",
+       "de": "Möchten Sie auch etwas Süßes?",
+       "zh": "要点甜的吗？",
+       "py": "麦希腾 齐 奥赫 埃特瓦斯 聚瑟斯？"
+      },
+      {
+       "s": "B",
+       "de": "Ja, ein Stück Sachertorte mit Schlag, bitte.",
+       "zh": "要，一块萨赫蛋糕加鲜奶油。",
+       "py": "亚，艾因 施图克 扎赫尔托尔特 米特 施拉克，比特。"
+      },
+      {
+       "s": "A",
+       "de": "Gern. Kommt sofort!",
+       "zh": "好的，马上来！",
+       "py": "盖恩。康姆特 佐佛特！"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ask",
+   "icon": "❓",
+   "name": "提问 · 特殊要求",
+   "tip": "看不懂菜名就问 Was ist das?；有忌口一定先说：Ich bin Vegetarier（我吃素）、Ich habe eine Nussallergie（我对坚果过敏）。奥地利餐厅按法律要给过敏原说明，菜单上常用字母 A–R 标注。",
+   "phrases": [
+    {
+     "de": "Was können Sie empfehlen?",
+     "zh": "您推荐什么？",
+     "py": "瓦斯 克嫩 齐 恩普费伦？"
+    },
+    {
+     "de": "Was ist das?",
+     "zh": "这是什么？",
+     "py": "瓦斯 伊斯特 达斯"
+    },
+    {
+     "de": "Was ist ein Tafelspitz?",
+     "zh": "Tafelspitz 是什么菜？",
+     "py": "瓦斯 伊斯特 艾因 塔弗尔斯皮茨？"
+    },
+    {
+     "de": "Was ist die Tagessuppe?",
+     "zh": "今日例汤是什么？",
+     "py": "瓦斯 伊斯特 迪 塔格斯祖珀"
+    },
+    {
+     "de": "Gibt es ein Mittagsmenü?",
+     "zh": "有午市套餐吗？",
+     "py": "吉普特 埃斯 艾因 米塔克斯梅纽？"
+    },
+    {
+     "de": "Ist das scharf?",
+     "zh": "这个辣吗？",
+     "py": "伊斯特 达斯 沙夫"
+    },
+    {
+     "de": "Ist da Schweinefleisch drin?",
+     "zh": "里面有猪肉吗？",
+     "py": "伊斯特 达 施瓦因讷弗莱施 德林？"
+    },
+    {
+     "de": "Haben Sie etwas Vegetarisches?",
+     "zh": "有素食吗？",
+     "py": "哈本 齐 埃特瓦斯 韦格塔里舍斯？"
+    },
+    {
+     "de": "Ich bin Vegetarier.",
+     "zh": "我吃素。（男）",
+     "py": "伊希 宾 韦格塔里尔。",
+     "n": "女生说 Vegetarierin"
+    },
+    {
+     "de": "Ich habe eine Nussallergie.",
+     "zh": "我对坚果过敏。",
+     "py": "伊希 哈贝 埃内 努斯阿勒吉。"
+    },
+    {
+     "de": "Ist das glutenfrei?",
+     "zh": "这个不含麸质吗？",
+     "py": "伊斯特 达斯 格鲁腾弗莱？"
+    },
+    {
+     "de": "Kann ich das ohne Zwiebeln haben?",
+     "zh": "能不放洋葱吗？",
+     "py": "坎 伊希 达斯 奥讷 茨维贝尔恩 哈本？"
+    },
+    {
+     "de": "Ist das eine große Portion?",
+     "zh": "这份量大吗？",
+     "py": "伊斯特 达斯 埃内 格罗瑟 波尔齐翁？"
+    },
+    {
+     "de": "Wie lange dauert das Essen noch?",
+     "zh": "菜还要多久？",
+     "py": "维 朗厄 道尔特 达斯 埃森 诺赫？"
+    },
+    {
+     "de": "Entschuldigung, wo ist die Toilette?",
+     "zh": "打扰一下，洗手间在哪儿？",
+     "py": "恩特舒尔迪贡，沃 伊斯特 迪 托伊莱特？"
+    },
+    {
+     "de": "Können Sie mir noch eine Gabel bringen?",
+     "zh": "能再给我一把叉子吗？",
+     "py": "克嫩 齐 米尔 诺赫 埃内 加贝尔 布林根？"
+    },
+    {
+     "de": "Das habe ich nicht bestellt.",
+     "zh": "这不是我点的。",
+     "py": "达斯 哈贝 伊希 尼希特 贝施特尔特"
+    },
+    {
+     "de": "Kann ich den Rest einpacken lassen?",
+     "zh": "剩下的能打包吗？",
+     "py": "坎 伊希 登 雷斯特 艾因帕肯 拉森？"
+    },
+    {
+     "de": "Es hat sehr gut geschmeckt, danke!",
+     "zh": "非常好吃，谢谢！",
+     "py": "埃斯 哈特 泽尔 古特 格施梅克特，当克！"
+    },
+    {
+     "de": "Hat es Ihnen geschmeckt?",
+     "zh": "您吃得还满意吗？",
+     "py": "哈特 埃斯 伊嫩 格施梅克特？",
+     "k": 1
+    },
+    {
+     "de": "Haben Sie Allergien?",
+     "zh": "您有过敏吗？",
+     "py": "哈本 齐 阿勒吉恩？",
+     "k": 1
+    }
+   ],
+   "dialogs": [
+    {
+     "title": "问菜单 · 说过敏",
+     "de": "Fragen zur Speisekarte",
+     "turns": [
+      {
+       "s": "A",
+       "de": "Haben Sie noch Fragen zur Karte?",
+       "zh": "对菜单还有什么问题吗？",
+       "py": "哈本 齐 诺赫 弗拉根 粗尔 卡尔特？"
+      },
+      {
+       "s": "B",
+       "de": "Ja. Was ist ein Tafelspitz?",
+       "zh": "有。Tafelspitz 是什么菜？",
+       "py": "亚。瓦斯 伊斯特 艾因 塔弗尔斯皮茨？"
+      },
+      {
+       "s": "A",
+       "de": "Das ist gekochtes Rindfleisch mit Apfelkren und Erdäpfeln.",
+       "zh": "是清炖牛肉，配苹果辣根酱和土豆。",
+       "py": "达斯 伊斯特 格科赫特斯 林特弗莱施 米特 阿普费尔克伦 温特 埃尔德埃普费恩。"
+      },
+      {
+       "s": "B",
+       "de": "Klingt gut. Ist da Nuss drin? Ich habe eine Nussallergie.",
+       "zh": "听起来不错。里面有坚果吗？我对坚果过敏。",
+       "py": "克林特 古特。伊斯特 达 努斯 德林？伊希 哈贝 埃内 努斯阿勒吉。"
+      },
+      {
+       "s": "A",
+       "de": "Nein, da sind keine Nüsse drin.",
+       "zh": "没有，里面不含坚果。",
+       "py": "耐因，达 辛特 凯讷 纽瑟 德林。"
+      },
+      {
+       "s": "B",
+       "de": "Und was können Sie als Nachspeise empfehlen?",
+       "zh": "甜点您推荐什么？",
+       "py": "温特 瓦斯 克嫩 齐 阿尔斯 纳赫施派泽 恩普费伦？"
+      },
+      {
+       "s": "A",
+       "de": "Unser Kaiserschmarrn ist sehr beliebt.",
+       "zh": "我们的皇帝煎饼很受欢迎。",
+       "py": "温泽尔 凯泽斯玛恩 伊斯特 泽尔 贝利普特。"
+      },
+      {
+       "s": "B",
+       "de": "Super, dann nehme ich den.",
+       "zh": "太好了，那我就要这个。",
+       "py": "祖佩尔，丹 内默 伊希 登。"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pay",
+   "icon": "💶",
+   "name": "结账 · 小费",
+   "tip": "奥地利结账通常在桌边：喊一声 Zahlen, bitte!，服务员会问 Zusammen oder getrennt?（一起还是分开）。小费约 5–10%，不放桌上，而是付钱时直接说凑整后的总数：账单 22,70 → Machen Sie fünfundzwanzig。小额就说 Passt so / Stimmt so（不用找了）。",
+   "phrases": [
+    {
+     "de": "Zahlen, bitte!",
+     "zh": "买单！",
+     "py": "察伦，比特！",
+     "n": "奥地利最常用的叫法"
+    },
+    {
+     "de": "Die Rechnung, bitte.",
+     "zh": "请结账。",
+     "py": "迪 雷希农，比特。"
+    },
+    {
+     "de": "Herr Ober, zahlen bitte!",
+     "zh": "服务员，买单！",
+     "py": "黑尔 奥贝尔，察伦 比特！",
+     "n": "维也纳咖啡馆的老派叫法"
+    },
+    {
+     "de": "Zusammen, bitte.",
+     "zh": "一起付。",
+     "py": "粗扎门，比特。"
+    },
+    {
+     "de": "Getrennt, bitte.",
+     "zh": "分开付。",
+     "py": "格特伦特 比特"
+    },
+    {
+     "de": "Ich zahle das Schnitzel und das Bier.",
+     "zh": "我付肉排和啤酒。",
+     "py": "伊希 察勒 达斯 施尼策尔 温特 达斯 比尔。"
+    },
+    {
+     "de": "Kann ich mit Karte zahlen?",
+     "zh": "我能刷卡吗？",
+     "py": "坎 伊希 米特 卡尔特 察伦？"
+    },
+    {
+     "de": "Ich zahle bar.",
+     "zh": "我付现金。",
+     "py": "伊希 差勒 巴尔"
+    },
+    {
+     "de": "Machen Sie zwanzig.",
+     "zh": "收二十就好（含小费）。",
+     "py": "马赫恩 齐 茨万齐希。",
+     "n": "说凑整后的总数＝给小费"
+    },
+    {
+     "de": "Passt so.",
+     "zh": "不用找了。",
+     "py": "帕斯特 佐。"
+    },
+    {
+     "de": "Stimmt so.",
+     "zh": "不用找了。",
+     "py": "施蒂姆特 佐"
+    },
+    {
+     "de": "Ich glaube, die Rechnung stimmt nicht.",
+     "zh": "我觉得账单好像不对。",
+     "py": "伊希 格劳贝，迪 雷希农 施提姆特 尼希特。"
+    },
+    {
+     "de": "Ich brauche eine Rechnung, bitte.",
+     "zh": "我需要一张发票。",
+     "py": "伊希 布劳赫 埃内 雷希农，比特。"
+    },
+    {
+     "de": "Zusammen oder getrennt?",
+     "zh": "一起付还是分开付？",
+     "py": "粗扎门 奥德尔 格特雷恩特？",
+     "k": 1
+    },
+    {
+     "de": "Das macht vierundzwanzig Euro achtzig.",
+     "zh": "一共 24.80 欧元。",
+     "py": "达斯 马赫特 菲尔温特茨万齐希 奥伊罗 阿赫齐希。",
+     "k": 1
+    },
+    {
+     "de": "Bar oder mit Karte?",
+     "zh": "现金还是刷卡？",
+     "py": "巴尔 奥德尔 米特 卡尔特",
+     "k": 1
+    }
+   ],
+   "dialogs": [
+    {
+     "title": "分开付 + 给小费",
+     "de": "Zahlen im Gasthaus",
+     "turns": [
+      {
+       "s": "B",
+       "de": "Herr Ober, zahlen bitte!",
+       "zh": "服务员，买单！",
+       "py": "黑尔 奥贝尔，察伦 比特！"
+      },
+      {
+       "s": "A",
+       "de": "Gern. Zusammen oder getrennt?",
+       "zh": "好的。一起付还是分开付？",
+       "py": "盖恩。粗扎门 奥德尔 格特伦特？"
+      },
+      {
+       "s": "B",
+       "de": "Getrennt, bitte. Ich zahle die Suppe, das Schnitzel und das Krügerl.",
+       "zh": "分开。我付汤、肉排和那杯啤酒。",
+       "py": "格特伦特，比特。伊希 察勒 迪 祖佩，达斯 施尼策尔 温特 达斯 克吕格尔。"
+      },
+      {
+       "s": "A",
+       "de": "Das macht bei Ihnen zweiundzwanzig Euro siebzig.",
+       "zh": "您这份一共 22.70 欧元。",
+       "py": "达斯 马赫特 拜 伊嫩 茨威温特茨万齐希 奥伊罗 西普齐希。"
+      },
+      {
+       "s": "B",
+       "de": "Machen Sie fünfundzwanzig.",
+       "zh": "收 25 吧。",
+       "py": "马赫恩 齐 芬夫温特茨万齐希。"
+      },
+      {
+       "s": "A",
+       "de": "Danke schön! Bar oder mit Karte?",
+       "zh": "谢谢！现金还是刷卡？",
+       "py": "当克 舜！巴尔 奥德尔 米特 卡尔特？"
+      },
+      {
+       "s": "B",
+       "de": "Mit Karte, bitte.",
+       "zh": "刷卡。",
+       "py": "米特 卡尔特，比特。"
+      },
+      {
+       "s": "A",
+       "de": "Bitte sehr. Einen schönen Abend noch!",
+       "zh": "好了。祝您晚上愉快！",
+       "py": "比特 泽尔。艾嫩 舜嫩 阿本特 诺赫！"
+      },
+      {
+       "s": "B",
+       "de": "Danke, gleichfalls!",
+       "zh": "谢谢，您也是！",
+       "py": "当克，格莱希法尔斯！"
+      }
+     ]
+    },
+    {
+     "title": "现金付款 · 找零",
+     "de": "Bar zahlen",
+     "turns": [
+      {
+       "s": "B",
+       "de": "Die Rechnung, bitte.",
+       "zh": "请结账。",
+       "py": "迪 雷希农，比特。"
+      },
+      {
+       "s": "A",
+       "de": "Das macht achtzehn Euro sechzig.",
+       "zh": "一共 18.60 欧元。",
+       "py": "达斯 马赫特 阿赫岑 奥伊罗 泽希齐希。"
+      },
+      {
+       "s": "B",
+       "de": "Hier sind zwanzig Euro. Passt so.",
+       "zh": "这是二十欧。不用找了。",
+       "py": "希尔 辛特 茨万齐希 奥伊罗。帕斯特 佐。"
+      },
+      {
+       "s": "A",
+       "de": "Vielen Dank! Auf Wiedersehen!",
+       "zh": "非常感谢！再见！",
+       "py": "菲伦 当克 奥夫 维德泽恩"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "menu": [
+  {
+   "group": "汤 · Suppen",
+   "icon": "🥣",
+   "items": [
+    {
+     "de": "die Frittatensuppe",
+     "zh": "煎饼丝清汤",
+     "py": "迪 弗里塔滕祖佩",
+     "d": "牛肉清汤里放切成细丝的薄煎饼，奥地利最经典的汤",
+     "p": 4.9
+    },
+    {
+     "de": "die Leberknödelsuppe",
+     "zh": "肝丸子汤",
+     "py": "迪 莱贝尔克讷德尔祖佩",
+     "d": "清汤配一个大肝肉丸",
+     "p": 5.2
+    },
+    {
+     "de": "die Grießnockerlsuppe",
+     "zh": "粗麦粉团子汤",
+     "py": "迪 格里斯诺克尔祖佩",
+     "d": "清汤配粗麦粉做的小团子，口味清淡",
+     "p": 4.9
+    },
+    {
+     "de": "die Gulaschsuppe",
+     "zh": "红烩牛肉汤",
+     "py": "迪 古拉什祖佩",
+     "d": "红椒粉炖的浓汤，有牛肉和土豆",
+     "p": 5.9
+    },
+    {
+     "de": "die Tagessuppe",
+     "zh": "今日例汤",
+     "py": "迪 塔格斯祖佩",
+     "d": "每天不一样，可以问 Was ist die Tagessuppe?",
+     "p": 4.5
+    }
+   ]
+  },
+  {
+   "group": "主菜 · Hauptspeisen",
+   "icon": "🍖",
+   "items": [
+    {
+     "de": "das Wiener Schnitzel",
+     "zh": "维也纳炸小牛排",
+     "py": "达斯 维纳 施尼策尔",
+     "d": "正宗的用小牛肉（vom Kalb），配欧芹土豆或土豆沙拉",
+     "p": 22.9
+    },
+    {
+     "de": "das Schnitzel Wiener Art",
+     "zh": "维也纳式炸猪排",
+     "py": "达斯 施尼策尔 维纳 阿尔特",
+     "d": "做法一样但用猪肉，比小牛排便宜",
+     "p": 15.9
+    },
+    {
+     "de": "der Tafelspitz",
+     "zh": "清炖牛肉",
+     "py": "德尔 塔弗尔斯皮茨",
+     "d": "牛肉在汤里慢煮，配苹果辣根酱和煎土豆",
+     "p": 24.5
+    },
+    {
+     "de": "das Rindsgulasch",
+     "zh": "红烩牛肉",
+     "py": "达斯 林茨古拉什",
+     "d": "红椒粉和洋葱炖牛肉，配面包丸子或小面包",
+     "p": 16.8
+    },
+    {
+     "de": "das Backhendl",
+     "zh": "炸鸡",
+     "py": "达斯 巴克亨德尔",
+     "d": "裹面包屑炸的鸡块，常配土豆沙拉",
+     "p": 17.5
+    },
+    {
+     "de": "der Schweinsbraten",
+     "zh": "烤猪肉",
+     "py": "德尔 施瓦因斯布拉腾",
+     "d": "配面包丸子和酸菜，周末午餐常见",
+     "p": 15.4
+    },
+    {
+     "de": "der Zwiebelrostbraten",
+     "zh": "洋葱煎牛排",
+     "py": "德尔 茨维贝尔罗斯特布拉腾",
+     "d": "煎牛肉片配酱汁和炸洋葱丝",
+     "p": 26.9
+    },
+    {
+     "de": "die Kärntner Kasnudeln",
+     "zh": "克恩顿奶酪大饺子",
+     "py": "迪 克恩特纳 卡斯努德恩",
+     "d": "像大饺子，土豆奶酪薄荷馅，素食",
+     "p": 14.9
+    },
+    {
+     "de": "die Kasspätzle",
+     "zh": "奶酪面疙瘩",
+     "py": "迪 卡斯施佩茨勒",
+     "d": "小面疙瘩拌奶酪，顶上撒炸洋葱，素食",
+     "p": 13.9
+    },
+    {
+     "de": "der Leberkäse",
+     "zh": "肉糕",
+     "py": "德尔 莱贝尔凯泽",
+     "d": "名字里有肝和奶酪，其实两样都没有；常夹在小面包里",
+     "p": 9.8
+    }
+   ]
+  },
+  {
+   "group": "配菜 · Beilagen",
+   "icon": "🥗",
+   "items": [
+    {
+     "de": "der Erdäpfelsalat",
+     "zh": "土豆沙拉",
+     "py": "德尔 埃尔德埃普费尔萨拉特",
+     "d": "奥地利版用醋、油和清汤拌，不放蛋黄酱",
+     "p": 4.2
+    },
+    {
+     "de": "der Gurkensalat",
+     "zh": "黄瓜沙拉",
+     "py": "德尔 古尔肯萨拉特",
+     "d": "黄瓜薄片拌醋，有时加酸奶油",
+     "p": 3.9
+    },
+    {
+     "de": "der gemischte Salat",
+     "zh": "什锦沙拉",
+     "py": "德尔 格米施特 萨拉特",
+     "d": "生菜、番茄、黄瓜、土豆沙拉拼在一起",
+     "p": 5.5
+    },
+    {
+     "de": "die Petersilerdäpfel",
+     "zh": "欧芹土豆",
+     "py": "迪 佩特西尔埃尔德埃普费尔",
+     "d": "煮土豆拌黄油和欧芹",
+     "p": 3.9
+    },
+    {
+     "de": "der Semmelknödel",
+     "zh": "面包丸子",
+     "py": "德尔 泽默尔克讷德尔",
+     "d": "用小面包做的大丸子，配肉和酱汁",
+     "p": 3.5
+    },
+    {
+     "de": "die Pommes",
+     "zh": "薯条",
+     "py": "迪 波姆斯",
+     "d": "奥地利也叫 Pommes frites",
+     "p": 3.9
+    },
+    {
+     "de": "das Sauerkraut",
+     "zh": "酸菜",
+     "py": "达斯 扎乌尔克劳特",
+     "d": "发酵卷心菜，配烤猪肉",
+     "p": 3.2
+    },
+    {
+     "de": "die Preiselbeeren",
+     "zh": "越橘果酱",
+     "py": "迪 普莱泽尔贝伦",
+     "d": "酸甜的红色果酱，配炸肉排吃",
+     "p": 1.5
+    }
+   ]
+  },
+  {
+   "group": "甜点 · Nachspeisen",
+   "icon": "🍰",
+   "items": [
+    {
+     "de": "der Kaiserschmarrn",
+     "zh": "皇帝煎饼",
+     "py": "德尔 凯泽斯玛恩",
+     "d": "厚煎饼撕成小块，撒糖粉，配李子酱",
+     "p": 11.9
+    },
+    {
+     "de": "der Apfelstrudel",
+     "zh": "苹果卷",
+     "py": "德尔 阿普费尔施特鲁德尔",
+     "d": "薄酥皮卷苹果和葡萄干，配香草酱或鲜奶油",
+     "p": 6.5
+    },
+    {
+     "de": "der Topfenstrudel",
+     "zh": "酸奶酪卷",
+     "py": "德尔 托普芬施特鲁德尔",
+     "d": "馅是 Topfen（德国叫 Quark），口感像奶酪蛋糕",
+     "p": 6.5
+    },
+    {
+     "de": "die Sachertorte",
+     "zh": "萨赫蛋糕",
+     "py": "迪 扎赫尔托尔特",
+     "d": "巧克力蛋糕夹杏子酱，配不甜的鲜奶油",
+     "p": 6.9
+    },
+    {
+     "de": "die Palatschinken",
+     "zh": "奥地利薄煎饼",
+     "py": "迪 帕拉钦肯",
+     "d": "像可丽饼，卷杏子酱或巧克力酱",
+     "p": 7.5
+    },
+    {
+     "de": "die Marillenknödel",
+     "zh": "杏子丸子",
+     "py": "迪 马里伦克讷德尔",
+     "d": "整颗杏包在面团里煮，裹黄油面包屑",
+     "p": 8.9
+    },
+    {
+     "de": "der Germknödel",
+     "zh": "发面甜丸子",
+     "py": "德尔 格尔姆克讷德尔",
+     "d": "李子酱馅，浇融化黄油，撒罂粟籽和糖",
+     "p": 8.5
+    }
+   ]
+  },
+  {
+   "group": "饮料 · Getränke",
+   "icon": "🍺",
+   "items": [
+    {
+     "de": "das Krügerl",
+     "zh": "大杯啤酒（0.5 升）",
+     "py": "达斯 克吕格尔",
+     "d": "奥地利点啤酒按杯型说：Krügerl 大杯",
+     "p": 4.9
+    },
+    {
+     "de": "das Seidl",
+     "zh": "小杯啤酒（0.3 升）",
+     "py": "达斯 扎伊德尔",
+     "d": "小杯，适合中午",
+     "p": 3.8
+    },
+    {
+     "de": "der Spritzer",
+     "zh": "葡萄酒兑苏打水",
+     "py": "德尔 施普里策尔",
+     "d": "夏天最常喝，可以说 weiß（白）或 rot（红）",
+     "p": 3.9
+    },
+    {
+     "de": "der Almdudler",
+     "zh": "阿尔姆草本汽水",
+     "py": "德尔 阿尔姆杜德勒",
+     "d": "奥地利国民汽水，带草药味",
+     "p": 3.6
+    },
+    {
+     "de": "das Soda Zitron",
+     "zh": "柠檬苏打水",
+     "py": "达斯 佐达 齐特龙",
+     "d": "苏打水加鲜柠檬汁，便宜又解渴",
+     "p": 2.9
+    },
+    {
+     "de": "das Leitungswasser",
+     "zh": "自来水",
+     "py": "达斯 莱通斯瓦瑟",
+     "d": "奥地利自来水可以直接喝，很多店免费或只收一点",
+     "p": 0.5
+    },
+    {
+     "de": "das Mineralwasser",
+     "zh": "矿泉水",
+     "py": "达斯 米内拉尔瓦瑟",
+     "d": "prickelnd 带气 / still 不带气",
+     "p": 3.5
+    },
+    {
+     "de": "die Melange",
+     "zh": "米朗琪咖啡",
+     "py": "迪 梅朗热",
+     "d": "维也纳咖啡馆招牌，咖啡加奶泡，像卡布奇诺",
+     "p": 4.6
+    },
+    {
+     "de": "der Verlängerte",
+     "zh": "加长咖啡",
+     "py": "德尔 费尔伦格尔特",
+     "d": "浓缩咖啡加热水，像美式",
+     "p": 3.9
+    },
+    {
+     "de": "der Einspänner",
+     "zh": "单驾马车咖啡",
+     "py": "德尔 艾因斯潘嫩尔",
+     "d": "玻璃杯装浓咖啡，顶上一大团鲜奶油",
+     "p": 5.2
+    }
+   ]
+  },
+  {
+   "group": "奥地利说法",
+   "icon": "🇦🇹",
+   "items": [
+    {
+     "de": "die Erdäpfel",
+     "zh": "土豆",
+     "py": "迪 埃尔德埃普费尔",
+     "d": "德国说 Kartoffeln"
+    },
+    {
+     "de": "die Paradeiser",
+     "zh": "番茄",
+     "py": "迪 帕拉代泽尔",
+     "d": "德国说 Tomaten"
+    },
+    {
+     "de": "der Karfiol",
+     "zh": "花菜",
+     "py": "德尔 卡尔菲奥尔",
+     "d": "德国说 Blumenkohl"
+    },
+    {
+     "de": "die Fisolen",
+     "zh": "四季豆",
+     "py": "迪 菲索伦",
+     "d": "德国说 grüne Bohnen"
+    },
+    {
+     "de": "der Topfen",
+     "zh": "酸奶酪",
+     "py": "德尔 托普芬",
+     "d": "德国说 Quark"
+    },
+    {
+     "de": "die Marille",
+     "zh": "杏",
+     "py": "迪 马里勒",
+     "d": "德国说 Aprikose"
+    },
+    {
+     "de": "der Kren",
+     "zh": "辣根",
+     "py": "德尔 克伦",
+     "d": "德国说 Meerrettich"
+    },
+    {
+     "de": "die Semmel",
+     "zh": "小面包",
+     "py": "迪 泽默尔",
+     "d": "德国说 Brötchen"
+    },
+    {
+     "de": "das Faschierte",
+     "zh": "肉末",
+     "py": "达斯 法希尔特",
+     "d": "德国说 Hackfleisch"
+    },
+    {
+     "de": "das Hendl",
+     "zh": "鸡（肉）",
+     "py": "达斯 亨德尔",
+     "d": "德国说 Hähnchen"
+    },
+    {
+     "de": "das Schlagobers",
+     "zh": "鲜奶油",
+     "py": "达斯 施拉克奥贝斯",
+     "d": "德国说 Sahne；点甜点说 mit Schlag 就是加奶油"
+    },
+    {
+     "de": "die Kohlsprossen",
+     "zh": "抱子甘蓝",
+     "py": "迪 科尔施普罗森",
+     "d": "德国说 Rosenkohl"
+    }
+   ]
+  }
+ ]
+}

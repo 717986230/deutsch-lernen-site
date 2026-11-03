@@ -62,6 +62,32 @@ function checkDialogs(path) {
   }
   console.log(`  ${path}: ${d.length} 段 ${n} 轮`);
 }
+// 餐厅特训（2026-11）：情景句 + 对话 + 奥地利菜单，三块都必须带谐音
+function checkResto(path) {
+  if (!existsSync(path)) return;
+  const d = rd(path);
+  let n = 0;
+  const row = (where, x) => {
+    n++;
+    for (const k of ['de', 'zh', 'py']) if (!String(x[k] || '').trim()) bad(`${path} [${where}] 「${x.de}」缺 ${k}`);
+    if (x.py && !CJK.test(x.py)) bad(`${path} [${where}] 「${x.de}」谐音含非中文字符: ${x.py}`);
+  };
+  for (const u of d.units) {
+    for (const k of ['id', 'icon', 'name', 'tip', 'phrases', 'dialogs']) if (!u[k]) bad(`${path} 单元缺字段 ${k}`);
+    if (u.phrases.filter((p) => !p.k).length < 4) bad(`${path} [${u.name}] 客人句少于 4 条，测验凑不齐选项`);
+    for (const p of u.phrases) row(u.name, p);
+    for (const g of u.dialogs) for (const t of g.turns) {
+      if (t.s !== 'A' && t.s !== 'B') bad(`${path} [${g.title}] s 只能是 A（服务员）/B（客人）`);
+      row(g.title, t);
+    }
+  }
+  for (const g of d.menu) for (const it of g.items) {
+    row(g.group, it);
+    if (!/^(der|die|das) /.test(it.de)) bad(`${path} [${g.group}] 「${it.de}」菜名要带冠词`);
+    if (it.p != null && !(it.p > 0 && Math.round(it.p * 100) % 10 === 0)) bad(`${path} 「${it.de}」价格要是整角: ${it.p}`);
+  }
+  console.log(`  ${path}: ${d.units.length} 单元 ${d.menu.length} 组菜单 ${n} 条`);
+}
 console.log('内容数据体检：');
 checkPhrases('data/categories.json');
 checkPhrases('data/en_categories.json');
@@ -71,5 +97,6 @@ checkArticles('data/series.json', true);   // 2026-08 起连载也全量带谐�
 checkArticles('data/en_series.json', true);  // 2026-10 英语连载补齐 12 集并带谐音
 checkDialogs('data/dialogs.json');
 checkDialogs('data/en_dialogs.json');
+checkResto('data/restaurant.json');
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 内容数据全部通过');

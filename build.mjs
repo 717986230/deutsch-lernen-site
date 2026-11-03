@@ -43,6 +43,8 @@ const DATA_FILES = {
   DIALOGUES: 'data/dialogs.json',
   EN_DIALOGUES: 'data/en_dialogs.json',
   RD_GLOSS: 'data/read_gloss.json',
+  // 餐厅特训（#resto）：情景句、对话、奥地利菜单。打开版块才解码
+  RESTO: 'data/restaurant.json',
 };
 
 
@@ -84,7 +86,7 @@ async function build() {
   //    categories 首屏可能即用 → 立即解密；其余 4 个用到才解密（懒加载），
   //    尤其英语库最大且很少用，避免首屏白解一大坨。
   // categories 也懒解密：硬登录门槛下登录页用不到词库，解锁后首次访问才解（见 src 的 setLang 上锁早退）
-  const LAZY = new Set(['READINGS', 'SERIES', 'RD_GLOSS', 'DIALOGUES']);   // 打开对应版块才解码
+  const LAZY = new Set(['READINGS', 'SERIES', 'RD_GLOSS', 'DIALOGUES', 'RESTO']);   // 打开对应版块才解码
   let deFile = 'categories(inline)';
   for (const [name, path] of Object.entries(DATA_FILES)) {
     const json = JSON.stringify(JSON.parse(readFileSync(path, 'utf8'))); // 校验 + 压缩

@@ -28,7 +28,7 @@
 {"@type":"ListItem","position":1,"name":"德语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"德语数字读法"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:ecc2e90946ae -->
+<!-- src-hash:97061600ddc9 -->
 <style>#account{display:block}#account .auth-stage{display:none}
 
 :root{
@@ -72,6 +72,60 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .dlg-spk{border:none;background:transparent;cursor:pointer;font-size:15px;padding:0;line-height:1}
 .dlg-zh{font-size:13px;color:var(--text-dim);margin-top:3px}
 .dlg-py{font-size:12px;color:var(--text-dim);margin-top:1px}
+/* 餐厅特训（#resto） */
+.rs-cta{display:block;width:100%;min-height:44px;margin:0 0 12px;padding:10px 14px;border-radius:14px;border:1px dashed var(--gold-dim);background:var(--gold-faint);color:var(--gold-text);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;text-align:left}
+.rs-tabs .level-tab{min-height:44px}
+.rs-seg{display:flex;gap:6px;margin:4px 0 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:4px}
+.rs-seg button{flex:1;min-height:44px;border:none;border-radius:10px;background:transparent;color:var(--text-dim);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
+.rs-seg button.on{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+.rs-h{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:14px;font-weight:800;color:var(--text)}
+.rs-h small{font-weight:500;color:var(--text-faint);font-size:12px}
+.rs-h .btn{margin-left:auto;padding:7px 12px;font-size:12px;min-height:44px}
+.rs-list{display:flex;flex-direction:column;gap:8px}
+.rs-row{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.rs-row.on{outline:2px solid var(--gold);outline-offset:1px}
+.rs-row .speak-btn{margin-top:1px}
+.rs-de{font-size:15px;font-weight:700;color:var(--text);line-height:1.45}
+.rs-zh{font-size:13px;color:var(--text-dim);margin-top:2px}
+.rs-py{font-size:12px;color:var(--text-dim);margin-top:1px}
+.rs-n{display:inline-block;font-size:12px;color:var(--gold-text);margin-top:4px}
+.rs-k .rs-de{font-weight:600}
+.rs-role{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.rs-role .btn{min-height:44px;padding:8px 16px}
+.rs-hide{font-size:13px;color:var(--text-faint);font-style:italic}
+.rs-q{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.rs-q-top{display:flex;justify-content:space-between;font-size:12px;color:var(--text-faint);margin-bottom:8px}
+.rs-q-p{font-size:17px;font-weight:700;color:var(--text);line-height:1.5;margin:4px 0 12px}
+.rs-opts{display:flex;flex-direction:column;gap:8px}
+.rs-opt{min-height:48px;text-align:left;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:15px;font-family:inherit;cursor:pointer;line-height:1.4}
+.rs-opt.ok{border-color:var(--green);background:rgba(106,140,99,.16);color:var(--ok-text);font-weight:700}
+.rs-opt.bad{border-color:var(--red);background:rgba(196,87,58,.13);color:var(--red-text)}
+.rs-opt:disabled{cursor:default}
+.rs-fb{margin-top:12px;font-size:13px;color:var(--text-dim);line-height:1.6}
+.rs-fb b{color:var(--text)}
+.rs-next{display:flex;gap:8px;margin-top:12px}
+.rs-next .btn{flex:1;min-height:44px}
+.rs-big{font-size:40px;font-weight:800;text-align:center;color:var(--text);letter-spacing:1px;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.rs-big.mute{color:var(--text-faint)}
+.rs-center{text-align:center}
+.rs-score{font-size:13px;color:var(--gold-text);font-weight:700}
+.rs-rule{font-size:13px;line-height:1.8;color:var(--text-dim)}
+.rs-rule b{color:var(--text)}
+.rs-rule .rs-eg{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--border)}
+.rs-rule .rs-eg:first-child{border-top:none}
+.rs-rule .rs-eg span:first-child{min-width:74px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.rs-chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;-webkit-overflow-scrolling:touch}
+.rs-chips button{flex-shrink:0;min-height:44px;padding:6px 14px;border-radius:22px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap}
+.rs-chips button.on{background:var(--text);border-color:var(--text);color:var(--bg);font-weight:700}
+.rs-dish{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:11px 12px;display:flex;gap:10px;align-items:flex-start}
+.rs-dish-main{flex:1;min-width:0}
+.rs-dish .rs-de{overflow-wrap:anywhere}
+.rs-d{font-size:12px;color:var(--text-faint);margin-top:3px;line-height:1.55}
+.rs-price{flex-shrink:0;min-height:44px;min-width:64px;border-radius:12px;border:1px solid var(--gold-dim);background:var(--gold-faint);color:var(--gold-text);font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;font-variant-numeric:tabular-nums}
+.rs-flash .rs-zh,.rs-flash .rs-d,.rs-flash .rs-py{visibility:hidden}
+.rs-flash.show .rs-zh,.rs-flash.show .rs-d,.rs-flash.show .rs-py{visibility:visible}
+.rs-flash{cursor:pointer}
+.rs-art-der{color:var(--art-der)}.rs-art-die{color:var(--art-die)}.rs-art-das{color:var(--art-das)}
 /* 法律条款版块 */
 .lg-box{max-width:640px;margin:16px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 18px}
 .lg-h{font-size:16px;color:var(--text);margin:22px 0 8px}
