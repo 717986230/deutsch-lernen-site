@@ -101,6 +101,60 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .dlg-spk{border:none;background:transparent;cursor:pointer;font-size:15px;padding:0;line-height:1}
 .dlg-zh{font-size:13px;color:var(--text-dim);margin-top:3px}
 .dlg-py{font-size:12px;color:var(--text-dim);margin-top:1px}
+/* 餐厅特训（#resto） */
+.rs-cta{display:block;width:100%;min-height:44px;margin:0 0 12px;padding:10px 14px;border-radius:14px;border:1px dashed var(--gold-dim);background:var(--gold-faint);color:var(--gold-text);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;text-align:left}
+.rs-tabs .level-tab{min-height:44px}
+.rs-seg{display:flex;gap:6px;margin:4px 0 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:4px}
+.rs-seg button{flex:1;min-height:44px;border:none;border-radius:10px;background:transparent;color:var(--text-dim);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
+.rs-seg button.on{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+.rs-h{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:14px;font-weight:800;color:var(--text)}
+.rs-h small{font-weight:500;color:var(--text-faint);font-size:12px}
+.rs-h .btn{margin-left:auto;padding:7px 12px;font-size:12px;min-height:44px}
+.rs-list{display:flex;flex-direction:column;gap:8px}
+.rs-row{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.rs-row.on{outline:2px solid var(--gold);outline-offset:1px}
+.rs-row .speak-btn{margin-top:1px}
+.rs-de{font-size:15px;font-weight:700;color:var(--text);line-height:1.45}
+.rs-zh{font-size:13px;color:var(--text-dim);margin-top:2px}
+.rs-py{font-size:12px;color:var(--text-dim);margin-top:1px}
+.rs-n{display:inline-block;font-size:12px;color:var(--gold-text);margin-top:4px}
+.rs-k .rs-de{font-weight:600}
+.rs-role{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.rs-role .btn{min-height:44px;padding:8px 16px}
+.rs-hide{font-size:13px;color:var(--text-faint);font-style:italic}
+.rs-q{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.rs-q-top{display:flex;justify-content:space-between;font-size:12px;color:var(--text-faint);margin-bottom:8px}
+.rs-q-p{font-size:17px;font-weight:700;color:var(--text);line-height:1.5;margin:4px 0 12px}
+.rs-opts{display:flex;flex-direction:column;gap:8px}
+.rs-opt{min-height:48px;text-align:left;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:15px;font-family:inherit;cursor:pointer;line-height:1.4}
+.rs-opt.ok{border-color:var(--green);background:rgba(106,140,99,.16);color:var(--ok-text);font-weight:700}
+.rs-opt.bad{border-color:var(--red);background:rgba(196,87,58,.13);color:var(--red-text)}
+.rs-opt:disabled{cursor:default}
+.rs-fb{margin-top:12px;font-size:13px;color:var(--text-dim);line-height:1.6}
+.rs-fb b{color:var(--text)}
+.rs-next{display:flex;gap:8px;margin-top:12px}
+.rs-next .btn{flex:1;min-height:44px}
+.rs-big{font-size:40px;font-weight:800;text-align:center;color:var(--text);letter-spacing:1px;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.rs-big.mute{color:var(--text-faint)}
+.rs-center{text-align:center}
+.rs-score{font-size:13px;color:var(--gold-text);font-weight:700}
+.rs-rule{font-size:13px;line-height:1.8;color:var(--text-dim)}
+.rs-rule b{color:var(--text)}
+.rs-rule .rs-eg{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--border)}
+.rs-rule .rs-eg:first-child{border-top:none}
+.rs-rule .rs-eg span:first-child{min-width:74px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.rs-chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;-webkit-overflow-scrolling:touch}
+.rs-chips button{flex-shrink:0;min-height:44px;padding:6px 14px;border-radius:22px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap}
+.rs-chips button.on{background:var(--text);border-color:var(--text);color:var(--bg);font-weight:700}
+.rs-dish{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:11px 12px;display:flex;gap:10px;align-items:flex-start}
+.rs-dish-main{flex:1;min-width:0}
+.rs-dish .rs-de{overflow-wrap:anywhere}
+.rs-d{font-size:12px;color:var(--text-faint);margin-top:3px;line-height:1.55}
+.rs-price{flex-shrink:0;min-height:44px;min-width:64px;border-radius:12px;border:1px solid var(--gold-dim);background:var(--gold-faint);color:var(--gold-text);font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;font-variant-numeric:tabular-nums}
+.rs-flash .rs-zh,.rs-flash .rs-d,.rs-flash .rs-py{visibility:hidden}
+.rs-flash.show .rs-zh,.rs-flash.show .rs-d,.rs-flash.show .rs-py{visibility:visible}
+.rs-flash{cursor:pointer}
+.rs-art-der{color:var(--art-der)}.rs-art-die{color:var(--art-die)}.rs-art-das{color:var(--art-das)}
 /* 法律条款版块 */
 .lg-box{max-width:640px;margin:16px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 18px}
 .lg-h{font-size:16px;color:var(--text);margin:22px 0 8px}
@@ -692,6 +746,13 @@ body.lang-en #homeBoost{display:none!important}
       <a class="hg-tile" href="/kinder/"><div class="fic fic-video" style="font-size:24px;line-height:1">🦦</div><span>儿童德语</span></a>
       <a class="hg-tile" href="/oeif/"><div class="fic fic-red" style="font-size:22px;line-height:1">🇦🇹</div><span>奥地利 A1–C2</span></a>
       <a class="hg-tile" href="/ielts/"><div class="fic fic-blue" style="font-size:22px;line-height:1">🇬🇧</div><span>雅思词汇</span></a>
+    </div>
+    <div class="hg-title">场景特训</div>
+    <div class="hg-grid">
+      <a class="hg-tile" href="#resto" onclick="rsOpen(0);return false"><div class="fic fic-teal" style="font-size:22px;line-height:1">📞</div><span>餐厅订位</span></a>
+      <a class="hg-tile" href="#resto" onclick="rsOpen(1);return false"><div class="fic fic-orange" style="font-size:22px;line-height:1">🍽️</div><span>点餐提问</span></a>
+      <a class="hg-tile" href="#resto" onclick="rsOpen(4);return false"><div class="fic fic-blue" style="font-size:22px;line-height:1">💶</div><span>结账数字</span></a>
+      <a class="hg-tile" href="#resto" onclick="rsOpen(5);return false"><div class="fic fic-red" style="font-size:22px;line-height:1">📜</div><span>奥地利菜单</span></a>
     </div>
    </div><!-- /de-only-block -->
 
@@ -1427,6 +1488,7 @@ body.lang-en #homeBoost{display:none!important}
     <!-- 逐词小注只有德语有（renderReadings 里英语走 p[0] 原文、不过 wrapWords），
          所以英语端整段藏掉：否则既写着「点德语词」，又在推销一个点不动的功能。 -->
     <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:15px">▶ 整篇朗读 · 点句即听<span class="de-only-block"> · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></span></p>
+    <button id="rsReadLink" class="rs-cta" type="button" style="display:none" onclick="rsOpen(0)">🎯 进入「餐厅特训」：情景对话角色扮演 · 价格听力 · 奥地利菜单 ›</button>
     <div class="level-tabs" id="readLevelTabs"></div>
     <div id="readCount" style="font-size:12px;color:var(--gold-text);margin:4px 0 10px"></div>
     <div id="readList"></div>
@@ -1471,6 +1533,20 @@ body.lang-en #homeBoost{display:none!important}
     </div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">真实生活情景 · 中德对照 · 🔊 点句即听 / 整段连播</p>
     <div id="dialogList"></div>
+  </div>
+</div>
+
+<!-- ══════════════ 餐厅特训（奥地利 · 作为客人）══════════════
+     预订 / 点餐 / 提问 / 结账 四个情景单元 + 价格读法 + 奥地利菜单。
+     数据在 data/restaurant.json（构建时加密、懒解码），渲染全在 rs* 函数里。 -->
+<div id="resto" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Im Restaurant</div>
+    <h2 class="page-title">餐厅特训 · 奥地利</h2>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">作为客人：订位 → 点餐 → 提问 → 结账 · 价格听力 · 奥地利菜单</p>
+    <div class="level-tabs rs-tabs" id="rsTabs" role="tablist"></div>
+    <div id="rsBody"></div>
+    <p style="text-align:center;margin:26px 0 6px"><button class="btn" type="button" onclick="showSection('reading');setReadTopic('restaurant')">📖 再读 9 篇餐厅短文</button></p>
   </div>
 </div>
 
@@ -2516,12 +2592,13 @@ function _syncLangSwitch(id){
 }
 function showSection(id){
   // 语言状态和深链都走这里：不能让英语用户误入仍未实现的德语专属工具。
-  if(LANG==='en'&&['body'].indexOf(id)>=0)id='phrases';
+  if(LANG==='en'&&['body','resto'].indexOf(id)>=0)id='phrases';
   _syncLangSwitch(id);
   if(typeof stopAutoPlay==='function')stopAutoPlay();
   if(typeof stopReading==='function')stopReading();
   if(typeof stopSeries==='function')stopSeries();
   if(typeof dialogStop==='function')dialogStop();
+  if(typeof rsStop==='function')rsStop();
   if(typeof stopPageNarration==='function')stopPageNarration();
   if(id!=='spell'&&typeof ambOff==='function')ambOff();
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -2543,7 +2620,8 @@ function showSection(id){
   if(id==='wordbook'&&typeof renderWordBook==='function')renderWordBook();
   if(id==='stats'&&typeof renderStats==='function')renderStats();
   if(id==='dialog'&&typeof renderDialogues==='function')renderDialogues();
-  var _bsec={me:'account',account:'account',wordbook:'account',stats:'account',rank:'account',support:'account',series:'reading',dialog:'reading',quiz:'spell',pronunciation:'home',numbers:'home',grammar:'home',body:'home','en-pron':'home','en-num':'home','en-grammar':'home'}[id]||id;
+  if(id==='resto'&&typeof rsInit==='function')rsInit();
+  var _bsec={me:'account',account:'account',wordbook:'account',stats:'account',rank:'account',support:'account',series:'reading',dialog:'reading',quiz:'spell',resto:'home',pronunciation:'home',numbers:'home',grammar:'home',body:'home','en-pron':'home','en-num':'home','en-grammar':'home'}[id]||id;
   document.querySelectorAll('#bottomNav .bn-btn').forEach(function(b){var on=b.getAttribute('data-sec')===_bsec;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   // 图解页(body)自己就是查词界面，再挂一个「拼读查词」既重复又和选中词浮条抢位置
   document.body.classList.toggle('hide-fab',id==='home'||id==='account'||id==='me'||id==='rank'||id==='spell'||id==='body');
@@ -2556,7 +2634,7 @@ function showSection(id){
 var _rendered={};
 
 // ── 版块历史：pushState 记录版块，返回键/右滑在站内后退不退站；#hash 白名单深链 ──
-var SEC_IDS='home pronunciation numbers grammar phrases reading series dialog quiz spell rank body support legal me account en-pron en-num en-grammar wordbook stats'.split(' ');
+var SEC_IDS='home pronunciation numbers grammar phrases reading series dialog resto quiz spell rank body support legal me account en-pron en-num en-grammar wordbook stats'.split(' ');
 var _histNav=false,_histInit=false,_deepSec=null;
 // 打开站点直接落在「语句」：首页是导览页，天天用的是背句子，少一次点击。
 // 首页仍在底部导航里，随时可回。改这里一处，下面三个入口都跟着走。
@@ -3885,6 +3963,7 @@ function setReadTopic(t){
   if(rt)rt.classList.toggle('active',readTopic==='restaurant');
   var lt=document.getElementById('readLevelTabs');
   if(lt)lt.style.display=(readTopic==='restaurant')?'none':'';
+  var rl=document.getElementById('rsReadLink');if(rl)rl.style.display=(readTopic==='restaurant'&&LANG!=='en')?'':'none';
   var sub=document.getElementById('readSub');
   if(sub)sub.textContent=(readTopic==='restaurant')
     ?(LANG==='en'?'餐厅英语全套 · 从进门点单到结账 · 中英对照 · 🔊 点句即听':'餐厅德语全套 · 从进门点单到加餐具打包买单 · 中德对照 · 🔊 点句即听')
@@ -3895,6 +3974,7 @@ function setReadTopic(t){
 // 德语对话数据在 data/dialogs.json，由 build.mjs 注入（部署时加密、懒解码）。
 // 这里**不要**再写死一份 —— 以前就是写死的，和 json 分叉出 12 处谐音差异而无人察觉。
 const DIALOGUES = __DATA_DIALOGUES__;
+const RESTO = __DATA_RESTO__;
 var _dlgRendered=false,_dlgPlaying=-1;
 function _getDialogues(){return LANG==='en'?EN_DIALOGUES:DIALOGUES;}
 function renderDialogues(){
@@ -3932,6 +4012,281 @@ function dialogPlay(di){
     speechSynthesis.speak(u);
   }
   try{speechSynthesis.cancel();}catch(e){}setTimeout(step,60);
+}
+// ══════════════════════════════════════
+// 餐厅特训（#resto）：作为客人在奥地利餐厅 —— 预订 / 点餐 / 提问 / 结账 + 价格读法 + 菜单
+// ══════════════════════════════════════
+// 数据：RESTO = data/restaurant.json（units[4] + menu[]），构建时加密、首次打开才解码。
+// 标签 0–3 是情景单元（句子 / 对话 / 测验 三个子页），4 是价格读法与听力，5 是菜单。
+// 价格的德语读法与谐音由 _rsSay 现场生成，不进数据文件（随机出题要无限多个）。
+var _rs={tab:0,sub:'say',grp:-1,flash:false,run:0};
+var _RS_TABS=[['📞','预订'],['🍽️','点餐'],['❓','提问'],['💶','结账'],['🔢','价格读法'],['📜','菜单']];
+function _rsBest(k,v){var b={};try{b=JSON.parse(localStorage.getItem('restoBest')||'{}')||{};}catch(e){}
+  if(v==null)return b[k]||0;if(v>(b[k]||0)){b[k]=v;try{localStorage.setItem('restoBest',JSON.stringify(b));}catch(e){}}return b[k];}
+function _rsShuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function _rsSpk(text,btn){speakWithLocale(text,'de',btn||null);}
+function rsStop(){_rs.run++;if(typeof _stopPageRead==='function')_stopPageRead();if(_rs.playing!=null){_rs.playing=null;try{speechSynthesis.cancel();}catch(e){}}}
+function rsOpen(tab){_rs.tab=tab;_rs.sub=tab<4?'say':'';showSection('resto');}
+function rsInit(){
+  var t=document.getElementById('rsTabs');if(!t)return;
+  var h='';for(var i=0;i<_RS_TABS.length;i++)h+='<button type="button" role="tab" class="level-tab'+(i===_rs.tab?' active':'')+'" aria-selected="'+(i===_rs.tab)+'" onclick="rsTab('+i+')">'+_RS_TABS[i][0]+' '+_RS_TABS[i][1]+'</button>';
+  t.innerHTML=h;rsRender();
+  var a=t.querySelector('.active');if(a&&a.scrollIntoView)try{a.scrollIntoView({block:'nearest',inline:'center'});}catch(e){}
+}
+function rsTab(i){rsStop();_rs.tab=i;_rs.sub=i<4?'say':'';_rs.q=null;rsInit();}
+function rsSub(s){rsStop();_rs.sub=s;_rs.q=null;rsRender();}
+function rsRender(){
+  var el=document.getElementById('rsBody');if(!el)return;
+  if(_rs.tab===4){el.innerHTML=_rsNumHtml();return;}
+  if(_rs.tab===5){el.innerHTML=_rsMenuHtml();return;}
+  var u=RESTO.units[_rs.tab];if(!u){el.innerHTML='';return;}
+  var subs=[['say','💬 句子'],['dlg','🎭 对话'],['quiz','🎯 测验']],h='';
+  h+='<div class="tip-card"><div class="tip-title">'+u.icon+' '+_esc(u.name)+' · 要点</div><div class="tip-body">'+_esc(u.tip)+'</div></div>';
+  h+='<div class="rs-seg" role="tablist">';for(var i=0;i<subs.length;i++)h+='<button type="button" role="tab" aria-selected="'+(_rs.sub===subs[i][0])+'" class="'+(_rs.sub===subs[i][0]?'on':'')+'" onclick="rsSub(\''+subs[i][0]+'\')">'+subs[i][1]+'</button>';h+='</div>';
+  if(_rs.sub==='say')h+=_rsSayHtml(u);
+  else if(_rs.sub==='dlg')h+=_rsDlgHtml(u);
+  else h+=_rsQuizHtml();
+  el.innerHTML=h;
+}
+// ── 句子：客人要说的 / 会听到服务员说的 ──
+function _rsRow(p,id,ui,pi){
+  return '<div class="rs-row'+(p.k?' rs-k':'')+'" id="'+id+'"><button class="speak-btn" type="button" aria-label="朗读" onclick="rsSay('+ui+','+pi+',this)">🔊</button><div><div class="rs-de" lang="de">'+_esc(p.de)+'</div><div class="rs-zh">'+_esc(p.zh)+'</div><div class="rs-py">'+_esc(p.py)+'</div>'+(p.n?'<span class="rs-n">💡 '+_esc(p.n)+'</span>':'')+'</div></div>';
+}
+function _rsSayHtml(u){
+  var me='',hear='',nm=0,nh=0,ui=_rs.tab;
+  for(var i=0;i<u.phrases.length;i++){var p=u.phrases[i];if(p.k){hear+=_rsRow(p,'rsp'+i,ui,i);nh++;}else{me+=_rsRow(p,'rsp'+i,ui,i);nm++;}}
+  return '<div class="rs-h">🙋 我要说 <small>'+nm+' 句</small><button class="btn" type="button" onclick="rsReadAll(this)">🔊 全部朗读</button></div><div class="rs-list">'+me+'</div>'
+    +(nh?'<div class="rs-h">👂 会听到 <small>服务员常说 · '+nh+' 句</small></div><div class="rs-list">'+hear+'</div>':'');
+}
+function rsSay(ui,pi,btn){var p=RESTO.units[ui]&&RESTO.units[ui].phrases[pi];if(p)_rsSpk(p.de,btn);}
+function rsReadAll(btn){
+  var u=RESTO.units[_rs.tab],items=[],ids=[];
+  for(var i=0;i<u.phrases.length;i++)if(!u.phrases[i].k){items.push(u.phrases[i].de);ids.push('rsp'+i);}
+  _startPageRead('rs'+_rs.tab,items,'de',btn,function(k){
+    var os=document.querySelectorAll('#resto .rs-row.on');for(var j=0;j<os.length;j++)os[j].classList.remove('on');
+    var e=k>=0&&document.getElementById(ids[k]);if(e){e.classList.add('on');try{e.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){}}
+  });
+}
+// ── 对话：整段播放 / 角色扮演（我当客人：服务员的话自动读，自己的话先想再看）──
+function _rsTurn(t,id,body){var side=t.s==='B'?'b':'a';
+  return '<div class="dlg-turn '+side+'" id="'+id+'"><div class="dlg-bubble">'+body+'</div></div>';}
+function _rsTurnFull(t,gi,k){
+  return '<div class="dlg-de-row"><span class="dlg-de" lang="de">'+_esc(t.de)+'</span><button type="button" class="dlg-spk" aria-label="朗读这句" onclick="rsDlgSay('+gi+','+k+',this)">🔊</button></div><div class="dlg-zh">'+(t.s==='B'?'🙋 ':'🧑‍🍳 ')+_esc(t.zh)+'</div><div class="dlg-py">'+_esc(t.py)+'</div>';
+}
+function _rsDlgHtml(u){
+  var h='<p style="font-size:12px;color:var(--text-faint);margin:0 0 10px">右边是你（客人），左边是服务员。先 ▶ 听一遍，再点「🎭 我当客人」：服务员的话自动读，轮到你时只给中文，先张嘴说，再看答案。</p>';
+  for(var g=0;g<u.dialogs.length;g++){var d=u.dialogs[g];
+    h+='<div class="dlg-card" id="rsd'+g+'"><div class="dlg-head"><span class="dlg-scene">'+_esc(d.title)+'</span><button type="button" class="dlg-play" id="rsdPlay'+g+'" onclick="rsDlgPlay('+g+')">▶ 播放全部</button></div><div class="dlg-de-title" lang="de">'+_esc(d.de)+'</div><div class="dlg-body" id="rsdBody'+g+'">';
+    for(var k=0;k<d.turns.length;k++)h+=_rsTurn(d.turns[k],'rsd'+g+'_'+k,_rsTurnFull(d.turns[k],g,k));
+    h+='</div><div class="rs-role" id="rsdRole'+g+'"><button class="btn" type="button" onclick="rsRole('+g+')">🎭 我当客人</button></div></div>';
+  }
+  return h;
+}
+function rsDlgSay(g,k,btn){var t=RESTO.units[_rs.tab].dialogs[g].turns[k];if(t)_rsSpk(t.de,btn);}
+function _rsHi(id){var os=document.querySelectorAll('#resto .dlg-turn.on');for(var j=0;j<os.length;j++)os[j].classList.remove('on');
+  var e=id&&document.getElementById(id);if(e){e.classList.add('on');try{e.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){}}}
+function rsDlgPlay(g){
+  if(window.__noTTS||!('speechSynthesis' in window)){if(typeof _ttsHint==='function')_ttsHint();return;}
+  var was=_rs.playing;rsStop();_rsHi(null);
+  document.querySelectorAll('#resto .dlg-play').forEach(function(b){b.textContent='▶ 播放全部';});
+  if(was===g)return;
+  _rs.role=null;var body=document.getElementById('rsdBody'+g);
+  if(body&&body.getAttribute('data-role')){rsRender();body=null;}
+  _rs.playing=g;var run=_rs.run,turns=RESTO.units[_rs.tab].dialogs[g].turns,k=0;
+  var btn=document.getElementById('rsdPlay'+g);if(btn)btn.textContent='⏹ 停止';
+  function step(){
+    if(run!==_rs.run||k>=turns.length){if(run===_rs.run){_rs.playing=null;_rsHi(null);if(btn)btn.textContent='▶ 播放全部';}return;}
+    _rsHi('rsd'+g+'_'+k);
+    var u=new SpeechSynthesisUtterance(turns[k].de);u.lang='de-DE';if(_deVoice)u.voice=_deVoice;u.rate=_spk.rate;
+    u.onend=u.onerror=function(){k++;setTimeout(step,300);};
+    speechSynthesis.speak(u);
+  }
+  try{speechSynthesis.cancel();}catch(e){}setTimeout(step,60);
+}
+function rsRole(g){rsStop();_rs.role={g:g,k:-1,shown:false};_rsRoleNext();}
+function _rsRoleNext(){
+  var r=_rs.role;if(!r)return;var turns=RESTO.units[_rs.tab].dialogs[r.g].turns;
+  r.k++;r.shown=false;
+  if(r.k<turns.length&&turns[r.k].s==='A'){_rsSpk(turns[r.k].de);if(r.k+1<turns.length&&turns[r.k+1].s==='B')r.k++;}
+  _rsRoleDraw();
+}
+function rsRoleShow(){var r=_rs.role;if(!r)return;r.shown=true;var t=RESTO.units[_rs.tab].dialogs[r.g].turns[r.k];_rsSpk(t.de);_rsRoleDraw();}
+function rsRoleNext(){_rsRoleNext();}
+function _rsRoleDraw(){
+  var r=_rs.role,d=RESTO.units[_rs.tab].dialogs[r.g],turns=d.turns,h='',last=Math.min(r.k,turns.length-1);
+  for(var k=0;k<=last;k++){var t=turns[k];
+    if(k===r.k&&t.s==='B'&&!r.shown)h+=_rsTurn(t,'rsd'+r.g+'_'+k,'<div class="dlg-zh" style="margin:0">🙋 用德语说：<b style="color:var(--text)">'+_esc(t.zh)+'</b></div><div class="rs-hide" style="margin-top:4px">先自己说出来，再看答案</div>');
+    else h+=_rsTurn(t,'rsd'+r.g+'_'+k,_rsTurnFull(t,r.g,k));
+  }
+  var body=document.getElementById('rsdBody'+r.g),ctl=document.getElementById('rsdRole'+r.g);
+  if(!body||!ctl)return;
+  body.innerHTML=h;body.setAttribute('data-role','1');
+  var done=r.k>=turns.length-1&&(turns[turns.length-1].s!=='B'||r.shown);
+  if(r.k<turns.length&&turns[r.k].s==='B'&&!r.shown)ctl.innerHTML='<button class="btn" type="button" onclick="rsRoleShow()">👀 看答案</button><button class="btn" type="button" onclick="rsRender()">↩ 退出</button>';
+  else if(done)ctl.innerHTML='<span class="rs-score" style="align-self:center">🎉 这段说完了！</span><button class="btn" type="button" onclick="rsRole('+r.g+')">🔁 再来一遍</button><button class="btn" type="button" onclick="rsRender()">↩ 退出</button>';
+  else ctl.innerHTML='<button class="btn" type="button" onclick="rsRoleNext()">继续 ▶</button><button class="btn" type="button" onclick="rsRender()">↩ 退出</button>';
+  _rsHi('rsd'+r.g+'_'+last);
+}
+// ── 测验：「中→德」选说法 +「听→中」选意思，每轮 10 题 ──
+function _rsQuizHtml(){
+  if(!_rs.q){var key='u'+_rs.tab,b=_rsBest(key);
+    return '<div class="rs-q rs-center"><div class="rs-q-p">10 道题：看中文选德语 · 听德语选意思</div><div class="rs-fb">每题答完会自动读一遍正确的句子。'+(b?'<br>最好成绩：<span class="rs-score">'+b+' / 10</span>':'')+'</div><div class="rs-next"><button class="btn" type="button" onclick="rsQuizStart()">▶ 开始测验</button></div></div>';}
+  return _rsQHtml();
+}
+function rsQuizStart(){
+  var u=RESTO.units[_rs.tab],all=u.phrases.concat([]),qs=[],pool=_rsShuffle(all);
+  for(var i=0;i<pool.length&&qs.length<10;i++){var p=pool[i],mode=(p.k||Math.random()<.5)?'listen':'zh';
+    var same=all.filter(function(x){return x!==p&&(mode==='listen'||!x.k);});
+    var opts=_rsShuffle([p].concat(_rsShuffle(same).slice(0,3)));
+    qs.push({p:p,mode:mode,opts:opts});}
+  _rs.q={key:'u'+_rs.tab,list:qs,i:0,score:0,ans:-1};rsRender();
+  if(qs[0]&&qs[0].mode==='listen')_rsSpk(qs[0].p.de);
+}
+function _rsQHtml(){
+  var q=_rs.q,c=q.list[q.i];
+  if(!c){_rsBest(q.key,q.score);var b=_rsBest(q.key);
+    return '<div class="rs-q rs-center"><div class="rs-q-p">'+(q.score>=8?'🎉 ':'💪 ')+'得分 '+q.score+' / '+q.list.length+'</div><div class="rs-fb">最好成绩：<span class="rs-score">'+b+' / 10</span>'+(q.score<8?'<br>错的句子回「💬 句子」里多听几遍，再来一轮。':'')+'</div><div class="rs-next"><button class="btn" type="button" onclick="'+(q.key==='menu'?'rsMenuQuiz()':'rsQuizStart()')+'">🔁 再来一轮</button></div></div>';}
+  var h='<div class="rs-q"><div class="rs-q-top"><span>第 '+(q.i+1)+' / '+q.list.length+' 题</span><span>答对 '+q.score+'</span></div>';
+  if(c.mode==='listen')h+='<div class="rs-q-p">👂 听一听，是什么意思？</div><div class="rs-next" style="margin:0 0 12px"><button class="btn" type="button" onclick="rsQReplay(1)">🔊 再听</button><button class="btn" type="button" onclick="rsQReplay(.55)">🐢 慢速</button></div>';
+  else if(c.mode==='dish')h+='<div class="rs-q-p" lang="de">'+_esc(c.p.de)+' <button class="speak-btn" type="button" aria-label="朗读" onclick="rsQReplay(1)">🔊</button></div><div class="rs-fb" style="margin:-6px 0 10px">这道菜是？</div>';
+  else h+='<div class="rs-q-p">🗣️ 德语怎么说：「'+_esc(c.p.zh)+'」</div>';
+  h+='<div class="rs-opts">';
+  for(var i=0;i<c.opts.length;i++){var o=c.opts[i],cls='';
+    if(q.ans>=0){if(o===c.p)cls=' ok';else if(i===q.ans)cls=' bad';}
+    var txt=c.mode==='zh'?'<span lang="de">'+_esc(o.de)+'</span>':_esc(o.zh);
+    h+='<button type="button" class="rs-opt'+cls+'"'+(q.ans>=0?' disabled':'')+' onclick="rsQAns('+i+')">'+txt+'</button>';}
+  h+='</div>';
+  if(q.ans>=0)h+='<div class="rs-fb"><b lang="de">'+_esc(c.p.de)+'</b><br>'+_esc(c.p.zh)+' · '+_esc(c.p.py)+(c.p.d?'<br>'+_esc(c.p.d):'')+'</div><div class="rs-next"><button class="btn" type="button" onclick="rsQNext()">'+(q.i+1<q.list.length?'下一题 ▶':'看成绩')+'</button></div>';
+  return h+'</div>';
+}
+function _rsQBox(){var el=document.getElementById(_rs.tab===5?'rsMenuArea':'rsBody');if(!el)return;if(_rs.tab===5)el.innerHTML=_rsQHtml();else rsRender();}
+function rsQAns(i){var q=_rs.q,c=q&&q.list[q.i];if(!c||q.ans>=0)return;q.ans=i;if(c.opts[i]===c.p)q.score++;_rsQBox();_rsSpk(c.p.de);}
+function rsQNext(){var q=_rs.q;if(!q)return;q.i++;q.ans=-1;_rsQBox();var c=q.list[q.i];if(c&&c.mode!=='zh')_rsSpk(c.p.de);}
+function rsQReplay(rate){var q=_rs.q,c=q&&q.list[q.i];if(!c)return;var r0=_spk.rate;if(rate<1)_spk.rate=Math.min(r0,.55);_rsSpk(c.p.de);_spk.rate=r0;}
+
+// ── 价格读法 ──
+var _RS_U=['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun','zehn','elf','zwölf','dreizehn','vierzehn','fünfzehn','sechzehn','siebzehn','achtzehn','neunzehn'];
+var _RS_T=['','','zwanzig','dreißig','vierzig','fünfzig','sechzig','siebzig','achtzig','neunzig'];
+var _RS_UP=['努尔','艾因斯','茨威','德莱','菲尔','芬夫','泽克斯','西本','阿赫特','诺伊恩','岑','埃尔夫','茨沃尔夫','德莱岑','菲尔岑','芬夫岑','泽希岑','西普岑','阿赫岑','诺伊恩岑'];
+var _RS_TP=['','','茨万齐希','德莱西希','菲尔齐希','芬夫齐希','泽希齐希','西普齐希','阿赫齐希','诺伊恩齐希'];
+// 0–999 → [德语, 谐音]。21–99 个位在前（vierundzwanzig = 4 和 20），「1」在复合词里是 ein-
+function _rsNum(n){
+  if(n<20)return [_RS_U[n],_RS_UP[n]];
+  if(n<100){var o=n%10,z=Math.floor(n/10);if(!o)return [_RS_T[z],_RS_TP[z]];
+    return [(o===1?'ein':_RS_U[o])+'und'+_RS_T[z],(o===1?'艾因':_RS_UP[o])+'温特'+_RS_TP[z]];}
+  var h=Math.floor(n/100),r=n%100,hd=h===1?['hundert','洪德特']:[_RS_U[h]+'hundert',_RS_UP[h]+'洪德特'];
+  if(!r)return hd;var rr=_rsNum(r);return [hd[0]+rr[0],hd[1]+rr[1]];
+}
+// 欧元价格 → {de, py, txt}：12,50 € = zwölf Euro fünfzig；1,– = ein Euro；0,80 = achtzig Cent
+function _rsSay(e,c){
+  var de,py;
+  if(!e){var x=_rsNum(c);de=x[0]+' Cent';py=x[1]+' 森特';}
+  else{var a=e===1?['ein','艾因']:_rsNum(e);de=a[0]+' Euro';py=a[1]+' 奥伊罗';if(c){var b=_rsNum(c);de+=' '+b[0];py+=' '+b[1];}}
+  return {de:de,py:py,txt:e+','+(c<10?'0':'')+c+' €'};
+}
+function _rsFlip(n){if(n>=13&&n<=19)return (n-10)*10;if(n>=30&&n<=90&&n%10===0)return n/10+10;if(n>20&&n<100&&n%10)return (n%10)*10+Math.floor(n/10);return -1;}
+function _rsRandPrice(){
+  var r=Math.random(),e,cs=[0,10,20,30,40,50,60,70,80,90,50,90,40,5,15,45,95,99];
+  if(r<.08)e=0;else if(r<.6)e=1+Math.floor(Math.random()*39);else e=40+Math.floor(Math.random()*60);
+  var c=cs[Math.floor(Math.random()*cs.length)];if(!e&&!c)c=80;
+  return [e,c];
+}
+// 干扰项专挑中国人最容易听错的：个位十位颠倒（24↔42）、-zehn 和 -zig（14↔40）
+function _rsTraps(e,c){
+  var out=[],seen={};seen[e*100+c]=1;
+  function add(a,b){if(a<0||a>199||b<0||b>99||(!a&&!b))return;var k=a*100+b;if(seen[k])return;seen[k]=1;out.push([a,b]);}
+  add(_rsFlip(e),c);add(e,_rsFlip(c));add(_rsFlip(e),_rsFlip(c));
+  var first=out.slice(0,2),rest=[];out=[];
+  add(e+1,c);add(e,(c+10)%100);add(e?e-1:e,e?c:(c+20)%100);add(e+10,c);add(e+2,c);add(e+3,(c+50)%100);
+  rest=_rsShuffle(out);return first.concat(rest).slice(0,3);
+}
+// 小费建议：总价的 5–10%，区间里有 5 的倍数就凑到它，否则凑到下一个整欧元
+function _rsTip(e,c){var t=e+c/100,lo=t*1.05,hi=t*1.1,f=Math.ceil(lo/5)*5;return f<=hi?f:Math.ceil(lo);}
+function _rsNumHtml(){
+  var eg=[[12,50],[8,0],[1,0],[0,80],[24,90],[14,40],[40,14]],rows='';
+  for(var i=0;i<eg.length;i++){var s=_rsSay(eg[i][0],eg[i][1]);rows+='<div class="rs-eg"><span>'+s.txt+'</span><span style="flex:1"><b lang="de">'+s.de+'</b><br>'+s.py+'</span><button class="speak-btn" type="button" aria-label="朗读 '+s.txt+'" onclick="rsSayPrice('+eg[i][0]+','+eg[i][1]+',this)">🔊</button></div>';}
+  var h='<div class="tip-card"><div class="tip-title">💶 价格这样读</div><div class="tip-body rs-rule">'
+    +'欧元读 <b>Euro</b>，后面的分直接读数字，<b>不用说 Cent</b>；不到 1 欧才说 Cent。逗号＝小数点。<br>'
+    +'⚠️ <b>21–99 个位在前</b>：24 = vier<b>und</b>zwanzig（四和二十），听到的第一个数字是个位！<br>'
+    +'⚠️ <b>-zehn 是十几，-zig 是几十</b>：vierzehn 14 ≠ vierzig 40。<br>'
+    +'1 欧元说 <b>ein Euro</b>（不是 eins）。sechs/sieben 变成 <b>sech</b>zehn、<b>sieb</b>zig。</div></div>'
+    +'<div class="tip-card"><div class="tip-body rs-rule">'+rows+'</div></div>'
+    +'<div class="tip-card"><div class="tip-title">🪙 小费怎么给</div><div class="tip-body">奥地利约 5–10%。别把钱留在桌上，付款时直接说凑整后的总数：账单 22,70 € → <b lang="de">Machen Sie vierundzwanzig.</b>（收 24）。现金小额就说 <b lang="de">Passt so.</b> / <b lang="de">Stimmt so.</b>（不用找了）。刷卡也一样，先说总数再刷。</div></div>'
+    +'<div class="rs-seg" role="tablist"><button type="button" class="'+(_rs.sub!=='speak'?'on':'')+'" onclick="rsNumMode(\'listen\')">👂 听价格</button><button type="button" class="'+(_rs.sub==='speak'?'on':'')+'" onclick="rsNumMode(\'speak\')">🗣️ 说价格</button></div>'
+    +'<div id="rsNumArea">'+_rsNumDrill()+'</div>';
+  return h;
+}
+function rsNumMode(m){rsStop();_rs.sub=m;_rs.np=null;rsRender();}
+function _rsNumDrill(){
+  var n=_rs.np;
+  if(!n){var speak=_rs.sub==='speak',b=_rsBest(speak?'say':'num');
+    return '<div class="rs-q rs-center"><div class="rs-q-p">'+(speak?'看价格，先自己用德语说出来，再看答案':'听服务员报价，选出你听到的数字')+'</div><div class="rs-fb">'+(speak?'还会告诉你该怎么给小费。':'干扰项专挑 24↔42、14↔40 这种最容易听错的。')+(b&&!speak?'<br>最长连对：<span class="rs-score">'+b+'</span>':'')+'</div><div class="rs-next"><button class="btn" type="button" onclick="rsNumNew()">▶ 开始</button></div></div>';}
+  var s=_rsSay(n.e,n.c),h='<div class="rs-q">';
+  if(n.mode==='speak'){
+    h+='<div class="rs-q-top"><span>🗣️ 说出这个价格</span><span>已练 '+n.cnt+' 个</span></div><div class="rs-big">'+s.txt+'</div>';
+    if(!n.shown)h+='<div class="rs-next"><button class="btn" type="button" onclick="rsNumShow()">👀 看答案</button></div>';
+    else{var tp=_rsTip(n.e,n.c),ts=_rsNum(tp);
+      var big=n.e>=5;h+='<div class="rs-fb rs-center"><b lang="de" style="font-size:17px">'+s.de+'</b><br>'+s.py+(big?'<br><br>💡 想给小费：<b lang="de">Machen Sie '+ts[0]+'.</b><br>马赫恩 齐 '+ts[1]+'。（收 '+tp+' €）':'<br><br>💡 小钱不用凑整，说 <b lang="de">Passt so.</b> 就行')+'</div>'
+        +'<div class="rs-next"><button class="btn" type="button" onclick="rsSayPrice('+n.e+','+n.c+',this)">🔊 再听</button>'+(big?'<button class="btn" type="button" onclick="rsSayTip()">🔊 小费</button>':'')+'<button class="btn" type="button" onclick="rsNumNew()">下一个 ▶</button></div>';}
+  }else{
+    h+='<div class="rs-q-top"><span>👂 服务员说：Das macht …</span><span>连对 '+n.streak+'</span></div>';
+    h+='<div class="rs-big'+(n.ans<0?' mute':'')+'">'+(n.ans<0?'? ,?? €':s.txt)+'</div>';
+    h+='<div class="rs-next" style="margin:0 0 12px"><button class="btn" type="button" onclick="rsNumPlay(1)">🔊 再听</button><button class="btn" type="button" onclick="rsNumPlay(.55)">🐢 慢速</button></div><div class="rs-opts">';
+    for(var i=0;i<n.opts.length;i++){var o=n.opts[i],t=_rsSay(o[0],o[1]).txt,cls='';
+      if(n.ans>=0){if(o[0]===n.e&&o[1]===n.c)cls=' ok';else if(i===n.ans)cls=' bad';}
+      h+='<button type="button" class="rs-opt'+cls+'" style="text-align:center;font-weight:700;font-size:17px"'+(n.ans>=0?' disabled':'')+' onclick="rsNumAns('+i+')">'+t+'</button>';}
+    h+='</div>';
+    if(n.ans>=0){var o2=n.opts[n.ans],wrong=!(o2[0]===n.e&&o2[1]===n.c),ws=_rsSay(o2[0],o2[1]);
+      h+='<div class="rs-fb">'+(wrong?'❌ 你选的 '+ws.txt+' 读作 <b lang="de">'+ws.de+'</b><br>':'✅ ')+'正确：<b lang="de">'+s.de+'</b><br>'+s.py+'</div><div class="rs-next"><button class="btn" type="button" onclick="rsNumNew()">下一个 ▶</button></div>';}
+  }
+  return h+'</div>';
+}
+function _rsNumDraw(){var el=document.getElementById('rsNumArea');if(el)el.innerHTML=_rsNumDrill();}
+function rsNumNew(){
+  var p=_rsRandPrice(),old=_rs.np,speak=_rs.sub==='speak';
+  _rs.np={e:p[0],c:p[1],mode:speak?'speak':'listen',ans:-1,shown:false,streak:old?old.streak:0,cnt:(old?old.cnt:0)+1};
+  if(!speak)_rs.np.opts=_rsShuffle([[p[0],p[1]]].concat(_rsTraps(p[0],p[1])));
+  _rsNumDraw();if(!speak)rsNumPlay(1);
+}
+function rsNumPlay(rate){var n=_rs.np;if(!n)return;var r0=_spk.rate;if(rate<1)_spk.rate=Math.min(r0,.55);_rsSpk('Das macht '+_rsSay(n.e,n.c).de+'.');_spk.rate=r0;}
+function rsNumAns(i){var n=_rs.np;if(!n||n.ans>=0)return;n.ans=i;var o=n.opts[i];
+  if(o[0]===n.e&&o[1]===n.c){n.streak++;_rsBest('num',n.streak);}else n.streak=0;_rsNumDraw();}
+function rsNumShow(){var n=_rs.np;if(!n)return;n.shown=true;_rsNumDraw();_rsSpk(_rsSay(n.e,n.c).de);}
+function rsSayTip(){var n=_rs.np;if(n)_rsSpk('Machen Sie '+_rsNum(_rsTip(n.e,n.c))[0]+'.');}
+function rsSayPrice(e,c,btn){_rsSpk(_rsSay(e,c).de,btn);}
+
+// ── 菜单：分组浏览 · 遮住中文当词卡 · 点价格听报价 · 菜名测验 ──
+function _rsArt(de){var m=/^(der|die|das) (.*)$/.exec(de);return m?'<span class="rs-art-'+m[1]+'">'+m[1]+'</span> '+_esc(m[2]):_esc(de);}
+function _rsPrice(p){var e=Math.floor(p+1e-6),c=Math.round((p-e)*100);return [e,c];}
+function _rsMenuHtml(){
+  var M=RESTO.menu,h='<div class="rs-chips"><button type="button" class="'+(_rs.grp<0?'on':'')+'" onclick="rsGrp(-1)">全部</button>';
+  for(var g=0;g<M.length;g++)h+='<button type="button" class="'+(_rs.grp===g?'on':'')+'" onclick="rsGrp('+g+')">'+M[g].icon+' '+_esc(M[g].group)+'</button>';
+  h+='</div><div class="rs-seg"><button type="button" class="'+(!_rs.flash&&!_rs.q?'on':'')+'" onclick="rsFlash(false)">📜 看菜单</button><button type="button" class="'+(_rs.flash&&!_rs.q?'on':'')+'" onclick="rsFlash(true)">🙈 词卡</button><button type="button" class="'+(_rs.q?'on':'')+'" onclick="rsMenuQuiz()">🎯 测验</button></div>';
+  h+='<div id="rsMenuArea">'+(_rs.q?_rsQHtml():_rsMenuList())+'</div>';
+  return h;
+}
+function _rsMenuList(){
+  var M=RESTO.menu,h=_rs.flash?'<p style="font-size:12px;color:var(--text-faint);margin:0 0 8px">中文先遮住：看德语想意思，点卡片翻开。</p>':'<p style="font-size:12px;color:var(--text-faint);margin:0 0 8px">der 蓝 · die 红 · das 绿。点右边的价格，听服务员怎么报价。</p>';
+  for(var g=0;g<M.length;g++){if(_rs.grp>=0&&_rs.grp!==g)continue;
+    h+='<div class="rs-h">'+M[g].icon+' '+_esc(M[g].group)+' <small>'+M[g].items.length+'</small></div><div class="rs-list">';
+    for(var i=0;i<M[g].items.length;i++){var it=M[g].items[i],pr=it.p?_rsPrice(it.p):null;
+      h+='<div class="rs-dish'+(_rs.flash?' rs-flash':'')+'"'+(_rs.flash?' onclick="this.classList.toggle(\'show\')"':'')+'><button class="speak-btn" type="button" aria-label="朗读" onclick="event.stopPropagation();rsDish('+g+','+i+',this)">🔊</button><div class="rs-dish-main"><div class="rs-de" lang="de">'+_rsArt(it.de)+'</div><div class="rs-zh">'+_esc(it.zh)+'</div><div class="rs-py">'+_esc(it.py)+'</div>'+(it.d?'<div class="rs-d">'+_esc(it.d)+'</div>':'')+'</div>'
+        +(pr?'<button class="rs-price" type="button" aria-label="听价格" onclick="event.stopPropagation();rsDishPrice('+g+','+i+',this)">'+_rsSay(pr[0],pr[1]).txt.replace(' €','')+'</button>':'')+'</div>';}
+    h+='</div>';}
+  return h;
+}
+function rsGrp(g){rsStop();_rs.grp=g;_rs.q=null;rsRender();}
+function rsFlash(f){rsStop();_rs.flash=f;_rs.q=null;rsRender();}
+function rsDish(g,i,btn){var it=RESTO.menu[g].items[i];if(it)_rsSpk(it.de,btn);}
+function rsDishPrice(g,i,btn){var it=RESTO.menu[g].items[i];if(!it||!it.p)return;var pr=_rsPrice(it.p);
+  _rsSpk(it.de.replace(/^(der|die|das) /,'')+', '+_rsSay(pr[0],pr[1]).de+'.',btn);}
+function rsMenuQuiz(){
+  rsStop();var M=RESTO.menu,all=[];
+  for(var g=0;g<M.length;g++){if(_rs.grp>=0&&_rs.grp!==g)continue;for(var i=0;i<M[g].items.length;i++)all.push(M[g].items[i]);}
+  if(all.length<4)for(var g2=0;g2<M.length;g2++)for(var j=0;j<M[g2].items.length;j++)if(all.indexOf(M[g2].items[j])<0)all.push(M[g2].items[j]);
+  var pool=_rsShuffle(all).slice(0,10),qs=[];
+  for(var k=0;k<pool.length;k++){var p=pool[k],others=_rsShuffle(all.filter(function(x){return x!==p;})).slice(0,3);qs.push({p:p,mode:'dish',opts:_rsShuffle([p].concat(others))});}
+  _rs.q={key:'menu',list:qs,i:0,score:0,ans:-1};rsRender();if(qs[0])_rsSpk(qs[0].p.de);
 }
 // 阅读点词：朗读 + 查词义（德语）
 let _deWordMap=null;

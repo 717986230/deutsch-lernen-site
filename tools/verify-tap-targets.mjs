@@ -56,7 +56,7 @@ await page.addStyleTag({ content: '#boostModal{display:none!important}' });
 // 宁可窄一点。纵向 60px 好按，实测 32.4×60.6。
 const EXEMPT = { '🌱 零基础入门': '贴左边缘的竖排浮标，横向撑热区会吞掉正文点击' };
 
-const SECS = 'home phrases reading series dialog spell quiz rank grammar pronunciation numbers support me en-pron en-num en-grammar'.split(' ');
+const SECS = 'home phrases reading series dialog resto spell quiz rank grammar pronunciation numbers support me en-pron en-num en-grammar'.split(' ');
 const probe = async (sec) => {
   await page.evaluate((s) => showSection(s), sec);
   await page.waitForTimeout(280);
