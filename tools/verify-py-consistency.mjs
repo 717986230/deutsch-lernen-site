@@ -55,6 +55,12 @@ if (existsSync(join(ROOT, 'data/restaurant.json'))) {
   }
   for (const g of r.menu) for (const it of g.items) note(it.de, it.py, `restaurant.json[${g.group}]`);
 }
+if (existsSync(join(ROOT, 'data/kolloc.json'))) {
+  for (const v of rd('data/kolloc.json').verbs) for (const it of v.items) {
+    note(it.de, it.py, `kolloc.json[${v.v}]`);
+    note(it.ex[0], it.ex[2], `kolloc.json[${v.v} 例句]`);
+  }
+}
 for (const b of rd('data/boards.json')) for (const it of b.items) note(it[0], it[2], `boards.json[${b.name}]`);
 
 // src.html 里还有几张只存在于代码里的表
