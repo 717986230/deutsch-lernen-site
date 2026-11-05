@@ -88,6 +88,28 @@ function checkResto(path) {
   }
   console.log(`  ${path}: ${d.units.length} 单元 ${d.menu.length} 组菜单 ${n} 条`);
 }
+// 动词搭配（2026-11）：搭配本身必须以所属动词结尾（练习里要把动词挖空），例句三元素都带谐音
+function checkKolloc(path) {
+  if (!existsSync(path)) return;
+  const d = rd(path);
+  let n = 0;
+  const seenDe = new Set();
+  for (const v of d.verbs) {
+    for (const k of ['v', 'zh', 'py', 'tip', 'items']) if (!v[k]) bad(`${path} 动词缺字段 ${k}`);
+    for (const it of v.items) {
+      n++;
+      for (const k of ['de', 'zh', 'py']) if (!String(it[k] || '').trim()) bad(`${path} [${v.v}] 「${it.de}」缺 ${k}`);
+      if (it.py && !CJK.test(it.py)) bad(`${path} [${v.v}] 「${it.de}」谐音含非中文字符: ${it.py}`);
+      if (!new RegExp('\\s' + v.v + '$').test(it.de)) bad(`${path} 「${it.de}」要以 ${v.v} 结尾（练习靠它挖空）`);
+      if (seenDe.has(it.de)) bad(`${path} 「${it.de}」重复`);
+      seenDe.add(it.de);
+      if (!Array.isArray(it.ex) || it.ex.length !== 3 || it.ex.some((x) => !String(x || '').trim())) bad(`${path} 「${it.de}」例句要是 [de, zh, py]`);
+      else if (!CJK.test(it.ex[2])) bad(`${path} 「${it.de}」例句谐音含非中文字符`);
+    }
+  }
+  if (d.verbs.length < 4) bad(`${path} 动词少于 4 个，练习凑不齐选项`);
+  console.log(`  ${path}: ${d.verbs.length} 个动词 ${n} 组搭配`);
+}
 console.log('内容数据体检：');
 checkPhrases('data/categories.json');
 checkPhrases('data/en_categories.json');
@@ -98,5 +120,6 @@ checkArticles('data/en_series.json', true);  // 2026-10 英语连载补齐 12 �
 checkDialogs('data/dialogs.json');
 checkDialogs('data/en_dialogs.json');
 checkResto('data/restaurant.json');
+checkKolloc('data/kolloc.json');
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 内容数据全部通过');

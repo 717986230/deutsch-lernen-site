@@ -1,0 +1,853 @@
+{
+ "verbs": [
+  {
+   "v": "haben",
+   "zh": "有",
+   "py": "哈本",
+   "tip": "中文说「我饿了 / 我怕 / 我想」，德语常说「我有饥饿 / 有恐惧 / 有兴致」：haben + 名词，名词前一般不加冠词。",
+   "items": [
+    {
+     "de": "Zeit haben",
+     "zh": "有时间",
+     "py": "采特 哈本",
+     "ex": [
+      "Hast du morgen Zeit?",
+      "你明天有时间吗？",
+      "哈斯特 度 摩根 采特？"
+     ]
+    },
+    {
+     "de": "Lust haben",
+     "zh": "有兴致、想做",
+     "py": "鲁斯特 哈本",
+     "ex": [
+      "Ich habe keine Lust.",
+      "我不想去（没兴致）。",
+      "伊希 哈贝 凯嫩 鲁斯特。"
+     ],
+     "n": "想要某物：Lust auf + 四格"
+    },
+    {
+     "de": "Angst haben",
+     "zh": "害怕",
+     "py": "安斯特 哈本",
+     "ex": [
+      "Sie hat Angst vor Hunden.",
+      "她怕狗。",
+      "齐 哈特 安斯特 佛尔 洪登。"
+     ],
+     "n": "怕什么：Angst vor + 三格"
+    },
+    {
+     "de": "Hunger haben",
+     "zh": "饿",
+     "py": "洪格尔 哈本",
+     "ex": [
+      "Ich habe großen Hunger.",
+      "我很饿。",
+      "伊希 哈贝 格罗森 洪格尔。"
+     ]
+    },
+    {
+     "de": "Durst haben",
+     "zh": "渴",
+     "py": "杜尔斯特 哈本",
+     "ex": [
+      "Hast du Durst?",
+      "你渴吗？",
+      "哈斯特 度 杜尔斯特"
+     ]
+    },
+    {
+     "de": "Recht haben",
+     "zh": "有道理、说得对",
+     "py": "雷希特 哈本",
+     "ex": [
+      "Da hast du Recht.",
+      "这点你说得对。",
+      "达 哈斯特 度 雷希特。"
+     ]
+    },
+    {
+     "de": "Probleme haben",
+     "zh": "有麻烦、出问题",
+     "py": "普罗布莱默 哈本",
+     "ex": [
+      "Ich habe Probleme mit dem Computer.",
+      "我的电脑出问题了。",
+      "伊希 哈贝 普罗布莱默 米特 登 康普尤特尔。"
+     ],
+     "n": "跟什么有问题：mit + 三格"
+    },
+    {
+     "de": "keine Ahnung haben",
+     "zh": "不知道",
+     "py": "凯嫩 阿农 哈本",
+     "ex": [
+      "Ich habe keine Ahnung.",
+      "我完全不知道。",
+      "伊希 哈贝 凯嫩 阿农。"
+     ],
+     "n": "口语常只说一句 Keine Ahnung!"
+    },
+    {
+     "de": "Spaß haben",
+     "zh": "玩得开心",
+     "py": "施帕斯 哈本",
+     "ex": [
+      "Wir hatten viel Spaß.",
+      "我们玩得很开心。",
+      "维尔 哈滕 菲尔 施帕斯。"
+     ],
+     "n": "对比 Spaß machen：某事好玩"
+    },
+    {
+     "de": "einen Termin haben",
+     "zh": "有预约",
+     "py": "艾嫩 特尔明 哈本",
+     "ex": [
+      "Ich habe morgen einen Termin beim Arzt.",
+      "我明天约了看医生。",
+      "伊希 哈贝 摩根 艾嫩 特尔明 拜姆 阿尔茨特。"
+     ]
+    },
+    {
+     "de": "Glück haben",
+     "zh": "运气好",
+     "py": "格吕克 哈本",
+     "ex": [
+      "Da hast du Glück gehabt!",
+      "你运气真好！",
+      "达 哈斯特 度 格吕克 格哈普特！"
+     ]
+    }
+   ]
+  },
+  {
+   "v": "kommen",
+   "zh": "来、到",
+   "py": "科门",
+   "tip": "kommen 的搭配多半是「到达某种状态」：zur Ruhe（静下来）、in Frage（被考虑）、zu spät（来晚）。",
+   "items": [
+    {
+     "de": "zu mir kommen",
+     "zh": "来我这儿",
+     "py": "粗 米尔 科门",
+     "ex": [
+      "Komm doch heute Abend zu mir!",
+      "今晚来我这儿吧！",
+      "科姆 多赫 霍伊特 阿本特 粗 米尔！"
+     ]
+    },
+    {
+     "de": "nach Hause kommen",
+     "zh": "到家",
+     "py": "纳赫 豪泽 科门",
+     "ex": [
+      "Wann kommst du nach Hause?",
+      "你几点到家？",
+      "万 科姆斯特 度 纳赫 豪泽"
+     ],
+     "n": "对比 nach Hause gehen：动身回家"
+    },
+    {
+     "de": "mit ins Kino kommen",
+     "zh": "一起去看电影",
+     "py": "米特 因斯 基诺 科门",
+     "ex": [
+      "Kommst du mit ins Kino?",
+      "你跟我们去看电影吗？",
+      "科姆斯特 度 米特 因斯 基诺？"
+     ]
+    },
+    {
+     "de": "in Frage kommen",
+     "zh": "可以考虑、有可能",
+     "py": "因 弗拉格 科门",
+     "ex": [
+      "Das kommt nicht in Frage!",
+      "这绝对不行！",
+      "达斯 科姆特 尼希特 因 弗拉格！"
+     ],
+     "n": "最常用否定：kommt nicht in Frage = 门儿都没有"
+    },
+    {
+     "de": "zum Zug kommen",
+     "zh": "轮到上场、得到机会",
+     "py": "粗姆 粗克 科门",
+     "ex": [
+      "Bei so vielen Bewerbern kommt man kaum zum Zug.",
+      "应聘的人这么多，很难轮到你。",
+      "拜 佐 菲伦 贝韦尔伯恩 科姆特 曼 考姆 粗姆 粗克。"
+     ],
+     "n": "固定说法，不是「赶上火车」（赶火车是 den Zug erreichen）"
+    },
+    {
+     "de": "zur Ruhe kommen",
+     "zh": "安静下来、歇口气",
+     "py": "粗尔 鲁厄 科门",
+     "ex": [
+      "Am Wochenende komme ich endlich zur Ruhe.",
+      "周末我终于能歇口气了。",
+      "阿姆 沃亨恩德 科默 伊希 恩特利希 粗尔 鲁厄。"
+     ]
+    },
+    {
+     "de": "auf seine Kosten kommen",
+     "zh": "觉得值、尽兴",
+     "py": "奥夫 扎讷 科斯滕 科门",
+     "ex": [
+      "Beim Konzert kommt jeder auf seine Kosten.",
+      "这场音乐会人人都觉得值。",
+      "拜姆 孔泽尔特 科姆特 耶德尔 奥夫 扎讷 科斯滕。"
+     ],
+     "n": "不是「承担费用」，那是 für die Kosten aufkommen"
+    },
+    {
+     "de": "zu spät kommen",
+     "zh": "迟到",
+     "py": "粗 施佩特 科门",
+     "ex": [
+      "Entschuldigung, ich komme zu spät.",
+      "不好意思，我来晚了。",
+      "恩特舒尔迪根，伊希 科默 粗 施佩特。"
+     ]
+    }
+   ]
+  },
+  {
+   "v": "geben",
+   "zh": "给",
+   "py": "盖本",
+   "tip": "geben 的搭配是「把某样东西给出去」：机会、回答、例子、消息。给谁用三格：mir / dir / Ihnen。",
+   "items": [
+    {
+     "de": "ein Geschenk geben",
+     "zh": "送礼物",
+     "py": "艾因 格施恩克 盖本",
+     "ex": [
+      "Ich gebe dir ein kleines Geschenk.",
+      "我送你一个小礼物。",
+      "伊希 盖伯 迪尔 艾因 克莱内斯 格施恩克。"
+     ],
+     "n": "也可以直接用动词 schenken"
+    },
+    {
+     "de": "eine Chance geben",
+     "zh": "给机会",
+     "py": "埃内 沙恩斯 盖本",
+     "ex": [
+      "Gib mir noch eine Chance!",
+      "再给我一次机会！",
+      "吉普 米尔 诺赫 埃内 沙恩斯！"
+     ]
+    },
+    {
+     "de": "eine Antwort geben",
+     "zh": "回答、回复",
+     "py": "埃内 安特沃尔特 盖本",
+     "ex": [
+      "Er hat mir keine Antwort gegeben.",
+      "他一直没回复我。",
+      "埃尔 哈特 米尔 凯嫩 安特沃尔特 格盖本。"
+     ]
+    },
+    {
+     "de": "ein Beispiel geben",
+     "zh": "举个例子",
+     "py": "艾因 拜施皮尔 盖本",
+     "ex": [
+      "Kannst du mir ein Beispiel geben?",
+      "你能给我举个例子吗？",
+      "坎斯特 度 米尔 艾因 拜施皮尔 盖本？"
+     ],
+     "n": "对比 sich ein Beispiel nehmen：以…为榜样"
+    },
+    {
+     "de": "Bescheid geben",
+     "zh": "通知、说一声",
+     "py": "贝沙伊特 盖本",
+     "ex": [
+      "Gib mir Bescheid, wenn du da bist.",
+      "到了跟我说一声。",
+      "吉普 米尔 贝沙伊特，文 度 达 比斯特。"
+     ]
+    },
+    {
+     "de": "die Hand geben",
+     "zh": "握手",
+     "py": "迪 汉特 盖本",
+     "ex": [
+      "In Deutschland gibt man sich die Hand.",
+      "在德国见面要握手。",
+      "因 多伊奇兰特 吉普特 曼 西希 迪 汉特。"
+     ]
+    },
+    {
+     "de": "sich Mühe geben",
+     "zh": "努力、用心",
+     "py": "西希 米厄 盖本",
+     "ex": [
+      "Ich gebe mir viel Mühe.",
+      "我很用心在做。",
+      "伊希 盖伯 米尔 菲尔 米厄。"
+     ]
+    },
+    {
+     "de": "einen Tipp geben",
+     "zh": "支个招",
+     "py": "艾嫩 提普 盖本",
+     "ex": [
+      "Kannst du mir einen Tipp geben?",
+      "你能给我支个招吗？",
+      "坎斯特 度 米尔 艾嫩 提普 盖本？"
+     ]
+    },
+    {
+     "de": "Gas geben",
+     "zh": "踩油门、加把劲",
+     "py": "加斯 盖本",
+     "ex": [
+      "Jetzt müssen wir Gas geben!",
+      "现在我们得加把劲了！",
+      "耶茨特 米森 维尔 加斯 盖本！"
+     ]
+    }
+   ]
+  },
+  {
+   "v": "nehmen",
+   "zh": "拿、取",
+   "py": "内梅恩",
+   "tip": "nehmen 的搭配是「拿来给自己用」：坐车、吃药、就座、花时间。乘任何交通工具都用 nehmen。",
+   "items": [
+    {
+     "de": "den Bus nehmen",
+     "zh": "坐公交",
+     "py": "登 布斯 内梅恩",
+     "ex": [
+      "Ich nehme den Bus zur Arbeit.",
+      "我坐公交去上班。",
+      "伊希 内默 登 布斯 粗尔 阿尔拜特。"
+     ],
+     "n": "打车、坐地铁同理：das Taxi / die U-Bahn nehmen"
+    },
+    {
+     "de": "sich Zeit nehmen",
+     "zh": "专门抽时间",
+     "py": "西希 采特 内梅恩",
+     "ex": [
+      "Nimm dir Zeit für deine Familie.",
+      "多抽点时间陪家人。",
+      "尼姆 迪尔 采特 菲尔 代讷 法米利。"
+     ],
+     "n": "对比 sich Zeit lassen：慢慢来、不着急"
+    },
+    {
+     "de": "ein Bad nehmen",
+     "zh": "泡澡",
+     "py": "艾因 巴特 内梅恩",
+     "ex": [
+      "Am Abend nehme ich ein heißes Bad.",
+      "晚上我泡个热水澡。",
+      "阿姆 阿本特 内默 伊希 艾因 海塞斯 巴特。"
+     ],
+     "n": "淋浴是 duschen"
+    },
+    {
+     "de": "Rücksicht nehmen",
+     "zh": "顾及、体谅",
+     "py": "吕克齐希特 内梅恩",
+     "ex": [
+      "Bitte nimm Rücksicht auf die Nachbarn.",
+      "请顾及一下邻居。",
+      "比特 尼姆 吕克齐希特 奥夫 迪 纳赫巴尔恩。"
+     ],
+     "n": "顾及谁：auf + 四格"
+    },
+    {
+     "de": "Platz nehmen",
+     "zh": "就座",
+     "py": "普拉茨 内梅恩",
+     "ex": [
+      "Bitte nehmen Sie Platz!",
+      "请坐！",
+      "比特 内梅恩 齐 普拉茨！"
+     ]
+    },
+    {
+     "de": "sich ein Beispiel nehmen",
+     "zh": "以…为榜样",
+     "py": "西希 艾因 拜施皮尔 内梅恩",
+     "ex": [
+      "Nimm dir ein Beispiel an deiner Schwester!",
+      "向你姐姐学学！",
+      "尼姆 迪尔 艾因 拜施皮尔 安 代纳 施韦斯特尔！"
+     ],
+     "n": "向谁学：an + 三格"
+    },
+    {
+     "de": "Abschied nehmen",
+     "zh": "告别",
+     "py": "阿普希特 内梅恩",
+     "ex": [
+      "Am Bahnhof nehmen wir Abschied.",
+      "我们在火车站告别。",
+      "阿姆 班霍夫 内梅恩 维尔 阿普希特。"
+     ],
+     "n": "跟谁告别：von + 三格"
+    },
+    {
+     "de": "Maß nehmen",
+     "zh": "量尺寸",
+     "py": "马斯 内梅恩",
+     "ex": [
+      "Der Schneider nimmt Maß.",
+      "裁缝在量尺寸。",
+      "德尔 施奈德尔 尼姆特 马斯。"
+     ]
+    },
+    {
+     "de": "Einfluss nehmen",
+     "zh": "施加影响",
+     "py": "艾因弗鲁斯 内梅恩",
+     "ex": [
+      "Eltern nehmen Einfluss auf ihre Kinder.",
+      "父母会影响孩子。",
+      "埃尔特恩 内梅恩 艾因弗鲁斯 奥夫 伊雷 金德尔。"
+     ],
+     "n": "影响谁：auf + 四格"
+    },
+    {
+     "de": "eine Tablette nehmen",
+     "zh": "吃药",
+     "py": "埃内 塔布雷特 内梅恩",
+     "ex": [
+      "Nimm eine Tablette gegen die Kopfschmerzen.",
+      "吃片药治治头疼吧。",
+      "尼姆 埃内 塔布雷特 盖根 迪 科普夫施梅尔岑。"
+     ],
+     "n": "吃药用 nehmen，不用 essen"
+    },
+    {
+     "de": "ernst nehmen",
+     "zh": "当真、认真对待",
+     "py": "尔恩斯特 内梅恩",
+     "ex": [
+      "Nimm das nicht so ernst!",
+      "别太当真！",
+      "尼姆 达斯 尼希特 佐 尔恩斯特！"
+     ]
+    }
+   ]
+  },
+  {
+   "v": "machen",
+   "zh": "做",
+   "py": "马赫恩",
+   "tip": "machen 是万能动词：做作业、拍照、休息、旅行、犯错都用它。中文「做 / 搞 / 弄」大多能套。",
+   "items": [
+    {
+     "de": "Hausaufgaben machen",
+     "zh": "写作业",
+     "py": "豪斯奥夫加本 马赫恩",
+     "ex": [
+      "Ich mache zuerst meine Hausaufgaben.",
+      "我先写作业。",
+      "伊希 马黑 粗埃尔斯特 麦讷 豪斯奥夫加本。"
+     ]
+    },
+    {
+     "de": "eine Pause machen",
+     "zh": "休息一下",
+     "py": "埃内 泡泽 马赫恩",
+     "ex": [
+      "Lass uns eine Pause machen!",
+      "我们休息一下吧！",
+      "拉斯 温斯 埃内 泡泽 马赫恩！"
+     ]
+    },
+    {
+     "de": "Fotos machen",
+     "zh": "拍照",
+     "py": "福托斯 马赫恩",
+     "ex": [
+      "Darf ich hier Fotos machen?",
+      "这里可以拍照吗？",
+      "达尔夫 伊希 希尔 福托斯 马赫恩？"
+     ]
+    },
+    {
+     "de": "Sport machen",
+     "zh": "做运动",
+     "py": "施波尔特 马赫恩",
+     "ex": [
+      "Ich mache dreimal pro Woche Sport.",
+      "我一周运动三次。",
+      "伊希 马黑 德莱马尔 普罗 沃赫 施波尔特。"
+     ]
+    },
+    {
+     "de": "sich Sorgen machen",
+     "zh": "担心",
+     "py": "西希 佐尔根 马赫恩",
+     "ex": [
+      "Mach dir keine Sorgen!",
+      "别担心！",
+      "马赫 迪尔 凯嫩 佐尔根"
+     ],
+     "n": "担心谁：um + 四格"
+    },
+    {
+     "de": "eine Reise machen",
+     "zh": "去旅行",
+     "py": "埃内 莱泽 马赫恩",
+     "ex": [
+      "Im Sommer machen wir eine Reise nach Italien.",
+      "夏天我们去意大利旅行。",
+      "伊姆 佐默尔 马赫恩 维尔 埃内 莱泽 纳赫 伊塔利恩。"
+     ]
+    },
+    {
+     "de": "einen Fehler machen",
+     "zh": "犯错",
+     "py": "艾嫩 费勒 马赫恩",
+     "ex": [
+      "Jeder macht mal einen Fehler.",
+      "谁都会犯错。",
+      "耶德尔 马赫特 马尔 艾嫩 费勒。"
+     ]
+    },
+    {
+     "de": "Musik machen",
+     "zh": "玩音乐",
+     "py": "穆西克 马赫恩",
+     "ex": [
+      "Wir machen zusammen Musik.",
+      "我们一起玩音乐。",
+      "维尔 马赫恩 粗扎门 穆西克。"
+     ]
+    },
+    {
+     "de": "das Bett machen",
+     "zh": "整理床铺",
+     "py": "达斯 贝特 马赫恩",
+     "ex": [
+      "Mach bitte dein Bett!",
+      "把你的床铺好！",
+      "马赫 比特 代因 贝特！"
+     ]
+    },
+    {
+     "de": "Witze machen",
+     "zh": "开玩笑",
+     "py": "维策 马赫恩",
+     "ex": [
+      "Er macht immer Witze.",
+      "他老爱开玩笑。",
+      "埃尔 马赫特 伊默尔 维策。"
+     ]
+    },
+    {
+     "de": "Fortschritte machen",
+     "zh": "取得进步",
+     "py": "福尔特斯里特 马赫恩",
+     "ex": [
+      "Du machst große Fortschritte!",
+      "你进步很大！",
+      "度 马赫斯特 格罗瑟 福尔特斯里特！"
+     ]
+    },
+    {
+     "de": "Einkäufe machen",
+     "zh": "采购、买东西",
+     "py": "艾因科伊费 马赫恩",
+     "ex": [
+      "Ich mache noch schnell die Einkäufe.",
+      "我再去快速买点东西。",
+      "伊希 马黑 诺赫 施内尔 迪 艾因科伊费。"
+     ]
+    },
+    {
+     "de": "Urlaub machen",
+     "zh": "度假",
+     "py": "乌尔劳普 马赫恩",
+     "ex": [
+      "Wir machen Urlaub in Österreich.",
+      "我们在奥地利度假。",
+      "维尔 马赫恩 乌尔劳普 因 厄斯特赖希。"
+     ]
+    },
+    {
+     "de": "Spaß machen",
+     "zh": "好玩、有意思",
+     "py": "施帕斯 马赫恩",
+     "ex": [
+      "Deutsch lernen macht Spaß!",
+      "学德语很有意思！",
+      "多伊奇 勒嫩 马赫特 施帕斯！"
+     ],
+     "n": "对比 Spaß haben：自己玩得开心"
+    }
+   ]
+  },
+  {
+   "v": "gehen",
+   "zh": "去、走",
+   "py": "盖恩",
+   "tip": "gehen 前面的地点用介词：nach Hause、zur Arbeit、ins Bett、zum Arzt；也可以直接接动词原形：einkaufen gehen（去买东西）。",
+   "items": [
+    {
+     "de": "nach Hause gehen",
+     "zh": "回家",
+     "py": "纳赫 豪泽 盖恩",
+     "ex": [
+      "Ich gehe jetzt nach Hause.",
+      "我现在回家了。",
+      "伊希 盖厄 耶茨特 纳赫 豪泽。"
+     ]
+    },
+    {
+     "de": "zur Arbeit gehen",
+     "zh": "去上班",
+     "py": "粗尔 阿尔拜特 盖恩",
+     "ex": [
+      "Wann gehst du zur Arbeit?",
+      "你几点去上班？",
+      "万 盖斯特 度 粗尔 阿尔拜特？"
+     ]
+    },
+    {
+     "de": "ins Bett gehen",
+     "zh": "上床睡觉",
+     "py": "因斯 贝特 盖恩",
+     "ex": [
+      "Ich gehe heute früh ins Bett.",
+      "我今天早点睡。",
+      "伊希 盖厄 霍伊特 弗吕 因斯 贝特。"
+     ]
+    },
+    {
+     "de": "zu Fuß gehen",
+     "zh": "步行",
+     "py": "粗 福斯 盖恩",
+     "ex": [
+      "Wir gehen zu Fuß, es ist nicht weit.",
+      "我们走路去，不远。",
+      "维尔 盖恩 粗 福斯，埃斯 伊斯特 尼希特 魏特。"
+     ]
+    },
+    {
+     "de": "einkaufen gehen",
+     "zh": "去购物",
+     "py": "艾因考芬 盖恩",
+     "ex": [
+      "Ich gehe noch einkaufen.",
+      "我还要去买东西。",
+      "伊希 盖厄 诺赫 艾因考芬。"
+     ]
+    },
+    {
+     "de": "spazieren gehen",
+     "zh": "去散步",
+     "py": "施帕齐伦 盖恩",
+     "ex": [
+      "Gehen wir ein bisschen spazieren?",
+      "我们去散会儿步吧？",
+      "盖恩 维尔 艾因 比斯兴 施帕齐伦？"
+     ]
+    },
+    {
+     "de": "schlafen gehen",
+     "zh": "去睡觉",
+     "py": "施拉芬 盖恩",
+     "ex": [
+      "Die Kinder gehen um acht schlafen.",
+      "孩子们八点去睡觉。",
+      "迪 金德尔 盖恩 乌姆 阿赫特 施拉芬。"
+     ]
+    },
+    {
+     "de": "essen gehen",
+     "zh": "出去吃饭",
+     "py": "埃森 盖恩",
+     "ex": [
+      "Wollen wir heute Abend essen gehen?",
+      "今晚出去吃饭吗？",
+      "沃伦 维尔 霍伊特 阿本特 埃森 盖恩？"
+     ]
+    },
+    {
+     "de": "zum Arzt gehen",
+     "zh": "去看医生",
+     "py": "粗姆 阿尔茨特 盖恩",
+     "ex": [
+      "Du solltest zum Arzt gehen.",
+      "你应该去看医生。",
+      "度 佐尔特斯特 粗姆 阿尔茨特 盖恩。"
+     ]
+    }
+   ]
+  },
+  {
+   "v": "lassen",
+   "zh": "让、留",
+   "py": "拉森",
+   "tip": "lassen 两大用法：「留在某状态」（in Ruhe / allein lassen）和「lassen + 动词原形」= 让别人替你做（Haare schneiden lassen）。",
+   "items": [
+    {
+     "de": "in Ruhe lassen",
+     "zh": "别打扰",
+     "py": "因 鲁厄 拉森",
+     "ex": [
+      "Lass mich bitte in Ruhe!",
+      "请别烦我！",
+      "拉斯 米希 比特 因 鲁厄！"
+     ],
+     "n": "对比 zur Ruhe kommen：自己静下来"
+    },
+    {
+     "de": "allein lassen",
+     "zh": "把…单独留下",
+     "py": "阿莱因 拉森",
+     "ex": [
+      "Lass mich nicht allein!",
+      "别丢下我一个人！",
+      "拉斯 米希 尼希特 阿莱因！"
+     ]
+    },
+    {
+     "de": "sich Zeit lassen",
+     "zh": "慢慢来",
+     "py": "西希 采特 拉森",
+     "ex": [
+      "Lass dir Zeit, wir haben keine Eile.",
+      "慢慢来，我们不急。",
+      "拉斯 迪尔 采特，维尔 哈本 凯嫩 艾勒。"
+     ]
+    },
+    {
+     "de": "wissen lassen",
+     "zh": "告诉、让…知道",
+     "py": "维森 拉森",
+     "ex": [
+      "Lass mich wissen, wenn du Hilfe brauchst.",
+      "需要帮忙就告诉我。",
+      "拉斯 米希 维森，文 度 希尔费 布劳赫斯特。"
+     ]
+    },
+    {
+     "de": "fallen lassen",
+     "zh": "放弃（计划）、失手掉落",
+     "py": "法伦 拉森",
+     "ex": [
+      "Er hat den Plan fallen lassen.",
+      "他放弃了这个计划。",
+      "埃尔 哈特 登 普兰 法伦 拉森。"
+     ]
+    },
+    {
+     "de": "liegen lassen",
+     "zh": "落下、忘了拿",
+     "py": "里根 拉森",
+     "ex": [
+      "Ich habe mein Handy im Zug liegen lassen.",
+      "我把手机落在火车上了。",
+      "伊希 哈贝 麦因 亨迪 伊姆 粗克 里根 拉森。"
+     ]
+    },
+    {
+     "de": "warten lassen",
+     "zh": "让人等",
+     "py": "瓦尔滕 拉森",
+     "ex": [
+      "Lass mich nicht so lange warten!",
+      "别让我等太久！",
+      "拉斯 米希 尼希特 佐 朗厄 瓦尔滕！"
+     ]
+    },
+    {
+     "de": "sich die Haare schneiden lassen",
+     "zh": "去剪头发",
+     "py": "西希 迪 哈雷 施奈登 拉森",
+     "ex": [
+      "Ich lasse mir morgen die Haare schneiden.",
+      "我明天去剪头发。",
+      "伊希 拉瑟 米尔 摩根 迪 哈雷 施奈登。"
+     ],
+     "n": "lassen + 动词原形：让别人替你做"
+    }
+   ]
+  },
+  {
+   "v": "stellen",
+   "zh": "放、立",
+   "py": "施特伦",
+   "tip": "stellen 的搭配多是正式场合「提出」：提问、提申请、提条件，以及 zur Verfügung stellen（提供）。",
+   "items": [
+    {
+     "de": "eine Frage stellen",
+     "zh": "提问",
+     "py": "埃内 弗拉格 施特伦",
+     "ex": [
+      "Darf ich Ihnen eine Frage stellen?",
+      "我可以问您一个问题吗？",
+      "达尔夫 伊希 伊嫩 埃内 弗拉格 施特伦？"
+     ]
+    },
+    {
+     "de": "einen Antrag stellen",
+     "zh": "提交申请",
+     "py": "艾嫩 安特拉克 施特伦",
+     "ex": [
+      "Ich muss einen Antrag auf ein Visum stellen.",
+      "我得申请签证。",
+      "伊希 穆斯 艾嫩 安特拉克 奥夫 艾因 维祖姆 施特伦。"
+     ],
+     "n": "申请什么：auf + 四格"
+    },
+    {
+     "de": "zur Verfügung stellen",
+     "zh": "提供（给…用）",
+     "py": "粗尔 费尔菲根 施特伦",
+     "ex": [
+      "Die Firma stellt mir einen Laptop zur Verfügung.",
+      "公司给我配了一台笔记本电脑。",
+      "迪 菲尔马 施特尔特 米尔 艾嫩 拉普托普 粗尔 费尔菲根。"
+     ]
+    },
+    {
+     "de": "in Frage stellen",
+     "zh": "质疑",
+     "py": "因 弗拉格 施特伦",
+     "ex": [
+      "Er stellt alles in Frage.",
+      "他什么都要质疑。",
+      "埃尔 施特尔特 阿勒斯 因 弗拉格。"
+     ],
+     "n": "对比 in Frage kommen：可以考虑"
+    },
+    {
+     "de": "den Wecker stellen",
+     "zh": "定闹钟",
+     "py": "登 韦克尔 施特伦",
+     "ex": [
+      "Ich stelle den Wecker auf sechs Uhr.",
+      "我把闹钟定在六点。",
+      "伊希 施特勒 登 韦克尔 奥夫 泽克斯 乌尔。"
+     ]
+    },
+    {
+     "de": "eine Bedingung stellen",
+     "zh": "提条件",
+     "py": "埃内 贝丁贡 施特伦",
+     "ex": [
+      "Ich stelle nur eine Bedingung.",
+      "我只提一个条件。",
+      "伊希 施特勒 努尔 埃内 贝丁贡。"
+     ]
+    }
+   ]
+  }
+ ]
+}

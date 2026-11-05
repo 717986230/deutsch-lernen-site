@@ -2,6 +2,12 @@
 
 面向用户的变化记录，最新在最上。
 
+## 2026-11-06
+- 新增「🧩 动词搭配」（首页「动词搭配」一行：搭配卡片 / 选动词；练习页也有入口）：haben · kommen · geben · nehmen · machen · gehen · lassen · stellen 8 个高频动词、76 组「名词 + 动词」固定搭配（Zeit haben、eine Frage stellen、sich Mühe geben…），每组带中文、谐音、提示（要接什么介词、容易混的搭配）和一句例句，都能点读。
+  - **搭配卡片**：按动词筛选，可「🙈 遮住动词」自测，点卡片翻开并朗读。
+  - **选动词练习**：看「Zeit ___」+ 中文选动词，走和冠词/变位一样的间隔复习；能配两个动词的名词（Spaß haben / Spaß machen、in Frage kommen / in Frage stellen）不会把另一个当干扰项。
+  - 顺手校正了网传版本里两处错译：zum Zug kommen 是「轮到、得到机会」不是「赶上火车」；auf seine Kosten kommen 是「觉得值」不是「承担费用」。
+
 ## 2026-11-05
 参考 GitHub 上同类项目（dasbot、wortschatz、Language Reactor / asbplayer、LLPlayer 等）补了三处：
 - **冠词 / 动词变位测验改成间隔复习**（学 dasbot 的分档法）：每道题 6 档，答对升一档、下次 1 小时 / 1 天 / 1 周 / 1 月 / 3 月 / 6 月后再出；答错降一档，隔一道题再考。到期的先出、没做过的其次，入口卡片显示「N 道待复习」。进度随账号同步。冠词选项颜色改用全站 der/die/das 配色（原来浅色底上绿字对比度只有 2.1:1）。
