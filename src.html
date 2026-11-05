@@ -254,6 +254,10 @@ body.no-gloss .rd-word rt{display:none}
 .card-syn b{color:var(--text);font-weight:600;font-style:italic}
 .card-py{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--gold-faint)}
 .card.flipped .card-py{display:block}
+.sh-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--text-dim)}
+.sh-row button{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:13px;font-weight:600;cursor:pointer}
+.sh-row button:disabled{opacity:.45;cursor:default}
+.sh-row button.sh-on{border-color:var(--red-text);color:var(--red-text)}
 /* 拼读拆解 */
 .ph-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:3px}
 .ph-chip{display:inline-flex;flex-direction:column;align-items:center;padding:3px 7px;border-radius:8px;background:rgba(181,73,46,.08);border:1px solid var(--gold-faint)}
@@ -1439,12 +1443,12 @@ body.lang-en #homeBoost{display:none!important}
       <div class="card de-only-block" onclick="startQuiz('gender')" style="text-align:center;padding:20px">
         <div style="font-size:28px;margin-bottom:8px">🏷️</div>
         <div style="color:var(--text);font-weight:700;margin-bottom:4px">冠词测验</div>
-        <div style="font-size:12px;color:var(--text-dim)">猜 der·die·das</div>
+        <div style="font-size:12px;color:var(--text-dim)" id="qdGender">猜 der·die·das</div>
       </div>
       <div class="card de-only-block" onclick="startQuiz('conj')" style="text-align:center;padding:20px">
         <div style="font-size:28px;margin-bottom:8px">🔄</div>
         <div style="color:var(--text);font-weight:700;margin-bottom:4px">动词变位</div>
-        <div style="font-size:12px;color:var(--text-dim)">选对的变位形式</div>
+        <div style="font-size:12px;color:var(--text-dim)" id="qdConj">选对的变位形式</div>
       </div>
       <div class="card" onclick="startQuiz('listen')" style="text-align:center;padding:20px">
         <div style="font-size:28px;margin-bottom:8px">🎧</div>
@@ -3233,6 +3237,80 @@ function renderPhTool(){
     // 真德语短句的联想来自本地词库（_phSugP），是人工整理的，不受影响。
   },0);
 }
+// ══════════════ 跟读录音对比（shadowing）══════════════
+// 借鉴 LLPlayer / speech-shadowing 一类跟读工具：卡片背面录一句自己的，和朗读原声连着放来对比。
+// 录音只在本机内存里（Blob URL），不上传、不保存 —— 遵守「不做 UGC」。同一时刻只保留最后一条。
+var _sh={rec:null,url:null,row:null,timer:0,left:0,audio:null};
+function _shOk(){return !!(window.MediaRecorder&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);}
+function _shHtml(){
+  if(!_shOk())return '';
+  return '<div class="sh-row" data-sh-row><span>🎙️ 跟读</span><button type="button" data-sh="rec">录我的</button><button type="button" data-sh="me" disabled>▶ 我的</button><button type="button" data-sh="ab" disabled>🔁 原声+我的</button></div>';
+}
+function _shRowBtns(row,on){
+  if(!row)return;
+  var bs=row.querySelectorAll('[data-sh="me"],[data-sh="ab"]'),i;
+  for(i=0;i<bs.length;i++)bs[i].disabled=!on;
+}
+function _shAudio(){
+  if(!_sh.audio){_sh.audio=new Audio();_sh.audio.preload='auto';}
+  return _sh.audio;
+}
+function _shPlay(){
+  if(!_sh.url)return;
+  var a=_shAudio();
+  try{speechSynthesis.cancel();}catch(e){}
+  if(a.src!==_sh.url)a.src=_sh.url;
+  a.muted=false;try{a.currentTime=0;}catch(e){}
+  var pr=a.play();
+  if(pr&&pr.catch)pr.catch(function(){try{_toast('点「▶ 我的」听自己的录音',1800);}catch(e){}});
+}
+function _shStop(){if(_sh.rec&&_sh.rec.state==='recording')_sh.rec.stop();}
+function _shStart(row,btn){
+  try{speechSynthesis.cancel();}catch(e){}
+  if(_sh.audio)try{_sh.audio.pause();}catch(e){}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    var chunks=[],rec;
+    try{rec=new MediaRecorder(stream);}catch(e){stream.getTracks().forEach(function(t){t.stop();});_toast('这个浏览器不支持录音',2000);return;}
+    _sh.rec=rec;
+    rec.ondataavailable=function(ev){if(ev.data&&ev.data.size)chunks.push(ev.data);};
+    rec.onstop=function(){
+      clearInterval(_sh.timer);
+      stream.getTracks().forEach(function(t){t.stop();});   // 立刻还麦克风，iPhone 才会切回外放
+      btn.classList.remove('sh-on');btn.textContent='重录';
+      if(!chunks.length)return;
+      if(_sh.url)try{URL.revokeObjectURL(_sh.url);}catch(e){}
+      _sh.url=URL.createObjectURL(new Blob(chunks,{type:rec.mimeType||'audio/webm'}));
+      if(_sh.row&&_sh.row!==row)_shRowBtns(_sh.row,false);   // 只留最后一条录音
+      _sh.row=row;_shRowBtns(row,true);
+      _shPlay();
+    };
+    rec.start();
+    btn.classList.add('sh-on');
+    _sh.left=10;btn.textContent='⏹ 停止（10）';
+    _sh.timer=setInterval(function(){_sh.left--;if(_sh.left<=0){_shStop();return;}btn.textContent='⏹ 停止（'+_sh.left+'）';},1000);
+    try{track('shadow_rec');}catch(e){}
+  },function(){_toast('没拿到麦克风权限：请在浏览器设置里允许本站使用麦克风',2600);});
+}
+// 先放朗读原声，念完再放自己的录音
+function _shCompare(text){
+  var a=_shAudio();
+  // 在点按手势里先静音地播一下，iPhone 才允许 TTS 结束后（非手势时机）再出声
+  if(_sh.url){a.src=_sh.url;a.muted=true;var pr=a.play();if(pr&&pr.then)pr.then(function(){a.pause();},function(){});}
+  if(window.__noTTS||!('speechSynthesis' in window)){_shPlay();return;}
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text),done=false,v=tgtVoice();
+  u.lang=tgtLang();if(v)u.voice=v;u.rate=_spk.rate;
+  function go(){if(done)return;done=true;setTimeout(_shPlay,350);}
+  u.onend=go;u.onerror=go;
+  setTimeout(go,3000+text.length*160/(_spk.rate||1));     // 有的内核不触发 onend，兜底
+  speechSynthesis.speak(u);
+}
+function _shAct(btn,text){
+  var act=btn.getAttribute('data-sh'),row=btn.closest('[data-sh-row]');
+  if(act==='rec'){if(_sh.rec&&_sh.rec.state==='recording'){_shStop();return;}_shStart(row,btn);}
+  else if(act==='me')_shPlay();
+  else if(act==='ab')_shCompare(text);
+}
 function phTry(w){const el=document.getElementById('phInput');if(el){el.value=w;renderPhTool();speakDE(w);}}
 function makeCard(p,id){
   const d=document.createElement('div');
@@ -3247,13 +3325,15 @@ function makeCard(p,id){
   // 英语外来词（der Job / das Handy / 菜单上的 Fried Rice）额外给一行德语说法，
   // 免得只会说英语借词、听不懂德国人嘴里的 die Arbeit / das Mobiltelefon。
   const synRow=p.syn?`<div class="card-syn"><span class="syn-tag">德语说法</span><b lang="de">${_artHl(p.syn,_searchQ)}</b><button class="speak-btn syn-speak" type="button" title="朗读德语说法" aria-label="朗读 ${p.syn}" style="width:22px;height:22px;font-size:11px">🔊</button></div>`:'';
-  d.innerHTML=`<div class="card-de-row"><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${p.de}">🔊</button><div class="card-de" lang="${lng}">${_artHl(p.de,_searchQ)}</div></div><div class="card-zh">${_hl(p.zh,_searchQ)}</div>${synRow}<div class="card-py">${flippedCards[id]?phonFn():''}</div>`;
+  d.innerHTML=`<div class="card-de-row"><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${p.de}">🔊</button><div class="card-de" lang="${lng}">${_artHl(p.de,_searchQ)}</div></div><div class="card-zh">${_hl(p.zh,_searchQ)}</div>${synRow}<div class="card-py">${flippedCards[id]?phonFn()+_shHtml():''}</div>`;
   const sb=d.querySelector('.speak-btn');
   sb.addEventListener('click',(e)=>{e.stopPropagation();speakDE(p.de,sb);});
   const yb=d.querySelector('.syn-speak');
   if(yb)yb.addEventListener('click',(e)=>{e.stopPropagation();speakDE(p.syn.replace(/\s*\/\s*/g,', '),yb);});
-  d._back=phonFn;                         // 留给 _cardBack 按需生成
-  d.addEventListener('click',()=>{
+  d._back=function(){return phonFn()+_shHtml();};   // 留给 _cardBack 按需生成；背面末尾带跟读录音
+  d.addEventListener('click',(e)=>{
+    var sh=e.target&&e.target.closest&&e.target.closest('[data-sh]');
+    if(sh){e.stopPropagation();_shAct(sh,p.de);return;}
     flippedCards[id]=!flippedCards[id];
     if(flippedCards[id])_cardBack(d);
     d.classList.toggle('flipped');
@@ -3595,6 +3675,7 @@ function _wrongWeighted(pool){
   return pool.length-1;
 }
 function updateQuizWrongSub(){
+  try{_ladSubs();}catch(e){}
   var el=document.getElementById('qdWrong');
   if(!el)return;
   var n=0;try{n=_quizWrongPool().length;}catch(e){}
@@ -3816,22 +3897,72 @@ function nextNumMainQ(){
       <button class="btn" onclick="startQuiz('num')" style="font-size:12px">重新开始</button>
     </div>`;
 }
+// 冠词 / 变位题的间隔复习（借鉴 dasbot 的分档法）：每道题有个档位 1–6，
+// 答对升一档、答错降一档并立即重新到期；档位决定多久后再出：1 小时 / 1 天 / 1 周 / 1 月 / 3 月 / 6 月。
+// 出题顺序：到期的复习题（最早到期的先出）→ 没做过的新题 → 都没到期时出最快到期的那道。
+// 原来是纯随机：已经会的 der Tisch 反复出，真正老错的 das Mädchen 可能一轮都轮不到。
+var _LAD_WAIT=[0,36e5,864e5,6048e5,2592e6,7776e6,15552e6];
+var _LAD_TXT=['','1 小时','1 天','1 周','1 个月','3 个月','6 个月'];
+function _ladGet(){try{return JSON.parse(localStorage.getItem('qLadder')||'{}')||{};}catch(e){return {};}}
+function _ladSave(m){try{localStorage.setItem('qLadder',JSON.stringify(m));}catch(e){}}
+function _ladPick(keys){
+  var m=_ladGet(),now=Date.now(),due=-1,dueT=Infinity,fresh=[],soon=-1,soonT=Infinity,i,r,last=mq&&mq.ladKey;
+  for(i=0;i<keys.length;i++){
+    if(keys.length>1&&keys[i]===last)continue;          // 不连着出同一道
+    r=m[keys[i]];
+    if(!r)fresh.push(i);
+    else if(r.t<=now){if(r.t<dueT){dueT=r.t;due=i;}}
+    else if(r.t<soonT){soonT=r.t;soon=i;}
+  }
+  if(due>=0)return {i:due,tag:'复习',s:m[keys[due]].s};
+  if(fresh.length)return {i:fresh[Math.floor(Math.random()*fresh.length)],tag:'新题',s:0};
+  if(soon>=0)return {i:soon,tag:'巩固',s:m[keys[soon]].s};
+  return {i:Math.floor(Math.random()*keys.length),tag:'新题',s:0};
+}
+// 记一次作答，返回「下次什么时候再见」的提示文字
+function _ladMark(key,ok){
+  if(!key)return '';
+  var m=_ladGet(),r=m[key]||{s:0,t:0},now=Date.now();
+  if(ok){r.s=Math.min(6,r.s+1);r.t=now+_LAD_WAIT[r.s];}
+  else{r.s=Math.max(1,r.s-1);r.t=now;}                  // 答错立即到期：隔一道题就再考一次
+  r.a=now;m[key]=r;_ladSave(m);
+  return ok?('下次复习：'+_LAD_TXT[r.s]+'后'):'记下了，隔一道题再考你一次';
+}
+function _ladTag(p){
+  var c=p.tag==='复习'?'var(--gold-text)':(p.tag==='新题'?'var(--blue-text)':'var(--text-dim)');
+  return '<span style="display:inline-block;font-size:11px;font-weight:700;color:'+c+';border:1px solid currentColor;border-radius:999px;padding:0 8px;margin-bottom:6px">'+p.tag+(p.s?' · 第 '+p.s+' 档':'')+'</span>';
+}
+function _ladDue(prefix){
+  var m=_ladGet(),now=Date.now(),n=0,seen=0,k;
+  for(k in m){if(k.indexOf(prefix)!==0)continue;seen++;if(m[k].t<=now)n++;}
+  return {due:n,seen:seen};
+}
+function _ladSubs(){
+  var g=document.getElementById('qdGender'),c=document.getElementById('qdConj'),d;
+  if(g){d=_ladDue('g:');g.textContent=d.due?('猜 der·die·das · '+d.due+' 道待复习'):(d.seen?'猜 der·die·das · 已练 '+d.seen+' 个词':'猜 der·die·das');}
+  if(c){d=_ladDue('c:');c.textContent=d.due?('选对的变位形式 · '+d.due+' 道待复习'):(d.seen?'选对的变位形式 · 已练 '+d.seen+' 道':'选对的变位形式');}
+}
+function _ladNote(txt){var n=document.getElementById('ladNext');if(n)n.textContent=txt;}
 // 练习测验·冠词题（猜 der/die/das）—— 德语最难点专项
-const GENDER_COLOR={der:'#1cb0f6',die:'#ff4b4b',das:'#58cc02'};
 function nextGenderQ(){
   const all=getAllPhrases().filter(p=>/^(der|die|das)\s+\S/.test(p.de));
   if(!all.length){document.getElementById('mainQuizArea').innerHTML='<div class="quiz-box">该范围暂无带冠词的名词，换个出题范围试试。</div>';return;}
-  mq.current=all[Math.floor(Math.random()*all.length)];
+  var keys=all.map(function(p){return 'g:'+p.de;});
+  var pk=_ladPick(keys);
+  mq.current=all[pk.i];mq.ladKey=keys[pk.i];
   const noun=mq.current.de.replace(/^(der|die|das)\s+/,'');
   const correct=mq.current.de.match(/^(der|die|das)/)[1];
   const opts=['der','die','das'];
-  const optsHtml=opts.map(o=>`<button class="quiz-opt"${o===correct?' data-correct="1"':''} lang="de" style="font-weight:700;color:${GENDER_COLOR[o]}" onclick="checkGenderQ(this)">${o}</button>`).join('');
+  // 选项颜色走 --art-* 变量（深浅主题各一套、对比度达标）；原来写死的 #58cc02 绿字在浅色底上只有 2.1:1
+  const optsHtml=opts.map(o=>`<button class="quiz-opt"${o===correct?' data-correct="1"':''} lang="de" style="font-weight:700;color:var(--art-${o})" onclick="checkGenderQ(this)">${o}</button>`).join('');
   document.getElementById('mainQuizArea').innerHTML=`
     <div class="quiz-box">
       ${quizHeader()}
-      <div class="quiz-q" style="font-size:24px" lang="de">${noun}</div>
-      <div class="quiz-hint">这个名词是 der / die / das？<br><span style="font-size:11px"><b style="color:var(--blue-text)">der</b> 阳 · <b style="color:var(--red-text)">die</b> 阴 · <b style="color:var(--gold-text)">das</b> 中</span></div>
+      ${_ladTag(pk)}
+      <div class="quiz-q" style="font-size:24px" lang="de">${_esc(noun)}</div>
+      <div class="quiz-hint">这个名词是 der / die / das？<br><span style="font-size:11px"><b class="art-der">der</b> 阳 · <b class="art-die">die</b> 阴 · <b class="art-das">das</b> 中</span></div>
       <div class="quiz-opts" style="grid-template-columns:1fr 1fr 1fr">${optsHtml}</div>
+      <div id="ladNext" class="quiz-hint" style="min-height:1.4em" aria-live="polite"></div>
       <button class="btn" onclick="startQuiz('gender')" style="font-size:12px">重新开始</button>
     </div>`;
 }
@@ -3872,8 +4003,12 @@ const VERB_CONJ=[
 ];
 const CONJ_PERSON=['ich','du','er/sie/es','wir','ihr','sie/Sie'];
 function nextConjQ(){
-  const v=VERB_CONJ[Math.floor(Math.random()*VERB_CONJ.length)];
-  const idx=Math.floor(Math.random()*6);
+  var keys=[],vi,pi;
+  for(vi=0;vi<VERB_CONJ.length;vi++)for(pi=0;pi<6;pi++)keys.push('c:'+VERB_CONJ[vi].inf+':'+pi);
+  var pk=_ladPick(keys);
+  const v=VERB_CONJ[Math.floor(pk.i/6)];
+  const idx=pk.i%6;
+  mq.ladKey=keys[pk.i];
   const correct=v.f[idx];
   const wrong=[];
   const pool=v.f.filter(x=>x!==correct);
@@ -3884,9 +4019,11 @@ function nextConjQ(){
   document.getElementById('mainQuizArea').innerHTML=`
     <div class="quiz-box">
       ${quizHeader()}
+      ${_ladTag(pk)}
       <div class="quiz-q" style="font-size:22px" lang="de"><b style="color:var(--blue-text)">${CONJ_PERSON[idx]}</b> ____</div>
       <div class="quiz-hint">选 <b lang="de">${v.inf}</b>（${v.zh}）的正确变位</div>
       <div class="quiz-opts">${optsHtml}</div>
+      <div id="ladNext" class="quiz-hint" style="min-height:1.4em" aria-live="polite"></div>
       <button class="btn" onclick="startQuiz('conj')" style="font-size:12px">重新开始</button>
     </div>`;
 }
@@ -3898,6 +4035,7 @@ function checkConjQ(btn){
   _ottiPop(box.querySelector('.quiz-box'),btn===correctBtn?'happy':'sorry');
   if(btn===correctBtn){btn.classList.add('correct');mq.score++;burstAt(btn);}
   else{btn.classList.add('wrong');if(correctBtn)correctBtn.classList.add('correct');}
+  _ladNote(_ladMark(mq.ladKey,btn===correctBtn));
   try{speakDE(mq.current.de);}catch(e){}
   const done=mq.total>=mq.roundLen;
   setTimeout(done?showQuizResult:nextQ,1400);
@@ -3913,6 +4051,7 @@ function checkGenderQ(btn){
     btn.classList.add('wrong');
     if(correctBtn)correctBtn.classList.add('correct');
   }
+  _ladNote(_ladMark(mq.ladKey,btn===correctBtn));
   if(mq.current&&mq.current.de){try{speakDE(mq.current.de);}catch(e){}}
   const done=mq.total>=mq.roundLen;
   setTimeout(done?showQuizResult:nextQ,1400);
@@ -5338,11 +5477,11 @@ function collectStats(){var s={};try{s=getStudy();}catch(e){}var known=0;try{kno
 // 登录新设备时先拉取并合并，再允许本地继续学习。
 function _progressLang(){return LANG==='en'?'en':'de';}
 function _progressRead(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')||fallback;}catch(e){return fallback;}}
-function _progressDoc(){return {v:1,known:getKnown(),study:getStudy(),daily:_dailyGet(),last:_progressRead(_migrateDeLocal('lastStudy'),null),wrong:_spWrongGet()};}
+function _progressDoc(){return {v:1,known:getKnown(),study:getStudy(),daily:_dailyGet(),last:_progressRead(_migrateDeLocal('lastStudy'),null),wrong:_spWrongGet(),lad:_ladGet()};}
 function _progressKnown(a,b){var out={},k;for(k in a)out[k]=a[k];for(k in b){var at=a[k]&&a[k].t||0,bt=b[k]&&b[k].t||0;if(!out[k]||bt>=at)out[k]=b[k];}return out;}
 function _progressStudy(a,b){var o={},k;a=a||{};b=b||{};for(k in a)o[k]=a[k];for(k in b)if(o[k]==null)o[k]=b[k];o.total=Math.max(a.total||0,b.total||0);o.quiz=Math.max(a.quiz||0,b.quiz||0);o.best=Math.max(a.best||0,b.best||0);o.streak=((b.last||'')>(a.last||''))?(b.streak||0):(a.streak||0);o.last=(b.last||'')>(a.last||'')?b.last:a.last;o.d=(b.d||'')>(a.d||'')?b.d:a.d;o.n=o.d===b.d?(b.n||0):(a.n||0);o.goal=b.goal||a.goal||20;o.h={};var hs=[a.h||{},b.h||{}];for(var i=0;i<hs.length;i++)for(k in hs[i])o.h[k]=Math.max(o.h[k]||0,hs[i][k]||0);return o;}
-function _progressMerge(a,b){a=a||{};b=b||{};var last=(b.last&&(!a.last||(b.last.t||0)>=(a.last.t||0)))?b.last:a.last;var daily=(b.daily&&(!a.daily||String(b.daily.date||'')>=String(a.daily.date||'')))?b.daily:a.daily;var wrong={},k;for(k in a.wrong||{})wrong[k]=a.wrong[k];for(k in b.wrong||{})wrong[k]=b.wrong[k];return {v:1,known:_progressKnown(a.known||{},b.known||{}),study:_progressStudy(a.study||{},b.study||{}),daily:daily||{},last:last||null,wrong:wrong};}
-function _progressApply(doc){var merged=_progressMerge(_progressDoc(),doc);saveKnown(merged.known);saveStudy(merged.study);try{localStorage.setItem(_migrateDeLocal('dailyLesson'),JSON.stringify(merged.daily));if(merged.last)localStorage.setItem(_migrateDeLocal('lastStudy'),JSON.stringify(merged.last));_spWrongSave(merged.wrong);}catch(e){}return merged;}
+function _progressMerge(a,b){a=a||{};b=b||{};var last=(b.last&&(!a.last||(b.last.t||0)>=(a.last.t||0)))?b.last:a.last;var daily=(b.daily&&(!a.daily||String(b.daily.date||'')>=String(a.daily.date||'')))?b.daily:a.daily;var wrong={},k;for(k in a.wrong||{})wrong[k]=a.wrong[k];for(k in b.wrong||{})wrong[k]=b.wrong[k];var lad={},la=a.lad||{},lb=b.lad||{};for(k in la)lad[k]=la[k];for(k in lb)if(!lad[k]||((lb[k]&&lb[k].a)||0)>=((lad[k].a)||0))lad[k]=lb[k];return {v:1,lad:lad,known:_progressKnown(a.known||{},b.known||{}),study:_progressStudy(a.study||{},b.study||{}),daily:daily||{},last:last||null,wrong:wrong};}
+function _progressApply(doc){var merged=_progressMerge(_progressDoc(),doc);saveKnown(merged.known);saveStudy(merged.study);try{localStorage.setItem(_migrateDeLocal('dailyLesson'),JSON.stringify(merged.daily));if(merged.last)localStorage.setItem(_migrateDeLocal('lastStudy'),JSON.stringify(merged.last));_spWrongSave(merged.wrong);_ladSave(merged.lad||{});}catch(e){}return merged;}
 function acctPullProgress(){if(!ACCT.token||!API_BASE)return Promise.resolve();var lang=_progressLang();return apiFetch('/api/progress?lang='+lang).then(function(r){if(!r||r.status===401){acctClearLocal();return r;}if(r.ok&&r.data){_progressRev[lang]=r.data.rev||0;if(r.data.document)_progressApply(r.data.document);}return r;});}
 function acctPushProgress(){if(!ACCT.token||!API_BASE)return Promise.resolve();var lang=_progressLang(),doc=_progressDoc();function put(retry){return apiFetch('/api/progress',{method:'PUT',body:{lang:lang,rev:_progressRev[lang]||0,document:doc}}).then(function(r){if(r&&r.ok){_progressRev[lang]=r.data.rev||(_progressRev[lang]+1);return r;}if(r&&r.status===409&&retry){doc=_progressApply(r.data.document||{});_progressRev[lang]=r.data.rev||0;return put(false);}return r;});}return put(true);}
 function acctStartSession(){acctEnter();return acctPullProgress().then(function(r){if(r&&r.status===401){document.documentElement.classList.add('locked');showSection('account');return r;}return acctSync(true);});}
