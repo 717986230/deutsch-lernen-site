@@ -502,6 +502,17 @@ body.has-picbar #toTop{bottom:calc(var(--tab-h) + 108px)}
 .pic-out{position:sticky;bottom:calc(var(--tab-h) + 12px);margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
 /* 动词变位表：8 列在手机上放不下 → 表格自己横向滚，首列钉住；不撑破页面宽度 */
 .conj-note{font-size:12px;color:var(--text-dim);margin:0 0 8px}
+/* 方位板：静三动四例句卡（#lagePrep） */
+.lg-list{display:grid;gap:10px}
+.lg-card{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:10px 12px}
+.lg-head{font-size:15px;color:var(--text);margin-bottom:4px}.lg-head b{font-size:18px;color:var(--blue-text);margin-right:6px}
+.lg-row{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--border)}
+.lg-tag{flex:none;font-size:11px;font-weight:700;border-radius:8px;padding:2px 6px;margin-top:3px;white-space:nowrap}
+.lg-dat{color:var(--red-text);border:1px solid currentColor}.lg-akk{color:var(--gold-text);border:1px solid currentColor}
+.lg-de{font-size:14.5px;color:var(--text);line-height:1.45}.lg-de .lg-dat,.lg-de .lg-akk{border:none;font-weight:700}
+.lg-zh{font-size:12.5px;color:var(--text-dim)}.lg-py{font-size:12px;color:var(--text-faint)}
+.lg-tips{margin:0 0 12px;padding:10px 12px 10px 28px;border:1px dashed var(--gold-dim);border-radius:14px;background:var(--gold-faint);font-size:13px;line-height:1.7;color:var(--text)}
+.lg-tips li{margin:2px 0}
 .conj-irr-key,.conj-tbl .irr,.conj-mini .irr{color:var(--orange-text);font-weight:700}
 .conj-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
 .conj-tbl{border-collapse:collapse;min-width:600px;width:100%;font-size:14px}
@@ -765,6 +776,11 @@ body.lang-en #homeBoost{display:none!important}
     <div class="hg-grid">
       <a class="hg-tile" href="#kolloc" onclick="kcOpen(-1);return false"><div class="fic fic-blue" style="font-size:22px;line-height:1">🧩</div><span>搭配卡片</span></a>
       <a class="hg-tile" href="#kolloc" onclick="kcQuiz();return false"><div class="fic fic-green" style="font-size:22px;line-height:1">🎯</div><span>选动词</span></a>
+    </div>
+    <div class="hg-title">方位介词</div>
+    <div class="hg-grid">
+      <a class="hg-tile" href="#body" onclick="boardOpen('lage');return false"><div class="fic fic-teal" style="font-size:22px;line-height:1">🧭</div><span>方位图卡</span></a>
+      <a class="hg-tile" href="#body" onclick="boardOpen('lage','lagePrep');return false"><div class="fic fic-orange" style="font-size:22px;line-height:1">📍</div><span>在哪 · 去哪</span></a>
     </div>
     <div class="hg-title">场景特训</div>
     <div class="hg-grid">
@@ -1224,7 +1240,7 @@ body.lang-en #homeBoost{display:none!important}
     <div class="tip-card"><div class="tip-body">🔑 每个介词后面<b>固定跟某一个格</b>——把介词连同"格"一起背。初学先记下面两句<b>口诀</b>就够用；<b>Genitiv 组可先跳过</b>。</div></div>
     <div class="rule-box">
       <h3 style="color:var(--orange-text)">静三动四（Wechselpräp，9 个）</h3>
-      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">in · an · auf · über · unter · vor · hinter · neben · zwischen</b><br>表<b>静止位置</b>(在哪 wo?)→<b style="color:var(--red-text)">第三格</b>；表<b>移动方向</b>(去哪 wohin?)→<b style="color:var(--gold-text)">第四格</b>。<br>例：Das Buch ist auf <b style="color:var(--red-text)">dem</b> Tisch（静/三）· Ich lege es auf <b style="color:var(--gold-text)">den</b> Tisch（动/四）</div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">in · an · auf · über · unter · vor · hinter · neben · zwischen</b><br>表<b>静止位置</b>(在哪 wo?)→<b style="color:var(--red-text)">第三格</b>；表<b>移动方向</b>(去哪 wohin?)→<b style="color:var(--gold-text)">第四格</b>。<br>例：Das Buch ist auf <b style="color:var(--red-text)">dem</b> Tisch（静/三）· Ich lege es auf <b style="color:var(--gold-text)">den</b> Tisch（动/四）<br><a href="#body" onclick="boardOpen('lage','lagePrep');return false" style="color:var(--blue-text);font-weight:700">🧭 9 个介词逐个配图 + 例句 →</a></div>
     </div>
     <div class="rule-box">
       <h3 style="color:var(--red-text)">只支配第三格 Dativ</h3>
@@ -5328,6 +5344,16 @@ var PIC_BOARDS=[
   ["toll","棒极了的","托尔","👍"],["super","超棒的","祖佩","🌟"],["prima","好极了的","普里马","✨"],["wunderbar","极好的","文德巴尔","🤩"],
   ["großartig","了不起的","格罗斯阿尔提希","🏆"],["perfekt","完美的","佩尔费克特","💯"],["lecker","好吃","勒克尔","😋"],["praktisch","实用的","普拉克提什","🔧"],
   ["bequem","舒适的","贝克韦姆","🛋️"],["günstig","优惠的","京斯提希","🏷️"],["sauber","干净","扎乌贝尔","🧼"],["interessant","有趣","因特雷桑特","💡"]]},
+ {id:"lage",icon:"🧭",name:"方位",items:[
+  ["der Norden","北方","德尔 诺尔顿","❄️"],["der Süden","南方","德尔 祖顿","🌴"],["der Osten","东方","德尔 奥斯腾","🌅"],
+  ["der Westen","西方","德尔 韦斯腾","🌇"],["oben","上面","奥本","⬆️"],["unten","下面","乌腾","⬇️"],
+  ["links","左边","林克斯","👈"],["rechts","右边","雷希茨","👉"],["vorne","前面","福尔讷","🚩"],
+  ["hinten","后面","欣滕","🔙"],["drinnen","里面（室内）","德里嫩","🏠"],["draußen","外面（户外）","德劳森","🌳"],
+  ["in der Nähe","附近","因 德尔 内黑","📍"],["weit entfernt","很远","魏特 恩特费恩特","🛣️"],["in der Mitte","中间","因 德尔 米特","🎯"],
+  ["das Zentrum","市中心","达斯 岑特鲁姆","🏙️"],["auf","在…上（贴着表面）","奥夫","📚"],["über","在…上方（不贴着）","于伯尔","🌉"],
+  ["unter","在…下面","温特尔","☂️"],["in","在…里面","因","📦"],["an","挨着/挂在（侧面）","安","🖼️"],
+  ["vor","在…前面","佛尔","🚪"],["hinter","在…后面","欣特尔","🙈"],["neben","在…旁边","内本","👫"],
+  ["zwischen","在…之间","茨威顺","🥪"]]},
  {id:"verben",icon:"🔄",name:"动词变位",items:[
   ["brauchen","需要","布劳黑恩","🧰",["brauche","brauchst","braucht","brauchen","braucht","brauchen"]],["bringen","带来","布林根","📦",["bringe","bringst","bringt","bringen","bringt","bringen"]],["geben","给","盖本","🎁",["gebe","gibst","gibt","geben","gebt","geben"]],
   ["nehmen","拿/取","内梅恩","✋",["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"]],["schlafen","睡觉","施拉芬","😴",["schlafe","schläfst","schläft","schlafen","schlaft","schlafen"]],["haben","有","哈本","👜",["habe","hast","hat","haben","habt","haben"]],
@@ -5367,6 +5393,7 @@ function switchBoard(id){
     c.addEventListener("click",function(){picPick(brd,+c.getAttribute("data-i"),c);});
   });
   renderConjTable(brd);
+  renderLagePrep(brd);
   updateBoardReadBar();
   buildBoardQuiz();
 }
@@ -5417,6 +5444,54 @@ function renderConjTable(brd){
 function _conjMini(it){
   return '<div class="conj-mini">'+it[4].map(function(f,k){var irr=f!==_conjRegular(it[0],k);
     return '<span><i lang="de">'+CONJ_PRON[k]+'</i> <b lang="de"'+(irr?' class="irr"':'')+'>'+f+'</b></span>';}).join('')+'</div>';
+}
+// ── 方位板（lage）：图卡下面再给「静三动四」的 9 组例句 + 易错提示 ──
+// 每组 [介词, 中文, Wo 句, 中文, 谐音, Wohin 句, 中文, 谐音]；句中 [..] 是要变格的冠词，渲染时标色、朗读时去掉括号。
+// 2026-11 来源是网传的「德语方位介词」图，原图把副词/名词混叫介词（hinten、links、außen、nahe、Zentrum），这里分开讲清。
+var LAGE_PREP=[
+ ["auf","在…上（贴着表面）","Das Buch liegt auf [dem] Tisch.","书在桌子上。","达斯 布赫 利克特 奥夫 登 提什。","Ich lege das Buch auf [den] Tisch.","我把书放到桌子上。","伊希 莱格 达斯 布赫 奥夫 登 提什。"],
+ ["über","在…上方（不贴着）","Die Lampe hängt über [dem] Tisch.","灯挂在桌子上方。","迪 兰佩 亨克特 于伯尔 登 提什。","Ich hänge die Lampe über [den] Tisch.","我把灯挂到桌子上方。","伊希 亨格 迪 兰佩 于伯尔 登 提什。"],
+ ["unter","在…下面","Die Katze schläft unter [dem] Bett.","猫在床底下睡觉。","迪 卡策 施莱夫特 温特尔 登 贝特。","Die Katze läuft unter [das] Bett.","猫跑到床底下去。","迪 卡策 洛伊夫特 温特尔 达斯 贝特。"],
+ ["in","在…里面","Ich bin in [der] Küche.","我在厨房里。","伊希 宾 因 德尔 屈歇。","Ich gehe in [die] Küche.","我去厨房。","伊希 盖厄 因 迪 屈歇。"],
+ ["an","挨着/挂在（侧面）","Das Bild hängt an [der] Wand.","画挂在墙上。","达斯 比尔特 亨克特 安 德尔 万特。","Ich hänge das Bild an [die] Wand.","我把画挂到墙上。","伊希 亨格 达斯 比尔特 安 迪 万特。"],
+ ["vor","在…前面","Das Auto steht vor [dem] Haus.","车停在房子前面。","达斯 奥托 施特特 佛尔 登 豪斯。","Ich fahre das Auto vor [das] Haus.","我把车开到房子前面。","伊希 法勒 达斯 奥托 佛尔 达斯 豪斯。"],
+ ["hinter","在…后面","Der Garten liegt hinter [dem] Haus.","花园在房子后面。","德尔 加尔滕 利克特 欣特尔 登 豪斯。","Das Kind läuft hinter [das] Haus.","孩子跑到房子后面去。","达斯 金特 洛伊夫特 欣特尔 达斯 豪斯。"],
+ ["neben","在…旁边","Ich sitze neben [dir].","我坐在你旁边。","伊希 齐策 内本 迪尔。","Setz dich neben [mich]!","坐到我旁边来！","泽茨 迪希 内本 米希！"],
+ ["zwischen","在…之间","Die Bank ist zwischen [der] Post und [dem] Café.","银行在邮局和咖啡馆之间。","迪 班克 伊斯特 茨威顺 德尔 波斯特 温特 登 卡费。","Ich stelle den Stuhl zwischen [das] Bett und [den] Schrank.","我把椅子放到床和柜子之间。","伊希 施特勒 登 施图尔 茨威顺 达斯 贝特 温特 登 施兰克。"]
+];
+function _lgDe(t,cls){return _esc(t).replace(/\[([^\]]+)\]/g,'<b class="'+cls+'">$1</b>');}
+function _lgSay(t){return t.replace(/[\[\]]/g,'');}
+function renderLagePrep(brd){
+  var el=document.getElementById("boardConj");if(!el||!brd||brd.id!=="lage")return;
+  var h='<div class="sec-title" id="lagePrep" style="margin-top:20px;scroll-margin-top:70px"><span class="sec-title-icon">📍</span><span class="sec-title-text">在哪 · 去哪（静三动四）</span></div>'
+    +'<p class="conj-note">这 9 个介词：问 <b class="lg-dat" style="border:none">Wo? 在哪</b>（静止）→ 第三格；问 <b class="lg-akk" style="border:none">Wohin? 去哪</b>（移动到）→ 第四格。点句子听读音。</p>'
+    +'<ul class="lg-tips">'
+    +'<li><b lang="de">hinten / vorne</b> 是副词，单独用：<span lang="de">Er sitzt hinten.</span> 接名词要用介词 <b lang="de">hinter / vor</b>：<span lang="de">hinter dem Haus</span>。</li>'
+    +'<li><b lang="de">links / rechts / oben / unten</b> 也是副词；要说「在门左边」用 <span lang="de">links von der Tür</span>（von + 三格）。</li>'
+    +'<li>「外面」日常说 <b lang="de">draußen</b>；「在…外面」用 <span lang="de">außerhalb der Stadt</span>（+ 二格）。<b lang="de">außen</b> 多指物体外侧。</li>'
+    +'<li>「附近」说 <span lang="de">in der Nähe (von + 三格)</span>；「远」说 <span lang="de">weit weg / 10 km entfernt</span>。</li>'
+    +'<li><b lang="de">das Zentrum</b> 是名词「市中心」（<span lang="de">im Zentrum</span>）；「中间」是 <span lang="de">in der Mitte</span>，「在…之间」是 <b lang="de">zwischen</b>。</li>'
+    +'<li>方向：<span lang="de">im Norden</span> 在北边 · <span lang="de">nach Norden</span> 往北 · <span lang="de">nördlich von München</span> 在慕尼黑以北。</li>'
+    +'<li>动词也成对：静止 <span lang="de">liegen · stehen · sitzen · hängen</span>，放置 <span lang="de">legen · stellen · setzen · hängen</span>。</li>'
+    +'</ul><div class="lg-list">';
+  for(var i=0;i<LAGE_PREP.length;i++){var r=LAGE_PREP[i];
+    h+='<div class="lg-card"><div class="lg-head"><b lang="de">'+_esc(r[0])+'</b>'+_esc(r[1])+'</div>'
+      +'<div class="lg-row"><span class="lg-tag lg-dat">Wo? 三格</span><div style="min-width:0;flex:1"><div class="lg-de" lang="de">'+_lgDe(r[2],'lg-dat')+'</div><div class="lg-zh">'+_esc(r[3])+'</div><div class="lg-py">'+_esc(r[4])+'</div></div><button class="speak-btn" type="button" aria-label="朗读" data-s="'+_esc(_lgSay(r[2]))+'">🔊</button></div>'
+      +'<div class="lg-row"><span class="lg-tag lg-akk">Wohin? 四格</span><div style="min-width:0;flex:1"><div class="lg-de" lang="de">'+_lgDe(r[5],'lg-akk')+'</div><div class="lg-zh">'+_esc(r[6])+'</div><div class="lg-py">'+_esc(r[7])+'</div></div><button class="speak-btn" type="button" aria-label="朗读" data-s="'+_esc(_lgSay(r[5]))+'">🔊</button></div>'
+      +'</div>';
+  }
+  el.innerHTML=h+'</div>';
+  el.querySelector('.lg-list').addEventListener('click',function(e){
+    var row=e.target.closest?e.target.closest('.lg-row'):null;if(!row)return;
+    var b=row.querySelector('[data-s]');if(!b)return;
+    if(typeof stopPageNarration==='function')stopPageNarration();
+    try{speakDE(b.getAttribute('data-s'),b);}catch(x){}
+  });
+}
+// 首页/语法页直达某个图卡板（可选再滚到板内某块）
+function boardOpen(id,anchor){
+  _curBoard=id;showSection('body');
+  if(anchor)setTimeout(function(){var e=document.getElementById(anchor);if(e)try{e.scrollIntoView({block:'start'});}catch(x){}},80);
 }
 function _boardItems(){
   // py 是给错题本用的：收录的词要能在拼写/测验里显示谐音，少一个字段就只能显示空白
