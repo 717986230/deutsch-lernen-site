@@ -28,7 +28,7 @@
 {"@type":"ListItem","position":1,"name":"德语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"德语语法速查"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:b6bbc16ef805 -->
+<!-- src-hash:850a7ad8bd6b -->
 <style>#account{display:block}#account .auth-stage{display:none}
 
 :root{
@@ -473,6 +473,17 @@ body.has-picbar #toTop{bottom:calc(var(--tab-h) + 108px)}
 .pic-out{position:sticky;bottom:calc(var(--tab-h) + 12px);margin:14px auto 0;max-width:420px;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.16);z-index:40}
 /* 动词变位表：8 列在手机上放不下 → 表格自己横向滚，首列钉住；不撑破页面宽度 */
 .conj-note{font-size:12px;color:var(--text-dim);margin:0 0 8px}
+/* 方位板：静三动四例句卡（#lagePrep） */
+.lg-list{display:grid;gap:10px}
+.lg-card{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:10px 12px}
+.lg-head{font-size:15px;color:var(--text);margin-bottom:4px}.lg-head b{font-size:18px;color:var(--blue-text);margin-right:6px}
+.lg-row{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--border)}
+.lg-tag{flex:none;font-size:11px;font-weight:700;border-radius:8px;padding:2px 6px;margin-top:3px;white-space:nowrap}
+.lg-dat{color:var(--red-text);border:1px solid currentColor}.lg-akk{color:var(--gold-text);border:1px solid currentColor}
+.lg-de{font-size:14.5px;color:var(--text);line-height:1.45}.lg-de .lg-dat,.lg-de .lg-akk{border:none;font-weight:700}
+.lg-zh{font-size:12.5px;color:var(--text-dim)}.lg-py{font-size:12px;color:var(--text-faint)}
+.lg-tips{margin:0 0 12px;padding:10px 12px 10px 28px;border:1px dashed var(--gold-dim);border-radius:14px;background:var(--gold-faint);font-size:13px;line-height:1.7;color:var(--text)}
+.lg-tips li{margin:2px 0}
 .conj-irr-key,.conj-tbl .irr,.conj-mini .irr{color:var(--orange-text);font-weight:700}
 .conj-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
 .conj-tbl{border-collapse:collapse;min-width:600px;width:100%;font-size:14px}
@@ -1067,7 +1078,7 @@ body{padding-bottom:var(--tab-h)}
     <div class="tip-card"><div class="tip-body">🔑 每个介词后面<b>固定跟某一个格</b>——把介词连同"格"一起背。初学先记下面两句<b>口诀</b>就够用；<b>Genitiv 组可先跳过</b>。</div></div>
     <div class="rule-box">
       <h3 style="color:var(--orange-text)">静三动四（Wechselpräp，9 个）</h3>
-      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">in · an · auf · über · unter · vor · hinter · neben · zwischen</b><br>表<b>静止位置</b>(在哪 wo?)→<b style="color:var(--red-text)">第三格</b>；表<b>移动方向</b>(去哪 wohin?)→<b style="color:var(--gold-text)">第四格</b>。<br>例：Das Buch ist auf <b style="color:var(--red-text)">dem</b> Tisch（静/三）· Ich lege es auf <b style="color:var(--gold-text)">den</b> Tisch（动/四）</div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text-dim)"><b lang="de">in · an · auf · über · unter · vor · hinter · neben · zwischen</b><br>表<b>静止位置</b>(在哪 wo?)→<b style="color:var(--red-text)">第三格</b>；表<b>移动方向</b>(去哪 wohin?)→<b style="color:var(--gold-text)">第四格</b>。<br>例：Das Buch ist auf <b style="color:var(--red-text)">dem</b> Tisch（静/三）· Ich lege es auf <b style="color:var(--gold-text)">den</b> Tisch（动/四）<br><a href="#body" style="color:var(--blue-text);font-weight:700">🧭 9 个介词逐个配图 + 例句 →</a></div>
     </div>
     <div class="rule-box">
       <h3 style="color:var(--red-text)">只支配第三格 Dativ</h3>

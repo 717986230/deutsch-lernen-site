@@ -2,6 +2,12 @@
 
 面向用户的变化记录，最新在最上。
 
+## 2026-11-09
+- 新增「🧭 方位」（首页「方位介词」一行：方位图卡 / 在哪·去哪；语法页「静三动四」卡片也有直达链接）：图解词典里加了一个新主题，25 张图卡——东南西北、oben/unten/links/rechts/vorne/hinten、drinnen/draußen、in der Nähe、weit entfernt、in der Mitte、das Zentrum，以及 9 个双向介词 auf · über · unter · in · an · vor · hinter · neben · zwischen。点图听读音，也进「看图选德语」小测验。
+  - 图卡下面是 **在哪 · 去哪（静三动四）**：每个介词一对例句（Wo? → 第三格 / Wohin? → 第四格），冠词标色，点句子朗读，带中文和谐音。
+  - 附易错提示：hinten/vorne 是副词、介词是 hinter/vor；links/rechts 接名词要用 links von + 三格；「外面」说 draußen；das Zentrum 是「市中心」，「中间」是 in der Mitte、「之间」是 zwischen。
+  - 顺手修正词库里 3 处谐音：unter（原误写成 unten 的「乌腾」）→ 温特尔，über → 于伯尔，vorne → 福尔讷。
+
 ## 2026-11-06
 - 新增「🧩 动词搭配」（首页「动词搭配」一行：搭配卡片 / 选动词；练习页也有入口）：haben · kommen · geben · nehmen · machen · gehen · lassen · stellen 8 个高频动词、76 组「名词 + 动词」固定搭配（Zeit haben、eine Frage stellen、sich Mühe geben…），每组带中文、谐音、提示（要接什么介词、容易混的搭配）和一句例句，都能点读。
   - **搭配卡片**：按动词筛选，可「🙈 遮住动词」自测，点卡片翻开并朗读。
