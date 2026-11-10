@@ -1,0 +1,88 @@
+{
+ "id": "wohnen",
+ "title": "租房 · 办事 · 奥地利",
+ "units": [
+  {
+   "id": "suche",
+   "icon": "🔎",
+   "name": "找房 · 看房",
+   "tip": "找房常用 willhaben.at。广告里 Miete 是房租，Betriebskosten (BK) 是物业杂费，inkl. 表示已包含。看房叫 Besichtigung，先打电话或发消息约时间。",
+   "phrases": [
+    {"de": "Ist die Wohnung noch frei?", "zh": "这套房子还空着吗？", "py": "伊斯特 迪 沃农 诺赫 弗莱？"},
+    {"de": "Wann kann ich die Wohnung besichtigen?", "zh": "我什么时候可以来看房？", "py": "万 坎 伊希 迪 沃农 贝西希提根？"},
+    {"de": "Wie hoch ist die Miete?", "zh": "房租是多少？", "py": "维 霍赫 伊斯特 迪 米特？"},
+    {"de": "Sind die Betriebskosten inklusive?", "zh": "物业杂费包含在里面吗？", "py": "辛特 迪 贝特里普斯科斯滕 因克卢西弗？"},
+    {"de": "Ist die Wohnung möbliert?", "zh": "房子带家具吗？", "py": "伊斯特 迪 沃农 默布利尔特？"},
+    {"de": "Ab wann ist die Wohnung frei?", "zh": "房子从什么时候可以入住？", "py": "阿普 万 伊斯特 迪 沃农 弗莱？"},
+    {"de": "Gibt es eine Waschmaschine?", "zh": "有洗衣机吗？", "py": "吉普特 埃斯 艾内 瓦施马希内？"},
+    {"de": "Die Wohnung hat zwei Zimmer und einen Balkon.", "zh": "房子有两个房间和一个阳台。", "py": "迪 沃农 哈特 茨威 茨默尔 温特 艾嫩 巴尔孔。", "k": 1},
+    {"de": "Haustiere sind nicht erlaubt.", "zh": "不允许养宠物。", "py": "豪斯提尔 辛特 尼希特 埃尔劳普特。", "k": 1}
+   ]
+  },
+  {
+   "id": "vertrag",
+   "icon": "📝",
+   "name": "租约 · 押金",
+   "tip": "签约前看清 befristet（有期限，奥地利常见 3 年）还是 unbefristet（无期限）。押金叫 Kaution，一般 2 到 3 个月房租。中介费叫 Provision。",
+   "phrases": [
+    {"de": "Ist der Vertrag befristet?", "zh": "租约有期限吗？", "py": "伊斯特 德尔 费尔特拉克 贝弗里斯特特？"},
+    {"de": "Wie hoch ist die Kaution?", "zh": "押金是多少？", "py": "维 霍赫 伊斯特 迪 考齐翁？"},
+    {"de": "Muss ich eine Provision zahlen?", "zh": "我要付中介费吗？", "py": "穆斯 伊希 艾内 普罗维齐翁 灿伦？"},
+    {"de": "Wie lange ist die Kündigungsfrist?", "zh": "提前多久通知退租？", "py": "维 朗厄 伊斯特 迪 昆迪贡斯弗里斯特？"},
+    {"de": "Kann ich den Vertrag zuerst in Ruhe lesen?", "zh": "我可以先仔细看一下合同吗？", "py": "坎 伊希 登 费尔特拉克 粗埃尔斯特 因 鲁厄 莱森？"},
+    {"de": "Wann bekomme ich die Schlüssel?", "zh": "我什么时候拿到钥匙？", "py": "万 贝科默 伊希 迪 施吕瑟尔？"},
+    {"de": "Bitte unterschreiben Sie hier.", "zh": "请在这里签字。", "py": "比特 温特尔施赖本 齐 希尔。", "k": 1},
+    {"de": "Die Miete ist am Monatsanfang fällig.", "zh": "房租每月月初交。", "py": "迪 米特 伊斯特 阿姆 莫纳茨安方 费利希。", "k": 1}
+   ]
+  },
+  {
+   "id": "reparatur",
+   "icon": "🔧",
+   "name": "报修 · 邻里",
+   "tip": "坏了先找 Hausverwaltung（物业管理）或房东（Vermieter）。说清楚「什么坏了 + 从什么时候」。奥地利晚上 22 点后要保持安静（Nachtruhe）。",
+   "phrases": [
+    {"de": "Die Heizung funktioniert nicht.", "zh": "暖气不工作了。", "py": "迪 海聪 丰克齐奥尼尔特 尼希特。"},
+    {"de": "Es gibt kein warmes Wasser.", "zh": "没有热水。", "py": "埃斯 吉普特 凯因 瓦尔默斯 瓦瑟尔。"},
+    {"de": "Das Fenster geht nicht zu.", "zh": "窗户关不上。", "py": "达斯 芬斯特尔 盖特 尼希特 粗。"},
+    {"de": "In der Küche ist Wasser auf dem Boden.", "zh": "厨房地上有水。", "py": "因 德尔 屈歇 伊斯特 瓦瑟尔 奥夫 登 博登。"},
+    {"de": "Wann kann ein Handwerker kommen?", "zh": "维修工什么时候能来？", "py": "万 坎 艾因 汉特韦尔克尔 科门？"},
+    {"de": "Ich habe mich ausgesperrt.", "zh": "我把自己锁在门外了。", "py": "伊希 哈伯 米希 奥斯格施佩尔特。"},
+    {"de": "Entschuldigung, könnten Sie bitte leiser sein?", "zh": "不好意思，您能小声一点吗？", "py": "恩特舒尔迪贡，克恩滕 齐 比特 莱泽尔 赛因？"},
+    {"de": "Der Mistkübel steht im Hof.", "zh": "垃圾桶在院子里。", "py": "德尔 米斯特屈贝尔 施泰特 伊姆 霍夫。", "k": 1, "n": "Mistkübel 是奥地利说法，德国说 Mülleimer"}
+   ]
+  },
+  {
+   "id": "meldezettel",
+   "icon": "🏛️",
+   "name": "登记 · 办事处",
+   "tip": "在奥地利搬进新住处 3 天内要办 Meldezettel（住址登记），到 Meldeservice / Magistrat 办，表格要房东签字。很多办事处要提前在网上约 Termin。",
+   "phrases": [
+    {"de": "Ich möchte mich anmelden.", "zh": "我想办住址登记。", "py": "伊希 麦希特 米希 安梅尔登。"},
+    {"de": "Ich brauche einen Meldezettel.", "zh": "我需要一张住址登记证明。", "py": "伊希 布劳赫 艾嫩 梅尔德采特尔。"},
+    {"de": "Welche Unterlagen brauche ich?", "zh": "我需要带哪些材料？", "py": "韦尔歇 温特尔拉根 布劳赫 伊希？"},
+    {"de": "Hier sind mein Reisepass und der Mietvertrag.", "zh": "这是我的护照和租房合同。", "py": "希尔 辛特 迈因 赖泽帕斯 温特 德尔 米特费尔特拉克。"},
+    {"de": "Wo muss ich unterschreiben?", "zh": "我要在哪里签字？", "py": "沃 穆斯 伊希 温特尔施赖本？"},
+    {"de": "Brauche ich einen Termin?", "zh": "需要预约吗？", "py": "布劳赫 伊希 艾嫩 特尔明？"},
+    {"de": "Ziehen Sie bitte eine Nummer.", "zh": "请取一个号。", "py": "齐恩 齐 比特 艾内 努默尔。", "k": 1},
+    {"de": "Der Vermieter muss das Formular unterschreiben.", "zh": "表格需要房东签字。", "py": "德尔 费尔米特尔 穆斯 达斯 福尔穆拉尔 温特尔施赖本。", "k": 1},
+    {"de": "Ihr Ausweis ist abgelaufen.", "zh": "您的证件过期了。", "py": "伊尔 奥斯外斯 伊斯特 阿普格劳芬。", "k": 1}
+   ]
+  },
+  {
+   "id": "bank",
+   "icon": "🏦",
+   "name": "银行 · 开户",
+   "tip": "开户要带护照和 Meldezettel。日常转账用 IBAN，房租常用 Dauerauftrag（定期转账）。在奥地利，银行卡一般就叫 Bankomatkarte。",
+   "phrases": [
+    {"de": "Ich möchte ein Konto eröffnen.", "zh": "我想开一个账户。", "py": "伊希 麦希特 艾因 孔托 埃尔厄夫嫩。"},
+    {"de": "Was kostet das Konto im Monat?", "zh": "这个账户每月收多少费？", "py": "瓦斯 科斯特特 达斯 孔托 伊姆 莫纳特？"},
+    {"de": "Wann bekomme ich meine Bankomatkarte?", "zh": "我什么时候拿到银行卡？", "py": "万 贝科默 伊希 迈内 班科马特卡尔特？"},
+    {"de": "Ich möchte einen Dauerauftrag für die Miete einrichten.", "zh": "我想设一个每月自动付房租的定期转账。", "py": "伊希 麦希特 艾嫩 道尔奥夫特拉克 菲尔 迪 米特 艾因里希滕。"},
+    {"de": "Wie ist meine IBAN?", "zh": "我的 IBAN 账号是多少？", "py": "维 伊斯特 迈内 伊班？"},
+    {"de": "Meine Karte ist verloren gegangen.", "zh": "我的卡丢了。", "py": "迈内 卡尔特 伊斯特 费尔洛伦 格冈恩。"},
+    {"de": "Haben Sie einen Meldezettel dabei?", "zh": "您带住址登记证明了吗？", "py": "哈本 齐 艾嫩 梅尔德采特尔 达拜？", "k": 1},
+    {"de": "Die Karte kommt in etwa einer Woche per Post.", "zh": "卡大约一周后邮寄过来。", "py": "迪 卡尔特 科姆特 因 埃特瓦 艾内尔 沃赫 佩尔 波斯特。", "k": 1}
+   ]
+  }
+ ]
+}
