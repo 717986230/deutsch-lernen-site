@@ -1,0 +1,120 @@
+// 会员与兑换码回归：真 worker.js + 真 SQLite（同 verify-account-security 的垫片）。
+// 钉住收钱相关的不变量：码只能用一次、库里只有哈希、输错有频控、过期/非会员拿不到付费课包、
+// 发码必须带 STATS_KEY、注销账号连会员一起删。
+import { readFileSync } from 'node:fs';
+import { DatabaseSync } from 'node:sqlite';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+let fail = 0;
+const bad = (m) => { console.error('ERROR ' + m); fail++; };
+const ok = (m) => console.log('  ✓ ' + m);
+
+const db = new DatabaseSync(':memory:');
+db.exec(readFileSync(join(ROOT, 'analytics/schema.sql'), 'utf8'));
+const stmt = (sql) => {
+  const make = (b) => ({
+    bind: (...a) => make(a.map((v) => (v === undefined ? null : (typeof v === 'boolean' ? +v : v)))),
+    first() { const r = db.prepare(sql).get(...b); return r === undefined ? null : r; },
+    all() { return { results: db.prepare(sql).all(...b) }; },
+    run() { const r = db.prepare(sql).run(...b); return { meta: { changes: r.changes, last_row_id: r.lastInsertRowid } }; },
+  });
+  return make([]);
+};
+const DB = { prepare: stmt, batch: async (list) => list.map((s) => s.run()) };
+const env = { DB, SITE_URL: 'https://www.uuoo.site', STATS_KEY: 'admin-secret-key' };
+const worker = (await import(pathToFileURL(join(ROOT, 'analytics/worker.js')).href)).default;
+const call = async (method, path, body, token, headers, ip) => {
+  const h = Object.assign({ origin: 'https://www.uuoo.site', 'CF-Connecting-IP': ip || '198.51.100.7' }, headers || {});
+  if (token) h.Authorization = 'Bearer ' + token;
+  const res = await worker.fetch(new Request('https://api.test' + path, { method, headers: h,
+    body: body === undefined ? undefined : JSON.stringify(body) }), env, { waitUntil() {} });
+  let data = {}; try { data = await res.json(); } catch (_) {}
+  return { status: res.status, data };
+};
+const DAY = 86400000;
+
+// ── 发码 ──
+let r = await call('POST', '/api/admin/codes', { n: 3, days: 365 }, null, { 'X-Admin-Key': 'wrong' });
+if (r.status !== 403) bad(`错误密钥也能发码（${r.status}）`); else ok('错误密钥发码被拒（403）');
+r = await call('POST', '/api/admin/codes', { n: 3, days: 7 }, null, { 'X-Admin-Key': env.STATS_KEY });
+if (r.status !== 400) bad(`非法天数也能发码（${r.status}）`); else ok('天数只认 30/365/36500');
+r = await call('POST', '/api/admin/codes', { n: 3, days: 365, batch: 'test' }, null, { 'X-Admin-Key': env.STATS_KEY });
+const codes = r.data.codes || [];
+if (codes.length !== 3 || !codes.every((c) => /^UUOO-[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(c))) bad(`发码格式不对：${JSON.stringify(r.data)}`);
+else ok('发出 3 个年卡码，格式 UUOO-XXXX-XXXX-XXXX');
+const dump = JSON.stringify(db.prepare('SELECT * FROM redeem_codes').all());
+if (codes.some((c) => dump.includes(c.slice(5).replace(/-/g, '')))) bad('库里存了明文兑换码'); else ok('库里只有哈希，没有明文码');
+const life = (await call('POST', '/api/admin/codes', { n: 1, days: 36500 }, null, { 'X-Admin-Key': env.STATS_KEY })).data.codes[0];
+
+// ── 用户 ──
+const reg = async (u) => (await call('POST', '/api/register', { username: u, nickname: u, password: 'pass-' + u + '-123' })).data.token;
+const ta = await reg('alice'), tb = await reg('bob');
+
+r = await call('POST', '/api/redeem', { code: codes[0] });
+if (r.status !== 401) bad('未登录也能兑换'); else ok('未登录兑换被拒（401）');
+
+r = await call('GET', '/api/pro/pack?id=arzt', undefined, ta);
+if (r.status !== 403) bad(`非会员拿到了付费课包（${r.status}）`); else ok('非会员取课包被拒（403）');
+
+const t0 = Date.now();
+r = await call('POST', '/api/redeem', { code: ' uuoo-' + codes[0].slice(5).toLowerCase() + ' ' }, ta);
+if (!r.data.ok || Math.abs(r.data.pro_until - (t0 + 365 * DAY)) > 60000) bad(`年卡兑换结果不对：${JSON.stringify(r.data)}`);
+else ok('兑换容忍大小写和空格，年卡 = 365 天');
+
+r = await call('POST', '/api/redeem', { code: codes[0] }, tb);
+if (r.status !== 400) bad('同一个码被第二个人用掉了'); else ok('码只能用一次');
+
+r = await call('POST', '/api/redeem', { code: codes[1] }, ta);
+if (Math.abs(r.data.pro_until - (t0 + 730 * DAY)) > 60000) bad(`续期没有叠加：${JSON.stringify(r.data)}`); else ok('未到期续费从到期日往后叠加');
+
+r = await call('GET', '/api/me', undefined, ta);
+if (!(r.data.user && r.data.user.pro_until > t0)) bad('/api/me 没带 pro_until'); else ok('/api/me 带回会员到期时间');
+
+r = await call('GET', '/api/pro/pack?id=arzt', undefined, ta);
+const units = r.data.pack && r.data.pack.units;
+if (r.status !== 200 || !Array.isArray(units) || units.length < 5) bad(`会员取课包失败：${r.status}`); else ok(`会员拿到课包：${units.length} 个单元`);
+r = await call('GET', '/api/pro/pack?id=nope', undefined, ta);
+if (r.status !== 404) bad('不存在的课包没有 404');
+
+// 过期：手动把到期时间改到过去
+db.prepare('UPDATE memberships SET until=? WHERE uid=(SELECT id FROM users WHERE username=?)').run(Date.now() - 1000, 'alice');
+r = await call('GET', '/api/pro/pack?id=arzt', undefined, ta);
+if (r.status !== 403) bad('过期会员还能取课包'); else ok('会员过期后课包关闭');
+
+// ── 暴力猜码频控 ──
+let blocked = 0;
+for (let i = 0; i < 14; i++) {
+  r = await call('POST', '/api/redeem', { code: 'UUOO-AAAA-BBBB-CC' + 'DEFGHJKMNPQRST'[i] + 'X' }, tb, null, '203.0.113.' + i);
+  if (r.status === 429) blocked++;
+}
+if (blocked < 3) bad(`连续输错没有被限流（429 次数 ${blocked}）`); else ok(`连续输错 10 次后限流（拦下 ${blocked} 次）`);
+r = await call('POST', '/api/redeem', { code: life }, tb, null, '192.0.2.1');
+if (r.status !== 429) bad('被限流期间仍可兑换（应先等窗口过去）');
+
+// ── 注销连带删会员 ──
+const tc = await reg('carol');
+await call('POST', '/api/redeem', { code: life }, tc, null, '192.0.2.9');
+const cid = db.prepare("SELECT id FROM users WHERE username='carol'").get().id;
+if (!db.prepare('SELECT 1 FROM memberships WHERE uid=?').get(cid)) bad('永久码兑换后没有会员记录');
+await call('POST', '/api/account/delete', { password: 'pass-carol-123' }, tc);
+if (db.prepare('SELECT 1 FROM memberships WHERE uid=?').get(cid)) bad('注销账号后会员记录还在'); else ok('注销账号连会员记录一起删除');
+
+// ── 课包内容体检：字段齐全、谐音只含中文 ──
+const CJK = /^[一-鿿\s，。！？、；：「」（）·/\-↔—…]+$/;
+const pack = JSON.parse(readFileSync(join(ROOT, 'analytics/packs/arzt.json'), 'utf8'));
+let n = 0;
+for (const u of pack.units) {
+  for (const k of ['id', 'icon', 'name', 'tip']) if (!u[k]) bad(`课包单元缺 ${k}`);
+  for (const p of u.phrases) {
+    n++;
+    for (const k of ['de', 'zh', 'py']) if (!String(p[k] || '').trim()) bad(`「${p.de}」缺 ${k}`);
+    if (p.py && !CJK.test(p.py)) bad(`「${p.de}」谐音含非中文字符：${p.py}`);
+  }
+}
+ok(`课包「${pack.title}」${pack.units.length} 单元 ${n} 句字段齐全`);
+
+console.log('会员与兑换码回归：发码鉴权 · 哈希存储 · 一码一用 · 续期叠加 · 过期关闭 · 猜码限流 · 注销删除');
+if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
+console.log('OK 会员与兑换码不变量全部成立');
