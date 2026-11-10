@@ -28,7 +28,7 @@
 {"@type":"ListItem","position":1,"name":"英语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"英语字母与数字"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:5e1d437b2d16 -->
+<!-- src-hash:173df6b4aaef -->
 <style>#account{display:block}#account .auth-stage{display:none}
 
 :root{
@@ -747,6 +747,30 @@ body.lang-en #homeBoost{display:none!important}
 /* 主页 */
 .prof-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
 .prof-nick{font-size:20px;font-weight:800;color:var(--text)}
+/* 会员外观：参考 QQ/B站大会员铭牌（渐变+流光）、Discord Nitro 动态头像装饰；字色写死在渐变底上，深浅主题一致 */
+.pro-tag-hit{position:relative;display:inline-block;vertical-align:middle;margin-left:6px;text-decoration:none}
+.pro-tag-hit::after{content:'';position:absolute;left:-6px;right:-6px;top:-12px;bottom:-12px}
+.pro-tag{position:relative;overflow:hidden;display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:800;line-height:18px;white-space:nowrap;letter-spacing:.5px;color:#1e1b4b;background:linear-gradient(110deg,#c7d2fe,#e9d5ff 45%,#a5b4fc);box-shadow:0 0 0 1px rgba(99,102,241,.45),0 2px 10px -2px rgba(129,140,248,.7)}
+.pro-tag.life{color:#3b2300;background:linear-gradient(110deg,#fde68a,#fff4c2 40%,#f5b942 70%,#fcd34d);box-shadow:0 0 0 1px rgba(180,120,20,.55),0 2px 12px -2px rgba(245,185,66,.85)}
+.pro-tag::before{content:'';position:absolute;top:0;bottom:0;left:-60%;width:45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent);transform:skewX(-20deg);animation:proShine 2.8s ease-in-out infinite}
+@keyframes proShine{0%{left:-60%}55%,100%{left:130%}}
+.pro-ava{position:relative;display:inline-flex;flex:none;padding:3px;border-radius:50%}
+.pro-ava::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(#818cf8,#e9d5ff,#a5b4fc,#c084fc,#818cf8);animation:proSpin 4s linear infinite}
+.pro-ava.life::before{background:conic-gradient(#f5b942,#fff4c2,#e9a93a,#fde68a,#b7791f,#f5b942)}
+.pro-ava::after{content:'';position:absolute;inset:-4px;border-radius:50%;box-shadow:0 0 14px 2px rgba(129,140,248,.55);animation:proGlow 2.6s ease-in-out infinite;pointer-events:none}
+.pro-ava.life::after{box-shadow:0 0 16px 3px rgba(245,185,66,.65)}
+.pro-ava .avatar{position:relative;z-index:1;box-shadow:0 0 0 2px var(--surface)}
+.pro-crown{position:absolute;z-index:2;top:-12px;right:-6px;font-size:22px;font-style:normal;line-height:1;transform:rotate(20deg);filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));animation:proBob 2.4s ease-in-out infinite;pointer-events:none}
+@keyframes proSpin{to{transform:rotate(360deg)}}
+@keyframes proGlow{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes proBob{0%,100%{transform:rotate(20deg) translateY(0)}50%{transform:rotate(14deg) translateY(-3px)}}
+.pro-badge{cursor:pointer;position:relative}
+.pro-badge:not(.locked){border:1.5px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,#818cf8,#e9d5ff,#a5b4fc) border-box;animation:proBadgeGlow 2.6s ease-in-out infinite}
+.pro-badge.life{background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,#f5b942,#fff4c2,#b7791f,#fde68a) border-box;--pg:rgba(245,185,66,.55)}
+.pro-badge:not(.locked) .bemo{animation:proBob2 2.4s ease-in-out infinite}
+@keyframes proBadgeGlow{0%,100%{box-shadow:0 0 0 0 var(--pg,rgba(129,140,248,.45))}50%{box-shadow:0 0 16px 2px var(--pg,rgba(129,140,248,.45))}}
+@keyframes proBob2{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.pro-tag::before,.pro-ava::before,.pro-ava::after,.pro-crown,.pro-badge,.pro-badge .bemo{animation:none!important}}
 .prof-uname{font-size:12px;color:var(--text-faint)}
 .prof-sig{font-size:13px;color:var(--text-dim);margin:8px 0 0;line-height:1.6}
 .prof-follow{display:flex;align-items:center;gap:16px;margin:12px 0 2px;font-size:13px;color:var(--text-dim)}
