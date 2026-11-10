@@ -1,0 +1,297 @@
+{
+ "id": "arzt",
+ "title": "看病就医 · 奥地利",
+ "units": [
+  {
+   "id": "termin",
+   "icon": "📞",
+   "name": "约诊 · 挂号",
+   "tip": "奥地利看病先找家庭医生（Hausarzt / Allgemeinmedizin），大多要先打电话约 Termin。去之前带好 e-card（医保卡）。急症当天去可以问有没有 Akutsprechstunde（急诊时段）。",
+   "phrases": [
+    {
+     "de": "Grüß Gott, ich möchte einen Termin vereinbaren.",
+     "zh": "您好，我想预约一下。",
+     "py": "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"
+    },
+    {
+     "de": "Ich bin neu hier. Nehmen Sie neue Patienten?",
+     "zh": "我是新来的。你们接收新病人吗？",
+     "py": "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"
+    },
+    {
+     "de": "Haben Sie heute noch einen Termin frei?",
+     "zh": "今天还有空的号吗？",
+     "py": "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"
+    },
+    {
+     "de": "Es ist dringend.",
+     "zh": "情况比较急。",
+     "py": "埃斯 伊斯特 德林恩特。"
+    },
+    {
+     "de": "Hier ist meine e-card.",
+     "zh": "这是我的医保卡。",
+     "py": "希尔 伊斯特 迈内 伊卡德。",
+     "n": "e-card 是奥地利医保卡，看病、拿药都要出示"
+    },
+    {
+     "de": "Ich bin bei der ÖGK versichert.",
+     "zh": "我在奥地利医保（ÖGK）投保。",
+     "py": "伊希 宾 拜 德尔 欧格卡 费尔希歇尔特。"
+    },
+    {
+     "de": "Wann haben Sie Zeit?",
+     "zh": "您什么时候有空？",
+     "py": "万 哈本 齐 蔡特？",
+     "k": 1
+    },
+    {
+     "de": "Wie ist Ihr Name, bitte?",
+     "zh": "请问您叫什么名字？",
+     "py": "维 伊斯特 伊尔 纳梅，比特？",
+     "k": 1
+    },
+    {
+     "de": "Kommen Sie bitte morgen um neun Uhr.",
+     "zh": "请明天九点来。",
+     "py": "科门 齐 比特 摩尔根 乌姆 诺因 乌尔。",
+     "k": 1
+    },
+    {
+     "de": "Bitte nehmen Sie im Wartezimmer Platz.",
+     "zh": "请在候诊室坐一下。",
+     "py": "比特 内门 齐 伊姆 瓦尔特茨默尔 普拉茨。",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "symptom",
+   "icon": "🤒",
+   "name": "说症状",
+   "tip": "万能句型：Ich habe + 症状（Kopfschmerzen 头疼、Fieber 发烧、Husten 咳嗽）。哪里疼就说 Mir tut … weh。再补一句「从什么时候开始」，医生最需要这个。",
+   "phrases": [
+    {
+     "de": "Ich fühle mich nicht gut.",
+     "zh": "我感觉不舒服。",
+     "py": "伊希 菲勒 米希 尼希特 古特。"
+    },
+    {
+     "de": "Ich habe Fieber.",
+     "zh": "我发烧了。",
+     "py": "伊希 哈伯 菲伯尔。"
+    },
+    {
+     "de": "Ich habe Kopfschmerzen.",
+     "zh": "我头疼。",
+     "py": "伊希 哈伯 科普夫施梅尔岑。"
+    },
+    {
+     "de": "Ich habe Husten und Halsschmerzen.",
+     "zh": "我咳嗽，嗓子疼。",
+     "py": "伊希 哈伯 胡斯滕 温特 哈尔斯施梅尔岑。"
+    },
+    {
+     "de": "Mir ist schlecht.",
+     "zh": "我恶心想吐。",
+     "py": "米尔 伊斯特 施莱希特。"
+    },
+    {
+     "de": "Mein Bauch tut weh.",
+     "zh": "我肚子疼。",
+     "py": "迈因 包赫 图特 维。"
+    },
+    {
+     "de": "Seit drei Tagen.",
+     "zh": "已经三天了。",
+     "py": "宰特 德莱 塔根。"
+    },
+    {
+     "de": "Ich bin allergisch gegen Penicillin.",
+     "zh": "我对青霉素过敏。",
+     "py": "伊希 宾 阿莱尔吉施 给根 佩尼齐林。"
+    },
+    {
+     "de": "Ich nehme regelmäßig Medikamente.",
+     "zh": "我平时有在吃药。",
+     "py": "伊希 内梅 雷格尔梅西希 梅迪卡门特。"
+    },
+    {
+     "de": "Was fehlt Ihnen?",
+     "zh": "您哪里不舒服？",
+     "py": "瓦斯 费尔特 伊嫩？",
+     "k": 1
+    },
+    {
+     "de": "Seit wann haben Sie die Beschwerden?",
+     "zh": "这些症状从什么时候开始的？",
+     "py": "宰特 万 哈本 齐 迪 贝施维尔登？",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "praxis",
+   "icon": "🩺",
+   "name": "诊室里",
+   "tip": "医生的指令多是命令式：Machen Sie … / Atmen Sie …，照做就行。听不懂就说 Können Sie das bitte langsamer sagen?。病假证明叫 Krankmeldung，上班的人一定要开。",
+   "phrases": [
+    {
+     "de": "Machen Sie bitte den Oberkörper frei.",
+     "zh": "请把上衣脱掉。",
+     "py": "马亨 齐 比特 登 奥伯尔克尔佩尔 弗莱。",
+     "k": 1
+    },
+    {
+     "de": "Atmen Sie tief ein.",
+     "zh": "深吸一口气。",
+     "py": "阿特门 齐 提夫 艾因。",
+     "k": 1
+    },
+    {
+     "de": "Wo tut es weh?",
+     "zh": "哪里疼？",
+     "py": "沃 图特 埃斯 维？",
+     "k": 1
+    },
+    {
+     "de": "Ich verschreibe Ihnen ein Medikament.",
+     "zh": "我给您开一种药。",
+     "py": "伊希 费尔施赖伯 伊嫩 艾因 梅迪卡门特。",
+     "k": 1
+    },
+    {
+     "de": "Hier tut es weh.",
+     "zh": "这里疼。",
+     "py": "希尔 图特 埃斯 维。"
+    },
+    {
+     "de": "Können Sie das bitte langsamer sagen?",
+     "zh": "您能说慢一点吗？",
+     "py": "克能 齐 达斯 比特 朗扎默尔 扎根？"
+    },
+    {
+     "de": "Ist es etwas Ernstes?",
+     "zh": "严重吗？",
+     "py": "伊斯特 埃斯 埃特瓦斯 埃恩斯特斯？"
+    },
+    {
+     "de": "Brauche ich eine Krankmeldung?",
+     "zh": "我需要开病假证明吗？",
+     "py": "布劳赫 伊希 艾内 克兰克梅尔东？"
+    },
+    {
+     "de": "Wie oft soll ich das nehmen?",
+     "zh": "这个药一天吃几次？",
+     "py": "维 奥夫特 佐尔 伊希 达斯 内门？"
+    },
+    {
+     "de": "Muss ich wiederkommen?",
+     "zh": "我还需要复诊吗？",
+     "py": "穆斯 伊希 维德尔科门？"
+    }
+   ]
+  },
+  {
+   "id": "apotheke",
+   "icon": "💊",
+   "name": "药房",
+   "tip": "处方药凭 Rezept 到 Apotheke 拿，医保覆盖的处方每样药只付一笔固定的处方费（Rezeptgebühr）。感冒药、止痛药等非处方药可以直接问药剂师。夜里和周末找挂着「Apothekendienst」的值班药房。",
+   "phrases": [
+    {
+     "de": "Ich habe ein Rezept.",
+     "zh": "我有处方。",
+     "py": "伊希 哈伯 艾因 雷策普特。"
+    },
+    {
+     "de": "Haben Sie etwas gegen Erkältung?",
+     "zh": "有治感冒的药吗？",
+     "py": "哈本 齐 埃特瓦斯 给根 埃尔克尔通？"
+    },
+    {
+     "de": "Ich brauche etwas gegen Schmerzen.",
+     "zh": "我需要止痛的药。",
+     "py": "伊希 布劳赫 埃特瓦斯 给根 施梅尔岑。"
+    },
+    {
+     "de": "Wie muss ich das einnehmen?",
+     "zh": "这个怎么服用？",
+     "py": "维 穆斯 伊希 达斯 艾因内门？"
+    },
+    {
+     "de": "Gibt es Nebenwirkungen?",
+     "zh": "有副作用吗？",
+     "py": "吉普特 埃斯 内本维尔昆根？"
+    },
+    {
+     "de": "Dreimal täglich nach dem Essen.",
+     "zh": "一天三次，饭后服用。",
+     "py": "德莱马尔 泰格利希 纳赫 登 埃森。",
+     "k": 1
+    },
+    {
+     "de": "Das ist rezeptpflichtig.",
+     "zh": "这个需要处方。",
+     "py": "达斯 伊斯特 雷策普特普夫利希提希。",
+     "k": 1
+    },
+    {
+     "de": "Sie zahlen nur die Rezeptgebühr.",
+     "zh": "您只需要付处方费。",
+     "py": "齐 灿伦 努尔 迪 雷策普特格比尔。",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "notfall",
+   "icon": "🚑",
+   "name": "急诊 · 紧急",
+   "tip": "奥地利急救电话：144（救护车），欧盟通用 112。不确定要不要去医院，先打 1450 健康热线问。打电话先说地址，再说发生了什么。",
+   "phrases": [
+    {
+     "de": "Hilfe! Rufen Sie einen Krankenwagen!",
+     "zh": "救命！叫救护车！",
+     "py": "希尔费！鲁芬 齐 艾嫩 克兰肯瓦根！"
+    },
+    {
+     "de": "Es ist ein Notfall.",
+     "zh": "这是紧急情况。",
+     "py": "埃斯 伊斯特 艾因 诺特法尔。"
+    },
+    {
+     "de": "Meine Adresse ist …",
+     "zh": "我的地址是……",
+     "py": "迈内 阿德雷瑟 伊斯特……"
+    },
+    {
+     "de": "Er ist bewusstlos.",
+     "zh": "他失去意识了。",
+     "py": "埃尔 伊斯特 贝武斯特洛斯。"
+    },
+    {
+     "de": "Sie bekommt keine Luft.",
+     "zh": "她喘不上气。",
+     "py": "齐 贝科姆特 凯内 卢夫特。"
+    },
+    {
+     "de": "Wo ist die Notaufnahme?",
+     "zh": "急诊室在哪里？",
+     "py": "沃 伊斯特 迪 诺特奥夫纳梅？"
+    },
+    {
+     "de": "Wo ist der Notfall?",
+     "zh": "出事地点在哪？",
+     "py": "沃 伊斯特 德尔 诺特法尔？",
+     "k": 1
+    },
+    {
+     "de": "Was ist passiert?",
+     "zh": "发生了什么？",
+     "py": "瓦斯 伊斯特 帕西尔特？",
+     "k": 1
+    }
+   ]
+  }
+ ]
+}

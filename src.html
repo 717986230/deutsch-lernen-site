@@ -1646,7 +1646,8 @@ body.lang-en #homeBoost{display:none!important}
       <ul class="lg-ul">
         <li>本站内容<b>仅供语言学习参考</b>。词句释义、谐音标注等由人工整理，可能存在疏漏，<b>不构成任何专业建议</b>（包括但不限于考试、翻译、法律、医疗用途）。</li>
         <li>请勿利用本站从事违法活动，勿尝试攻击、爬取或干扰服务正常运行。</li>
-        <li>本站为个人业余项目，<b>免费提供、不作可用性承诺</b>，可能因维护、故障或不可抗力中断。</li>
+        <li>本站现有内容<b>免费提供、不作可用性承诺</b>，可能因维护、故障或不可抗力中断。</li>
+        <li><b>会员与兑换码</b>：会员通过兑换码开通，解锁会员课包。兑换码属于数字内容，<b>兑换即视为开始提供服务，兑换后不予退款</b>；兑换码未使用前可联系作者退款。会员数据（到期时间）与账号绑定，注销账号时一并删除且不可恢复。兑换码只保存不可逆的哈希值。</li>
         <li>在法律允许范围内，站方不对使用本站产生的任何间接损失承担责任。</li>
         <li>本站保留修改本协议的权利，重大变更会在本页面公示。</li>
       </ul>
@@ -1656,6 +1657,18 @@ body.lang-en #homeBoost{display:none!important}
         <a id="lgContact" href="mailto:xinglyang717@gmail.com" style="color:var(--gold-text)">xinglyang717@gmail.com</a></p>
       <p class="lg-p" style="color:var(--text-faint);font-size:12px">运营主体：<b id="lgOwner">uuoo.site 站长</b></p>
     </div>
+  </div>
+</div>
+
+<!-- ══════════════ 会员 · 兑换码 ══════════════
+     收款在站外（卖兑换码），站内只认码：POST /api/redeem。付费课包只经 /api/pro/pack 发给有效会员，
+     不进 index.html / .dat。渲染全在 pro* 函数里。 -->
+<div id="pro" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Mitgliedschaft</div>
+    <h2 class="page-title">会员 · 兑换码</h2>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">手册的全部现有内容永久免费；会员解锁新的场景特训课包</p>
+    <div id="proBody" style="max-width:560px;margin:0 auto"></div>
   </div>
 </div>
 
@@ -2127,6 +2140,7 @@ body{padding-bottom:var(--tab-h)}
       <div id="meView"></div>
       <div id="meEdit" style="display:none"></div>
     <div class="me-menu">
+      <a href="#pro" onclick="showSection('pro');return false"><span>👑</span>会员 · 兑换码<i>›</i></a>
       <a href="#wordbook" onclick="showSection('wordbook');return false"><span>📒</span>生词本<i>›</i></a>
       <a href="#stats" onclick="showSection('stats');return false"><span>📊</span>学习统计<i>›</i></a>
       <a href="#rank" onclick="showSection('rank');return false"><span>🏆</span>排行榜<i>›</i></a>
@@ -2652,6 +2666,7 @@ function showSection(id){
   if(typeof stopSeries==='function')stopSeries();
   if(typeof dialogStop==='function')dialogStop();
   if(typeof rsStop==='function')rsStop();
+  if(typeof proStop==='function')proStop();
   if(typeof stopPageNarration==='function')stopPageNarration();
   if(id!=='spell'&&typeof ambOff==='function')ambOff();
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -2675,7 +2690,8 @@ function showSection(id){
   if(id==='dialog'&&typeof renderDialogues==='function')renderDialogues();
   if(id==='resto'&&typeof rsInit==='function')rsInit();
   if(id==='kolloc'&&typeof kcInit==='function')kcInit();
-  var _bsec={me:'account',account:'account',wordbook:'account',stats:'account',rank:'account',support:'account',series:'reading',dialog:'reading',quiz:'spell',resto:'home',kolloc:'home',pronunciation:'home',numbers:'home',grammar:'home',body:'home','en-pron':'home','en-num':'home','en-grammar':'home'}[id]||id;
+  if(id==='pro'&&typeof proInit==='function')proInit();
+  var _bsec={me:'account',account:'account',wordbook:'account',stats:'account',rank:'account',support:'account',pro:'account',series:'reading',dialog:'reading',quiz:'spell',resto:'home',kolloc:'home',pronunciation:'home',numbers:'home',grammar:'home',body:'home','en-pron':'home','en-num':'home','en-grammar':'home'}[id]||id;
   document.querySelectorAll('#bottomNav .bn-btn').forEach(function(b){var on=b.getAttribute('data-sec')===_bsec;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   // 图解页(body)自己就是查词界面，再挂一个「拼读查词」既重复又和选中词浮条抢位置
   document.body.classList.toggle('hide-fab',id==='home'||id==='account'||id==='me'||id==='rank'||id==='spell'||id==='body');
@@ -2689,7 +2705,7 @@ function showSection(id){
 var _rendered={};
 
 // ── 版块历史：pushState 记录版块，返回键/右滑在站内后退不退站；#hash 白名单深链 ──
-var SEC_IDS='home pronunciation numbers grammar phrases reading series dialog resto kolloc quiz spell rank body support legal me account en-pron en-num en-grammar wordbook stats'.split(' ');
+var SEC_IDS='home pronunciation numbers grammar phrases reading series dialog resto kolloc quiz spell rank body support pro legal me account en-pron en-num en-grammar wordbook stats'.split(' ');
 var _histNav=false,_histInit=false,_deepSec=null;
 // 打开站点直接落在「语句」：首页是导览页，天天用的是背句子，少一次点击。
 // 首页仍在底部导航里，随时可回。改这里一处，下面三个入口都跟着走。
@@ -4314,6 +4330,99 @@ function checkKollocQ(btn){
 // ══════════════════════════════════════
 // 餐厅特训（#resto）：作为客人在奥地利餐厅 —— 预订 / 点餐 / 提问 / 结账 + 价格读法 + 菜单
 // ══════════════════════════════════════
+// ═════ 会员 · 兑换码（#pro）═════
+// 定价与课包目录是公开信息，写在这里；课包正文只从 /api/pro/pack 下发给有效会员。
+var PRO_CFG={"buyUrl": "", "plans": [["年卡", "¥68", "€9", "365 天，到期可续"], ["永久", "¥128", "€16", "一次买断，以后的课包都有"]], "perks": ["全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的课包自动解锁", "支持手册继续免费、无广告地更新"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}]};
+var _pro={until:null,pack:null,unit:0,loading:false,msg:''};
+function _proActive(){return !!(_pro.until&&_pro.until>Date.now());}
+function _proDate(t){var d=new Date(t);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function proStop(){try{if(typeof _stopPageRead==='function')_stopPageRead();}catch(e){}}
+function proInit(){
+  proRender();
+  if(!ACCT.token)return;
+  apiFetch('/api/me').then(function(r){
+    if(r&&r.ok&&r.data&&r.data.user){_pro.until=r.data.user.pro_until||0;}
+    else if(_pro.until===null)_pro.until=0;
+    proRender();
+  });
+}
+function _proStatusHtml(){
+  if(_pro.until===null)return '<div class="tip-card"><div class="tip-body">正在读取会员状态…</div></div>';
+  if(_proActive()){
+    var life=_pro.until-Date.now()>50*365*86400000;
+    return '<div class="tip-card pro-on"><div class="tip-title">👑 会员已开通</div><div class="tip-body">'+(life?'永久会员':'有效期至 <b>'+_proDate(_pro.until)+'</b>，续费会从到期日往后叠加')+'</div></div>';
+  }
+  return '<div class="tip-card"><div class="tip-title">'+(_pro.until?'会员已于 '+_proDate(_pro.until)+' 到期':'还不是会员')+'</div><div class="tip-body">买到兑换码后，在下面输入即可开通。</div></div>';
+}
+function _proRow(p,ui,pi){
+  return '<div class="rs-row" id="prp'+pi+'"><button class="speak-btn" type="button" aria-label="朗读" onclick="proSay('+ui+','+pi+',this)">🔊</button><div><div class="rs-de" lang="de">'+_esc(p.de)+'</div><div class="rs-zh">'+_esc(p.zh)+'</div><div class="rs-py">'+_esc(p.py)+'</div>'+(p.n?'<span class="rs-n">💡 '+_esc(p.n)+'</span>':'')+'</div></div>';
+}
+function _proPackHtml(){
+  var pk=_pro.pack,u=pk.units[_pro.unit]||pk.units[0],h='';
+  h+='<div style="display:flex;align-items:center;gap:10px;margin:16px 0 8px"><button class="btn" type="button" onclick="proClosePack()">‹ 返回</button><b>'+_esc(pk.title)+'</b></div>';
+  h+='<div class="level-tabs" role="tablist">';
+  for(var i=0;i<pk.units.length;i++)h+='<button type="button" role="tab" aria-selected="'+(i===_pro.unit)+'" class="level-tab'+(i===_pro.unit?' active':'')+'" onclick="proUnit('+i+')">'+pk.units[i].icon+' '+_esc(pk.units[i].name)+'</button>';
+  h+='</div><div class="tip-card"><div class="tip-title">'+u.icon+' '+_esc(u.name)+' · 要点</div><div class="tip-body">'+_esc(u.tip)+'</div></div>';
+  var me='',hear='',nm=0,nh=0;
+  for(var j=0;j<u.phrases.length;j++){var p=u.phrases[j];if(p.k){hear+=_proRow(p,_pro.unit,j);nh++;}else{me+=_proRow(p,_pro.unit,j);nm++;}}
+  h+='<div class="rs-h">🙋 我要说 <small>'+nm+' 句</small><button class="btn" type="button" onclick="proReadAll(this)">🔊 全部朗读</button></div><div class="rs-list">'+me+'</div>';
+  if(nh)h+='<div class="rs-h">👂 会听到 <small>'+nh+' 句</small></div><div class="rs-list">'+hear+'</div>';
+  return h;
+}
+function proRender(){
+  var el=document.getElementById('proBody');if(!el)return;
+  if(_pro.pack){el.innerHTML=_proPackHtml();return;}
+  var h=_proStatusHtml(),on=_proActive();
+  h+='<div class="sec-title" style="margin-top:14px"><span class="sec-title-icon">📦</span><span class="sec-title-text">会员课包</span></div>';
+  for(var i=0;i<PRO_CFG.packs.length;i++){var pk=PRO_CFG.packs[i];
+    h+='<div class="tip-card"><div class="tip-title">'+pk.icon+' '+_esc(pk.title)+(on?'':' 🔒')+'</div><div class="tip-body">'+_esc(pk.desc)+'</div>';
+    if(on)h+='<button class="acct-btn" type="button" style="margin-top:10px" onclick="proOpenPack(\''+pk.id+'\')">'+(_pro.loading?'加载中…':'开始学习')+'</button>';
+    else{h+='<div class="rs-h" style="margin-top:10px">免费试看 <small>'+pk.preview.length+' 句</small></div><div class="rs-list">';
+      for(var j=0;j<pk.preview.length;j++){var v=pk.preview[j];h+='<div class="rs-row"><button class="speak-btn" type="button" aria-label="朗读" onclick="proSayText('+i+','+j+',this)">🔊</button><div><div class="rs-de" lang="de">'+_esc(v[0])+'</div><div class="rs-zh">'+_esc(v[1])+'</div><div class="rs-py">'+_esc(v[2])+'</div></div></div>';}
+      h+='</div>';}
+    h+='</div>';}
+  h+='<div class="sec-title" style="margin-top:14px"><span class="sec-title-icon">🎟️</span><span class="sec-title-text">输入兑换码</span></div>';
+  h+='<div class="acct-card"><div class="acct-field"><label for="proCode">兑换码</label><input class="acct-input" id="proCode" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="UUOO-XXXX-XXXX-XXXX" onkeydown="if(event.key===\'Enter\'){event.preventDefault();proRedeem();}"></div><div class="acct-err" id="proErr">'+_esc(_pro.msg)+'</div><button class="acct-btn" type="button" id="proGo" onclick="proRedeem()">兑换</button></div>';
+  h+='<div class="sec-title" style="margin-top:14px"><span class="sec-title-icon">💳</span><span class="sec-title-text">价格与购买</span></div><div class="tip-card"><div class="tip-body">';
+  for(var k=0;k<PRO_CFG.plans.length;k++){var pl=PRO_CFG.plans[k];h+='<div style="display:flex;justify-content:space-between;gap:10px;padding:6px 0"><b>'+_esc(pl[0])+'</b><span>'+_esc(pl[1])+' / '+_esc(pl[2])+'</span></div><div style="font-size:12px;color:var(--text-dim);margin-bottom:6px">'+_esc(pl[3])+'</div>';}
+  h+='<ul style="margin:8px 0 0 18px;padding:0">';for(var m=0;m<PRO_CFG.perks.length;m++)h+='<li>'+_esc(PRO_CFG.perks[m])+'</li>';h+='</ul></div></div>';
+  if(PRO_CFG.buyUrl)h+='<a class="acct-btn" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box" href="'+_esc(PRO_CFG.buyUrl)+'" target="_blank" rel="noopener">去购买兑换码</a>';
+  else h+='<button class="acct-btn" type="button" onclick="showSection(\'support\')">加作者微信购买兑换码</button><p style="font-size:12px;color:var(--text-dim);text-align:center;margin:8px 0 0">付款后会收到一串兑换码，回到这里输入即可。</p>';
+  h+='<p style="font-size:12px;color:var(--text-dim);margin:14px 0 0">兑换码是数字内容，兑换后即开通、不支持退款；码未使用前可联系作者退款。详见 <a href="#legal" onclick="showSection(\'legal\');return false" style="color:var(--gold-text)">用户协议</a>。</p>';
+  el.innerHTML=h;
+}
+function proRedeem(){
+  var inp=document.getElementById('proCode'),btn=document.getElementById('proGo');if(!inp)return;
+  var c=(inp.value||'').trim();
+  if(!c){_pro.msg='请输入兑换码';proRender();return;}
+  if(btn){btn.disabled=true;btn.textContent='兑换中…';}
+  apiFetch('/api/redeem',{method:'POST',body:{code:c}}).then(function(r){
+    if(r&&r.ok&&r.data&&r.data.ok){_pro.until=r.data.pro_until;_pro.msg='';try{_toast('🎉 会员已开通',2500);}catch(e){}try{track('pro_redeem',{d:r.data.days});}catch(e){}}
+    else _pro.msg=(r&&r.data&&r.data.err)||(r&&r.status===0?'网络不通，请稍后再试':'兑换失败，请稍后再试');
+    proRender();
+  });
+}
+function proOpenPack(id){
+  if(_pro.loading)return;_pro.loading=true;proRender();
+  apiFetch('/api/pro/pack?id='+encodeURIComponent(id)).then(function(r){
+    _pro.loading=false;
+    if(r&&r.ok&&r.data&&r.data.pack){_pro.pack=r.data.pack;_pro.unit=0;try{track('pro_pack',{id:id});}catch(e){}}
+    else{_pro.msg=(r&&r.data&&r.data.err)||'课包加载失败，请检查网络';if(r&&r.status===403)_pro.until=0;}
+    proRender();window.scrollTo(0,0);
+  });
+}
+function proClosePack(){proStop();_pro.pack=null;proRender();}
+function proUnit(i){proStop();_pro.unit=i;proRender();}
+function proSay(ui,pi,btn){var u=_pro.pack&&_pro.pack.units[ui],p=u&&u.phrases[pi];if(p)speakWithLocale(p.de,'de',btn||null);}
+function proSayText(i,j,btn){var v=PRO_CFG.packs[i]&&PRO_CFG.packs[i].preview[j];if(v)speakWithLocale(v[0],'de',btn||null);}
+function proReadAll(btn){
+  var u=_pro.pack&&_pro.pack.units[_pro.unit];if(!u)return;var items=[],ids=[];
+  for(var i=0;i<u.phrases.length;i++)if(!u.phrases[i].k){items.push(u.phrases[i].de);ids.push('prp'+i);}
+  _startPageRead('pro'+_pro.unit,items,'de',btn,function(k){
+    var os=document.querySelectorAll('#pro .rs-row.on');for(var j=0;j<os.length;j++)os[j].classList.remove('on');
+    var e=k>=0&&document.getElementById(ids[k]);if(e){e.classList.add('on');try{e.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){}}
+  });
+}
 // 数据：RESTO = data/restaurant.json（units[4] + menu[]），构建时加密、首次打开才解码。
 // 标签 0–3 是情景单元（句子 / 对话 / 测验 三个子页），4 是价格读法与听力，5 是菜单。
 // 价格的德语读法与谐音由 _rsSay 现场生成，不进数据文件（随机出题要无限多个）。

@@ -70,6 +70,18 @@ th{color:var(--text-dim);font-weight:600;font-size:12px}
     <button class="btn" onclick="load()">查询</button>
   </div>
 
+
+  <details style="margin:18px 0;border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:var(--surface-2)">
+    <summary style="cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center">🎟️ 生成会员兑换码</summary>
+    <div class="sub" style="text-align:left;margin:6px 0 10px">用上面的 STATS_KEY。码只在这里显示一次（库里只存哈希），生成后请立刻复制保存，再发给付款的用户或导入售卖平台。</div>
+    <div class="filters">
+      <div class="seg" id="cdays"><button data-d="365" class="on">年卡</button><button data-d="36500">永久</button><button data-d="30">月卡</button></div>
+      <input id="cn" type="number" min="1" max="200" value="5" style="width:80px" aria-label="数量">
+      <button class="btn" onclick="genCodes()">生成</button>
+    </div>
+    <div id="cmsg" class="sub" style="text-align:left"></div>
+    <textarea id="cout" readonly style="width:100%;box-sizing:border-box;min-height:140px;display:none;font-family:ui-monospace,monospace;font-size:14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:10px"></textarea>
+  </details>
   <div id="out" style="display:none">
     <div class="hero"><div class="label">浏览量 PV（近 <span id="dLab">7</span> 天）</div><div class="num" id="pv">–</div></div>
     <div class="tiles">
@@ -153,6 +165,22 @@ function load(){
   });
 }
 if(document.getElementById('key').value)load();
+
+var _cdays=365;
+document.getElementById('cdays').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;_cdays=+b.dataset.d;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});});
+function genCodes(){
+  var key=document.getElementById('key').value.trim(),m=document.getElementById('cmsg'),o=document.getElementById('cout');
+  if(!key){m.textContent='请先在上面输入 STATS_KEY';return;}
+  var n=Math.max(1,Math.min(200,+document.getElementById('cn').value||1));
+  m.textContent='生成中…';
+  fetch(API+'/api/admin/codes',{method:'POST',headers:{'Content-Type':'text/plain','X-Admin-Key':key},body:JSON.stringify({n:n,days:_cdays})})
+    .then(function(r){return r.json().then(function(j){return {s:r.status,j:j};});})
+    .then(function(x){
+      if(x.s!==200){m.textContent=x.s===403?'密钥不对':(x.j.err||('失败 '+x.s));return;}
+      o.style.display='';o.value=x.j.codes.join('\n');o.select();
+      m.textContent='已生成 '+x.j.codes.length+' 个（'+({365:'年卡',36500:'永久',30:'月卡'}[x.j.days])+'）。累计发码 '+x.j.total+' 个，已兑换 '+x.j.used+' 个。';
+    })['catch'](function(){m.textContent='网络不通';});
+}
 </script>
 </body>
 </html>

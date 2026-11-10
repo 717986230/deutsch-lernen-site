@@ -5,6 +5,29 @@
 
 const JSONH = { 'Content-Type': 'application/json; charset=utf-8' };
 
+// 付费课包：随 Worker 打包，只经 /api/pro/pack 发给有效会员。不进前端产物、不进 .dat。
+// （仓库是公开的，源码层面仍可见；要彻底不可见需把仓库设为私有，见 docs/COMMERCIAL.md）
+import PACK_ARZT from './packs/arzt.json' with { type: 'json' };
+const PRO_PACKS = { arzt: PACK_ARZT };
+// 兑换码字母表：去掉 0/O/1/I/L 这些手抄易混的字符。12 位 ≈ 59 bit，暴力猜不可行（另有频控）
+const CODE_ABC = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const CODE_DAYS = [30, 365, 36500];          // 月卡 / 年卡 / 永久（100 年）
+const normCode = (c) => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^UUOO/, '');
+async function sha256Hex(t) {
+  const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+  return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+function newCode() {
+  const a = new Uint8Array(12); crypto.getRandomValues(a);
+  // 31 个字符，取模有极轻微偏差（256 % 31 = 8），对 59 bit 熵无实际影响
+  const c = [...a].map(x => CODE_ABC[x % CODE_ABC.length]).join('');
+  return 'UUOO-' + c.slice(0, 4) + '-' + c.slice(4, 8) + '-' + c.slice(8, 12);
+}
+async function proUntil(env, uid) {
+  const r = await env.DB.prepare('SELECT until FROM memberships WHERE uid=?').bind(uid).first();
+  return r ? r.until : 0;
+}
+
 // 头像白名单：emoji + 背景色（只接受集合内的值，防注入/超长；无图片上传=无审核负担）
 const AV_EMOJI = ['🦊', '🐼', '🐨', '🐯', '🦁', '🐶', '🐱', '🐰', '🐻', '🐸', '🐵', '🦉', '🐧', '🐢', '🦄', '🐲', '🌷', '🌟', '🍀', '🔥', '🚀', '⚽', '🎨', '🎧', '📚', '☕', '🥨', '🗼'];
 const AV_BG = ['#58cc02', '#1cb0f6', '#ff9600', '#ff4b4b', '#ce82ff', '#2b70c9', '#ff86d0', '#00c2a8', '#f5b800', '#7a869a'];
@@ -101,6 +124,8 @@ const RL = {
   mls: { limit: 5, win: 3600000 },  // 发送邮箱验证码：每用户名 1 小时 5 次（每次发送即计）
   mli: { limit: 20, win: 3600000 }, // 发送邮箱验证码：每 IP 1 小时 20 次
   stk: { limit: 20, win: 3600000 }, // /stats 密钥猜错：每 IP 1 小时 20 次（仅失败计）
+  rdu: { limit: 10, win: 3600000 }, // 兑换码输错：每用户 1 小时 10 次（仅失败计）
+  rdi: { limit: 30, win: 3600000 }, // 兑换码输错：每 IP 1 小时 30 次（仅失败计）
 };
 
 // 第三方登录配置（GitHub / Google 同一套 OAuth2 流程，差异抽到这里）
@@ -153,7 +178,7 @@ export default {
     const cors = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST,GET,PUT,OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Admin-Key',
     };
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
     const url = new URL(req.url);
@@ -322,6 +347,7 @@ export default {
         env.DB.prepare('DELETE FROM follows WHERE follower=?1 OR followee=?1').bind(uid),
         env.DB.prepare('DELETE FROM activity WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM vido_state WHERE uid=?1').bind(uid),
+        env.DB.prepare('DELETE FROM memberships WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM users WHERE id=?1').bind(uid),
       ]);
       return json({ ok: 1 }, 200, cors);
@@ -553,6 +579,66 @@ export default {
       return json({ err: '同步冲突', rev: current ? current.rev : 0, document, updated: current && current.updated }, 409, cors);
     }
 
+    // ───────── 会员：兑换码兑换 / 课包下发 / 后台发码 ─────────
+    // 收款在站外（爱发电等平台卖兑换码），站内只认码：不绑定任何支付商，换渠道不改代码。
+    // 码只存 SHA-256，库泄露也拿不到可用的码；兑换用「WHERE used_by IS NULL」单语句抢占，防并发重复兑换。
+    if (M === 'POST' && path === '/api/redeem') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '请先登录再兑换' }, 401, cors);
+      const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
+      const cu = await rateCheck(env, 'rdu:' + uid, RL.rdu.limit);
+      const ci = await rateCheck(env, 'rdi:' + ip, RL.rdi.limit);
+      if (!cu.ok || !ci.ok) return tooMany(cors, Math.max(cu.retry, ci.retry));
+      const b = await body(req);
+      const code = normCode(b.code);
+      const now = Date.now();
+      let row = null;
+      if (code.length === 12) {
+        row = await env.DB.prepare('UPDATE redeem_codes SET used_by=?, used_at=? WHERE hash=? AND used_by IS NULL RETURNING days')
+          .bind(uid, now, await sha256Hex(code)).first();
+      }
+      if (!row) {
+        await rateHit(env, 'rdu:' + uid, RL.rdu.limit, RL.rdu.win);
+        await rateHit(env, 'rdi:' + ip, RL.rdi.limit, RL.rdi.win);
+        return json({ err: '兑换码无效或已被使用' }, 400, cors);
+      }
+      // 续期叠加：还没到期就从到期日往后加，已过期从现在算
+      const cur = await proUntil(env, uid);
+      const until = Math.max(cur, now) + row.days * 86400000;
+      await env.DB.prepare('INSERT INTO memberships (uid,until,updated) VALUES (?,?,?) ON CONFLICT(uid) DO UPDATE SET until=excluded.until, updated=excluded.updated')
+        .bind(uid, until, now).run();
+      return json({ ok: 1, pro_until: until, days: row.days }, 200, cors);
+    }
+    if (M === 'GET' && path === '/api/pro/pack') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const pack = PRO_PACKS[url.searchParams.get('id') || ''];
+      if (!pack) return json({ err: '课包不存在' }, 404, cors);
+      if (await proUntil(env, uid) <= Date.now()) return json({ err: '会员专享，开通后可用', pro: 0 }, 403, cors);
+      return json({ pack }, 200, Object.assign({ 'Cache-Control': 'private, no-store' }, cors));
+    }
+    if (M === 'POST' && path === '/api/admin/codes') {
+      // 站长在 stats.html 用 STATS_KEY 发码；与 /stats 共用猜错频控桶
+      const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
+      const sc = await rateCheck(env, 'stk:' + ip, RL.stk.limit);
+      if (!sc.ok) return tooMany(cors, sc.retry);
+      const k = String(req.headers.get('X-Admin-Key') || '');
+      let same = !!env.STATS_KEY && k.length === env.STATS_KEY.length;
+      for (let i = 0; i < k.length; i++) same = same && k.charCodeAt(i) === env.STATS_KEY.charCodeAt(i);
+      if (!same) { await rateHit(env, 'stk:' + ip, RL.stk.limit, RL.stk.win); return json({ err: 'forbidden' }, 403, cors); }
+      const b = await body(req);
+      const n = Math.max(1, Math.min(200, b.n | 0));
+      const days = +b.days;
+      if (CODE_DAYS.indexOf(days) < 0) return json({ err: 'days 只能是 ' + CODE_DAYS.join('/') }, 400, cors);
+      const batch = cleanText(b.batch, 20) || new Date().toISOString().slice(0, 10);
+      const now = Date.now(), codes = [];
+      for (let i = 0; i < n; i++) codes.push(newCode());
+      const st = env.DB.prepare('INSERT INTO redeem_codes (hash,days,batch,created) VALUES (?,?,?,?)');
+      await env.DB.batch(await Promise.all(codes.map(async c => st.bind(await sha256Hex(normCode(c)), days, batch, now))));
+      const stat = await env.DB.prepare('SELECT COUNT(*) total, SUM(used_by IS NOT NULL) used FROM redeem_codes').first();
+      // 明文码只在这一次响应里出现，库里只有哈希
+      return json({ codes, days, batch, total: stat.total, used: stat.used || 0 }, 200, Object.assign({ 'Cache-Control': 'no-store' }, cors));
+    }
     // ───────── Vido（www.uuoo.site/vido/）的个人数据：隐藏的卡片 + 自己加的视频 ─────────
     // 2026-10 起 Vido 不再有自己的后端，登录手册账号的人把这两样存在这里，换设备也在。
     // 同 /api/progress：一份带 rev 的文档，冲突返回 409 + 服务端版本，由客户端合并。
@@ -684,6 +770,7 @@ export default {
       u.badges = badgeList(u.badges, uid).join(',');   // 没同步过也要看得到创始人
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, uid);
+      u.pro_until = await proUntil(env, uid);
       return json({ user: u, profiles: profiles.results || [], rank: rank.c, followers: fc.followers, following: fc.following }, 200, cors);
     }
     // ───────── 社交：关注 / 取关 / 关注列表 ─────────

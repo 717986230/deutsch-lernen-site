@@ -155,3 +155,21 @@ CREATE TABLE IF NOT EXISTS follows (
 );
 CREATE INDEX IF NOT EXISTS idx_follows_followee ON follows(followee);
 CREATE INDEX IF NOT EXISTS idx_follows_follower ON follows(follower);
+
+-- 会员：到期时间（毫秒）。单独成表，不往 users 加列 —— 已部署库不用跑 ALTER 迁移
+CREATE TABLE IF NOT EXISTS memberships (
+  uid INTEGER PRIMARY KEY,
+  until INTEGER NOT NULL,
+  updated INTEGER NOT NULL
+);
+
+-- 兑换码：只存规范化后 12 位码的 SHA-256；used_by 为空表示未用
+CREATE TABLE IF NOT EXISTS redeem_codes (
+  hash TEXT PRIMARY KEY,
+  days INTEGER NOT NULL,
+  batch TEXT,
+  created INTEGER NOT NULL,
+  used_by INTEGER,
+  used_at INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_redeem_used ON redeem_codes(used_by);
