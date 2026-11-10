@@ -791,8 +791,8 @@ export default {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
       // 多查一列 u.id 只为算创始人，不外泄（下面构造返回对象时不带它）
-      const rows = await env.DB.prepare('SELECT u.id,u.username,u.nickname,u.avatar,u.av_bg,u.known,u.best_streak,u.level,u.badges FROM follows f JOIN users u ON u.id=f.followee WHERE f.follower=? ORDER BY u.known DESC LIMIT 100').bind(uid).all();
-      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: badgeList(r.badges, r.id).length }));
+      const rows = await env.DB.prepare('SELECT u.id,u.username,u.nickname,u.avatar,u.av_bg,u.known,u.best_streak,u.level,u.badges,(SELECT until FROM memberships WHERE uid=u.id) AS pu FROM follows f JOIN users u ON u.id=f.followee WHERE f.follower=? ORDER BY u.known DESC LIMIT 100').bind(uid).all();
+      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: badgeList(r.badges, r.id).length, pro: proTier(r.pu) }));
       return json({ list }, 200, cors);
     }
     // 修改资料：昵称 / 头像 / 背景色 / 个性签名（需登录，服务端校验）
@@ -884,13 +884,14 @@ export default {
       const [count, rows] = await Promise.all([
         env.DB.prepare(countSQL).bind(...binds).first(),
         env.DB.prepare(
-        'SELECT id,username,nickname,avatar,av_bg,known,best_streak,total,level,badges FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
+        'SELECT id,username,nickname,avatar,av_bg,known,best_streak,total,level,badges,(SELECT until FROM memberships WHERE uid=users.id) AS pu FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
         ).bind(...binds).all(),
       ]);
       const list = rows.results.map(r => ({
         username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, level: r.level,
         known: r.known, streak: r.best_streak, total: r.total,
         badges: badgeList(r.badges, r.id).length,     // id 只用来算创始人，不进返回体
+        pro: proTier(r.pu),                           // 只给档位 0/1/2，不外泄到期日
       }));
       return json({ by, total: Number(count?.total || 0), list }, 200, cors);
     }
@@ -900,6 +901,7 @@ export default {
       if (!u) return json({ err: '用户不存在' }, 404, cors);
       const pid = u.id; delete u.id;
       u.badges = badgeList(u.badges, pid).join(',');   // 同上：别人看别人的资料页
+      u.pro = proTier(await proUntil(env, pid));        // 公开主页只给会员档位，不给到期日
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, pid);
       let isFollowing = false;
@@ -915,6 +917,12 @@ export default {
     return new Response('uuoo app', { headers: cors });
   },
 };
+
+// 会员档位（公开展示用）：0 非会员 / 1 会员（月卡、年卡）/ 2 永久。到期日只回给本人（/api/me）。
+function proTier(until) {
+  const left = (Number(until) || 0) - Date.now();
+  return left <= 0 ? 0 : left > 50 * 365 * 86400000 ? 2 : 1;
+}
 
 async function followCounts(env, uid) {
   const a = await env.DB.prepare('SELECT COUNT(*) c FROM follows WHERE followee=?').bind(uid).first();

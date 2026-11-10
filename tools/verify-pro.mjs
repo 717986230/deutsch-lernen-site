@@ -78,6 +78,17 @@ if (r.status !== 200 || !Array.isArray(units) || units.length < 5) bad(`会员�
 r = await call('GET', '/api/pro/pack?id=nope', undefined, ta);
 if (r.status !== 404) bad('不存在的课包没有 404');
 
+// ── 公开展示：排行榜 / 主页只给档位，不给到期日 ──
+r = await call('GET', '/api/leaderboard');
+{
+  const la = r.data.list.find((x) => x.username === 'alice'), lb = r.data.list.find((x) => x.username === 'bob');
+  if (!la || la.pro !== 1 || !lb || lb.pro !== 0) bad(`排行榜会员档位不对：${JSON.stringify([la, lb])}`);
+  else if (JSON.stringify(r.data).match(/"(pu|until|pro_until)"/)) bad('排行榜泄露了会员到期日');
+  else ok('排行榜带会员档位（年卡=1、非会员=0），不含到期日');
+}
+r = await call('GET', '/api/profile?name=alice', undefined, tb);
+if (r.data.user.pro !== 1 || 'pro_until' in r.data.user) bad(`他人主页会员字段不对：${JSON.stringify(r.data.user)}`); else ok('他人主页只给会员档位');
+
 // 过期：手动把到期时间改到过去
 db.prepare('UPDATE memberships SET until=? WHERE uid=(SELECT id FROM users WHERE username=?)').run(Date.now() - 1000, 'alice');
 r = await call('GET', '/api/pro/pack?id=arzt', undefined, ta);
@@ -98,6 +109,9 @@ const tc = await reg('carol');
 await call('POST', '/api/redeem', { code: life }, tc, null, '192.0.2.9');
 const cid = db.prepare("SELECT id FROM users WHERE username='carol'").get().id;
 if (!db.prepare('SELECT 1 FROM memberships WHERE uid=?').get(cid)) bad('永久码兑换后没有会员记录');
+await call('POST', '/api/follow', { name: 'carol' }, tb);
+r = await call('GET', '/api/following', undefined, tb);
+{ const fc = (r.data.list || []).find((x) => x.username === 'carol'); if (!fc || fc.pro !== 2) bad(`关注列表永久会员档位不对：${JSON.stringify(fc)}`); else ok('关注列表/永久会员档位 = 2'); }
 await call('POST', '/api/account/delete', { password: 'pass-carol-123' }, tc);
 if (db.prepare('SELECT 1 FROM memberships WHERE uid=?').get(cid)) bad('注销账号后会员记录还在'); else ok('注销账号连会员记录一起删除');
 
