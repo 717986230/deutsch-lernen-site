@@ -12,7 +12,9 @@ import PACK_WOHNEN from './packs/wohnen.json' with { type: 'json' };
 const PRO_PACKS = { arzt: PACK_ARZT, wohnen: PACK_WOHNEN };
 // 兑换码字母表：去掉 0/O/1/I/L 这些手抄易混的字符。12 位 ≈ 59 bit，暴力猜不可行（另有频控）
 const CODE_ABC = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-const CODE_DAYS = [30, 365, 36500];          // 月卡 / 年卡 / 永久（100 年）
+// 2026-11-11 起只卖月卡 / 年卡，不再发永久码；已开通的永久会员（until≈100 年后）权益不变，
+// 库里已发出未用的永久码照样能兑换（兑换读的是码自己的 days）。
+const CODE_DAYS = [30, 365];                 // 月卡 / 年卡
 const normCode = (c) => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^UUOO/, '');
 async function sha256Hex(t) {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
@@ -24,6 +26,11 @@ function newCode() {
   const c = [...a].map(x => CODE_ABC[x % CODE_ABC.length]).join('');
   return 'UUOO-' + c.slice(0, 4) + '-' + c.slice(4, 8) + '-' + c.slice(8, 12);
 }
+async function chosenFrame(env, uid) {
+  const r = await env.DB.prepare('SELECT frame FROM user_frames WHERE uid=?').bind(uid).first();
+  return r ? r.frame : null;
+}
+
 async function proUntil(env, uid) {
   const r = await env.DB.prepare('SELECT until FROM memberships WHERE uid=?').bind(uid).first();
   return r ? r.until : 0;
@@ -349,6 +356,7 @@ export default {
         env.DB.prepare('DELETE FROM activity WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM vido_state WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM memberships WHERE uid=?1').bind(uid),
+        env.DB.prepare('DELETE FROM user_frames WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM users WHERE id=?1').bind(uid),
       ]);
       return json({ ok: 1 }, 200, cors);
@@ -583,6 +591,20 @@ export default {
     // ───────── 会员：兑换码兑换 / 课包下发 / 后台发码 ─────────
     // 收款在站外（爱发电等平台卖兑换码），站内只认码：不绑定任何支付商，换渠道不改代码。
     // 码只存 SHA-256，库泄露也拿不到可用的码；兑换用「WHERE used_by IS NULL」单语句抢占，防并发重复兑换。
+    // 佩戴头像框：只能戴自己已点亮徽章对应的框，或有效会员的会员框；'none' = 不戴
+    if (M === 'POST' && path === '/api/frame') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const b = await body(req);
+      const want = String(b.frame || 'none').slice(0, 24);
+      if (want !== 'none') {
+        const row = await env.DB.prepare('SELECT badges FROM users WHERE id=?').bind(uid).first();
+        const tier = proTier(await proUntil(env, uid));
+        if (frameOf(want, badgeList(row && row.badges, uid), tier) !== want) return json({ err: '这款头像框还没解锁' }, 403, cors);
+      }
+      await env.DB.prepare('INSERT INTO user_frames (uid,frame,updated) VALUES (?,?,?) ON CONFLICT(uid) DO UPDATE SET frame=excluded.frame,updated=excluded.updated').bind(uid, want, Date.now()).run();
+      return json({ ok: 1, frame: want === 'none' ? '' : want }, 200, cors);
+    }
     if (M === 'POST' && path === '/api/redeem') {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '请先登录再兑换' }, 401, cors);
@@ -772,6 +794,7 @@ export default {
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, uid);
       u.pro_until = await proUntil(env, uid);
+      u.frame = frameOf(await chosenFrame(env, uid), u.badges.split(',').filter(Boolean), proTier(u.pro_until));
       return json({ user: u, profiles: profiles.results || [], rank: rank.c, followers: fc.followers, following: fc.following }, 200, cors);
     }
     // ───────── 社交：关注 / 取关 / 关注列表 ─────────
@@ -791,8 +814,8 @@ export default {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
       // 多查一列 u.id 只为算创始人，不外泄（下面构造返回对象时不带它）
-      const rows = await env.DB.prepare('SELECT u.id,u.username,u.nickname,u.avatar,u.av_bg,u.known,u.best_streak,u.level,u.badges,(SELECT until FROM memberships WHERE uid=u.id) AS pu FROM follows f JOIN users u ON u.id=f.followee WHERE f.follower=? ORDER BY u.known DESC LIMIT 100').bind(uid).all();
-      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: badgeList(r.badges, r.id).length, pro: proTier(r.pu) }));
+      const rows = await env.DB.prepare('SELECT u.id,u.username,u.nickname,u.avatar,u.av_bg,u.known,u.best_streak,u.level,u.badges,(SELECT until FROM memberships WHERE uid=u.id) AS pu,(SELECT frame FROM user_frames WHERE uid=u.id) AS fr FROM follows f JOIN users u ON u.id=f.followee WHERE f.follower=? ORDER BY u.known DESC LIMIT 100').bind(uid).all();
+      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: badgeList(r.badges, r.id).length, pro: proTier(r.pu), frame: frameOf(r.fr, badgeList(r.badges, r.id), proTier(r.pu)) }));
       return json({ list }, 200, cors);
     }
     // 修改资料：昵称 / 头像 / 背景色 / 个性签名（需登录，服务端校验）
@@ -884,7 +907,7 @@ export default {
       const [count, rows] = await Promise.all([
         env.DB.prepare(countSQL).bind(...binds).first(),
         env.DB.prepare(
-        'SELECT id,username,nickname,avatar,av_bg,known,best_streak,total,level,badges,(SELECT until FROM memberships WHERE uid=users.id) AS pu FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
+        'SELECT id,username,nickname,avatar,av_bg,known,best_streak,total,level,badges,(SELECT until FROM memberships WHERE uid=users.id) AS pu,(SELECT frame FROM user_frames WHERE uid=users.id) AS fr FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
         ).bind(...binds).all(),
       ]);
       const list = rows.results.map(r => ({
@@ -892,6 +915,7 @@ export default {
         known: r.known, streak: r.best_streak, total: r.total,
         badges: badgeList(r.badges, r.id).length,     // id 只用来算创始人，不进返回体
         pro: proTier(r.pu),                           // 只给档位 0/1/2，不外泄到期日
+        frame: frameOf(r.fr, badgeList(r.badges, r.id), proTier(r.pu)),
       }));
       return json({ by, total: Number(count?.total || 0), list }, 200, cors);
     }
@@ -902,6 +926,7 @@ export default {
       const pid = u.id; delete u.id;
       u.badges = badgeList(u.badges, pid).join(',');   // 同上：别人看别人的资料页
       u.pro = proTier(await proUntil(env, pid));        // 公开主页只给会员档位，不给到期日
+      u.frame = frameOf(await chosenFrame(env, pid), u.badges.split(',').filter(Boolean), u.pro);
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, pid);
       let isFollowing = false;
@@ -917,6 +942,15 @@ export default {
     return new Response('uuoo app', { headers: cors });
   },
 };
+
+// 头像框：每枚徽章对应一款，会员另有 pro / pro_life 两款。
+// 存的是用户的选择；读的时候按当下资格再校验 —— 会员过期、徽章不在了，就退回默认。
+// 默认：永久会员戴 pro_life、会员戴 pro，其余不戴；用户选 'none' 表示明确不戴。
+function frameOf(chosen, badges, tier) {
+  if (chosen === 'none') return '';
+  if (chosen && ((chosen === 'pro' && tier >= 1) || (chosen === 'pro_life' && tier === 2) || badges.indexOf(chosen) >= 0)) return chosen;
+  return tier === 2 ? 'pro_life' : tier === 1 ? 'pro' : '';
+}
 
 // 会员档位（公开展示用）：0 非会员 / 1 会员（月卡、年卡）/ 2 永久。到期日只回给本人（/api/me）。
 function proTier(until) {
@@ -951,10 +985,10 @@ function badgeList(stored, uid) {
 function computeBadges(s, uid) {
   const b = [];
   if (uid && uid <= FOUNDER_MAX) b.push('founder');
-  [[7, 'streak7'], [30, 'streak30'], [100, 'streak100'], [365, 'streak365']].forEach(([n, id]) => { if (s.best >= n) b.push(id); });
-  [[100, 'word100'], [500, 'word500'], [1000, 'word1000'], [2000, 'word2000']].forEach(([n, id]) => { if (s.known >= n) b.push(id); });
-  [[500, 'study500'], [2000, 'study2000'], [10000, 'study10000']].forEach(([n, id]) => { if (s.total >= n) b.push(id); });
-  [[200, 'quiz200'], [1000, 'quiz1000']].forEach(([n, id]) => { if (s.quiz >= n) b.push(id); });
+  [[3, 'streak3'], [7, 'streak7'], [30, 'streak30'], [100, 'streak100'], [365, 'streak365']].forEach(([n, id]) => { if (s.best >= n) b.push(id); });
+  [[100, 'word100'], [500, 'word500'], [1000, 'word1000'], [2000, 'word2000'], [3000, 'word3000']].forEach(([n, id]) => { if (s.known >= n) b.push(id); });
+  [[100, 'study100'], [500, 'study500'], [2000, 'study2000'], [10000, 'study10000']].forEach(([n, id]) => { if (s.total >= n) b.push(id); });
+  [[50, 'quiz50'], [200, 'quiz200'], [1000, 'quiz1000']].forEach(([n, id]) => { if (s.quiz >= n) b.push(id); });
   return b;
 }
 

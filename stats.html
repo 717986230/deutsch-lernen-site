@@ -75,7 +75,7 @@ th{color:var(--text-dim);font-weight:600;font-size:12px}
     <summary style="cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center">🎟️ 生成会员兑换码</summary>
     <div class="sub" style="text-align:left;margin:6px 0 10px">用上面的 STATS_KEY。码只在这里显示一次（库里只存哈希），生成后请立刻复制保存，再发给付款的用户或导入售卖平台。</div>
     <div class="filters">
-      <div class="seg" id="cdays"><button data-d="365" class="on">年卡</button><button data-d="36500">永久</button><button data-d="30">月卡</button></div>
+      <div class="seg" id="cdays"><button data-d="365" class="on">年卡</button><button data-d="30">月卡</button></div>
       <input id="cn" type="number" min="1" max="200" value="5" style="width:80px" aria-label="数量">
       <button class="btn" onclick="genCodes()">生成</button>
     </div>

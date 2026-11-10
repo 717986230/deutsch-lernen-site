@@ -1844,31 +1844,29 @@ body.lang-en #homeBoost{display:none!important}
 .pro-tag.life{color:#3b2300;background:linear-gradient(110deg,#fde68a,#fff4c2 40%,#f5b942 70%,#fcd34d);box-shadow:0 0 0 1px rgba(180,120,20,.55),0 2px 12px -2px rgba(245,185,66,.85)}
 .pro-tag::before{content:'';position:absolute;top:0;bottom:0;left:-60%;width:45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent);transform:skewX(-20deg);animation:proShine 2.8s ease-in-out infinite}
 @keyframes proShine{0%{left:-60%}55%,100%{left:130%}}
-.pro-ava{position:relative;display:inline-flex;flex:none;padding:3px;border-radius:50%}
-.pro-ava::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(#818cf8,#e9d5ff,#a5b4fc,#c084fc,#818cf8);animation:proSpin 4s linear infinite}
-.pro-ava.life::before{background:conic-gradient(#f5b942,#fff4c2,#e9a93a,#fde68a,#b7791f,#f5b942)}
-.pro-ava::after{content:'';position:absolute;inset:-4px;border-radius:50%;box-shadow:0 0 14px 2px rgba(129,140,248,.55);animation:proGlow 2.6s ease-in-out infinite;pointer-events:none}
-.pro-ava.life::after{box-shadow:0 0 16px 3px rgba(245,185,66,.65)}
-.pro-ava .avatar{position:relative;z-index:1;box-shadow:0 0 0 2px var(--surface)}
-.pro-crown{position:absolute;z-index:2;top:-12px;right:-6px;font-size:22px;font-style:normal;line-height:1;transform:rotate(20deg);filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));animation:proBob 2.4s ease-in-out infinite;pointer-events:none}
 /* 排行榜里的小号头像框与迷你铭牌 */
-.pro-ava.sm{padding:2px}
-.pro-ava.sm::after{inset:-3px;box-shadow:0 0 9px 1px rgba(129,140,248,.5)}
-.pro-ava.sm.life::after{box-shadow:0 0 10px 2px rgba(245,185,66,.6)}
-.pro-ava.sm .pro-crown{font-size:14px;top:-8px;right:-5px}
 .rank-nick:has(.rk-nm){display:flex;align-items:center}
 .rk-nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pro-tag.mini{flex:none;font-size:10px;line-height:14px;padding:1px 6px;margin-left:4px;vertical-align:1px;letter-spacing:0}
-@keyframes proSpin{to{transform:rotate(360deg)}}
-@keyframes proGlow{0%,100%{opacity:.45}50%{opacity:1}}
-@keyframes proBob{0%,100%{transform:rotate(20deg) translateY(0)}50%{transform:rotate(14deg) translateY(-3px)}}
 .pro-badge{cursor:pointer;position:relative}
 .pro-badge:not(.locked){border:1.5px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,#818cf8,#e9d5ff,#a5b4fc) border-box;animation:proBadgeGlow 2.6s ease-in-out infinite}
 .pro-badge.life{background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,#f5b942,#fff4c2,#b7791f,#fde68a) border-box;--pg:rgba(245,185,66,.55)}
 .pro-badge:not(.locked) .bemo{animation:proBob2 2.4s ease-in-out infinite}
 @keyframes proBadgeGlow{0%,100%{box-shadow:0 0 0 0 var(--pg,rgba(129,140,248,.45))}50%{box-shadow:0 0 16px 2px var(--pg,rgba(129,140,248,.45))}}
 @keyframes proBob2{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@media (prefers-reduced-motion:reduce){.pro-tag::before,.pro-ava::before,.pro-ava::after,.pro-crown,.pro-badge,.pro-badge .bemo{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.pro-tag::before,.pro-badge,.pro-badge .bemo{animation:none!important}}
+.fr{position:relative;display:inline-flex;flex:none}
+.fr-img{position:absolute;left:-25%;top:-25%;width:150%;height:150%;max-width:none;pointer-events:none;z-index:2}
+.prof-head .fr{margin:14px 10px 14px 6px}
+.fr-sec{margin-top:18px}
+.fr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.fr-opt{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 2px 8px;border-radius:12px;border:1px solid var(--border);background:var(--surface);font-family:inherit;color:var(--text);cursor:pointer;min-height:44px}
+.fr-opt.on{border:2px solid var(--gold);background:var(--gold-faint)}
+.fr-opt.locked{cursor:default}
+.fr-opt.locked .fr-pv{filter:grayscale(1);opacity:.45}
+.fr-opt b{font-size:12px;font-weight:700}
+.fr-opt small{font-size:10.5px;color:var(--text-faint);line-height:1.3;text-align:center}
+.fr-opt.on small{color:var(--gold-text)}
 .prof-uname{font-size:12px;color:var(--text-faint)}
 .prof-sig{font-size:13px;color:var(--text-dim);margin:8px 0 0;line-height:1.6}
 .prof-follow{display:flex;align-items:center;gap:16px;margin:12px 0 2px;font-size:13px;color:var(--text-dim)}
@@ -2213,6 +2211,7 @@ body{padding-bottom:var(--tab-h)}
       <div id="meEdit" style="display:none"></div>
     <div class="me-menu">
       <a href="#pro" onclick="showSection('pro');return false"><span>👑</span>会员 · 兑换码<i>›</i></a>
+      <a href="#me" class="fr-menu" onclick="frOpen();return false"><span>🖼️</span>头像框 · 徽章<i>›</i></a>
       <a href="#wordbook" onclick="showSection('wordbook');return false"><span>📒</span>生词本<i>›</i></a>
       <a href="#stats" onclick="showSection('stats');return false"><span>📊</span>学习统计<i>›</i></a>
       <a href="#rank" onclick="showSection('rank');return false"><span>🏆</span>排行榜<i>›</i></a>
@@ -4486,7 +4485,7 @@ function checkKollocQ(btn){
 // ══════════════════════════════════════
 // ═════ 会员 · 兑换码（#pro）═════
 // 定价与课包目录是公开信息，写在这里；课包正文只从 /api/pro/pack 下发给有效会员。
-var PRO_CFG={"buyUrl": "", "plans": [["年卡", "¥68", "€9", "365 天，到期可续"], ["永久", "¥499", "€59", "一次买断，以后的课包都有"]], "perks": ["全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的课包自动解锁", "支持手册继续免费、无广告地更新"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}, {"id": "wohnen", "icon": "🏠", "title": "租房 · 办事 · 奥地利", "desc": "找房看房 · 租约押金 · 报修邻里 · 住址登记 · 银行开户，42 句带谐音", "preview": [["Ist die Wohnung noch frei?", "这套房子还空着吗？", "伊斯特 迪 沃农 诺赫 弗莱？"], ["Wann kann ich die Wohnung besichtigen?", "我什么时候可以来看房？", "万 坎 伊希 迪 沃农 贝西希提根？"], ["Wie hoch ist die Miete?", "房租是多少？", "维 霍赫 伊斯特 迪 米特？"]]}]};
+var PRO_CFG={"buyUrl": "", "plans": [["月卡", "¥9.9", "€1.5", "30 天，先试试看"], ["年卡", "¥99", "€13", "365 天，平均每月 ¥8.25"]], "perks": ["全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的课包自动解锁", "支持手册继续免费、无广告地更新"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}, {"id": "wohnen", "icon": "🏠", "title": "租房 · 办事 · 奥地利", "desc": "找房看房 · 租约押金 · 报修邻里 · 住址登记 · 银行开户，42 句带谐音", "preview": [["Ist die Wohnung noch frei?", "这套房子还空着吗？", "伊斯特 迪 沃农 诺赫 弗莱？"], ["Wann kann ich die Wohnung besichtigen?", "我什么时候可以来看房？", "万 坎 伊希 迪 沃农 贝西希提根？"], ["Wie hoch ist die Miete?", "房租是多少？", "维 霍赫 伊斯特 迪 米特？"]]}]};
 var _pro={until:null,pack:null,unit:0,loading:false,msg:''};
 function _proActive(){return !!(_pro.until&&_pro.until>Date.now());}
 function _proDate(t){var d=new Date(t);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
@@ -5915,6 +5914,7 @@ var AV_BG=['#58cc02','#1cb0f6','#ff9600','#ff4b4b','#ce82ff','#2b70c9','#ff86d0'
 // 徽章定义（门槛与服务端 computeBadges 一致，两边必须同步改）。没有注册就送的徽章，全靠挣。
 var BADGES=[
  {id:'founder',emo:'🌟',name:'创始人',desc:'前 100 名注册'},
+ {id:'streak3',emo:'🌤️',name:'三日之约',m:'best',n:3},
  {id:'streak7',emo:'🔥',name:'一周达人',m:'best',n:7},
  {id:'streak30',emo:'🏅',name:'月度铁人',m:'best',n:30},
  {id:'streak100',emo:'💎',name:'百日筑基',m:'best',n:100},
@@ -5923,9 +5923,12 @@ var BADGES=[
  {id:'word500',emo:'📖',name:'小有词汇',m:'known',n:500},
  {id:'word1000',emo:'📚',name:'词汇达人',m:'known',n:1000},
  {id:'word2000',emo:'🏆',name:'词汇大师',m:'known',n:2000},
+ {id:'word3000',emo:'🧠',name:'词汇宗师',m:'known',n:3000},
+ {id:'study100',emo:'🐣',name:'起步',m:'total',n:100},
  {id:'study500',emo:'💪',name:'勤学不辍',m:'total',n:500},
  {id:'study2000',emo:'⚡',name:'学而不厌',m:'total',n:2000},
  {id:'study10000',emo:'🚀',name:'学海无涯',m:'total',n:10000},
+ {id:'quiz50',emo:'📝',name:'初试身手',m:'quiz',n:50},
  {id:'quiz200',emo:'✏️',name:'测验能手',m:'quiz',n:200},
  {id:'quiz1000',emo:'🎯',name:'测验大师',m:'quiz',n:1000}
 ];
@@ -6108,9 +6111,20 @@ var _LD=_ottiMsg('swim',48,'加载中…',1);
 function _profStats(k,s,b,t){return '<div class="prof-stats"><div class="prof-stat"><b>'+k+'</b><span>掌握词</span></div><div class="prof-stat"><b>'+s+'</b><span>连续打卡</span></div><div class="prof-stat"><b>'+b+'</b><span>最长打卡</span></div><div class="prof-stat"><b>'+t+'</b><span>累计学习</span></div></div>';}
 // 会员档位：本人从 pro_until 算（含到期日），别人只拿到后端给的档位 pro（0/1/2）
 function _proTierOf(u){if(!u)return 0;if(u.pro_until!=null){var l=(+u.pro_until||0)-Date.now();return l<=0?0:(l>50*365*864e5?2:1);}return +u.pro||0;}
-function _proAvaWrap(u,h,sm){var t=_proTierOf(u);if(!t)return h;return '<span class="pro-ava'+(t===2?' life':'')+(sm?' sm':'')+'">'+h+'<i class="pro-crown" aria-hidden="true">👑</i></span>';}
+// 头像框：图片素材在 frames/<id>.svg（tools/gen-frames.mjs 生成），叠在头像外圈、比头像大一半。
+// u.frame 由服务端按资格校验后下发（'' = 不戴）；老接口没有 frame 时按会员档位给默认框。
+var FRAME_NAMES={pro_life:'永久会员',pro:'会员',founder:'星夜',streak3:'晨曦',streak7:'烈焰',streak30:'铁甲',streak100:'钻石',streak365:'王座',word100:'新芽',word500:'书香',word1000:'书海',word2000:'金杯',word3000:'霓虹',study100:'破壳',study500:'热血',study2000:'雷霆',study10000:'星际',quiz50:'草稿',quiz200:'涂鸦',quiz1000:'靶心'};
+function _frameId(u){if(!u)return '';if(u.frame!=null)return FRAME_NAMES[u.frame]?u.frame:'';var t=_proTierOf(u);return t===2?'pro_life':(t===1?'pro':'');}
+function _frameImg(id,h,sm){if(!id||!FRAME_NAMES[id])return h;return '<span class="fr'+(sm?' sm':'')+'">'+h+'<img class="fr-img" src="frames/'+id+'.svg" alt="" aria-hidden="true" decoding="async"></span>';}
+function _proAvaWrap(u,h,sm){return _frameImg(_frameId(u),h,sm);}
 function _proMini(u){var t=_proTierOf(u);return t?' <span class="pro-tag mini'+(t===2?' life':'')+'">👑 '+(t===2?'永久':'会员')+'</span>':'';}
-function _renderProfileCard(el,u,rank,isMe,ex){if(isMe)_meUser=u;ex=ex||{};var st={known:u.known||0,best:u.best_streak||0,total:u.total||0,quiz:u.quiz||0};var earned=String(u.badges||'').split(',').filter(Boolean);var prov=u.provider==='github'?' · GitHub':u.provider==='google'?' · Google':'';var followBtn=(!isMe&&ACCT.token)?'<button class="follow-btn'+(ex.isFollowing?' following':'')+'" data-f="'+(ex.isFollowing?'1':'0')+'" data-u="'+_esc(u.username)+'">'+(ex.isFollowing?'已关注':'+ 关注')+'</button>':'';var pu=isMe?(+u.pro_until||0):0,ptier=_proTierOf(u),pon=ptier>0,plife=ptier===2;var pcls=plife?' life':'';var proTag=pon?' <a class="pro-tag-hit" href="#pro" onclick="showSection(\'pro\');return false"><span class="pro-tag'+pcls+'">👑 '+(plife?'永久会员':'会员')+'</span></a>':'';var proAva=function(h){return _proAvaWrap(u,h);};var proBadge=(isMe||pon)?'<div class="badge pro-badge'+(pon?pcls:' locked')+'" role="button" tabindex="0" onclick="showSection(\'pro\')"><div class="bemo">👑</div><div class="bname">'+(plife?'永久会员':'会员')+'</div><div class="bprog"'+(pon?' style="color:var(--gold-text)"':'')+'>'+(pon?((plife||!pu)?'已点亮':'至 '+_proDate(pu)):'点我开通')+'</div></div>':'';var followRow='<div class="prof-follow"><span class="pf-n" onclick="showFollowing()"><b>'+(ex.following||0)+'</b> 关注</span><span class="pf-n"><b>'+(ex.followers||0)+'</b> 粉丝</span>'+followBtn+'</div>';el.innerHTML='<div class="acct-card"><div class="prof-head">'+proAva(_avatarHtml(u,64))+'<div style="min-width:0"><div class="prof-nick">'+_esc(u.nickname||u.username)+proTag+'</div><div class="prof-uname">@'+_esc(u.username)+prov+' · 全站第 '+rank+' 名</div></div></div>'+(u.sig?'<div class="prof-sig">'+_esc(u.sig)+'</div>':'')+followRow+_profStats(u.known||0,u.streak||0,u.best_streak||0,u.total||0)+'<div class="sec-title" style="margin:6px 0 4px"><span class="sec-title-icon">🏅</span><span class="sec-title-text">徽章墙</span></div>'+_badgesHtml(st,earned,proBadge)+(isMe?'<div style="display:flex;gap:10px;margin-top:18px"><button class="acct-btn" style="flex:1" onclick="meEditOpen()">✏️ 编辑资料</button><button class="oauth-btn" style="flex:1;margin:0" onclick="meSettingsOpen()">⚙️ 账号设置</button></div><button class="oauth-btn" style="width:100%;margin:10px 0 0" onclick="acctLogout()">退出登录</button>':'')+'</div>';_bindUser(el,'.follow-btn[data-u]',function(n,btn){acctFollow(n,btn);});}
+function _frameSecHtml(u,st,earned,tier){var cur=_frameId(u),av=_avatarHtml(u,40);var opt=function(id,name,ok,sub){return '<button type="button" class="fr-opt'+(id===(cur||'none')?' on':'')+(ok?'':' locked')+'"'+(ok?' onclick="frSet(\''+id+'\')"':' aria-disabled="true"')+'><span class="fr-pv">'+(id==='none'?av:_frameImg(id,av,1))+'</span><b>'+name+'</b><small>'+(id===(cur||'none')?'佩戴中':sub)+'</small></button>';};
+var h=opt('none','不戴',true,'素颜');if(tier===2)h+=opt('pro_life','永久会员',true,'点我佩戴');h+=opt('pro','会员',tier>=1,tier>=1?'点我佩戴':'会员专属');
+BADGES.forEach(function(b){var on=earned.indexOf(b.id)>=0||(b.m&&(st[b.m]||0)>=b.n);h+=opt(b.id,FRAME_NAMES[b.id]||b.name,on,on?'点我佩戴':b.emo+' '+b.name);});
+return '<div class="fr-sec" id="frSec"><div class="sec-title" style="margin:6px 0 10px"><span class="sec-title-icon">🖼️</span><span class="sec-title-text">头像框 · 点亮徽章即解锁</span></div><div class="fr-grid">'+h+'</div></div>';}
+function frSet(id){if(!ACCT.token)return;apiFetch('/api/frame',{method:'POST',body:{frame:id}}).then(function(r){if(r&&r.ok){if(_meUser)_meUser.frame=r.data.frame;try{_toast(id==='none'?'已摘下头像框':'✨ 已佩戴「'+(FRAME_NAMES[id]||id)+'」',2000);}catch(e){}try{track('frame_set',{f:id});}catch(e){}renderMe();}else{try{_toast((r&&r.data&&r.data.err)||'网络不好，稍后再试',2500);}catch(e){}}});}
+function frOpen(){showSection('me');var n=0;(function go(){var el=document.getElementById('frSec');if(el){el.scrollIntoView({behavior:'smooth',block:'start'});return;}if(++n<40)setTimeout(go,150);})();}
+function _renderProfileCard(el,u,rank,isMe,ex){if(isMe)_meUser=u;ex=ex||{};var st={known:u.known||0,best:u.best_streak||0,total:u.total||0,quiz:u.quiz||0};var earned=String(u.badges||'').split(',').filter(Boolean);var prov=u.provider==='github'?' · GitHub':u.provider==='google'?' · Google':'';var followBtn=(!isMe&&ACCT.token)?'<button class="follow-btn'+(ex.isFollowing?' following':'')+'" data-f="'+(ex.isFollowing?'1':'0')+'" data-u="'+_esc(u.username)+'">'+(ex.isFollowing?'已关注':'+ 关注')+'</button>':'';var pu=isMe?(+u.pro_until||0):0,ptier=_proTierOf(u),pon=ptier>0,plife=ptier===2;var pcls=plife?' life':'';var proTag=pon?' <a class="pro-tag-hit" href="#pro" onclick="showSection(\'pro\');return false"><span class="pro-tag'+pcls+'">👑 '+(plife?'永久会员':'会员')+'</span></a>':'';var proAva=function(h){return _proAvaWrap(u,h);};var proBadge=(isMe||pon)?'<div class="badge pro-badge'+(pon?pcls:' locked')+'" role="button" tabindex="0" onclick="showSection(\'pro\')"><div class="bemo">👑</div><div class="bname">'+(plife?'永久会员':'会员')+'</div><div class="bprog"'+(pon?' style="color:var(--gold-text)"':'')+'>'+(pon?((plife||!pu)?'已点亮':'至 '+_proDate(pu)):'点我开通')+'</div></div>':'';var followRow='<div class="prof-follow"><span class="pf-n" onclick="showFollowing()"><b>'+(ex.following||0)+'</b> 关注</span><span class="pf-n"><b>'+(ex.followers||0)+'</b> 粉丝</span>'+followBtn+'</div>';el.innerHTML='<div class="acct-card"><div class="prof-head">'+proAva(_avatarHtml(u,64))+'<div style="min-width:0"><div class="prof-nick">'+_esc(u.nickname||u.username)+proTag+'</div><div class="prof-uname">@'+_esc(u.username)+prov+' · 全站第 '+rank+' 名</div></div></div>'+(u.sig?'<div class="prof-sig">'+_esc(u.sig)+'</div>':'')+followRow+_profStats(u.known||0,u.streak||0,u.best_streak||0,u.total||0)+'<div class="sec-title" style="margin:6px 0 4px"><span class="sec-title-icon">🏅</span><span class="sec-title-text">徽章墙</span></div>'+_badgesHtml(st,earned,proBadge)+(isMe?_frameSecHtml(u,st,earned,ptier):'')+(isMe?'<div style="display:flex;gap:10px;margin-top:18px"><button class="acct-btn" style="flex:1" onclick="meEditOpen()">✏️ 编辑资料</button><button class="oauth-btn" style="flex:1;margin:0" onclick="meSettingsOpen()">⚙️ 账号设置</button></div><button class="oauth-btn" style="width:100%;margin:10px 0 0" onclick="acctLogout()">退出登录</button>':'')+'</div>';_bindUser(el,'.follow-btn[data-u]',function(n,btn){acctFollow(n,btn);});}
 function acctFollow(name,btn){if(!ACCT.token){showSection('account');return;}var following=btn.getAttribute('data-f')==='1';btn.disabled=true;apiFetch(following?'/api/unfollow':'/api/follow',{method:'POST',body:{name:name}}).then(function(r){btn.disabled=false;if(!r||!r.ok)return;var now=r.data.following;btn.setAttribute('data-f',now?'1':'0');btn.textContent=now?'已关注':'+ 关注';btn.classList.toggle('following',now);});}
 function showFollowing(){if(!ACCT.token)return;_showBare('me');var v=document.getElementById('meView');document.getElementById('meEdit').style.display='none';v.style.display='';v.innerHTML=_LD;apiFetch('/api/following').then(function(r){if(!r||!r.ok){v.innerHTML='<div class="acct-card"><p class="acct-err">加载失败</p></div>';return;}var list=r.data.list||[];var body=list.length?list.map(function(u){return '<div class="rank-row" data-u="'+_esc(u.username)+'">'+_proAvaWrap(u,_avatarHtml(u,38),1)+'<div class="rank-name"><div class="rank-nick"><span class="rk-nm">'+_esc(u.nickname||u.username)+'</span>'+_proMini(u)+'</div><div class="rank-meta">'+_esc(u.level||'A1')+' · 🏅'+(u.badges||0)+'</div></div><div class="rank-val">'+(u.known||0)+'<small>词</small></div></div>';}).join(''):'<p style="text-align:center;color:var(--text-faint);font-size:13px;padding:14px">还没关注任何人，去排行榜点头像关注学霸吧 🏆</p>';v.innerHTML='<div class="acct-card"><div style="display:flex;align-items:center;margin-bottom:12px"><button class="oauth-btn" style="width:auto;margin:0;padding:6px 14px" onclick="renderMe()">← 返回</button><b style="margin-left:12px;font-size:16px;color:var(--text)">我关注的人</b></div><div class="rank-list">'+body+'</div></div>';_bindUser(v,'.rank-row[data-u]',function(n){openProfile(n);});});}
 function renderMe(){if(!ACCT.token){showSection('account');return;}var v=document.getElementById('meView'),ed=document.getElementById('meEdit');ed.style.display='none';v.style.display='';v.innerHTML=_LD;acctSync(true).then(function(){return apiFetch('/api/me');}).then(function(r){if(!r||!r.ok){if(r&&r.status===401){v.innerHTML='<div class="acct-card"><p class="acct-err">登录已过期，请重新登录</p><button class="acct-btn" onclick="acctLogout()">退出登录</button></div>';}else{_renderMeOffline(v);}return;}_pro.until=+r.data.user.pro_until||0;ACCT.user={username:r.data.user.username,nickname:r.data.user.nickname,avatar:r.data.user.avatar,av_bg:r.data.user.av_bg};_saveUser();_renderProfileCard(v,r.data.user,r.data.rank,true,{followers:r.data.followers,following:r.data.following});});}

@@ -75,7 +75,7 @@ wrangler deploy                                                 # 部署新版 w
 - `PUT /api/vido`（带 token）`{rev,document:{hidden,videos}}` → 写入；冲突返回 `409` 及服务端版本。上限 5000 个隐藏、300 个视频、900KB
 - `POST /api/redeem`（带 token）`{code}` → `{ok,pro_until,days}`；码无效/已用 `400`；每用户 1 小时输错 10 次、每 IP 30 次后 `429`。续期从到期日往后叠加
 - `GET /api/pro/pack?id=arzt`（带 token）→ `{pack}`；非会员或已过期 `403`。课包正文在 `analytics/packs/*.json`，随 Worker 打包
-- `POST /api/admin/codes`（请求头 `X-Admin-Key: <STATS_KEY>`）`{n≤200, days∈30/365/36500, batch?}` → `{codes,total,used}`；明文码只在这次响应里出现，库里存 SHA-256。站长在 `stats.html` 的「生成会员兑换码」里用
+- `POST /api/admin/codes`（请求头 `X-Admin-Key: <STATS_KEY>`）`{n≤200, days∈30/365, batch?}`（永久码 2026-11-11 停发；已发出的仍可兑换） → `{codes,total,used}`；明文码只在这次响应里出现，库里存 SHA-256。站长在 `stats.html` 的「生成会员兑换码」里用
 - `GET /api/me` 的 `user` 多一个 `pro_until`（毫秒，0 = 非会员）。表：`memberships`、`redeem_codes`（见 schema.sql），注销账号时删除会员记录
 - `POST /api/sync`（带 token）`{lang,known,streak,best,total,quiz,level}` → 更新排行榜/徽章用的摘要，明细由 `/api/progress` 单独恢复
   - 数值上限：`known` ≤ 20000、`streak`/`best` ≤ 3650、`total`/`quiz` ≤ 1000000。这几列入库走 `MAX()`（多设备合并必需，换设备时不能让本地的 0 清空云端），**代价是只能往上不能往下**，所以上限必须说得通 —— 德语 4253 条 + 英语 7192 条词，20000 已是「全站都认识」还富余一倍。彻底杜绝刷分要服务端记分，本站是离线优先、客户端权威，做不到。
@@ -91,6 +91,7 @@ wrangler deploy                                                 # 部署新版 w
 - `GET  /api/profile?name=<用户名>` → 公开主页数据（带 token 时含 isFollowing/关注数）
 - `POST /api/follow` / `POST /api/unfollow`（带 token）`{name}` → 关注 / 取关
 - `GET  /api/following`（带 token）→ 我关注的人列表
+- `POST /api/frame`（带 token）`{frame}` → 佩戴头像框；只能戴已点亮徽章对应的框或有效会员的 `pro`/`pro_life`，`none` = 不戴，否则 403。表 `user_frames`。公开接口（排行榜/关注/主页/me）下发 `frame` 时**按当下资格再校验**，会员过期或徽章不在就退回默认（永久会员 `pro_life`、会员 `pro`、其余不戴）
 - `GET  /api/feed`（带 token）→ 学习动态：关注的人+自己的系统事件（点亮徽章/打卡破纪录）
 - `GET  /api/leaderboard?by=...&scope=friends`（带 token）→ 好友榜（只含我和我关注的人）
 - `POST /api/account/password`（带 token）`{old,new}` → 修改密码（仅密码账号；成功后踢掉除当前外全部会话）
