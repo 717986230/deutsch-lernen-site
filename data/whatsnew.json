@@ -1,5 +1,16 @@
 [
   {
+    "id": "2026-11-10-affix",
+    "date": "2026-11-10",
+    "icon": "🧠",
+    "title": "词缀情景记忆：一个词根串一段小故事",
+    "desc": "arbeiten、machen、kommen、nehmen…10 个常用词根，每个配一段好笑的小故事，黄色高亮的词下面标中文，下面逐个讲前缀含义、可分不可分，带例句和朗读。",
+    "sec": "home",
+    "spot": "#home .hg-tile[onclick=\"afOpen(0);return false\"]",
+    "tip": "点「词缀记忆」，故事里黄色的词点一下就读给你听。",
+    "lang": "de"
+  },
+  {
     "id": "2026-11-10-wohnen",
     "date": "2026-11-10",
     "icon": "🏠",

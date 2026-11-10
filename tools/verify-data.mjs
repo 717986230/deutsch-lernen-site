@@ -110,6 +110,29 @@ function checkKolloc(path) {
   if (d.verbs.length < 4) bad(`${path} 动词少于 4 个，练习凑不齐选项`);
   console.log(`  ${path}: ${d.verbs.length} 个动词 ${n} 组搭配`);
 }
+// 词缀情景记忆（2026-11）：故事里每个 {词} 都要在 words 里有解析，词都以词根结尾、以前缀开头
+function checkAffix(path) {
+  if (!existsSync(path)) return;
+  const d = rd(path);
+  let n = 0;
+  for (const r of d.roots) {
+    for (const k of ['id', 'icon', 'title', 'v', 'zh', 'py', 'story', 'words']) if (!r[k]) bad(`${path} 词根缺字段 ${k}`);
+    const used = r.story.flatMap((s) => [...s.matchAll(/\{([^}]+)\}/g)].map((m) => m[1]));
+    const ws = r.words.map((w) => w.de);
+    for (const u of used) if (!ws.includes(u)) bad(`${path} [${r.v}] 故事里的「${u}」没有解析`);
+    for (const w of ws) if (!used.includes(w)) bad(`${path} [${r.v}] 「${w}」没出现在故事里`);
+    for (const w of r.words) {
+      n++;
+      for (const k of ['de', 'zh', 'py', 'n']) if (!String(w[k] || '').trim()) bad(`${path} [${r.v}] 「${w.de}」缺 ${k}`);
+      if (w.py && !CJK.test(w.py)) bad(`${path} 「${w.de}」谐音含非中文字符: ${w.py}`);
+      if (!w.de.endsWith(r.v)) bad(`${path} 「${w.de}」要以词根 ${r.v} 结尾`);
+      if (w.pre && (!d.prefixes[w.pre] || !w.de.startsWith(w.pre))) bad(`${path} 「${w.de}」前缀 ${w.pre} 不在前缀表里或对不上`);
+      if (!Array.isArray(w.ex) || w.ex.length !== 3 || w.ex.some((x) => !String(x || '').trim())) bad(`${path} 「${w.de}」例句要是 [de, zh, py]`);
+      else if (!CJK.test(w.ex[2])) bad(`${path} 「${w.de}」例句谐音含非中文字符`);
+    }
+  }
+  console.log(`  ${path}: ${d.roots.length} 个词根 ${n} 个词`);
+}
 console.log('内容数据体检：');
 checkPhrases('data/categories.json');
 checkPhrases('data/en_categories.json');
@@ -121,5 +144,6 @@ checkDialogs('data/dialogs.json');
 checkDialogs('data/en_dialogs.json');
 checkResto('data/restaurant.json');
 checkKolloc('data/kolloc.json');
+checkAffix('data/affix.json');
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 内容数据全部通过');
