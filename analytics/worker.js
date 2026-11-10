@@ -8,7 +8,8 @@ const JSONH = { 'Content-Type': 'application/json; charset=utf-8' };
 // 付费课包：随 Worker 打包，只经 /api/pro/pack 发给有效会员。不进前端产物、不进 .dat。
 // （仓库是公开的，源码层面仍可见；要彻底不可见需把仓库设为私有，见 docs/COMMERCIAL.md）
 import PACK_ARZT from './packs/arzt.json' with { type: 'json' };
-const PRO_PACKS = { arzt: PACK_ARZT };
+import PACK_WOHNEN from './packs/wohnen.json' with { type: 'json' };
+const PRO_PACKS = { arzt: PACK_ARZT, wohnen: PACK_WOHNEN };
 // 兑换码字母表：去掉 0/O/1/I/L 这些手抄易混的字符。12 位 ≈ 59 bit，暴力猜不可行（另有频控）
 const CODE_ABC = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const CODE_DAYS = [30, 365, 36500];          // 月卡 / 年卡 / 永久（100 年）

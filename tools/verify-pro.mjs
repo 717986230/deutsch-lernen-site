@@ -101,19 +101,31 @@ if (!db.prepare('SELECT 1 FROM memberships WHERE uid=?').get(cid)) bad('永久�
 await call('POST', '/api/account/delete', { password: 'pass-carol-123' }, tc);
 if (db.prepare('SELECT 1 FROM memberships WHERE uid=?').get(cid)) bad('注销账号后会员记录还在'); else ok('注销账号连会员记录一起删除');
 
-// ── 课包内容体检：字段齐全、谐音只含中文 ──
+// ── 课包内容体检：每个 packs/*.json 都要在 worker 登记、在 PRO_CFG 有目录；字段齐全、谐音只含中文 ──
 const CJK = /^[一-鿿\s，。！？、；：「」（）·/\-↔—…]+$/;
-const pack = JSON.parse(readFileSync(join(ROOT, 'analytics/packs/arzt.json'), 'utf8'));
-let n = 0;
-for (const u of pack.units) {
-  for (const k of ['id', 'icon', 'name', 'tip']) if (!u[k]) bad(`课包单元缺 ${k}`);
-  for (const p of u.phrases) {
-    n++;
-    for (const k of ['de', 'zh', 'py']) if (!String(p[k] || '').trim()) bad(`「${p.de}」缺 ${k}`);
-    if (p.py && !CJK.test(p.py)) bad(`「${p.de}」谐音含非中文字符：${p.py}`);
+const { readdirSync } = await import('node:fs');
+const src = readFileSync(join(ROOT, 'src.html'), 'utf8');
+const cfg = JSON.parse(src.match(/var PRO_CFG=(\{.*?\});\n/)[1]);
+for (const f of readdirSync(join(ROOT, 'analytics/packs')).filter((x) => x.endsWith('.json'))) {
+  const pack = JSON.parse(readFileSync(join(ROOT, 'analytics/packs', f), 'utf8'));
+  if (pack.id + '.json' !== f) bad(`${f} 的 id 与文件名不一致`);
+  r = await call('GET', '/api/pro/pack?id=' + pack.id, undefined, tb, null, '192.0.2.77');
+  if (r.status !== 403) bad(`课包 ${pack.id} 没在 worker 的 PRO_PACKS 登记（非会员应 403，实际 ${r.status}）`);
+  const meta = cfg.packs.find((x) => x.id === pack.id);
+  if (!meta) bad(`课包 ${pack.id} 没在 src.html 的 PRO_CFG.packs 里`);
+  let n = 0;
+  for (const u of pack.units) {
+    for (const k of ['id', 'icon', 'name', 'tip']) if (!u[k]) bad(`${f} 单元缺 ${k}`);
+    for (const p of u.phrases) {
+      n++;
+      for (const k of ['de', 'zh', 'py']) if (!String(p[k] || '').trim()) bad(`${f}「${p.de}」缺 ${k}`);
+      if (p.py && !CJK.test(p.py)) bad(`${f}「${p.de}」谐音含非中文字符：${p.py}`);
+    }
   }
+  if (meta && !meta.desc.includes(n + ' 句')) bad(`PRO_CFG 里 ${pack.id} 的句数与实际 ${n} 不符`);
+  if (meta) for (const v of meta.preview) if (src.split(v[0]).length < 2) bad('试看句缺失');
+  ok(`课包「${pack.title}」${pack.units.length} 单元 ${n} 句：已登记、目录句数一致、字段与谐音合格`);
 }
-ok(`课包「${pack.title}」${pack.units.length} 单元 ${n} 句字段齐全`);
 
 console.log('会员与兑换码回归：发码鉴权 · 哈希存储 · 一码一用 · 续期叠加 · 过期关闭 · 猜码限流 · 注销删除');
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
