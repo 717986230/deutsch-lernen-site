@@ -28,7 +28,7 @@
 {"@type":"ListItem","position":1,"name":"英语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"英语字母与数字"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:850a7ad8bd6b -->
+<!-- src-hash:0b753a412e14 -->
 <style>#account{display:block}#account .auth-stage{display:none}
 
 :root{
@@ -919,6 +919,42 @@ body{padding-bottom:var(--tab-h)}
 /* 播放中转成中性底以区别于待机的绿。底色/字色都必须跟着主题走：
    原来写死 background:#fff 配 var(--text-dim)，深色主题下是浅灰压白，实测只有 2.32:1。 */
 .fab-read.playing,.fab-read.speaking{background:var(--surface);color:var(--text);border:1px solid var(--gold-faint);box-shadow:0 3px 12px rgba(0,0,0,.12)}
+/* 上新引导（What's New）：底部提示条 + 列表抽屉 + 圈出入口的气泡引导 */
+.wn-bar{position:fixed;left:12px;right:12px;bottom:calc(var(--tab-h) + 12px);z-index:310;max-width:520px;margin:0 auto;display:flex;align-items:stretch;background:var(--surface);border:1px solid var(--gold-dim);border-radius:16px;box-shadow:0 10px 30px -10px rgba(0,0,0,.35);animation:wnUp .28s ease-out}
+.wn-bar-main{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:56px;padding:8px 4px 8px 14px;border:0;background:none;font-family:inherit;color:var(--text);text-align:left;cursor:pointer}
+.wn-bar-ic{font-size:22px;line-height:1}
+.wn-bar-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.wn-bar-t b{font-size:14px}
+.wn-bar-t small{font-size:12px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wn-bar-go{font-size:13px;font-weight:700;color:var(--gold-text);white-space:nowrap}
+.wn-bar-x{width:44px;border:0;background:none;color:var(--text-faint);font-size:22px;cursor:pointer;font-family:inherit}
+@keyframes wnUp{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+.wn-ov{position:fixed;inset:0;z-index:1400;background:rgba(10,14,10,.5);display:flex;align-items:flex-end;justify-content:center}
+.wn-sheet{width:100%;max-width:560px;max-height:82vh;overflow:auto;background:var(--bg2);color:var(--text);border-radius:20px 20px 0 0;padding:6px 16px calc(16px + env(safe-area-inset-bottom));animation:wnUp .25s ease-out}
+.wn-head{position:sticky;top:0;display:flex;align-items:center;background:var(--bg2);padding:10px 0 6px;z-index:1}
+.wn-head h3{flex:1;margin:0;font-size:18px}
+.wn-x{width:44px;height:44px;border:0;background:none;color:var(--text-faint);font-size:26px;cursor:pointer;font-family:inherit}
+.wn-tour{display:block;width:100%;min-height:44px;margin:4px 0 10px;border:0;border-radius:12px;background:var(--gold);color:var(--on-brand);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.wn-sep{margin:14px 2px 6px;font-size:12px;color:var(--text-faint)}
+.wn-item{display:flex;gap:12px;padding:12px;margin-top:8px;background:var(--surface);border:1px solid var(--border);border-radius:14px}
+.wn-item.new{border-color:var(--gold-dim)}
+.wn-ic{font-size:26px;line-height:1.1;width:30px;text-align:center}
+.wn-body{flex:1;min-width:0}
+.wn-t{font-weight:700;font-size:15px}
+.wn-t em{margin-left:6px;padding:1px 6px;border-radius:8px;background:var(--gold-faint);color:var(--gold-text);font-size:11px;font-style:normal;vertical-align:2px}
+.wn-d{margin-top:4px;font-size:13px;line-height:1.55;color:var(--text-dim)}
+.wn-f{display:flex;align-items:center;margin-top:6px;font-size:12px;color:var(--text-faint)}
+.wn-f button{margin-left:auto;min-height:44px;padding:0 4px 0 12px;border:0;background:none;color:var(--gold-text);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.wn-catch{position:fixed;inset:0;z-index:1440}
+.wn-ring{position:fixed;z-index:1450;pointer-events:none;border-radius:16px;box-shadow:0 0 0 3px var(--gold),0 0 0 9999px rgba(10,14,10,.55);transition:all .2s}
+.wn-tip{position:fixed;left:16px;right:16px;max-width:420px;margin:0 auto;z-index:1460;background:var(--surface);border:1px solid var(--gold-dim);color:var(--text);border-radius:14px;padding:14px 14px 6px;box-shadow:0 12px 32px -8px rgba(0,0,0,.45)}
+.wn-tip-t{font-weight:700;font-size:15px}
+.wn-tip-d{margin-top:4px;font-size:14px;line-height:1.55;color:var(--text-dim)}
+.wn-tip-b{display:flex;justify-content:flex-end;gap:6px;margin-top:4px}
+.wn-tip-b button{min-height:44px;padding:0 12px;border:0;background:none;font-family:inherit;font-size:14px;cursor:pointer;color:var(--text-dim)}
+.wn-tip-b .wn-tip-ok{color:var(--gold-text);font-weight:700}
+.wn-dot{margin-left:8px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--gold);color:var(--on-brand);font-size:11px;font-style:normal;font-weight:700;line-height:18px;text-align:center}
+@media (prefers-reduced-motion:reduce){.wn-bar,.wn-sheet{animation:none}.wn-ring{transition:none}}
 </style>
 </head>
 <body class="lang-en">

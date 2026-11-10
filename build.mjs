@@ -155,6 +155,14 @@ async function build() {
       html = html.replace(ph, DEV ? json : `JSON.parse(_dec("${xorB64(json)}"))`);
     }
   }
+  // 上新引导：data/whatsnew.json 明文内联（只是功能介绍，不是词库，不用加密）。
+  // 以后上线新功能，往这个文件最前面加一条即可，老用户下次打开会看到「上新了」提示。
+  {
+    const WN = 'var WHATSNEW = __WHATSNEW__;';
+    if (!html.includes(WN)) throw new Error(`src.html 缺少声明 ${WN}`);
+    const wn = JSON.stringify(JSON.parse(readFileSync('data/whatsnew.json', 'utf8'))).replace(/</g, '\\u003c');
+    html = html.replace(WN, () => `var WHATSNEW = ${wn};`);
+  }
   // 解码器/垫片注入在第一个数据声明之前（dev 也注入，保证老内核行为一致）
   // 生产模式 categories 已被替换成 var categories=[];var _deP=... 的 de.dat 加载器，锚点随之变化
   const catStart = DEV ? html.indexOf('const categories = ') : html.indexOf('var categories=[];var _deP=');
