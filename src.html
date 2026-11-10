@@ -4320,7 +4320,7 @@ function _afWd(r,de){for(var k=0;k<r.words.length;k++)if(r.words[k].de===de)retu
 function _afSplit(w){return w.pre?'<i>'+_esc(w.pre)+'</i>'+_esc(w.de.slice(w.pre.length)):_esc(w.de);}
 function _afKind(w){
   if(!w.pre)return '<span class="af-tag">词根</span>';
-  var p=AFFIX.prefixes[w.pre],sep=p.t==='s'||(p.t==='b'&&w.sep);
+  var p=AFFIX.prefixes[w.pre],sep=typeof w.sep==='boolean'?w.sep:p.t==='s';
   return sep?'<span class="af-tag s">可分</span>':'<span class="af-tag u">不可分</span>';
 }
 function afRender(){

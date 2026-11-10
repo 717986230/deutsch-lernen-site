@@ -151,7 +151,7 @@ for _b in sorted(f for f in os.listdir(os.path.dirname(os.path.abspath(__file__)
   exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),_b)).read())
 for r in R:
   for w in r["words"]:
-    if w["pre"] and P[w["pre"]][2]=="b": w["sep"]= w["de"] not in INSEP
+    if w["pre"] and (P[w["pre"]][2]=="b" or (w["de"] in INSEP and P[w["pre"]][2]=="s")): w["sep"]= w["de"] not in INSEP
 out={"prefixes":{k:{"py":v[0],"zh":v[1],"t":v[2]} for k,v in P.items()},"roots":R}
 json.dump(out,open('data/affix.json','w'),ensure_ascii=False,indent=1)
 # sanity
