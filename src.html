@@ -4332,7 +4332,7 @@ function checkKollocQ(btn){
 // ══════════════════════════════════════
 // ═════ 会员 · 兑换码（#pro）═════
 // 定价与课包目录是公开信息，写在这里；课包正文只从 /api/pro/pack 下发给有效会员。
-var PRO_CFG={"buyUrl": "", "plans": [["年卡", "¥68", "€9", "365 天，到期可续"], ["永久", "¥128", "€16", "一次买断，以后的课包都有"]], "perks": ["全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的课包自动解锁", "支持手册继续免费、无广告地更新"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}]};
+var PRO_CFG={"buyUrl": "", "plans": [["年卡", "¥68", "€9", "365 天，到期可续"], ["永久", "¥499", "€59", "一次买断，以后的课包都有"]], "perks": ["全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的课包自动解锁", "支持手册继续免费、无广告地更新"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}]};
 var _pro={until:null,pack:null,unit:0,loading:false,msg:''};
 function _proActive(){return !!(_pro.until&&_pro.until>Date.now());}
 function _proDate(t){var d=new Date(t);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
