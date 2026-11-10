@@ -49,6 +49,10 @@ if (!browserEnv) { skipNoBrowser('词库弱网加载体检'); srv.close(); proce
 const { chromium, launch: launchOpts } = browserEnv;
 const browser = await chromium.launch(launchOpts);
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+// 只放行本地假服务器。开发容器本来就连不上外网，但 GitHub Actions 能连上线上后端：
+// 假 token 't1' 会被真实 /api/me 判 401 → 前端登出、锁屏，词句页就永远渲染不出来，
+// 体检测的就不再是「弱网重试」了（2026-11-10 CI 首跑实测）。外部请求一律掐掉，让两边环境一致。
+await page.route((u) => !u.href.startsWith(`http://localhost:${PORT}/`), (r) => r.abort());
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
 await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); } catch (e) {} });

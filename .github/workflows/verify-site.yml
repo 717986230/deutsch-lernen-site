@@ -46,5 +46,10 @@ jobs:
           npm i --no-save playwright@1.63.0
           npx playwright install --with-deps chromium
 
+      - name: 体检期间切断线上后端
+        # 体检用假 token（t1）登录。开发容器连不上外网，但 Actions 能连上真实后端，
+        # /api/me 会把假 token 判 401 → 前端登出锁屏，页面类体检就测偏了（首跑实测）。
+        run: echo "0.0.0.0 uuoo-analytics.uuoo.workers.dev" | sudo tee -a /etc/hosts
+
       - name: 全部体检（npm run verify）
         run: npm run verify
