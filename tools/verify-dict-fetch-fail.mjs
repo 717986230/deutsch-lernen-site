@@ -70,7 +70,10 @@ if (!s1.hasRetry) bad(`词句页加载失败后没有给「点击重试」按钮
 allowDat = true;   // 网络恢复
 if (s1.hasRetry) {
   await page.evaluate(() => document.getElementById('phRetryBtn').click());
-  await page.waitForTimeout(700);
+  // 等「恢复」这个结果出现，而不是固定睡 700ms：CI 机器下载+解密+渲染比开发机慢，
+  // 固定等待在 GitHub Actions 上会误报（2026-11-10 首跑实测）。等满 10 秒仍未恢复才算失败。
+  await page.waitForFunction(() => typeof categories !== 'undefined' && categories.length > 0
+    && document.querySelectorAll('#phraseContent .card').length > 0, null, { timeout: 10000 }).catch(() => {});
   const s2 = await page.evaluate(() => ({
     n: typeof categories !== 'undefined' ? categories.length : -1,
     cards: document.querySelectorAll('#phraseContent .card').length,
@@ -95,7 +98,8 @@ if (!s3.hasRetry) bad('英语拼写页加载失败后没有给「点击重试」
 allowDat = true;
 if (s3.hasRetry) {
   await page.evaluate(() => { const b = document.getElementById('spRetryBtn'); if (b) b.click(); });
-  await page.waitForTimeout(700);
+  await page.waitForFunction(() => /待记|都掌握啦/.test((document.getElementById('spPoolInfo') || {}).textContent || ''),
+    null, { timeout: 10000 }).catch(() => {});
   const info = await page.evaluate(() => (document.getElementById('spPoolInfo') || {}).textContent || '');
   if (!/待记|都掌握啦/.test(info)) bad(`点了重试，spPoolInfo 没有恢复正常，实际：${info}`);
 }
