@@ -61,6 +61,12 @@ if (existsSync(join(ROOT, 'data/kolloc.json'))) {
     note(it.ex[0], it.ex[2], `kolloc.json[${v.v} 例句]`);
   }
 }
+if (existsSync(join(ROOT, 'data/affix.json'))) {
+  for (const r of rd('data/affix.json').roots) for (const w of r.words) {
+    note(w.de, w.py, `affix.json[${r.v}]`);
+    note(w.ex[0], w.ex[2], `affix.json[${w.de} 例句]`);
+  }
+}
 for (const b of rd('data/boards.json')) for (const it of b.items) note(it[0], it[2], `boards.json[${b.name}]`);
 
 // src.html 里还有几张只存在于代码里的表

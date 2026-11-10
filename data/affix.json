@@ -1,0 +1,1031 @@
+{
+ "prefixes": {
+  "ab": {
+   "py": "阿普",
+   "zh": "离开、去掉、做完",
+   "t": "s"
+  },
+  "an": {
+   "py": "安",
+   "zh": "靠上、接触、开始",
+   "t": "s"
+  },
+  "auf": {
+   "py": "奥夫",
+   "zh": "向上、打开",
+   "t": "s"
+  },
+  "aus": {
+   "py": "奥斯",
+   "zh": "出去、拿出来、做到底",
+   "t": "s"
+  },
+  "ein": {
+   "py": "艾因",
+   "zh": "进入",
+   "t": "s"
+  },
+  "mit": {
+   "py": "米特",
+   "zh": "一起、跟着",
+   "t": "s"
+  },
+  "nach": {
+   "py": "纳赫",
+   "zh": "跟在后面、照着",
+   "t": "s"
+  },
+  "vor": {
+   "py": "佛尔",
+   "zh": "在前、事先、出现在眼前",
+   "t": "s"
+  },
+  "zu": {
+   "py": "粗",
+   "zh": "关上、朝向、增加",
+   "t": "s"
+  },
+  "weg": {
+   "py": "韦克",
+   "zh": "走开、离开",
+   "t": "s"
+  },
+  "los": {
+   "py": "洛斯",
+   "zh": "出发、开始",
+   "t": "s"
+  },
+  "zurück": {
+   "py": "楚吕克",
+   "zh": "回来、往回",
+   "t": "s"
+  },
+  "fest": {
+   "py": "费斯特",
+   "zh": "牢固 → 确定下来",
+   "t": "s"
+  },
+  "fern": {
+   "py": "费恩",
+   "zh": "远处",
+   "t": "s"
+  },
+  "teil": {
+   "py": "泰尔",
+   "zh": "一部分",
+   "t": "s"
+  },
+  "wieder": {
+   "py": "维德",
+   "zh": "再、又",
+   "t": "s"
+  },
+  "durch": {
+   "py": "杜尔希",
+   "zh": "穿过、从头到尾",
+   "t": "b"
+  },
+  "um": {
+   "py": "乌姆",
+   "zh": "转个方向、换掉",
+   "t": "b"
+  },
+  "über": {
+   "py": "于伯尔",
+   "zh": "越过、从上面过去",
+   "t": "b"
+  },
+  "unter": {
+   "py": "温特尔",
+   "zh": "向下、在下面",
+   "t": "b"
+  },
+  "be": {
+   "py": "贝",
+   "zh": "把动作落到对象上（变成及物）",
+   "t": "u"
+  },
+  "ver": {
+   "py": "费尔",
+   "zh": "改变、弄错、彻底",
+   "t": "u"
+  },
+  "er": {
+   "py": "埃尔",
+   "zh": "达成、得到结果",
+   "t": "u"
+  },
+  "wider": {
+   "py": "维德尔",
+   "zh": "反对、相反",
+   "t": "u"
+  }
+ },
+ "roots": [
+  {
+   "id": "arbeiten",
+   "icon": "💼",
+   "title": "打工人崩溃实录",
+   "v": "arbeiten",
+   "zh": "工作",
+   "py": "阿尔拜腾",
+   "story": [
+    "周一早上八点，又要{arbeiten}了",
+    "桌上堆着一摞文件等我{bearbeiten}",
+    "老板{ausarbeiten}的新方案，全组看了都沉默",
+    "摸鱼同事一点都不想{mitarbeiten}",
+    "一想到周末还得{durcharbeiten}，眼前一黑",
+    "算了，靠自己把待办一条条{abarbeiten}吧"
+   ],
+   "words": [
+    {
+     "de": "arbeiten",
+     "zh": "工作",
+     "py": "阿尔拜腾",
+     "pre": "",
+     "n": "词根。arbeiten 本身就是「干活、工作」",
+     "ex": [
+      "Ich arbeite heute bis sechs.",
+      "我今天上班到六点。",
+      "伊希 阿尔拜特 霍伊特 比斯 塞克斯。"
+     ]
+    },
+    {
+     "de": "bearbeiten",
+     "zh": "处理、加工",
+     "py": "贝阿尔拜腾",
+     "pre": "be",
+     "n": "be- 把「干活」落到一个对象上：对某件事下功夫 → 处理它。不可分，后面直接跟四格",
+     "ex": [
+      "Ich bearbeite Ihre Anfrage.",
+      "我正在处理您的申请。",
+      "伊希 贝阿尔拜特 伊雷 安弗拉格。"
+     ]
+    },
+    {
+     "de": "ausarbeiten",
+     "zh": "拟定、详细制定出",
+     "py": "奥斯阿尔拜腾",
+     "pre": "aus",
+     "n": "aus- 做到底、拿出成品：把计划一点点做完整、做出来",
+     "ex": [
+      "Wir arbeiten einen Plan aus.",
+      "我们拟一个详细计划。",
+      "维尔 阿尔拜腾 艾嫩 普兰 奥斯。"
+     ]
+    },
+    {
+     "de": "mitarbeiten",
+     "zh": "合作、参与工作",
+     "py": "米特阿尔拜腾",
+     "pre": "mit",
+     "n": "mit- 一起：一起干活 → 参与、配合。名词 der Mitarbeiter 就是「员工」",
+     "ex": [
+      "Er arbeitet im Projekt mit.",
+      "他参与这个项目。",
+      "埃尔 阿尔拜特特 伊姆 普罗耶克特 米特。"
+     ]
+    },
+    {
+     "de": "durcharbeiten",
+     "zh": "连轴干、从头到尾做完",
+     "py": "杜尔希阿尔拜腾",
+     "pre": "durch",
+     "n": "durch- 从头穿到尾：一口气干下来不停，或把一本书从头啃到尾",
+     "ex": [
+      "Wir haben die Nacht durchgearbeitet.",
+      "我们通宵干了一整夜。",
+      "维尔 哈本 迪 纳赫特 杜尔希格阿尔拜特特。"
+     ],
+     "sep": true
+    },
+    {
+     "de": "abarbeiten",
+     "zh": "一件件干完、清掉",
+     "py": "阿普阿尔拜腾",
+     "pre": "ab",
+     "n": "ab- 去掉、了结：把任务一项项划掉",
+     "ex": [
+      "Ich muss die Liste abarbeiten.",
+      "我得把清单上的事一件件干完。",
+      "伊希 穆斯 迪 利斯特 阿普阿尔拜腾。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "machen",
+   "icon": "🚪",
+   "title": "室友的深夜迷惑行为",
+   "v": "machen",
+   "zh": "做",
+   "py": "马赫恩",
+   "story": [
+    "凌晨一点，室友不知道在{machen}什么",
+    "先是{aufmachen}冰箱翻吃的",
+    "吃完又不{zumachen}冰箱门",
+    "非要拉我{mitmachen}他的减肥操",
+    "我只好跟着视频{nachmachen}开合跳",
+    "楼下大爷敲门：你们能不能先把音乐{ausmachen}"
+   ],
+   "words": [
+    {
+     "de": "machen",
+     "zh": "做、弄",
+     "py": "马赫恩",
+     "pre": "",
+     "n": "词根。machen 是「做、弄」，加前缀后意思很形象",
+     "ex": [
+      "Was machst du da?",
+      "你在那儿干嘛？",
+      "瓦斯 马赫斯特 度 达？"
+     ]
+    },
+    {
+     "de": "aufmachen",
+     "zh": "打开",
+     "py": "奥夫马亨",
+     "pre": "auf",
+     "n": "auf- 打开：门、窗、瓶子、店铺开门都能用",
+     "ex": [
+      "Mach bitte das Fenster auf!",
+      "请把窗户打开！",
+      "马赫 比特 达斯 芬斯特尔 奥夫！"
+     ]
+    },
+    {
+     "de": "zumachen",
+     "zh": "关上",
+     "py": "粗马亨",
+     "pre": "zu",
+     "n": "zu- 关上：和 aufmachen 正好一对",
+     "ex": [
+      "Mach die Tür zu!",
+      "把门关上！",
+      "马赫 迪 蒂尔 粗！"
+     ]
+    },
+    {
+     "de": "mitmachen",
+     "zh": "一起参加、跟着做",
+     "py": "米特马亨",
+     "pre": "mit",
+     "n": "mit- 一起：一起做 → 参加。Machst du mit? 你也来吗？",
+     "ex": [
+      "Machst du mit?",
+      "你也一起来吗？",
+      "马赫斯特 度 米特？"
+     ]
+    },
+    {
+     "de": "nachmachen",
+     "zh": "模仿、照着做",
+     "py": "纳赫马亨",
+     "pre": "nach",
+     "n": "nach- 跟在后面、照着：照别人的样子做",
+     "ex": [
+      "Die Kinder machen alles nach.",
+      "孩子们什么都学。",
+      "迪 金德尔 马赫恩 阿勒斯 纳赫。"
+     ]
+    },
+    {
+     "de": "ausmachen",
+     "zh": "关掉（灯、电器）",
+     "py": "奥斯马亨",
+     "pre": "aus",
+     "n": "aus- 熄灭：灯、电视、音乐「关掉」。开是 anmachen",
+     "ex": [
+      "Mach bitte das Licht aus!",
+      "请把灯关了！",
+      "马赫 比特 达斯 利希特 奥斯！"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kommen",
+   "icon": "⏰",
+   "title": "约会迟到的他",
+   "v": "kommen",
+   "zh": "来",
+   "py": "科门",
+   "story": [
+    "说好七点{kommen}，七点半还没人影",
+    "八点才{ankommen}，还一脸无辜",
+    "说路上{vorkommen}了点小状况",
+    "原来是超速，还{bekommen}了一张罚单",
+    "居然还想带他兄弟一起{mitkommen}",
+    "这样的人，谁能跟他{auskommen}啊"
+   ],
+   "words": [
+    {
+     "de": "kommen",
+     "zh": "来",
+     "py": "科门",
+     "pre": "",
+     "n": "词根。kommen 是「来」",
+     "ex": [
+      "Wann kommst du?",
+      "你什么时候来？",
+      "万 科姆斯特 度？"
+     ]
+    },
+    {
+     "de": "ankommen",
+     "zh": "到达",
+     "py": "安科门",
+     "pre": "an",
+     "n": "an- 靠上：靠到目的地 → 到达。Es kommt darauf an 是「看情况」",
+     "ex": [
+      "Der Zug kommt um acht an.",
+      "火车八点到。",
+      "德尔 粗克 科姆特 乌姆 阿赫特 安。"
+     ]
+    },
+    {
+     "de": "vorkommen",
+     "zh": "发生、出现",
+     "py": "佛尔科门",
+     "pre": "vor",
+     "n": "vor- 出现在眼前：事情冒出来 → 发生。也有「看起来」：Das kommt mir komisch vor",
+     "ex": [
+      "Das kommt oft vor.",
+      "这种事常有。",
+      "达斯 科姆特 奥夫特 佛尔。"
+     ]
+    },
+    {
+     "de": "bekommen",
+     "zh": "得到、收到",
+     "py": "贝科门",
+     "pre": "be",
+     "n": "be- 不可分。⚠️ 假朋友：不是英语 become，是「收到」",
+     "ex": [
+      "Ich habe eine Strafe bekommen.",
+      "我收到了一张罚单。",
+      "伊希 哈贝 埃内 施特拉费 贝科门。"
+     ]
+    },
+    {
+     "de": "mitkommen",
+     "zh": "一起来、跟着来",
+     "py": "米特科门",
+     "pre": "mit",
+     "n": "mit- 一起：Kommst du mit? 你一起来吗？",
+     "ex": [
+      "Kommst du mit?",
+      "你一起来吗？",
+      "科姆斯特 度 米特？"
+     ]
+    },
+    {
+     "de": "auskommen",
+     "zh": "相处、（钱）够用",
+     "py": "奥斯科门",
+     "pre": "aus",
+     "n": "aus- 撑到底：mit jemandem auskommen 跟某人处得来；mit dem Geld auskommen 钱够花",
+     "ex": [
+      "Ich komme gut mit ihm aus.",
+      "我跟他处得很好。",
+      "伊希 科默 古特 米特 伊姆 奥斯。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gehen",
+   "icon": "🪩",
+   "title": "周末蹦迪翻车",
+   "v": "gehen",
+   "zh": "走、去",
+   "py": "盖恩",
+   "story": [
+    "周末终于能出门{gehen}一趟",
+    "晚上约闺蜜{ausgehen}蹦迪",
+    "她让我{vorgehen}先去占座",
+    "一进门看见前任，我扭头就想{weggehen}",
+    "我的尖叫完全{untergehen}在音乐里",
+    "凌晨闺蜜还想跟陌生人{mitgehen}，被我拖回了家"
+   ],
+   "words": [
+    {
+     "de": "gehen",
+     "zh": "走、去",
+     "py": "盖恩",
+     "pre": "",
+     "n": "词根。gehen 是「走、去」",
+     "ex": [
+      "Ich gehe nach Hause.",
+      "我回家。",
+      "伊希 盖厄 纳赫 豪泽。"
+     ]
+    },
+    {
+     "de": "ausgehen",
+     "zh": "出去玩、外出",
+     "py": "奥斯盖恩",
+     "pre": "aus",
+     "n": "aus- 出去：晚上出门吃饭、喝酒、蹦迪。也指灯/火「灭了」",
+     "ex": [
+      "Wir gehen heute Abend aus.",
+      "我们今晚出去玩。",
+      "维尔 盖恩 霍伊特 阿本特 奥斯。"
+     ]
+    },
+    {
+     "de": "vorgehen",
+     "zh": "先走；（钟）走快",
+     "py": "佛尔盖恩",
+     "pre": "vor",
+     "n": "vor- 在前：走在前面 → 先走。Die Uhr geht vor 表快了",
+     "ex": [
+      "Geh schon mal vor!",
+      "你先走吧！",
+      "盖 肖恩 马尔 佛尔！"
+     ]
+    },
+    {
+     "de": "weggehen",
+     "zh": "走开、离开",
+     "py": "韦克盖恩",
+     "pre": "weg",
+     "n": "weg- 走开：Geh weg! 走开！",
+     "ex": [
+      "Geh weg!",
+      "走开！",
+      "盖 韦克！"
+     ]
+    },
+    {
+     "de": "untergehen",
+     "zh": "沉没、被淹没；（太阳）落下",
+     "py": "温特尔盖恩",
+     "pre": "unter",
+     "n": "unter- 向下：船沉了、声音被盖过、太阳落山都是它",
+     "ex": [
+      "Die Sonne geht unter.",
+      "太阳落山了。",
+      "迪 宗内 盖特 温特尔。"
+     ],
+     "sep": true
+    },
+    {
+     "de": "mitgehen",
+     "zh": "跟着去",
+     "py": "米特盖恩",
+     "pre": "mit",
+     "n": "mit- 一起：跟别人一起走",
+     "ex": [
+      "Ich gehe nicht mit.",
+      "我不跟着去。",
+      "伊希 盖厄 尼希特 米特。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "nehmen",
+   "icon": "🍰",
+   "title": "减肥第 30 天",
+   "v": "nehmen",
+   "zh": "拿、取",
+   "py": "内梅恩",
+   "story": [
+    "我发誓再也不{nehmen}零食",
+    "目标：一个月{abnehmen}五斤",
+    "同事拉我{teilnehmen}周五的聚餐",
+    "我很有礼貌地{annehmen}了邀请",
+    "还把吃剩的炸鸡{mitnehmen}回家当夜宵",
+    "一个月后上秤，反而{zunehmen}了三斤"
+   ],
+   "words": [
+    {
+     "de": "nehmen",
+     "zh": "拿、取、要",
+     "py": "内梅恩",
+     "pre": "",
+     "n": "词根。nehmen 是「拿」，点餐说 Ich nehme… 就是「我要…」",
+     "ex": [
+      "Ich nehme den Kuchen.",
+      "我要这块蛋糕。",
+      "伊希 内默 登 库亨。"
+     ]
+    },
+    {
+     "de": "abnehmen",
+     "zh": "减肥；摘下；接（电话）",
+     "py": "阿普内门",
+     "pre": "ab",
+     "n": "ab- 去掉：把体重拿掉 → 减肥。也能摘帽子、接电话",
+     "ex": [
+      "Ich will abnehmen.",
+      "我想减肥。",
+      "伊希 维尔 阿普内门。"
+     ]
+    },
+    {
+     "de": "teilnehmen",
+     "zh": "参加",
+     "py": "泰尔内门",
+     "pre": "teil",
+     "n": "teil 一部分：拿走一份 → 参与。搭配 an + 三格",
+     "ex": [
+      "Ich nehme am Kurs teil.",
+      "我参加这门课。",
+      "伊希 内默 阿姆 库尔斯 泰尔。"
+     ]
+    },
+    {
+     "de": "annehmen",
+     "zh": "接受；假设",
+     "py": "安内门",
+     "pre": "an",
+     "n": "an- 靠上：把东西接到手里 → 接受。也有「假设」",
+     "ex": [
+      "Ich nehme die Einladung an.",
+      "我接受邀请。",
+      "伊希 内默 迪 艾因拉东 安。"
+     ]
+    },
+    {
+     "de": "mitnehmen",
+     "zh": "带走、捎上",
+     "py": "米特内门",
+     "pre": "mit",
+     "n": "mit- 一起：拿着一起走 → 带走。外卖打包就是 zum Mitnehmen",
+     "ex": [
+      "Kann ich das mitnehmen?",
+      "这个我能带走吗？",
+      "坎 伊希 达斯 米特内门？"
+     ]
+    },
+    {
+     "de": "zunehmen",
+     "zh": "长胖；增加",
+     "py": "粗内门",
+     "pre": "zu",
+     "n": "zu- 增加：和 abnehmen 正好相反",
+     "ex": [
+      "Ich habe drei Kilo zugenommen.",
+      "我胖了三公斤。",
+      "伊希 哈贝 德莱 基洛 粗格诺门。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "stellen",
+   "icon": "🧋",
+   "title": "入职第一天",
+   "v": "stellen",
+   "zh": "竖着放",
+   "py": "施特伦",
+   "story": [
+    "第一天上班，先把工位的椅子{stellen}好",
+    "老板让我在会上{vorstellen}一下自己",
+    "然后叫我给全组{bestellen}奶茶",
+    "拎着十杯奶茶，赶紧{abstellen}在桌上",
+    "听说公司还要{einstellen}三个实习生",
+    "下班才{feststellen}：奶茶钱根本没人给我"
+   ],
+   "words": [
+    {
+     "de": "stellen",
+     "zh": "竖着放、摆",
+     "py": "施特伦",
+     "pre": "",
+     "n": "词根。stellen 是「（竖着）放」，平放是 legen",
+     "ex": [
+      "Stell die Flasche auf den Tisch.",
+      "把瓶子立在桌上。",
+      "施特尔 迪 弗拉舍 奥夫 登 提什。"
+     ]
+    },
+    {
+     "de": "vorstellen",
+     "zh": "介绍；想象",
+     "py": "佛尔施特伦",
+     "pre": "vor",
+     "n": "vor- 在前：把自己摆到别人面前 → 介绍。sich etwas vorstellen 是「想象」",
+     "ex": [
+      "Darf ich mich kurz vorstellen?",
+      "我可以简单自我介绍一下吗？",
+      "达尔夫 伊希 米希 库尔茨 佛尔施泰伦？"
+     ]
+    },
+    {
+     "de": "bestellen",
+     "zh": "订购、点（餐）",
+     "py": "贝施特伦",
+     "pre": "be",
+     "n": "be- 不可分：点外卖、订东西、订座都用它",
+     "ex": [
+      "Wir bestellen Pizza.",
+      "我们点披萨。",
+      "维尔 贝施泰伦 皮扎。"
+     ]
+    },
+    {
+     "de": "abstellen",
+     "zh": "放下、停放；关掉",
+     "py": "阿普施特伦",
+     "pre": "ab",
+     "n": "ab- 离手：把东西放下、把车停好；也能关掉水、暖气",
+     "ex": [
+      "Wo kann ich das Fahrrad abstellen?",
+      "自行车能停哪儿？",
+      "沃 坎 伊希 达斯 法拉特 阿普施泰伦？"
+     ]
+    },
+    {
+     "de": "einstellen",
+     "zh": "雇用；调好（设备）",
+     "py": "艾因施特伦",
+     "pre": "ein",
+     "n": "ein- 进入：把人放进公司 → 雇用；把参数放进去 → 设置。手机的「设置」就是 Einstellungen",
+     "ex": [
+      "Die Firma stellt drei Leute ein.",
+      "公司招三个人。",
+      "迪 菲尔马 施特尔特 德莱 洛伊特 艾因。"
+     ]
+    },
+    {
+     "de": "feststellen",
+     "zh": "发现、确定",
+     "py": "费斯特施特伦",
+     "pre": "fest",
+     "n": "fest 牢固：把事实钉牢 → 查明、发现",
+     "ex": [
+      "Ich habe einen Fehler festgestellt.",
+      "我发现了一个错误。",
+      "伊希 哈贝 艾嫩 费勒 费斯特格施泰尔特。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sprechen",
+   "icon": "🗣️",
+   "title": "年终加薪会",
+   "v": "sprechen",
+   "zh": "说话",
+   "py": "施普雷程",
+   "story": [
+    "开会时，谁都不敢{sprechen}",
+    "老板说要{besprechen}一下年终奖",
+    "去年他明明{versprechen}过涨薪",
+    "今年连「涨」字都不敢{aussprechen}",
+    "我鼓起勇气想{ansprechen}这件事",
+    "他立刻{widersprechen}：今年经济不好"
+   ],
+   "words": [
+    {
+     "de": "sprechen",
+     "zh": "说话、讲",
+     "py": "施普雷程",
+     "pre": "",
+     "n": "词根。sprechen 是「说」",
+     "ex": [
+      "Wir sprechen zu Hause Deutsch.",
+      "我们在家说德语。",
+      "维尔 施普雷程 粗 豪泽 多伊奇。"
+     ]
+    },
+    {
+     "de": "besprechen",
+     "zh": "商量、讨论",
+     "py": "贝施普雷兴",
+     "pre": "be",
+     "n": "be- 不可分、变及物：sprechen über etwas = etwas besprechen，不用再加 über",
+     "ex": [
+      "Das besprechen wir morgen.",
+      "这个我们明天商量。",
+      "达斯 贝施普雷兴 维尔 摩根。"
+     ]
+    },
+    {
+     "de": "versprechen",
+     "zh": "承诺、答应",
+     "py": "费尔施普雷兴",
+     "pre": "ver",
+     "n": "ver- 不可分。sich versprechen 反而是「说错嘴」——ver- 常带「弄错」的意思",
+     "ex": [
+      "Ich verspreche es dir.",
+      "我答应你。",
+      "伊希 费尔施普雷歇 埃斯 迪尔。"
+     ]
+    },
+    {
+     "de": "aussprechen",
+     "zh": "说出口；发音",
+     "py": "奥斯施普雷亨",
+     "pre": "aus",
+     "n": "aus- 说出来：把话说出口；也是「发音」，名词 die Aussprache",
+     "ex": [
+      "Wie spricht man das Wort aus?",
+      "这个词怎么念？",
+      "维 施普里希特 曼 达斯 沃尔特 奥斯？"
+     ]
+    },
+    {
+     "de": "ansprechen",
+     "zh": "搭话；提起（话题）",
+     "py": "安施普雷兴",
+     "pre": "an",
+     "n": "an- 冲着某人：跟陌生人搭话，或把话题提出来",
+     "ex": [
+      "Er hat mich auf Deutsch angesprochen.",
+      "他用德语跟我搭话。",
+      "埃尔 哈特 米希 奥夫 多伊奇 安格施普罗亨。"
+     ]
+    },
+    {
+     "de": "widersprechen",
+     "zh": "反驳、和…矛盾",
+     "py": "维德尔施普雷赫恩",
+     "pre": "wider",
+     "n": "wider- 相反、不可分：对着说 → 反驳，后面跟三格",
+     "ex": [
+      "Da muss ich dir widersprechen.",
+      "这点我得反驳你。",
+      "达 穆斯 伊希 迪尔 维德尔施普雷兴。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ziehen",
+   "icon": "📦",
+   "title": "搬家搬到怀疑人生",
+   "v": "ziehen",
+   "zh": "拉",
+   "py": "茨嗯",
+   "story": [
+    "房东又涨租，只能{umziehen}",
+    "周五从老房子{ausziehen}",
+    "拖着三个大箱子在雪地里使劲{ziehen}",
+    "零下五度，出门前多{anziehen}两件",
+    "周日终于{einziehen}新家",
+    "累到半夜，才给床{beziehen}好被套"
+   ],
+   "words": [
+    {
+     "de": "ziehen",
+     "zh": "拉",
+     "py": "茨嗯",
+     "pre": "",
+     "n": "词根。ziehen 是「拉」，门上写 Ziehen 就是拉，Drücken 是推",
+     "ex": [
+      "Ziehen, nicht drücken!",
+      "是拉，不是推！",
+      "齐恩，尼希特 德吕肯！"
+     ]
+    },
+    {
+     "de": "umziehen",
+     "zh": "搬家；换衣服",
+     "py": "乌姆齐恩",
+     "pre": "um",
+     "n": "um- 换掉：换个住处 → 搬家；sich umziehen 换衣服",
+     "ex": [
+      "Wir ziehen nach Wien um.",
+      "我们搬去维也纳。",
+      "维尔 齐恩 纳赫 维恩 乌姆。"
+     ],
+     "sep": true
+    },
+    {
+     "de": "ausziehen",
+     "zh": "搬出；脱（衣服）",
+     "py": "奥斯齐恩",
+     "pre": "aus",
+     "n": "aus- 出去：从房子里搬出；把衣服从身上拉下来 → 脱",
+     "ex": [
+      "Ich ziehe am Freitag aus.",
+      "我周五搬走。",
+      "伊希 齐厄 阿姆 弗莱塔克 奥斯。"
+     ]
+    },
+    {
+     "de": "anziehen",
+     "zh": "穿上；吸引",
+     "py": "安齐恩",
+     "pre": "an",
+     "n": "an- 贴上：把衣服拉到身上 → 穿",
+     "ex": [
+      "Zieh dich warm an!",
+      "穿暖和点！",
+      "齐 迪希 瓦尔姆 安！"
+     ]
+    },
+    {
+     "de": "einziehen",
+     "zh": "搬进、入住",
+     "py": "艾因齐恩",
+     "pre": "ein",
+     "n": "ein- 进入：搬进新家，和 ausziehen 正好相反",
+     "ex": [
+      "Wann ziehst du ein?",
+      "你什么时候搬进来？",
+      "万 齐斯特 度 艾因？"
+     ]
+    },
+    {
+     "de": "beziehen",
+     "zh": "套上（被套）；领取",
+     "py": "贝齐恩",
+     "pre": "be",
+     "n": "be- 不可分、覆盖到对象上：das Bett beziehen 铺床套被套；也有「领取（工资）」",
+     "ex": [
+      "Ich beziehe das Bett.",
+      "我来铺床。",
+      "伊希 贝齐厄 达斯 贝特。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fahren",
+   "icon": "🚗",
+   "title": "自驾游翻车记",
+   "v": "fahren",
+   "zh": "开车、乘车",
+   "py": "法伦",
+   "story": [
+    "周末决定开车{fahren}去郊外",
+    "早上七点准时{losfahren}",
+    "导航没信号，很快就{verfahren}了",
+    "转弯时差点{überfahren}一只鸭子",
+    "到了才{erfahren}：景区周一闭园",
+    "只好原路{zurückfahren}"
+   ],
+   "words": [
+    {
+     "de": "fahren",
+     "zh": "开车、坐车去",
+     "py": "法伦",
+     "pre": "",
+     "n": "词根。fahren 是「乘交通工具走」，走路用 gehen",
+     "ex": [
+      "Ich fahre mit dem Auto.",
+      "我开车去。",
+      "伊希 法勒 米特 登 奥托。"
+     ]
+    },
+    {
+     "de": "losfahren",
+     "zh": "出发（开车）",
+     "py": "洛斯法伦",
+     "pre": "los",
+     "n": "los- 出发、开始：Los geht's! 开始吧！",
+     "ex": [
+      "Wann fahren wir los?",
+      "我们几点出发？",
+      "万 法伦 维尔 洛斯？"
+     ]
+    },
+    {
+     "de": "verfahren",
+     "zh": "（开车）迷路",
+     "py": "费尔法伦",
+     "pre": "ver",
+     "n": "ver- 弄错：sich verfahren 开错路。同理 sich verlaufen 走错路",
+     "ex": [
+      "Wir haben uns verfahren.",
+      "我们开错路了。",
+      "维尔 哈本 翁斯 费尔法伦。"
+     ]
+    },
+    {
+     "de": "überfahren",
+     "zh": "碾过；闯（红灯）",
+     "py": "于伯尔法伦",
+     "pre": "über",
+     "n": "über- 从上面过去，这里不可分：碾过、闯红灯",
+     "ex": [
+      "Fast hätte ich eine Ente überfahren.",
+      "我差点轧到一只鸭子。",
+      "法斯特 赫特 伊希 埃内 恩特 于伯尔法伦。"
+     ],
+     "sep": false
+    },
+    {
+     "de": "erfahren",
+     "zh": "得知；经历",
+     "py": "埃尔法伦",
+     "pre": "er",
+     "n": "er- 得到结果：一路「走」下来得到的 → 得知、经历。形容词 erfahren = 有经验的",
+     "ex": [
+      "Das habe ich gerade erfahren.",
+      "我刚知道这事。",
+      "达斯 哈贝 伊希 格拉德 埃尔法伦。"
+     ]
+    },
+    {
+     "de": "zurückfahren",
+     "zh": "开回去、返程",
+     "py": "楚吕克法伦",
+     "pre": "zurück",
+     "n": "zurück- 往回：坐车/开车回去",
+     "ex": [
+      "Wir fahren morgen zurück.",
+      "我们明天回去。",
+      "维尔 法伦 摩根 楚吕克。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sehen",
+   "icon": "💘",
+   "title": "相亲现场",
+   "v": "sehen",
+   "zh": "看见",
+   "py": "泽恩",
+   "story": [
+    "第一次{sehen}相亲对象",
+    "照片上很帅，本人{aussehen}像他二舅",
+    "他说周末只爱在家{fernsehen}",
+    "整顿饭都没正眼{ansehen}我",
+    "结账时他「刚好」{übersehen}了账单",
+    "临走他说：下次再{wiedersehen}？算了吧"
+   ],
+   "words": [
+    {
+     "de": "sehen",
+     "zh": "看见",
+     "py": "泽恩",
+     "pre": "",
+     "n": "词根。sehen 是「看见」",
+     "ex": [
+      "Ich sehe dich.",
+      "我看见你了。",
+      "伊希 泽厄 迪希。"
+     ]
+    },
+    {
+     "de": "aussehen",
+     "zh": "看起来",
+     "py": "奥斯泽恩",
+     "pre": "aus",
+     "n": "aus- 向外：从外面看上去 → 长得、看起来",
+     "ex": [
+      "Du siehst müde aus.",
+      "你看起来很累。",
+      "度 齐斯特 米德 奥斯。"
+     ]
+    },
+    {
+     "de": "fernsehen",
+     "zh": "看电视",
+     "py": "费恩泽恩",
+     "pre": "fern",
+     "n": "fern 远：看远处传来的画面 → 看电视。电视机 der Fernseher",
+     "ex": [
+      "Ich sehe abends fern.",
+      "我晚上看电视。",
+      "伊希 泽厄 阿本茨 费恩。"
+     ]
+    },
+    {
+     "de": "ansehen",
+     "zh": "看着、端详",
+     "py": "安泽恩",
+     "pre": "an",
+     "n": "an- 冲着：盯着某人/某物看；sich etwas ansehen 仔细看看",
+     "ex": [
+      "Sieh mich an!",
+      "看着我！",
+      "齐 米希 安！"
+     ]
+    },
+    {
+     "de": "übersehen",
+     "zh": "看漏、忽略",
+     "py": "于伯尔泽恩",
+     "pre": "über",
+     "n": "über- 越过、这里不可分：目光越过去了 → 没看到",
+     "ex": [
+      "Das habe ich übersehen.",
+      "这个我看漏了。",
+      "达斯 哈贝 伊希 于伯尔泽恩。"
+     ],
+     "sep": false
+    },
+    {
+     "de": "wiedersehen",
+     "zh": "再见到",
+     "py": "维德泽恩",
+     "pre": "wieder",
+     "n": "wieder- 再：再见一次面。Auf Wiedersehen 就是这么来的",
+     "ex": [
+      "Wann sehen wir uns wieder?",
+      "我们什么时候再见面？",
+      "万 泽恩 维尔 翁斯 维德？"
+     ]
+    }
+   ]
+  }
+ ]
+}

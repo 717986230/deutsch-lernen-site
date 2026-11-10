@@ -47,6 +47,8 @@ const DATA_FILES = {
   RESTO: 'data/restaurant.json',
   // 动词搭配（#kolloc）：Verb + Nomen 固定搭配，按动词分组。打开版块或开练才解码
   KOLLOC: 'data/kolloc.json',
+  // 词缀情景记忆（#affix）：词根 + 前缀小故事。打开版块才解码
+  AFFIX: 'data/affix.json',
 };
 
 
@@ -88,7 +90,7 @@ async function build() {
   //    categories 首屏可能即用 → 立即解密；其余 4 个用到才解密（懒加载），
   //    尤其英语库最大且很少用，避免首屏白解一大坨。
   // categories 也懒解密：硬登录门槛下登录页用不到词库，解锁后首次访问才解（见 src 的 setLang 上锁早退）
-  const LAZY = new Set(['READINGS', 'SERIES', 'RD_GLOSS', 'DIALOGUES', 'RESTO', 'KOLLOC']);   // 打开对应版块才解码
+  const LAZY = new Set(['READINGS', 'SERIES', 'RD_GLOSS', 'DIALOGUES', 'RESTO', 'KOLLOC', 'AFFIX']);   // 打开对应版块才解码
   let deFile = 'categories(inline)';
   for (const [name, path] of Object.entries(DATA_FILES)) {
     const json = JSON.stringify(JSON.parse(readFileSync(path, 'utf8'))); // 校验 + 压缩

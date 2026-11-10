@@ -28,7 +28,7 @@
 {"@type":"ListItem","position":1,"name":"英语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"英语语法速查"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:44a0b593c555 -->
+<!-- src-hash:5e1d437b2d16 -->
 <style>#account{display:block}#account .auth-stage{display:none}
 
 :root{
@@ -82,6 +82,35 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .kc-ex{margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);font-size:13px;color:var(--text);line-height:1.5}
 .kc-ex .rs-zh,.kc-ex .rs-py{font-size:12px}
 .kc-tip{font-size:12.5px;color:var(--text-dim);margin:-2px 0 8px;line-height:1.55}
+/* 词缀情景记忆（#affix） */
+:root{--mark:#ffe58a;--mark-pre:#a8382a}
+:root[data-theme="dark"]{--mark:#4f3f0c;--mark-pre:#ffb59c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--mark:#4f3f0c;--mark-pre:#ffb59c}}
+.af-story{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 14px 6px;box-shadow:var(--shadow);margin-bottom:12px}
+.af-title{font-size:16px;font-weight:800;color:var(--text);margin:0 0 6px;display:flex;align-items:center;gap:8px}
+.af-title small{font-weight:500;font-size:12px;color:var(--text-faint)}
+.af-line{font-size:15px;line-height:1.5;color:var(--text);padding:8px 0;border-bottom:1px dashed var(--border)}
+.af-line:last-child{border-bottom:none}
+.af-w{display:inline-flex;flex-direction:column;align-items:center;vertical-align:top;margin:0 2px;min-height:44px;min-width:44px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.af-w b{background:var(--mark);color:var(--text);border-radius:5px;padding:1px 5px;font-weight:800}
+.af-w b i,.af-de i{font-style:normal;color:var(--mark-pre)}
+.af-w small{font-size:12px;font-weight:700;color:var(--gold-text);line-height:1.3;margin-top:1px}
+.af-w.on b{outline:2px solid var(--gold);outline-offset:1px}
+.af-hide .af-w:not(.af-open) small{color:transparent;background:var(--surface-2);border:1px dashed var(--text-faint);border-radius:5px;min-width:2.4em}
+.af-tools{display:flex;gap:8px;margin:0 0 12px;flex-wrap:wrap}
+.af-tools .btn{min-height:44px;padding:8px 14px;font-size:13px}
+.af-de{font-size:17px;font-weight:800;color:var(--text);line-height:1.4}
+.af-tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:700;vertical-align:2px;border:1px solid var(--border);color:var(--text-dim)}
+.af-tag.s{color:var(--ok-text);border-color:var(--ok-text)}
+.af-tag.u{color:var(--blue-text);border-color:var(--blue-text)}
+.af-n{font-size:13px;color:var(--text);line-height:1.6;margin-top:4px}
+.af-n b{color:var(--mark-pre)}
+.af-nav{display:flex;gap:8px;margin:16px 0 8px}
+.af-nav .btn{flex:1;min-height:44px}
+.af-pfx{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:8px}
+.af-pfx div{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 9px;font-size:12px;color:var(--text-dim);line-height:1.45}
+.af-pfx b{color:var(--mark-pre);font-size:14px}
+.af-sum{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:800;color:var(--text)}
 /* 餐厅特训（#resto） */
 .rs-cta{display:block;width:100%;min-height:44px;margin:0 0 12px;padding:10px 14px;border-radius:14px;border:1px dashed var(--gold-dim);background:var(--gold-faint);color:var(--gold-text);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;text-align:left}
 .rs-tabs .level-tab{min-height:44px}

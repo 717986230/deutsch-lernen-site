@@ -111,6 +111,35 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .kc-ex{margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);font-size:13px;color:var(--text);line-height:1.5}
 .kc-ex .rs-zh,.kc-ex .rs-py{font-size:12px}
 .kc-tip{font-size:12.5px;color:var(--text-dim);margin:-2px 0 8px;line-height:1.55}
+/* 词缀情景记忆（#affix） */
+:root{--mark:#ffe58a;--mark-pre:#a8382a}
+:root[data-theme="dark"]{--mark:#4f3f0c;--mark-pre:#ffb59c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--mark:#4f3f0c;--mark-pre:#ffb59c}}
+.af-story{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 14px 6px;box-shadow:var(--shadow);margin-bottom:12px}
+.af-title{font-size:16px;font-weight:800;color:var(--text);margin:0 0 6px;display:flex;align-items:center;gap:8px}
+.af-title small{font-weight:500;font-size:12px;color:var(--text-faint)}
+.af-line{font-size:15px;line-height:1.5;color:var(--text);padding:8px 0;border-bottom:1px dashed var(--border)}
+.af-line:last-child{border-bottom:none}
+.af-w{display:inline-flex;flex-direction:column;align-items:center;vertical-align:top;margin:0 2px;min-height:44px;min-width:44px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.af-w b{background:var(--mark);color:var(--text);border-radius:5px;padding:1px 5px;font-weight:800}
+.af-w b i,.af-de i{font-style:normal;color:var(--mark-pre)}
+.af-w small{font-size:12px;font-weight:700;color:var(--gold-text);line-height:1.3;margin-top:1px}
+.af-w.on b{outline:2px solid var(--gold);outline-offset:1px}
+.af-hide .af-w:not(.af-open) small{color:transparent;background:var(--surface-2);border:1px dashed var(--text-faint);border-radius:5px;min-width:2.4em}
+.af-tools{display:flex;gap:8px;margin:0 0 12px;flex-wrap:wrap}
+.af-tools .btn{min-height:44px;padding:8px 14px;font-size:13px}
+.af-de{font-size:17px;font-weight:800;color:var(--text);line-height:1.4}
+.af-tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:700;vertical-align:2px;border:1px solid var(--border);color:var(--text-dim)}
+.af-tag.s{color:var(--ok-text);border-color:var(--ok-text)}
+.af-tag.u{color:var(--blue-text);border-color:var(--blue-text)}
+.af-n{font-size:13px;color:var(--text);line-height:1.6;margin-top:4px}
+.af-n b{color:var(--mark-pre)}
+.af-nav{display:flex;gap:8px;margin:16px 0 8px}
+.af-nav .btn{flex:1;min-height:44px}
+.af-pfx{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:8px}
+.af-pfx div{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 9px;font-size:12px;color:var(--text-dim);line-height:1.45}
+.af-pfx b{color:var(--mark-pre);font-size:14px}
+.af-sum{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:800;color:var(--text)}
 /* 餐厅特训（#resto） */
 .rs-cta{display:block;width:100%;min-height:44px;margin:0 0 12px;padding:10px 14px;border-radius:14px;border:1px dashed var(--gold-dim);background:var(--gold-faint);color:var(--gold-text);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;text-align:left}
 .rs-tabs .level-tab{min-height:44px}
@@ -776,6 +805,7 @@ body.lang-en #homeBoost{display:none!important}
     <div class="hg-grid">
       <a class="hg-tile" href="#kolloc" onclick="kcOpen(-1);return false"><div class="fic fic-blue" style="font-size:22px;line-height:1">🧩</div><span>搭配卡片</span></a>
       <a class="hg-tile" href="#kolloc" onclick="kcQuiz();return false"><div class="fic fic-green" style="font-size:22px;line-height:1">🎯</div><span>选动词</span></a>
+      <a class="hg-tile" href="#affix" onclick="afOpen(0);return false"><div class="fic fic-orange" style="font-size:22px;line-height:1">🧠</div><span>词缀记忆</span></a>
     </div>
     <div class="hg-title">方位介词</div>
     <div class="hg-grid">
@@ -1599,6 +1629,16 @@ body.lang-en #homeBoost{display:none!important}
     <div class="rs-chips" id="kcChips" role="tablist"></div>
     <div class="rs-seg" role="group" aria-label="显示方式"><button type="button" id="kcShow" class="on" onclick="kcHide(false)">📖 全部显示</button><button type="button" id="kcHideBtn" onclick="kcHide(true)">🙈 遮住动词</button></div>
     <div id="kcBody"></div>
+  </div>
+</div>
+
+<div id="affix" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Präfix + Verb</div>
+    <h2 class="page-title">词缀情景记忆</h2>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">一个词根 + 不同前缀 = 一串新词<br>串成一段好笑的小故事，点黄色的词听发音</p>
+    <div class="rs-chips" id="afChips" role="tablist"></div>
+    <div id="afBody"></div>
   </div>
 </div>
 
@@ -2659,7 +2699,7 @@ function _syncLangSwitch(id){
 }
 function showSection(id){
   // 语言状态和深链都走这里：不能让英语用户误入仍未实现的德语专属工具。
-  if(LANG==='en'&&['body','resto','kolloc'].indexOf(id)>=0)id='phrases';
+  if(LANG==='en'&&['body','resto','kolloc','affix'].indexOf(id)>=0)id='phrases';
   _syncLangSwitch(id);
   if(typeof stopAutoPlay==='function')stopAutoPlay();
   if(typeof stopReading==='function')stopReading();
@@ -2690,8 +2730,9 @@ function showSection(id){
   if(id==='dialog'&&typeof renderDialogues==='function')renderDialogues();
   if(id==='resto'&&typeof rsInit==='function')rsInit();
   if(id==='kolloc'&&typeof kcInit==='function')kcInit();
+  if(id==='affix'&&typeof afInit==='function')afInit();
   if(id==='pro'&&typeof proInit==='function')proInit();
-  var _bsec={me:'account',account:'account',wordbook:'account',stats:'account',rank:'account',support:'account',pro:'account',series:'reading',dialog:'reading',quiz:'spell',resto:'home',kolloc:'home',pronunciation:'home',numbers:'home',grammar:'home',body:'home','en-pron':'home','en-num':'home','en-grammar':'home'}[id]||id;
+  var _bsec={me:'account',account:'account',wordbook:'account',stats:'account',rank:'account',support:'account',pro:'account',series:'reading',dialog:'reading',quiz:'spell',resto:'home',kolloc:'home',affix:'home',pronunciation:'home',numbers:'home',grammar:'home',body:'home','en-pron':'home','en-num':'home','en-grammar':'home'}[id]||id;
   document.querySelectorAll('#bottomNav .bn-btn').forEach(function(b){var on=b.getAttribute('data-sec')===_bsec;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   // 图解页(body)自己就是查词界面，再挂一个「拼读查词」既重复又和选中词浮条抢位置
   document.body.classList.toggle('hide-fab',id==='home'||id==='account'||id==='me'||id==='rank'||id==='spell'||id==='body');
@@ -2705,7 +2746,7 @@ function showSection(id){
 var _rendered={};
 
 // ── 版块历史：pushState 记录版块，返回键/右滑在站内后退不退站；#hash 白名单深链 ──
-var SEC_IDS='home pronunciation numbers grammar phrases reading series dialog resto kolloc quiz spell rank body support pro legal me account en-pron en-num en-grammar wordbook stats'.split(' ');
+var SEC_IDS='home pronunciation numbers grammar phrases reading series dialog resto kolloc affix quiz spell rank body support pro legal me account en-pron en-num en-grammar wordbook stats'.split(' ');
 var _histNav=false,_histInit=false,_deepSec=null;
 // 打开站点直接落在「语句」：首页是导览页，天天用的是背句子，少一次点击。
 // 首页仍在底部导航里，随时可回。改这里一处，下面三个入口都跟着走。
@@ -4186,6 +4227,7 @@ function setReadTopic(t){
 const DIALOGUES = __DATA_DIALOGUES__;
 const RESTO = __DATA_RESTO__;
 const KOLLOC = __DATA_KOLLOC__;
+const AFFIX = __DATA_AFFIX__;
 var _dlgRendered=false,_dlgPlaying=-1;
 function _getDialogues(){return LANG==='en'?EN_DIALOGUES:DIALOGUES;}
 function renderDialogues(){
@@ -4223,6 +4265,86 @@ function dialogPlay(di){
     speechSynthesis.speak(u);
   }
   try{speechSynthesis.cancel();}catch(e){}setTimeout(step,60);
+}
+// ══════════════════════════════════════
+// 词缀情景记忆（#affix）：同一词根 + 不同前缀，串成一段好笑的中文小故事
+// ══════════════════════════════════════
+// 数据：AFFIX = data/affix.json（prefixes{前缀:{py,zh,t}}，roots[{id,icon,title,v,zh,py,story[],words[{de,zh,py,pre,n,ex,sep?}]}]），懒解码。
+// 故事行里的 {词} 必须是 words 里的 de（verify-data 校验）。t：s 可分 / u 不可分 / b 两可（看 sep）。
+var _af={i:0,hide:false};
+function afOpen(i){_af.i=i||0;showSection('affix');}
+function afInit(){
+  var c=document.getElementById('afChips');if(!c)return;
+  var R=AFFIX.roots,h='';
+  for(var i=0;i<R.length;i++)h+='<button type="button" role="tab" aria-selected="'+(_af.i===i)+'" class="'+(_af.i===i?'on':'')+'" onclick="afGo('+i+')">'+R[i].icon+' <span lang="de">'+_esc(R[i].v)+'</span></button>';
+  c.innerHTML=h;
+  var on=c.querySelector('.on');if(on)try{c.scrollLeft=on.offsetLeft-c.offsetWidth/2+on.offsetWidth/2;}catch(e){}
+  afRender();
+}
+function afGo(i){if(typeof _stopPageRead==='function')_stopPageRead();_af.i=i;afInit();var el=document.getElementById('afChips');if(el&&el.getBoundingClientRect().top<0)try{el.scrollIntoView({block:'start'});}catch(e){}}
+function _afWd(r,de){for(var k=0;k<r.words.length;k++)if(r.words[k].de===de)return k;return -1;}
+function _afSplit(w){return w.pre?'<i>'+_esc(w.pre)+'</i>'+_esc(w.de.slice(w.pre.length)):_esc(w.de);}
+function _afKind(w){
+  if(!w.pre)return '<span class="af-tag">词根</span>';
+  var p=AFFIX.prefixes[w.pre],sep=p.t==='s'||(p.t==='b'&&w.sep);
+  return sep?'<span class="af-tag s">可分</span>':'<span class="af-tag u">不可分</span>';
+}
+function afRender(){
+  var el=document.getElementById('afBody');if(!el)return;
+  var R=AFFIX.roots,r=R[_af.i];if(!r)return;
+  var h='<div class="af-story'+(_af.hide?' af-hide':'')+'" id="afStory"><div class="af-title">'+r.icon+' '+_esc(r.title)+' <small>词根 <span lang="de">'+_esc(r.v)+'</span> '+_esc(r.zh)+'</small></div>';
+  for(var l=0;l<r.story.length;l++){
+    h+='<div class="af-line">'+r.story[l].split(/(\{[^}]+\})/).map(function(seg){
+      var m=seg.match(/^\{([^}]+)\}$/);if(!m)return _esc(seg);
+      var k=_afWd(r,m[1]),w=r.words[k];
+      return '<span class="af-w" id="afw'+k+'" role="button" tabindex="0" onclick="afTap('+k+')"><b lang="de">'+_afSplit(w)+'</b><small>'+_esc(w.zh.split('、')[0].split('；')[0])+'</small></span>';
+    }).join('')+'</div>';
+  }
+  h+='</div><div class="af-tools"><button class="btn" type="button" id="afReadBtn" onclick="afReadAll(this)">🔊 按顺序读这些词</button><button class="btn" type="button" onclick="afHide()">'+(_af.hide?'👀 显示中文':'🙈 遮住中文自测')+'</button></div>';
+  h+='<div class="rs-h">前缀解析 <small>'+r.words.length+' 个词 · 点 🔊 听例句</small></div><div class="rs-list">';
+  for(var k=0;k<r.words.length;k++){var w=r.words[k];
+    h+='<div class="rs-row" id="afr'+k+'"><button class="speak-btn" type="button" aria-label="朗读 '+_esc(w.de)+'" onclick="afSay('+k+',0,this)">🔊</button><div style="min-width:0;flex:1">'
+      +'<div class="af-de" lang="de">'+_afSplit(w)+_afKind(w)+'</div>'
+      +'<div class="rs-zh"><b>含义：</b>'+_esc(w.zh)+' · <span class="rs-py" style="display:inline">'+_esc(w.py)+'</span></div>'
+      +'<div class="af-n"><b>解析：</b>'+_esc(w.n)+'</div>'
+      +'<div class="kc-ex"><button class="dlg-spk" type="button" aria-label="朗读例句" onclick="afSay('+k+',1,this)">🔊</button> <span lang="de">'+_esc(w.ex[0])+'</span><div class="rs-zh">'+_esc(w.ex[1])+'</div><div class="rs-py">'+_esc(w.ex[2])+'</div></div>'
+      +'</div></div>';
+  }
+  h+='</div><div class="af-nav">'
+    +(_af.i>0?'<button class="btn" type="button" onclick="afGo('+(_af.i-1)+')">← '+R[_af.i-1].icon+' '+_esc(R[_af.i-1].v)+'</button>':'')
+    +(_af.i<R.length-1?'<button class="btn" type="button" onclick="afGo('+(_af.i+1)+')">'+R[_af.i+1].icon+' '+_esc(R[_af.i+1].v)+' →</button>':'')
+    +'</div>';
+  // 前缀速查：可分（重音在前缀、变位时跑到句尾）/ 不可分（重音在词根、过去分词不加 ge-）
+  var P=AFFIX.prefixes,g={s:[],u:[],b:[]};
+  for(var p in P)if(Object.prototype.hasOwnProperty.call(P,p))g[P[p].t].push(p);
+  function pfx(list){return '<div class="af-pfx">'+list.map(function(p){return '<div><b lang="de">'+_esc(p)+'-</b> '+_esc(P[p].zh)+'</div>';}).join('')+'</div>';}
+  h+='<details class="af-ref" style="margin-top:14px"><summary class="af-sum">📚 前缀速查（'+Object.keys(P).length+' 个）</summary>'
+    +'<p class="kc-tip" style="margin-top:6px"><b>可分前缀</b>重读、变位时跑到句尾：<span lang="de">Ich mache die Tür <b>zu</b>.</span> 过去分词把 ge 夹中间：<span lang="de">zu<b>ge</b>macht</span></p>'+pfx(g.s)
+    +'<p class="kc-tip" style="margin-top:10px"><b>不可分前缀</b>不重读、永远贴着动词，过去分词不加 ge：<span lang="de">Ich <b>be</b>komme… · <b>be</b>kommen</span></p>'+pfx(g.u)
+    +'<p class="kc-tip" style="margin-top:10px"><b>两可前缀</b>：字面意思多为可分（<span lang="de">um|ziehen</span> 搬家），引申意思多为不可分（<span lang="de">überfahren</span> 碾过）</p>'+pfx(g.b)
+    +'</details>';
+  el.innerHTML=h;
+}
+function afHide(){_af.hide=!_af.hide;afRender();}
+function _afMark(k){
+  var os=document.querySelectorAll('#affix .af-w.on,#affix .rs-row.on');for(var q=0;q<os.length;q++)os[q].classList.remove('on');
+  if(k<0)return;
+  var a=document.getElementById('afw'+k),b=document.getElementById('afr'+k);
+  if(a){a.classList.add('on');a.classList.add('af-open');}if(b)b.classList.add('on');
+}
+function afTap(k){
+  var r=AFFIX.roots[_af.i],w=r&&r.words[k];if(!w)return;
+  if(typeof _stopPageRead==='function')_stopPageRead();
+  _afMark(k);speakWithLocale(w.de,'de',null);
+}
+function afSay(k,ex,btn){var w=AFFIX.roots[_af.i]&&AFFIX.roots[_af.i].words[k];if(!w)return;_afMark(k);speakWithLocale(ex?w.ex[0]:w.de,'de',btn||null);}
+function afReadAll(btn){
+  var r=AFFIX.roots[_af.i],order=[],items=[];
+  for(var l=0;l<r.story.length;l++)r.story[l].replace(/\{([^}]+)\}/g,function(_,de){order.push(_afWd(r,de));items.push(de);return _;});
+  _startPageRead('af'+_af.i,items,'de',btn,function(i){
+    _afMark(i>=0?order[i]:-1);
+    var e=i>=0&&document.getElementById('afw'+order[i]);if(e)try{e.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){}
+  });
 }
 // ══════════════════════════════════════
 // 动词搭配（#kolloc）：Verb + Nomen 固定搭配（Zeit haben / eine Frage stellen …）
