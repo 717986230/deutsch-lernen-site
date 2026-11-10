@@ -1,0 +1,67 @@
+[
+  {
+    "id": "2026-11-09-lage",
+    "date": "2026-11-09",
+    "icon": "🧭",
+    "title": "方位介词：图卡 + 在哪·去哪",
+    "desc": "25 张方位图卡（东南西北、oben/unten、9 个双向介词），下面配「静三动四」成对例句和易错提示。",
+    "sec": "home",
+    "spot": "#home .hg-tile[onclick=\"boardOpen('lage');return false\"]",
+    "tip": "点「方位图卡」看图听读音，旁边「在哪 · 去哪」练静三动四。",
+    "lang": "de"
+  },
+  {
+    "id": "2026-11-06-kolloc",
+    "date": "2026-11-06",
+    "icon": "🧩",
+    "title": "动词搭配",
+    "desc": "8 个高频动词、76 组固定搭配（Zeit haben、eine Frage stellen…），能遮住动词自测，还有选动词练习。",
+    "sec": "home",
+    "spot": "#home .hg-tile[onclick=\"kcOpen(-1);return false\"]",
+    "tip": "「搭配卡片」按动词翻看，「选动词」做间隔复习。",
+    "lang": "de"
+  },
+  {
+    "id": "2026-11-05-ladder",
+    "date": "2026-11-05",
+    "icon": "🏷️",
+    "title": "冠词 / 变位测验改成间隔复习",
+    "desc": "答对的隔 1 小时、1 天、1 周…再考，答错的很快再出；入口会显示有几道待复习。",
+    "sec": "quiz",
+    "spot": "#quiz [onclick=\"startQuiz('gender')\"]",
+    "tip": "冠词测验和变位测验都在这里，卡片上能看到待复习数。",
+    "lang": "de"
+  },
+  {
+    "id": "2026-11-05-shadow",
+    "date": "2026-11-05",
+    "icon": "🎙️",
+    "title": "词句卡跟读对比",
+    "desc": "翻到卡片背面录一句自己的，点「原声+我的」连着听，对比发音。录音只在本机，不上传。",
+    "sec": "phrases",
+    "spot": "#phrases .card",
+    "tip": "点任意一张卡片翻到背面，底部就是「🎙️ 跟读」。"
+  },
+  {
+    "id": "2026-11-05-vido-autopause",
+    "date": "2026-11-05",
+    "icon": "🎬",
+    "title": "看视频：逐句暂停",
+    "desc": "Vido 新增「逐句」按钮：每句字幕播完自动停，跟读完再继续；点字幕前的喇叭重听这一句。",
+    "sec": "home",
+    "spot": "#home .hg-tile[href=\"/vido/\"]",
+    "tip": "点「看视频」，播放时打开「逐句」。",
+    "lang": "de"
+  },
+  {
+    "id": "2026-11-03-resto",
+    "date": "2026-11-03",
+    "icon": "🍽️",
+    "title": "餐厅特训 · 奥地利",
+    "desc": "订位、点餐、提问、结账四个情景 75 句 + 角色扮演，价格听力和 52 道奥地利菜名。",
+    "sec": "home",
+    "spot": "#home .hg-tile[onclick=\"rsOpen(0);return false\"]",
+    "tip": "「场景特训」这一行四个入口：订位、点餐、结账数字、菜单。",
+    "lang": "de"
+  }
+]
