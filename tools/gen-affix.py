@@ -11,6 +11,7 @@ P={ # prefix: [py, meaning, kind]  kind: s=可分 u=不可分 b=两可
  "er":["埃尔","达成、得到结果","u"],"wider":["维德尔","反对、相反","u"],
 }
 R=[]
+INSEP={"überfahren","übersehen"}
 def root(rid,icon,title,v,zh,py,story,words):
   R.append({"id":rid,"icon":icon,"title":title,"v":v,"zh":zh,"py":py,"story":story,"words":[
     dict(zip(["de","zh","py","pre","n","ex"],w)) for w in words]})
@@ -145,9 +146,12 @@ root("sehen","💘","相亲现场","sehen","看见","泽恩",[
  ["ansehen","看着、端详","安泽恩","an","an- 冲着：盯着某人/某物看；sich etwas ansehen 仔细看看",["Sieh mich an!","看着我！","齐 米希 安！"]],
  ["übersehen","看漏、忽略","于伯尔泽恩","über","über- 越过、这里不可分：目光越过去了 → 没看到",["Das habe ich übersehen.","这个我看漏了。","达斯 哈贝 伊希 于伯尔泽恩。"]],
  ["wiedersehen","再见到","维德泽恩","wieder","wieder- 再：再见一次面。Auf Wiedersehen 就是这么来的",["Wann sehen wir uns wieder?","我们什么时候再见面？","万 泽恩 维尔 翁斯 维德？"]]])
+import os
+for _b in sorted(f for f in os.listdir(os.path.dirname(os.path.abspath(__file__))) if f.startswith("affix_batch") and f.endswith(".py")):
+  exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),_b)).read())
 for r in R:
   for w in r["words"]:
-    if w["pre"] and P[w["pre"]][2]=="b": w["sep"]= w["de"] not in ("überfahren","übersehen")
+    if w["pre"] and P[w["pre"]][2]=="b": w["sep"]= w["de"] not in INSEP
 out={"prefixes":{k:{"py":v[0],"zh":v[1],"t":v[2]} for k,v in P.items()},"roots":R}
 json.dump(out,open('data/affix.json','w'),ensure_ascii=False,indent=1)
 # sanity

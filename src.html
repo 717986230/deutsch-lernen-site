@@ -139,6 +139,11 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .af-pfx{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:8px}
 .af-pfx div{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 9px;font-size:12px;color:var(--text-dim);line-height:1.45}
 .af-pfx b{color:var(--mark-pre);font-size:14px}
+.af-all{margin:0 0 6px}
+.af-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin:4px 0 10px}
+.af-grid button{min-height:44px;padding:6px 8px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-family:inherit;cursor:pointer;text-align:left;line-height:1.3}
+.af-grid button small{display:block;font-size:11px;color:var(--text-dim)}
+.af-grid button.on{border-color:var(--gold);background:var(--gold-faint)}
 .af-sum{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:800;color:var(--text)}
 /* 餐厅特训（#resto） */
 .rs-cta{display:block;width:100%;min-height:44px;margin:0 0 12px;padding:10px 14px;border-radius:14px;border:1px dashed var(--gold-dim);background:var(--gold-faint);color:var(--gold-text);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;text-align:left}
@@ -1637,6 +1642,7 @@ body.lang-en #homeBoost{display:none!important}
     <div class="hero-label" style="text-align:center;padding-top:20px">Präfix + Verb</div>
     <h2 class="page-title">词缀情景记忆</h2>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px">一个词根 + 不同前缀 = 一串新词<br>串成一段好笑的小故事，点黄色的词听发音</p>
+    <details class="af-all" id="afAll"><summary class="af-sum" id="afAllSum">📚 全部词根目录</summary><div class="af-grid" id="afGrid"></div></details>
     <div class="rs-chips" id="afChips" role="tablist"></div>
     <div id="afBody"></div>
   </div>
@@ -4303,8 +4309,12 @@ function afInit(){
   for(var i=0;i<R.length;i++)h+='<button type="button" role="tab" aria-selected="'+(_af.i===i)+'" class="'+(_af.i===i?'on':'')+'" onclick="afGo('+i+')">'+R[i].icon+' <span lang="de">'+_esc(R[i].v)+'</span></button>';
   c.innerHTML=h;
   var on=c.querySelector('.on');if(on)try{c.scrollLeft=on.offsetLeft-c.offsetWidth/2+on.offsetWidth/2;}catch(e){}
+  var g=document.getElementById('afGrid'),gs=document.getElementById('afAllSum');
+  if(gs)gs.textContent='📚 全部 '+R.length+' 个词根目录';
+  if(g){var gh='';for(var j=0;j<R.length;j++)gh+='<button type="button" class="'+(_af.i===j?'on':'')+'" onclick="afPick('+j+')">'+R[j].icon+' <b lang="de">'+_esc(R[j].v)+'</b><small>'+_esc(R[j].zh)+'</small></button>';g.innerHTML=gh;}
   afRender();
 }
+function afPick(i){var d=document.getElementById('afAll');if(d)d.open=false;afGo(i);}
 function afGo(i){if(typeof _stopPageRead==='function')_stopPageRead();_af.i=i;afInit();var el=document.getElementById('afChips');if(el&&el.getBoundingClientRect().top<0)try{el.scrollIntoView({block:'start'});}catch(e){}}
 function _afWd(r,de){for(var k=0;k<r.words.length;k++)if(r.words[k].de===de)return k;return -1;}
 function _afSplit(w){return w.pre?'<i>'+_esc(w.pre)+'</i>'+_esc(w.de.slice(w.pre.length)):_esc(w.de);}
