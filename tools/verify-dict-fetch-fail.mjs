@@ -49,6 +49,10 @@ if (!browserEnv) { skipNoBrowser('词库弱网加载体检'); srv.close(); proce
 const { chromium, launch: launchOpts } = browserEnv;
 const browser = await chromium.launch(launchOpts);
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+// 只放行本地假服务器。开发容器本来就连不上外网，但 GitHub Actions 能连上线上后端：
+// 假 token 't1' 会被真实 /api/me 判 401 → 前端登出、锁屏，词句页就永远渲染不出来，
+// 体检测的就不再是「弱网重试」了（2026-11-10 CI 首跑实测）。外部请求一律掐掉，让两边环境一致。
+await page.route((u) => !u.href.startsWith(`http://localhost:${PORT}/`), (r) => r.abort());
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
 await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); } catch (e) {} });
@@ -70,7 +74,10 @@ if (!s1.hasRetry) bad(`词句页加载失败后没有给「点击重试」按钮
 allowDat = true;   // 网络恢复
 if (s1.hasRetry) {
   await page.evaluate(() => document.getElementById('phRetryBtn').click());
-  await page.waitForTimeout(700);
+  // 等「恢复」这个结果出现，而不是固定睡 700ms：CI 机器下载+解密+渲染比开发机慢，
+  // 固定等待在 GitHub Actions 上会误报（2026-11-10 首跑实测）。等满 10 秒仍未恢复才算失败。
+  await page.waitForFunction(() => typeof categories !== 'undefined' && categories.length > 0
+    && document.querySelectorAll('#phraseContent .card').length > 0, null, { timeout: 10000 }).catch(() => {});
   const s2 = await page.evaluate(() => ({
     n: typeof categories !== 'undefined' ? categories.length : -1,
     cards: document.querySelectorAll('#phraseContent .card').length,
@@ -95,7 +102,8 @@ if (!s3.hasRetry) bad('英语拼写页加载失败后没有给「点击重试」
 allowDat = true;
 if (s3.hasRetry) {
   await page.evaluate(() => { const b = document.getElementById('spRetryBtn'); if (b) b.click(); });
-  await page.waitForTimeout(700);
+  await page.waitForFunction(() => /待记|都掌握啦/.test((document.getElementById('spPoolInfo') || {}).textContent || ''),
+    null, { timeout: 10000 }).catch(() => {});
   const info = await page.evaluate(() => (document.getElementById('spPoolInfo') || {}).textContent || '');
   if (!/待记|都掌握啦/.test(info)) bad(`点了重试，spPoolInfo 没有恢复正常，实际：${info}`);
 }
