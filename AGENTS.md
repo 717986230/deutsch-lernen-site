@@ -13,7 +13,8 @@
 
 > **2026-08 变更**：站长决定**不再支持微信内置浏览器**，只需现代浏览器可用。
 > 这解除了下面 1.2 的 ES5 约束，也让新端（`web/`）不再产出 legacy 包（省 195KB gz）。
-> 迁移进度与新架构见 [`MIGRATION.md`](MIGRATION.md)。
+> 迁移进度见 [`MIGRATION.md`](MIGRATION.md)。**注意：Vue 新端（`web/`）至今未上线**，线上仍是
+> `src.html` → `build.mjs` 的产物；改功能请改 `src.html`。PR 会由 CI「主站体检」自动重跑构建一致性 + `npm run verify`。
 
 ---
 

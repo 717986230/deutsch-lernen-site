@@ -1,0 +1,50 @@
+# 主站体检：线上 www.uuoo.site 实际发布的是 src.html + data/ → build.mjs 的产物（index.html / sw.js / *.dat）。
+# 以前这些产物是否已提交、26 项体检（登录安全、XSS、离线、对比度、触摸目标……）只在本地跑，
+# PR 合并时没有任何自动拦截。这里把 AGENTS.md 第 4 节的「提交前自检」搬进 CI。
+name: 主站体检
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths-ignore: ['vido/**']     # Vido 每小时同步只动 vido/，不必每次跑全套
+  workflow_dispatch:
+
+concurrency:
+  group: verify-site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # build.mjs 沿 git 历史找「上一代」词库切片作宽限；浅克隆会误删它
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci
+
+      - name: 构建产物必须与提交一致（只能由 npm run build 生成）
+        run: |
+          npm run build
+          # sitemap 的 lastmod 跟着构建日期走，不算漂移
+          git checkout -- sitemap.xml
+          if ! git diff --exit-code --stat; then
+            echo "::error::index.html / sw.js / *.dat 与 src.html + data/ 的构建结果不一致：请本地 npm run build 后一起提交"
+            exit 1
+          fi
+          test -z "$(git status --porcelain)" || { git status --porcelain; echo "::error::构建产生了未提交的文件"; exit 1; }
+
+      - name: 词库无明文泄漏
+        run: test "$(grep -c '"de":"Guten Morgen' index.html)" = "0"
+
+      - name: 安装浏览器（体检里的页面回归要用）
+        run: |
+          npm i --no-save playwright@1.63.0
+          npx playwright install --with-deps chromium
+
+      - name: 全部体检（npm run verify）
+        run: npm run verify
