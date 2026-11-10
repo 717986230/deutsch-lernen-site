@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120"><defs><filter id="gl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><style>
+.spin{transform-origin:60px 60px;animation:spin var(--d,10s) linear infinite}
+.rspin{transform-origin:60px 60px;animation:spin var(--d,14s) linear infinite reverse}
+.tw{transform-box:fill-box;transform-origin:center;animation:tw 2.2s ease-in-out infinite}
+.bob{transform-box:fill-box;transform-origin:center;animation:bob 2.6s ease-in-out infinite}
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 3s ease-in-out infinite}
+.flk{transform-box:fill-box;transform-origin:50% 100%;animation:flk .9s ease-in-out infinite alternate}
+.pulse{transform-origin:60px 60px;animation:pulse 2.4s ease-in-out infinite}
+.wave{transform-origin:60px 60px;animation:wave 2.4s ease-out infinite}
+.rise{transform-box:fill-box;animation:rise 2.4s ease-in infinite}
+.blink{animation:blink 1.6s steps(1) infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.5)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+@keyframes flk{0%{transform:scaleY(.82) skewX(-3deg)}100%{transform:scaleY(1.12) skewX(3deg)}}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes wave{0%{transform:scale(.9);opacity:.85}100%{transform:scale(1.22);opacity:0}}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-26px);opacity:0}}
+@keyframes blink{0%,100%{opacity:0}8%,14%{opacity:1}20%{opacity:0}52%,56%{opacity:1}60%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}</style></defs><circle class="" cx="60" cy="60" r="44" fill="none" stroke="#4ade80" stroke-width="3" /><g class="spin" style="--d:24s"><ellipse class="" cx="60" cy="14" rx="2.4" ry="5.5" fill="#22c55e" transform="rotate(40 60 14)"/><ellipse class="" cx="87.04" cy="22.79" rx="2.4" ry="5.5" fill="#86efac" transform="rotate(76 87.04 22.79)"/><ellipse class="" cx="103.75" cy="45.79" rx="2.4" ry="5.5" fill="#22c55e" transform="rotate(112 103.75 45.79)"/><ellipse class="" cx="103.75" cy="74.21" rx="2.4" ry="5.5" fill="#86efac" transform="rotate(148 103.75 74.21)"/><ellipse class="" cx="87.04" cy="97.21" rx="2.4" ry="5.5" fill="#22c55e" transform="rotate(184 87.04 97.21)"/><ellipse class="" cx="60" cy="106" rx="2.4" ry="5.5" fill="#86efac" transform="rotate(220 60 106)"/><ellipse class="" cx="32.96" cy="97.21" rx="2.4" ry="5.5" fill="#22c55e" transform="rotate(256 32.96 97.21)"/><ellipse class="" cx="16.25" cy="74.21" rx="2.4" ry="5.5" fill="#86efac" transform="rotate(292 16.25 74.21)"/><ellipse class="" cx="16.25" cy="45.79" rx="2.4" ry="5.5" fill="#22c55e" transform="rotate(328 16.25 45.79)"/><ellipse class="" cx="32.96" cy="22.79" rx="2.4" ry="5.5" fill="#86efac" transform="rotate(364 32.96 22.79)"/></g><g class="sway"><path d="M60 118C60 110 60 104 60 100" stroke="#15803d" stroke-width="2.4" fill="none"/><ellipse cx="53" cy="101" rx="7" ry="3.6" fill="#4ade80" transform="rotate(-25 53 101)"/><ellipse cx="67" cy="99" rx="7.5" ry="3.8" fill="#22c55e" transform="rotate(25 67 99)"/></g></svg>

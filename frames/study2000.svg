@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120"><defs><linearGradient id="eg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#facc15"/><stop offset="0.33" stop-color="#3b82f6"/><stop offset="0.67" stop-color="#fef08a"/><stop offset="1.00" stop-color="#1d4ed8"/></linearGradient><filter id="gl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><style>
+.spin{transform-origin:60px 60px;animation:spin var(--d,10s) linear infinite}
+.rspin{transform-origin:60px 60px;animation:spin var(--d,14s) linear infinite reverse}
+.tw{transform-box:fill-box;transform-origin:center;animation:tw 2.2s ease-in-out infinite}
+.bob{transform-box:fill-box;transform-origin:center;animation:bob 2.6s ease-in-out infinite}
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 3s ease-in-out infinite}
+.flk{transform-box:fill-box;transform-origin:50% 100%;animation:flk .9s ease-in-out infinite alternate}
+.pulse{transform-origin:60px 60px;animation:pulse 2.4s ease-in-out infinite}
+.wave{transform-origin:60px 60px;animation:wave 2.4s ease-out infinite}
+.rise{transform-box:fill-box;animation:rise 2.4s ease-in infinite}
+.blink{animation:blink 1.6s steps(1) infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.5)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+@keyframes flk{0%{transform:scaleY(.82) skewX(-3deg)}100%{transform:scaleY(1.12) skewX(3deg)}}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes wave{0%{transform:scale(.9);opacity:.85}100%{transform:scale(1.22);opacity:0}}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-26px);opacity:0}}
+@keyframes blink{0%,100%{opacity:0}8%,14%{opacity:1}20%{opacity:0}52%,56%{opacity:1}60%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}</style></defs><g class="spin" style="--d:2.4s"><circle class="" cx="60" cy="60" r="44" fill="none" stroke="url(#eg2)" stroke-width="4" stroke-dasharray="14 4"/></g><path class="blink" style="animation-delay:0s" filter="url(#gl)" transform="rotate(45 96.77 23.23)" d="M94.77 14.23L100.77 14.23L96.77 22.23L100.77 22.23L92.77 33.230000000000004L95.77 25.23L91.77 25.23Z" fill="#fde047" stroke="#1d4ed8" stroke-width=".7"/><path class="blink" style="animation-delay:0.4s" filter="url(#gl)" transform="rotate(135 96.77 96.77)" d="M94.77 87.77L100.77 87.77L96.77 95.77L100.77 95.77L92.77 106.77L95.77 98.77L91.77 98.77Z" fill="#fde047" stroke="#1d4ed8" stroke-width=".7"/><path class="blink" style="animation-delay:0.8s" filter="url(#gl)" transform="rotate(225 23.23 96.77)" d="M21.23 87.77L27.23 87.77L23.23 95.77L27.23 95.77L19.23 106.77L22.23 98.77L18.23 98.77Z" fill="#fde047" stroke="#1d4ed8" stroke-width=".7"/><path class="blink" style="animation-delay:1.2000000000000002s" filter="url(#gl)" transform="rotate(315 23.23 23.23)" d="M21.23 14.23L27.23 14.23L23.23 22.23L27.23 22.23L19.23 33.230000000000004L22.23 25.23L18.23 25.23Z" fill="#fde047" stroke="#1d4ed8" stroke-width=".7"/></svg>

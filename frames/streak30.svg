@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120"><defs><linearGradient id="ir" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#94a3b8"/><stop offset="0.33" stop-color="#f1f5f9"/><stop offset="0.67" stop-color="#64748b"/><stop offset="1.00" stop-color="#cbd5e1"/></linearGradient><linearGradient id="md" x1="0" y1="0" x2="0" y2="1"><stop offset="0.00" stop-color="#fde68a"/><stop offset="1.00" stop-color="#d97706"/></linearGradient><filter id="gl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><style>
+.spin{transform-origin:60px 60px;animation:spin var(--d,10s) linear infinite}
+.rspin{transform-origin:60px 60px;animation:spin var(--d,14s) linear infinite reverse}
+.tw{transform-box:fill-box;transform-origin:center;animation:tw 2.2s ease-in-out infinite}
+.bob{transform-box:fill-box;transform-origin:center;animation:bob 2.6s ease-in-out infinite}
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 3s ease-in-out infinite}
+.flk{transform-box:fill-box;transform-origin:50% 100%;animation:flk .9s ease-in-out infinite alternate}
+.pulse{transform-origin:60px 60px;animation:pulse 2.4s ease-in-out infinite}
+.wave{transform-origin:60px 60px;animation:wave 2.4s ease-out infinite}
+.rise{transform-box:fill-box;animation:rise 2.4s ease-in infinite}
+.blink{animation:blink 1.6s steps(1) infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.5)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+@keyframes flk{0%{transform:scaleY(.82) skewX(-3deg)}100%{transform:scaleY(1.12) skewX(3deg)}}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes wave{0%{transform:scale(.9);opacity:.85}100%{transform:scale(1.22);opacity:0}}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-26px);opacity:0}}
+@keyframes blink{0%,100%{opacity:0}8%,14%{opacity:1}20%{opacity:0}52%,56%{opacity:1}60%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}</style></defs><circle class="" cx="60" cy="60" r="45" fill="none" stroke="url(#ir)" stroke-width="7" /><circle class="" cx="60" cy="60" r="45" fill="none" stroke="#f8fafc" stroke-width="1" opacity=".6"/><circle cx="71.65" cy="16.53" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="91.82" cy="28.18" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="103.47" cy="48.35" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="103.47" cy="71.65" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="91.82" cy="91.82" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="71.65" cy="103.47" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="48.35" cy="103.47" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="28.18" cy="91.82" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="16.53" cy="71.65" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="16.53" cy="48.35" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="28.18" cy="28.18" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><circle cx="48.35" cy="16.53" r="1.7" fill="#475569" stroke="#e2e8f0" stroke-width=".6"/><g class="spin" style="--d:4s"><path d="M37.5 21.03A45 45 0 0 1 75.39 17.71" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".75"/></g><path d="M50 100L46 118L54 113L60 119L60 100Z" fill="#b91c1c"/><path d="M70 100L74 118L66 113L60 119L60 100Z" fill="#1d4ed8"/><circle cx="60" cy="104" r="8.5" fill="url(#md)" stroke="#78350f" stroke-width=".8"/><path class="tw" style="animation-delay:0s" fill="#fff7ed" d="M60 99.8Q60 104 64.2 104Q60 104 60 108.2Q60 104 55.8 104Q60 104 60 99.8Z"/></svg>
