@@ -42,7 +42,13 @@ const AV_BG = ['#58cc02', '#1cb0f6', '#ff9600', '#ff4b4b', '#ce82ff', '#2b70c9',
 // 会员专属头像（预设原创 SVG，存成 'm:<id>'）：值 = 需要的会员档位（1 会员 / 2 永久）。
 // 会员到期后读出时自动退回默认头像，续费即恢复。
 const MEMBER_AV = { 'm:dragon': 1, 'm:phoenix': 1, 'm:kitsune': 1, 'm:astro': 1, 'm:owl': 1, 'm:mecha': 1, 'm:goldking': 2, 'm:abyssking': 2 };
-const avOf = (av, tier) => (MEMBER_AV[av] && tier < MEMBER_AV[av] ? '🦊' : av);
+// 成就头像（存 'a:<id>'）：值 = 需要点亮的徽章。徽章是算出来的不会掉，但仍按当下资格校验，防直接写库
+const ACH_AV = { 'a:flamewolf': 'streak7', 'a:knight': 'streak30', 'a:icefox': 'streak100', 'a:whale': 'word1000', 'a:cybercat': 'word3000', 'a:thundereagle': 'study2000', 'a:sakurabunny': 'quiz1000', 'a:starbear': 'founder' };
+const avOf = (av, tier, badges) => {
+  if (MEMBER_AV[av] && tier < MEMBER_AV[av]) return '🦊';
+  if (ACH_AV[av] && !(badges || []).includes(ACH_AV[av])) return '🦊';
+  return av;
+};
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const cleanText = (v, n) => String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, n);
 
@@ -799,7 +805,7 @@ export default {
       const fc = await followCounts(env, uid);
       u.pro_until = await proUntil(env, uid);
       u.frame = frameOf(await chosenFrame(env, uid), u.badges.split(',').filter(Boolean), proTier(u.pro_until));
-      u.avatar = avOf(u.avatar, proTier(u.pro_until));
+      u.avatar = avOf(u.avatar, proTier(u.pro_until), u.badges.split(',').filter(Boolean));
       return json({ user: u, profiles: profiles.results || [], rank: rank.c, followers: fc.followers, following: fc.following }, 200, cors);
     }
     // ───────── 社交：关注 / 取关 / 关注列表 ─────────
@@ -820,7 +826,7 @@ export default {
       if (!uid) return json({ err: '未登录' }, 401, cors);
       // 多查一列 u.id 只为算创始人，不外泄（下面构造返回对象时不带它）
       const rows = await env.DB.prepare('SELECT u.id,u.username,u.nickname,u.avatar,u.av_bg,u.known,u.best_streak,u.level,u.badges,(SELECT until FROM memberships WHERE uid=u.id) AS pu,(SELECT frame FROM user_frames WHERE uid=u.id) AS fr FROM follows f JOIN users u ON u.id=f.followee WHERE f.follower=? ORDER BY u.known DESC LIMIT 100').bind(uid).all();
-      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: avOf(r.avatar, proTier(r.pu)), av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: badgeList(r.badges, r.id).length, pro: proTier(r.pu), frame: frameOf(r.fr, badgeList(r.badges, r.id), proTier(r.pu)) }));
+      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: avOf(r.avatar, proTier(r.pu), badgeList(r.badges, r.id)), av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: badgeList(r.badges, r.id).length, pro: proTier(r.pu), frame: frameOf(r.fr, badgeList(r.badges, r.id), proTier(r.pu)) }));
       return json({ list }, 200, cors);
     }
     // 修改资料：昵称 / 头像 / 背景色 / 个性签名（需登录，服务端校验）
@@ -837,6 +843,9 @@ export default {
       if (b.avatar != null) {
         if (MEMBER_AV[b.avatar]) {
           if (proTier(await proUntil(env, uid)) < MEMBER_AV[b.avatar]) return json({ err: MEMBER_AV[b.avatar] === 2 ? '这个头像是永久会员专属' : '这个头像是会员专属' }, 403, cors);
+        } else if (ACH_AV[b.avatar]) {
+          const row = await env.DB.prepare('SELECT badges FROM users WHERE id=?').bind(uid).first();
+          if (!badgeList(row && row.badges, uid).includes(ACH_AV[b.avatar])) return json({ err: '这个头像要先点亮对应徽章' }, 403, cors);
         } else if (!AV_EMOJI.includes(b.avatar)) return json({ err: '头像不在可选范围' }, 400, cors);
         set.push('avatar=?'); bind.push(b.avatar);
       }
@@ -886,10 +895,10 @@ export default {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
       const rows = await env.DB.prepare(
-        'SELECT a.type,a.data,a.ts,u.username,u.nickname,u.avatar,u.av_bg,(SELECT until FROM memberships WHERE uid=u.id) AS pu FROM activity a JOIN users u ON u.id=a.uid ' +
+        'SELECT a.type,a.data,a.ts,u.username,u.nickname,u.avatar,u.av_bg,u.id AS uid,u.badges,(SELECT until FROM memberships WHERE uid=u.id) AS pu FROM activity a JOIN users u ON u.id=a.uid ' +
         'WHERE a.uid=? OR a.uid IN (SELECT followee FROM follows WHERE follower=?) ORDER BY a.ts DESC LIMIT 50'
       ).bind(uid, uid).all();
-      const list = rows.results.map(r => { const pu = r.pu; delete r.pu; r.avatar = avOf(r.avatar, proTier(pu)); return r; });
+      const list = rows.results.map(r => { const { pu, uid: ruid, badges, ...rest } = r; rest.avatar = avOf(r.avatar, proTier(pu), badgeList(badges, ruid)); return rest; });
       return json({ list }, 200, cors);
     }
 
@@ -919,7 +928,7 @@ export default {
         ).bind(...binds).all(),
       ]);
       const list = rows.results.map(r => ({
-        username: r.username, nickname: r.nickname, avatar: avOf(r.avatar, proTier(r.pu)), av_bg: r.av_bg, level: r.level,
+        username: r.username, nickname: r.nickname, avatar: avOf(r.avatar, proTier(r.pu), badgeList(r.badges, r.id)), av_bg: r.av_bg, level: r.level,
         known: r.known, streak: r.best_streak, total: r.total,
         badges: badgeList(r.badges, r.id).length,     // id 只用来算创始人，不进返回体
         pro: proTier(r.pu),                           // 只给档位 0/1/2，不外泄到期日
@@ -935,7 +944,7 @@ export default {
       u.badges = badgeList(u.badges, pid).join(',');   // 同上：别人看别人的资料页
       u.pro = proTier(await proUntil(env, pid));        // 公开主页只给会员档位，不给到期日
       u.frame = frameOf(await chosenFrame(env, pid), u.badges.split(',').filter(Boolean), u.pro);
-      u.avatar = avOf(u.avatar, u.pro);
+      u.avatar = avOf(u.avatar, u.pro, u.badges.split(',').filter(Boolean));
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, pid);
       let isFollowing = false;
