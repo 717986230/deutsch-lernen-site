@@ -137,6 +137,13 @@ r = await call('POST', '/api/profile/update', { avatar: 'm:abyssking' }, tc);
 if (r.status !== 200) bad(`永久会员选不了永久专属头像：${JSON.stringify(r.data)}`);
 r = await call('GET', '/api/profile?name=carol', undefined, tb);
 if (r.data.user.avatar !== 'm:abyssking') bad('主页没显示会员专属头像'); else ok('永久会员可用专属头像，他人主页可见');
+r = await call('POST', '/api/profile/update', { avatar: 'a:flamewolf' }, tb);   // bob 没有 7 天打卡徽章
+if (r.status !== 403) bad(`没点亮徽章也能用成就头像（${r.status}）`); else ok('没点亮徽章选不了成就头像（403）');
+r = await call('POST', '/api/profile/update', { avatar: 'a:starbear' }, tc);     // carol 是前 100 名注册 = 创始人
+if (r.status !== 200) bad(`创始人选不了星穹熊：${JSON.stringify(r.data)}`);
+r = await call('GET', '/api/profile?name=carol', undefined, tb);
+if (r.data.user.avatar !== 'a:starbear') bad('主页没显示成就头像'); else ok('点亮徽章后可用成就头像，他人主页可见');
+r = await call('POST', '/api/profile/update', { avatar: 'm:abyssking' }, tc);
 r = await call('POST', '/api/profile/update', { avatar: 'm:hack' }, tc);
 if (r.status !== 400) bad(`乱填的专属头像没被拒（${r.status}）`); else ok('白名单外的专属头像被拒');
 await call('POST', '/api/frame', { frame: 'none' }, tc);

@@ -2,9 +2,15 @@
 //   会员（月卡/年卡）可选：龙崽 凤凰雏 九尾狐 宇航猫 魔法猫头鹰 机甲熊
 //   永久会员独享：金龙王 暗龙王
 // 存值 'm:<id>'；服务端 MEMBER_AV 白名单 + 档位校验，前端 MEMBER_AV 同步。
+// 成就头像（点亮对应徽章解锁，存 'a:<id>'）：火焰狼(streak7) 铁甲骑士(streak30) 冰狐(streak100) 书海鲸(word1000)
+//   赛博猫(word3000) 雷霆鹰(study2000) 樱花武士兔(quiz1000) 星穹熊(founder)。服务端 ACH_AV 校验徽章。
 // 用法：node tools/gen-avatars.mjs → avatars/<id>.svg
 import { writeFileSync, mkdirSync } from 'node:fs';
 
+export const ACH_AVATARS = [
+  ['flamewolf', '火焰狼', 'streak7'], ['knight', '铁甲骑士', 'streak30'], ['icefox', '冰狐', 'streak100'], ['whale', '书海鲸', 'word1000'],
+  ['cybercat', '赛博猫', 'word3000'], ['thundereagle', '雷霆鹰', 'study2000'], ['sakurabunny', '樱花武士兔', 'quiz1000'], ['starbear', '星穹熊', 'founder'],
+];
 export const MEMBER_AVATARS = [
   ['dragon', '龙崽', 1], ['phoenix', '凤凰雏', 1], ['kitsune', '九尾狐', 1], ['astro', '宇航猫', 1],
   ['owl', '魔法猫头鹰', 1], ['mecha', '机甲熊', 1], ['goldking', '金龙王', 2], ['abyssking', '暗龙王', 2],
@@ -143,12 +149,125 @@ const ART = {
     `<g class="bl"><path class="gl" d="M33 51Q40 49 45 51L44 55Q39 54 34 55Z" fill="#22d3ee"/><path class="gl" d="M55 51Q60 49 67 51L66 55Q61 54 56 55Z" fill="#22d3ee"/></g>` +
     `<ellipse cx="50" cy="70" rx="12" ry="9" fill="#cbd5e1" stroke="#1e293b" stroke-width="1.2"/><path d="M46 66L54 66L50 70Z" fill="#1e293b"/><path d="M44 75H56" stroke="#1e293b" stroke-width="1.4" stroke-linecap="round"/>` +
     `<path d="M50 28L50 14" stroke="#64748b" stroke-width="2"/><circle class="gl" cx="50" cy="12" r="3.2" fill="#f43f5e"/>`),
+  // ───────── 成就头像 ─────────
+  flamewolf: () => svg(bg('b', '#7c2d12', '#1c0a02') +
+    `<linearGradient id="fe" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#dc2626"/><stop offset=".55" stop-color="#f97316"/><stop offset="1" stop-color="#fde047"/></linearGradient>` +
+    `<radialGradient id="hd" cx=".45" cy=".35"><stop offset="0" stop-color="#78716c"/><stop offset="1" stop-color="#292524"/></radialGradient>`,
+    `<rect width="100" height="100" fill="url(#b)"/>` +
+    // 背后火焰鬃
+    [[-26, 4], [-14, 0], [0, -4], [14, 0], [26, 4]].map(([dx, dy], i) => `<path class="fl" style="animation-delay:${i * 0.15}s" d="M${50 + dx - 8} ${40 + dy}C${50 + dx - 10} ${22 + dy} ${50 + dx * 1.3} ${12 + dy} ${50 + dx * 1.35} ${4 + dy}C${50 + dx + 6} ${16 + dy} ${50 + dx + 10} ${26 + dy} ${50 + dx + 8} ${40 + dy}Z" fill="url(#fe)" stroke="#7f1d1d" stroke-width="1"/>`).join('') +
+    `<path d="M26 44L20 16L42 32ZM74 44L80 16L58 32Z" fill="#44403c" stroke="#1c1917" stroke-width="1.4" stroke-linejoin="round"/><path d="M28 40L25 24L38 33ZM72 40L75 24L62 33Z" fill="#f97316"/>` +
+    `<path d="M22 50C22 36 36 30 50 30C64 30 78 36 78 50C78 66 66 84 50 86C34 84 22 66 22 50Z" fill="url(#hd)" stroke="#1c1917" stroke-width="1.4"/>` +
+    `<path d="M34 64Q50 56 66 64Q62 80 50 82Q38 80 34 64Z" fill="#e7e5e4"/>` +
+    `<path d="M28 44Q36 38 42 44M58 44Q64 38 72 44" fill="none" stroke="#f97316" stroke-width="2.4" stroke-linecap="round"/>` +
+    eye(39, 52, 5.5, 6, '#fb923c', true) + eye(61, 52, 5.5, 6, '#fb923c', true) +
+    `<ellipse cx="50" cy="66" rx="4" ry="3" fill="#1c1917"/><path d="M44 72Q50 76 56 72" fill="none" stroke="#1c1917" stroke-width="1.6" stroke-linecap="round"/><path d="M43 71L45 76L47 72ZM57 71L55 76L53 72Z" fill="#fff"/>` +
+    star(14, 84, 2.4, '#fde047') + star(86, 80, 2, '#fde047', 0.7)),
+  knight: () => svg(bg('b', '#475569', '#0f172a') +
+    `<linearGradient id="mt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset=".5" stop-color="#94a3b8"/><stop offset="1" stop-color="#334155"/></linearGradient>` +
+    `<linearGradient id="pl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#dc2626"/><stop offset="1" stop-color="#991b1b"/></linearGradient>`,
+    `<rect width="100" height="100" fill="url(#b)"/>` +
+    // 盔缨
+    `<path d="M50 6C62 6 72 14 72 30L66 30C66 20 60 14 50 14C40 14 34 20 34 30L28 30C28 14 38 6 50 6Z" fill="url(#pl)" stroke="#450a0a" stroke-width="1"/>` +
+    // 头盔
+    `<path d="M24 50C24 32 36 22 50 22C64 22 76 32 76 50L76 70C76 80 64 88 50 88C36 88 24 80 24 70Z" fill="url(#mt)" stroke="#1e293b" stroke-width="1.6"/>` +
+    `<path d="M50 22V40" stroke="#1e293b" stroke-width="2"/><path d="M28 60H72" stroke="#1e293b" stroke-width="1.2" opacity=".6"/>` +
+    [[30, 72], [70, 72], [36, 82], [64, 82]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="#1e293b"/>`).join('') +
+    // 面甲 T 形开口
+    `<path d="M30 44Q50 38 70 44L70 54Q50 50 30 54Z" fill="#0f172a"/><path d="M44 54L56 54L56 76L44 76Z" fill="#0f172a"/>` +
+    `<path d="M44 76Q50 80 56 76" fill="none" stroke="#1e293b" stroke-width="1"/>` +
+    `<g class="bl"><path class="gl" d="M34 48Q40 46 45 48L44 52Q39 51 35 52Z" fill="#38bdf8"/><path class="gl" d="M55 48Q60 46 66 48L65 52Q61 51 56 52Z" fill="#38bdf8"/></g>` +
+    // 金色徽记
+    `<path d="M50 60L53 66L50 72L47 66Z" fill="#facc15" stroke="#a16207" stroke-width=".8"/>` +
+    star(16, 24, 2.4, '#e2e8f0') + star(84, 30, 2, '#e2e8f0', 0.8)),
+  icefox: () => svg(bg('b', '#bae6fd', '#1d4ed8') +
+    `<radialGradient id="hd" cx=".45" cy=".35"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e0f2fe"/></radialGradient>`,
+    `<rect width="100" height="100" fill="url(#b)"/>` +
+    // 冰晶
+    [[12, 20, 7, -20], [88, 26, 6, 15], [14, 78, 5, 30], [86, 80, 7, -10]].map(([x, y, r, a]) => `<path transform="rotate(${a} ${x} ${y})" d="M${x} ${y - r * 1.6}L${x + r * 0.6} ${y}L${x} ${y + r * 1.6}L${x - r * 0.6} ${y}Z" fill="#fff" stroke="#7dd3fc" stroke-width=".8" opacity=".9"/>`).join('') +
+    `<path d="M26 46L20 12L44 30ZM74 46L80 12L56 30Z" fill="#fff" stroke="#0ea5e9" stroke-width="1.4" stroke-linejoin="round"/><path d="M28 40L25 20L39 31ZM72 40L75 20L61 31Z" fill="#bae6fd"/>` +
+    `<path d="M22 52C22 36 36 30 50 30C64 30 78 36 78 52C78 66 66 82 50 84C34 82 22 66 22 52Z" fill="url(#hd)" stroke="#0ea5e9" stroke-width="1.4"/>` +
+    // 额头冰晶纹
+    `<path d="M50 34L53 40L50 46L47 40Z" fill="#38bdf8"/><path d="M28 48Q34 44 40 48M60 48Q66 44 72 48" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>` +
+    eye(38, 55, 5.5, 6.5, '#22d3ee', true) + eye(62, 55, 5.5, 6.5, '#22d3ee', true) +
+    `<ellipse cx="50" cy="65" rx="2.4" ry="1.8" fill="#0369a1"/><path d="M46 68Q50 71 54 68" fill="none" stroke="#0369a1" stroke-width="1.4" stroke-linecap="round"/>` +
+    blush(31, 64) + blush(69, 64) +
+    // 呼出的寒气
+    `<circle class="gl" cx="62" cy="76" r="2.4" fill="#fff" opacity=".8"/><circle class="gl" style="animation-delay:.6s" cx="70" cy="82" r="3.2" fill="#fff" opacity=".7"/>`),
+  whale: () => svg(bg('b', '#7dd3fc', '#0c4a6e') +
+    `<linearGradient id="wb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#1e40af"/></linearGradient>`,
+    `<rect width="100" height="100" fill="url(#b)"/>` +
+    // 水花
+    `<path d="M50 30C46 20 48 10 50 2C52 10 54 20 50 30Z" fill="#e0f2fe" opacity=".9"/><path d="M50 28C42 20 36 18 30 20C38 22 44 26 50 30ZM50 28C58 20 64 18 70 20C62 22 56 26 50 30Z" fill="#e0f2fe" opacity=".8"/>` +
+    // 鲸身
+    `<path d="M14 58C14 42 30 32 50 32C70 32 86 42 86 58C86 70 76 82 50 82C24 82 14 70 14 58Z" fill="url(#wb)" stroke="#1e3a8a" stroke-width="1.4"/>` +
+    `<path d="M20 66Q50 60 80 66Q70 78 50 80Q30 78 20 66Z" fill="#dbeafe"/>` +
+    `<path d="M84 50C92 44 96 50 92 58C96 62 92 70 84 64Z" fill="#3b82f6" stroke="#1e3a8a" stroke-width="1.2"/>` +
+    eye(36, 54, 5, 6, '#60a5fa') + eye(64, 54, 5, 6, '#60a5fa') +
+    `<path d="M42 66Q50 72 58 66" fill="none" stroke="#1e3a8a" stroke-width="1.6" stroke-linecap="round"/>` + blush(28, 62) + blush(72, 62) +
+    // 书本
+    `<g transform="translate(50 88)"><path d="M-16 -6Q-8 -10 0 -6Q8 -10 16 -6V6Q8 2 0 6Q-8 2 -16 6Z" fill="#fef3c7" stroke="#92400e" stroke-width="1.2"/><path d="M0 -6V6" stroke="#92400e" stroke-width="1"/><path d="M-12 -2H-4M-12 1H-4M4 -2H12M4 1H12" stroke="#b45309" stroke-width=".8"/></g>` +
+    star(14, 20, 2.4, '#fff') + star(86, 14, 2, '#fff', 0.7)),
+  cybercat: () => svg(bg('b', '#1e1b4b', '#020617') +
+    `<linearGradient id="nb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset=".5" stop-color="#e879f9"/><stop offset="1" stop-color="#facc15"/></linearGradient>`,
+    `<rect width="100" height="100" fill="url(#b)"/><path d="M0 72H100M0 84H100M0 94H100M16 60L0 100M34 60L28 100M66 60L72 100M84 60L100 100" stroke="#e879f9" stroke-width=".6" opacity=".35"/>` +
+    `<path d="M26 44L22 14L44 32ZM74 44L78 14L56 32Z" fill="#312e81" stroke="url(#nb)" stroke-width="1.6" stroke-linejoin="round"/><path d="M28 40L26 22L38 32ZM72 40L74 22L62 32Z" fill="#e879f9" opacity=".8"/>` +
+    `<path d="M22 52C22 36 36 30 50 30C64 30 78 36 78 52C78 66 66 82 50 84C34 82 22 66 22 52Z" fill="#1e1b4b" stroke="url(#nb)" stroke-width="1.8"/>` +
+    // 面罩 + 霓虹眼
+    `<path d="M28 46Q50 40 72 46L72 58Q50 54 28 58Z" fill="#0f0a2e" stroke="#22d3ee" stroke-width="1"/>` +
+    `<g class="bl"><path class="gl" d="M33 50Q40 47 45 50L44 55Q39 54 34 55Z" fill="#22d3ee"/><path class="gl" d="M55 50Q60 47 67 50L66 55Q61 54 56 55Z" fill="#22d3ee"/></g>` +
+    `<path d="M48 64L52 64L50 66.5Z" fill="#e879f9"/><path d="M46 68Q50 71 50 66.5Q50 71 54 68" fill="none" stroke="#e879f9" stroke-width="1.2" stroke-linecap="round"/>` +
+    `<path d="M30 62L20 60M30 66L20 68M70 62L80 60M70 66L80 68" stroke="#facc15" stroke-width="1" stroke-linecap="round"/>` +
+    `<path d="M30 76Q50 70 70 76" fill="none" stroke="#e879f9" stroke-width="1.4" stroke-linecap="round"/>` +
+    star(14, 22, 2.4, '#22d3ee') + star(86, 26, 2, '#facc15', 0.6) + star(16, 86, 2, '#e879f9', 1.1)),
+  thundereagle: () => svg(bg('b', '#4c1d95', '#0f0520') +
+    `<linearGradient id="fe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#facc15"/><stop offset="1" stop-color="#b45309"/></linearGradient>`,
+    `<rect width="100" height="100" fill="url(#b)"/>` +
+    // 闪电
+    `<path class="gl" d="M14 10L8 30L16 28L10 48" fill="none" stroke="#fde047" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><path class="gl" style="animation-delay:.8s" d="M88 14L82 32L90 30L84 50" fill="none" stroke="#fde047" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` +
+    // 翅
+    `<path d="M22 56C8 52 4 66 10 80C16 70 22 68 28 70ZM78 56C92 52 96 66 90 80C84 70 78 68 72 70Z" fill="#78350f" stroke="#451a03" stroke-width="1.2"/>` +
+    // 羽冠
+    `<path d="M36 34C40 20 48 12 50 8C52 12 60 20 64 34Z" fill="url(#fe)" stroke="#78350f" stroke-width="1"/><path d="M50 10L50 32" stroke="#78350f" stroke-width="1"/>` +
+    `<path d="M22 54C22 40 36 32 50 32C64 32 78 40 78 54C78 68 66 82 50 84C34 82 22 68 22 54Z" fill="#92400e" stroke="#451a03" stroke-width="1.4"/>` +
+    `<path d="M30 60Q50 52 70 60Q66 78 50 80Q34 78 30 60Z" fill="#fef3c7"/>` +
+    `<path d="M28 46Q36 40 44 46M56 46Q64 40 72 46" fill="none" stroke="#451a03" stroke-width="2.6" stroke-linecap="round"/>` +
+    eye(39, 52, 5.5, 6, '#facc15', true) + eye(61, 52, 5.5, 6, '#facc15', true) +
+    `<path d="M43 60L57 60L52 74L48 74Z" fill="#f59e0b" stroke="#78350f" stroke-width="1.2" stroke-linejoin="round"/><path d="M43 60L57 60L50 64Z" fill="#fde047"/>`),
+  sakurabunny: () => svg(bg('b', '#fce7f3', '#f9a8d4') +
+    `<radialGradient id="hd" cx=".45" cy=".35"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#fdf2f8"/></radialGradient>`,
+    `<rect width="100" height="100" fill="url(#b)"/>` +
+    // 樱花瓣
+    [[12, 16, 0], [88, 20, 40], [10, 70, -30], [90, 76, 20], [76, 92, 60]].map(([x, y, a], i) => `<g class="tw" style="animation-delay:${i * 0.4}s" transform="rotate(${a} ${x} ${y})"><path d="M${x} ${y - 4}Q${x + 4} ${y - 2} ${x + 3} ${y + 3}Q${x} ${y + 1} ${x - 3} ${y + 3}Q${x - 4} ${y - 2} ${x} ${y - 4}Z" fill="#f472b6"/></g>`).join('') +
+    // 长耳
+    `<path d="M36 36C30 20 32 8 38 4C44 10 46 24 44 36ZM64 36C70 20 68 8 62 4C56 10 54 24 56 36Z" fill="#fff" stroke="#be185d" stroke-width="1.2"/><path d="M38 32C35 22 36 12 38 8C41 12 42 22 41 32ZM62 32C65 22 64 12 62 8C59 12 58 22 59 32Z" fill="#fbcfe8"/>` +
+    `<path d="M24 56C24 40 36 32 50 32C64 32 76 40 76 56C76 70 66 84 50 86C34 84 24 70 24 56Z" fill="url(#hd)" stroke="#be185d" stroke-width="1.2"/>` +
+    // 武士头带
+    `<path d="M24 42Q50 36 76 42L76 48Q50 42 24 48Z" fill="#dc2626"/><circle cx="50" cy="43" r="3" fill="#fff"/><path d="M76 44L92 36L90 42L78 48ZM76 46L90 50L88 56L78 50Z" fill="#dc2626"/>` +
+    eye(39, 58, 5, 6, '#ec4899') + eye(61, 58, 5, 6, '#ec4899') +
+    `<path d="M48 67L52 67L50 69.5Z" fill="#be185d"/><path d="M46 71Q50 74 50 69.5Q50 74 54 71" fill="none" stroke="#be185d" stroke-width="1.2" stroke-linecap="round"/>` +
+    blush(31, 66) + blush(69, 66) +
+    // 小太刀
+    `<g transform="translate(78 78) rotate(-45)"><rect x="-2" y="-18" width="4" height="22" rx="1" fill="#e5e7eb" stroke="#6b7280" stroke-width=".8"/><rect x="-5" y="3" width="10" height="2.4" rx="1" fill="#facc15"/><rect x="-2" y="5" width="4" height="9" rx="1" fill="#7f1d1d"/></g>`),
+  starbear: () => svg(bg('b', '#312e81', '#0b0a2a') +
+    `<radialGradient id="hd" cx=".45" cy=".35"><stop offset="0" stop-color="#a5b4fc"/><stop offset="1" stop-color="#4338ca"/></radialGradient>`,
+    `<rect width="100" height="100" fill="url(#b)"/>` +
+    [[10, 14], [88, 10], [92, 50], [8, 56], [20, 90], [80, 92], [50, 6]].map(([x, y], i) => star(x, y, i % 2 ? 2 : 2.8, '#fde68a', i * 0.35)).join('') +
+    `<path d="M80 22a8 8 0 1 0 0 .1Z" fill="#fef9c3"/><circle cx="84" cy="19" r="7" fill="#312e81"/>` +
+    `<circle cx="28" cy="34" r="11" fill="url(#hd)" stroke="#1e1b4b" stroke-width="1.4"/><circle cx="72" cy="34" r="11" fill="url(#hd)" stroke="#1e1b4b" stroke-width="1.4"/><circle cx="28" cy="34" r="5" fill="#c7d2fe"/><circle cx="72" cy="34" r="5" fill="#c7d2fe"/>` +
+    `<path d="M22 54C22 38 36 30 50 30C64 30 78 38 78 54C78 70 66 86 50 88C34 86 22 70 22 54Z" fill="url(#hd)" stroke="#1e1b4b" stroke-width="1.4"/>` +
+    // 身上星座连线
+    `<path d="M34 42L42 38L48 44L58 40L66 46" fill="none" stroke="#fde68a" stroke-width=".8" opacity=".8"/>` + [[34, 42], [42, 38], [48, 44], [58, 40], [66, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.3" fill="#fef9c3"/>`).join('') +
+    `<ellipse cx="50" cy="68" rx="14" ry="11" fill="#c7d2fe"/>` +
+    eye(39, 54, 5.5, 6, '#818cf8', true) + eye(61, 54, 5.5, 6, '#818cf8', true) +
+    `<ellipse cx="50" cy="64" rx="4" ry="3" fill="#1e1b4b"/><path d="M44 70Q50 75 56 70" fill="none" stroke="#1e1b4b" stroke-width="1.6" stroke-linecap="round"/>` +
+    blush(30, 62) + blush(70, 62) + star(50, 36, 3.5, '#fde047')),
 };
 
 export function genAvatars() {
   mkdirSync('avatars', { recursive: true });
-  for (const [id] of MEMBER_AVATARS) writeFileSync(`avatars/${id}.svg`, ART[id]());
-  return MEMBER_AVATARS.length;
+  for (const [id] of [...MEMBER_AVATARS, ...ACH_AVATARS]) writeFileSync(`avatars/${id}.svg`, ART[id]());
+  return MEMBER_AVATARS.length + ACH_AVATARS.length;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) console.log(`✓ 会员专属头像：${genAvatars()} 张`);
