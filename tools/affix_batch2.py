@@ -79,7 +79,7 @@ root("kaufen","🛍️","黑五剁手记","kaufen","买","考芬",[
  ["ankaufen","收购","安考芬","an","an- 靠上：把东西收到自己这边。店招 Ankauf 就是「收购」",["Wir kaufen alte Handys an.","我们收购旧手机。","维尔 考芬 阿尔特 亨迪斯 安。"]],
  ["verkaufen","卖","费尔考芬","ver","ver- 不可分：把东西「买走」的反面 → 卖出",["Ich verkaufe mein altes Handy.","我把旧手机卖了。","伊希 费尔考费 麦因 阿尔特斯 亨迪。"]],
  ["abkaufen","买下；（口语）相信","阿普考芬","ab","ab- 从某人那拿下：从人手里买；Das kauf ich dir nicht ab 我才不信",["Das kaufe ich dir nicht ab!","我才不信你！","达斯 考费 伊希 迪尔 尼希特 阿普！"]]])
-root("packen","🧳","出国前夜收行李","packen","打包；搞定","帕肯",[
+root("packen","🎒","出国前夜收行李","packen","打包；搞定","帕肯",[
  "明天出国，今晚必须{packen}完",
  "老妈往箱子里{einpacken}了十包辣条",
  "我又一包包{auspacken}",
@@ -239,7 +239,7 @@ root("holen","📮","取快递的一天","holen","取、拿来","霍伦",[
  "店员让我{wiederholen}了三遍名字",
  "今天的德语课只能晚上{nachholen}",
  "累瘫了，周末要好好{erholen}"],[
- ["holen","去取、拿来","霍伦","","词根。holen 是「去拿过来」",["Ich hole dir ein Glas Wasser.","我给你拿杯水。","伊希 霍勒 迪尔 艾因 格拉斯 瓦瑟尔。"]],
+ ["holen","去取、拿来","霍伦","","词根。holen 是「去拿过来」",["Ich hole dir ein Glas Wasser.","我给你拿杯水。","伊希 霍勒 迪尔 艾因 格拉斯 瓦瑟。"]],
  ["abholen","领取；接（人）","阿普霍伦","ab","ab- 从…取下：去把人/东西接走",["Ich hole dich am Bahnhof ab.","我去车站接你。","伊希 霍勒 迪希 阿姆 班霍夫 阿普。"]],
  ["überholen","超车","于伯尔霍伦","über","über- 不可分：从旁边越过去",["Er überholt den Bus.","他超过了公交车。","埃尔 于伯尔霍尔特 登 布斯。"]],
  ["wiederholen","重复；复习","维德霍伦","wieder","wieder- 再，这里不可分（例外）：再说一遍",["Wiederholen Sie bitte!","请再说一遍！","维德霍伦 齐 比特！"]],
