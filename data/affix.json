@@ -194,6 +194,16 @@
    "py": "黑尔佛尔",
    "zh": "向前凸出、突出",
    "t": "s"
+  },
+  "zer": {
+   "py": "策尔",
+   "zh": "碎、裂开",
+   "t": "u"
+  },
+  "kennen": {
+   "py": "肯嫩",
+   "zh": "认识",
+   "t": "s"
   }
  },
  "roots": [
@@ -6357,6 +6367,1565 @@
       "Oma kocht Marmelade ein.",
       "奶奶熬果酱。",
       "奥马 科赫特 马尔梅拉德 艾因。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "leben",
+   "icon": "🌱",
+   "title": "留学第一年",
+   "v": "leben",
+   "zh": "生活、活着",
+   "py": "莱本",
+   "story": [
+    "来维也纳之前，我只在{leben}里见过雪",
+    "第一年{erleben}了太多第一次",
+    "和三个室友{zusammenleben}，每天抢厨房",
+    "期末周我差点没能{überleben}",
+    "还好有朋友陪我一起{miterleben}这一切"
+   ],
+   "words": [
+    {
+     "de": "leben",
+     "zh": "生活、活着",
+     "py": "莱本",
+     "pre": "",
+     "n": "词根。leben 是「活、生活」，das Leben 是「生活、生命」",
+     "ex": [
+      "Ich lebe seit einem Jahr in Wien.",
+      "我在维也纳住了一年了。",
+      "伊希 莱贝 宰特 艾嫩 雅尔 因 维恩。"
+     ]
+    },
+    {
+     "de": "erleben",
+     "zh": "经历、体验",
+     "py": "埃尔莱本",
+     "pre": "er",
+     "n": "er- 不可分、得到结果：活过一遍 → 亲身经历。名词 das Erlebnis",
+     "ex": [
+      "Ich habe viel erlebt.",
+      "我经历了很多。",
+      "伊希 哈贝 菲尔 埃尔莱普特。"
+     ]
+    },
+    {
+     "de": "zusammenleben",
+     "zh": "一起生活、同居",
+     "py": "粗扎门莱本",
+     "pre": "zusammen",
+     "n": "zusammen- 一起：住在一起过日子",
+     "ex": [
+      "Wir leben seit drei Jahren zusammen.",
+      "我们一起生活三年了。",
+      "维尔 莱本 宰特 德莱 雅伦 粗扎门。"
+     ]
+    },
+    {
+     "de": "überleben",
+     "zh": "活下来、幸存",
+     "py": "于伯尔莱本",
+     "pre": "über",
+     "n": "über- 不可分、越过：熬过去 → 幸存",
+     "ex": [
+      "Ich habe die Prüfung überlebt.",
+      "我从考试里活下来了。",
+      "伊希 哈贝 迪 普吕丰 于伯尔莱普特。"
+     ],
+     "sep": false
+    },
+    {
+     "de": "miterleben",
+     "zh": "亲眼见证",
+     "py": "米特埃尔莱本",
+     "pre": "mit",
+     "n": "mit- 一起：一起经历 → 在场见证",
+     "ex": [
+      "Ich will das miterleben.",
+      "我想亲眼见证。",
+      "伊希 维尔 达斯 米特埃尔莱本。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "reißen",
+   "icon": "📄",
+   "title": "被撕掉的作业",
+   "v": "reißen",
+   "zh": "撕、扯",
+   "py": "莱森",
+   "story": [
+    "我刚写完的作业被弟弟拿去{reißen}着玩",
+    "他先{abreißen}了封面",
+    "又把中间一页{ausreißen}折飞机",
+    "最后整本{zerreißen}成了雪花",
+    "我气得一把{aufreißen}他房门——他正在拿我的照片{einreißen}…"
+   ],
+   "words": [
+    {
+     "de": "reißen",
+     "zh": "撕、扯",
+     "py": "莱森",
+     "pre": "",
+     "n": "词根。reißen 是「用力撕、扯」",
+     "ex": [
+      "Das Papier reißt leicht.",
+      "这纸很容易破。",
+      "达斯 帕皮尔 赖斯特 莱希特。"
+     ]
+    },
+    {
+     "de": "abreißen",
+     "zh": "扯下；拆除",
+     "py": "阿普莱森",
+     "pre": "ab",
+     "n": "ab- 离开：扯下来；房子「扯掉」→ 拆除",
+     "ex": [
+      "Sie reißen das alte Haus ab.",
+      "他们在拆那栋老房子。",
+      "齐 莱森 达斯 阿尔特 豪斯 阿普。"
+     ]
+    },
+    {
+     "de": "ausreißen",
+     "zh": "拔出；撕下",
+     "py": "奥斯莱森",
+     "pre": "aus",
+     "n": "aus- 出来：连根拔出、撕出来",
+     "ex": [
+      "Er reißt eine Seite aus.",
+      "他撕下一页。",
+      "埃尔 赖斯特 埃内 寨特 奥斯。"
+     ]
+    },
+    {
+     "de": "zerreißen",
+     "zh": "撕碎",
+     "py": "策尔莱森",
+     "pre": "zer",
+     "n": "zer- 不可分、碎：撕成碎片",
+     "ex": [
+      "Sie zerreißt den Brief.",
+      "她把信撕碎了。",
+      "齐 策尔赖斯特 登 布里夫。"
+     ]
+    },
+    {
+     "de": "aufreißen",
+     "zh": "猛地拉开",
+     "py": "奥夫莱森",
+     "pre": "auf",
+     "n": "auf- 打开：一把扯开（门、窗、包装）",
+     "ex": [
+      "Er reißt die Tür auf.",
+      "他猛地拉开门。",
+      "埃尔 赖斯特 迪 提尔 奥夫。"
+     ]
+    },
+    {
+     "de": "einreißen",
+     "zh": "撕个口子",
+     "py": "艾因莱森",
+     "pre": "ein",
+     "n": "ein- 进入：撕进去一点 → 撕开个口子",
+     "ex": [
+      "Die Seite ist eingerissen.",
+      "这页撕了个口子。",
+      "迪 寨特 伊斯特 艾因格里森。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wachsen",
+   "icon": "🌳",
+   "title": "阳台上的番茄",
+   "v": "wachsen",
+   "zh": "生长",
+   "py": "瓦克森",
+   "story": [
+    "我在阳台种了番茄，看它慢慢{wachsen}",
+    "我是在农村{aufwachsen}的，种菜我在行",
+    "剪掉的叶子过两天又{nachwachsen}",
+    "两棵苗贴得太近，最后{zusammenwachsen}成了一棵"
+   ],
+   "words": [
+    {
+     "de": "wachsen",
+     "zh": "生长",
+     "py": "瓦克森",
+     "pre": "",
+     "n": "词根。wachsen 是「长、长大」",
+     "ex": [
+      "Die Tomaten wachsen schnell.",
+      "番茄长得很快。",
+      "迪 托马滕 瓦克森 施内尔。"
+     ]
+    },
+    {
+     "de": "aufwachsen",
+     "zh": "长大",
+     "py": "奥夫瓦克森",
+     "pre": "auf",
+     "n": "auf- 向上：往上长 → 长大成人",
+     "ex": [
+      "Ich bin auf dem Land aufgewachsen.",
+      "我是在乡下长大的。",
+      "伊希 宾 奥夫 登 兰特 奥夫格瓦克森。"
+     ]
+    },
+    {
+     "de": "nachwachsen",
+     "zh": "再长出来",
+     "py": "纳赫瓦克森",
+     "pre": "nach",
+     "n": "nach- 跟在后面：剪了以后再长",
+     "ex": [
+      "Die Haare wachsen nach.",
+      "头发会再长出来。",
+      "迪 哈勒 瓦克森 纳赫。"
+     ]
+    },
+    {
+     "de": "zusammenwachsen",
+     "zh": "长到一起",
+     "py": "粗扎门瓦克森",
+     "pre": "zusammen",
+     "n": "zusammen- 一起：长成一体；也指人越来越亲近",
+     "ex": [
+      "Die zwei Städte wachsen zusammen.",
+      "两座城市连成了一片。",
+      "迪 茨威 施泰特 瓦克森 粗扎门。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tauschen",
+   "icon": "🔄",
+   "title": "网购退换货",
+   "v": "tauschen",
+   "zh": "交换",
+   "py": "陶申",
+   "story": [
+    "新买的鞋小了一码，我想{tauschen}",
+    "店里说可以{umtauschen}，但要小票",
+    "结果快递把两双鞋{vertauschen}了",
+    "最后我用旧鞋{eintauschen}了一张优惠券",
+    "还跟店员{austauschen}了联系方式"
+   ],
+   "words": [
+    {
+     "de": "tauschen",
+     "zh": "交换",
+     "py": "陶申",
+     "pre": "",
+     "n": "词根。tauschen 是「换」",
+     "ex": [
+      "Wollen wir tauschen?",
+      "我们换一下吧？",
+      "沃伦 维尔 陶申？"
+     ]
+    },
+    {
+     "de": "umtauschen",
+     "zh": "换货",
+     "py": "乌姆陶申",
+     "pre": "um",
+     "n": "um- 换一个：拿去换别的",
+     "ex": [
+      "Kann ich das umtauschen?",
+      "这个能换吗？",
+      "坎 伊希 达斯 乌姆陶申？"
+     ],
+     "sep": true
+    },
+    {
+     "de": "vertauschen",
+     "zh": "搞混、调换",
+     "py": "费尔陶申",
+     "pre": "ver",
+     "n": "ver- 不可分、弄错：换错了",
+     "ex": [
+      "Ich habe die Schlüssel vertauscht.",
+      "我把钥匙拿混了。",
+      "伊希 哈贝 迪 施吕塞尔 费尔陶施特。"
+     ]
+    },
+    {
+     "de": "eintauschen",
+     "zh": "兑换、以…换…",
+     "py": "艾因陶申",
+     "pre": "ein",
+     "n": "ein- 进入：换进来",
+     "ex": [
+      "Ich tausche Euro in Dollar ein.",
+      "我把欧元换成美元。",
+      "伊希 陶舍 奥伊罗 因 多拉尔 艾因。"
+     ]
+    },
+    {
+     "de": "austauschen",
+     "zh": "交流；更换",
+     "py": "奥斯陶申",
+     "pre": "aus",
+     "n": "aus- 出去：互相给出去 → 交流；把旧的换掉。名词 der Austausch",
+     "ex": [
+      "Wir tauschen Erfahrungen aus.",
+      "我们交流经验。",
+      "维尔 陶申 埃尔法隆恩 奥斯。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "binden",
+   "icon": "🎀",
+   "title": "包生日礼物",
+   "v": "binden",
+   "zh": "绑、系",
+   "py": "宾登",
+   "story": [
+    "给朋友包礼物，最后要{binden}一个蝴蝶结",
+    "我先用丝带{zubinden}袋口",
+    "再把小卡片{anbinden}在上面",
+    "朋友拆开时说：这礼物把我们{verbinden}在一起了",
+    "她顺手把我也{einbinden}进了她的生日派对策划"
+   ],
+   "words": [
+    {
+     "de": "binden",
+     "zh": "绑、系",
+     "py": "宾登",
+     "pre": "",
+     "n": "词根。binden 是「绑、系」",
+     "ex": [
+      "Ich binde meine Schuhe.",
+      "我系鞋带。",
+      "伊希 宾德 麦讷 舒厄。"
+     ]
+    },
+    {
+     "de": "zubinden",
+     "zh": "系紧、扎上",
+     "py": "粗宾登",
+     "pre": "zu",
+     "n": "zu- 关上：把口扎紧",
+     "ex": [
+      "Bind den Sack zu!",
+      "把袋子扎上！",
+      "宾特 登 扎克 粗！"
+     ]
+    },
+    {
+     "de": "anbinden",
+     "zh": "拴上",
+     "py": "安宾登",
+     "pre": "an",
+     "n": "an- 贴上：拴到某处",
+     "ex": [
+      "Er bindet den Hund an.",
+      "他把狗拴上。",
+      "埃尔 宾德特 登 洪特 安。"
+     ]
+    },
+    {
+     "de": "verbinden",
+     "zh": "连接；包扎",
+     "py": "费尔宾登",
+     "pre": "ver",
+     "n": "ver- 不可分：绑在一起 → 连接；伤口「绑起来」→ 包扎。名词 die Verbindung",
+     "ex": [
+      "Ich verbinde dich weiter.",
+      "我给你转接。",
+      "伊希 费尔宾德 迪希 魏特尔。"
+     ]
+    },
+    {
+     "de": "einbinden",
+     "zh": "纳入、拉进来",
+     "py": "艾因宾登",
+     "pre": "ein",
+     "n": "ein- 进入：绑进来 → 让人参与",
+     "ex": [
+      "Wir binden alle ein.",
+      "我们让大家都参与进来。",
+      "维尔 宾登 阿勒 艾因。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "drucken",
+   "icon": "🖨️",
+   "title": "交论文前一晚",
+   "v": "drucken",
+   "zh": "印刷",
+   "py": "德鲁肯",
+   "story": [
+    "论文明早要交，我去图书馆{drucken}",
+    "排队半小时终于{ausdrucken}了",
+    "回家发现第三页{nachdrucken}才行：少了一段",
+    "报社说愿意{abdrucken}我的文章——可惜是梦",
+    "醒来一看，打印机在{bedrucken}我的床单…也是梦"
+   ],
+   "words": [
+    {
+     "de": "drucken",
+     "zh": "印刷",
+     "py": "德鲁肯",
+     "pre": "",
+     "n": "词根。drucken 是「印」（注意和 drücken 按、压不同）",
+     "ex": [
+      "Der Drucker druckt nicht.",
+      "打印机不打印。",
+      "德尔 德鲁克尔 德鲁克特 尼希特。"
+     ]
+    },
+    {
+     "de": "ausdrucken",
+     "zh": "打印出来",
+     "py": "奥斯德鲁肯",
+     "pre": "aus",
+     "n": "aus- 出来：从电脑里印出来",
+     "ex": [
+      "Kannst du das ausdrucken?",
+      "你能打印一下吗？",
+      "坎斯特 度 达斯 奥斯德鲁肯？"
+     ]
+    },
+    {
+     "de": "nachdrucken",
+     "zh": "重印、补印",
+     "py": "纳赫德鲁肯",
+     "pre": "nach",
+     "n": "nach- 跟在后面：再印一次",
+     "ex": [
+      "Das Buch wird nachgedruckt.",
+      "这本书在重印。",
+      "达斯 布赫 维尔特 纳赫格德鲁克特。"
+     ]
+    },
+    {
+     "de": "abdrucken",
+     "zh": "刊登",
+     "py": "阿普德鲁肯",
+     "pre": "ab",
+     "n": "ab- 照着：照原样印下来 → 刊登",
+     "ex": [
+      "Die Zeitung druckt den Artikel ab.",
+      "报纸刊登了这篇文章。",
+      "迪 灿通 德鲁克特 登 阿蒂克尔 阿普。"
+     ]
+    },
+    {
+     "de": "bedrucken",
+     "zh": "在…上印",
+     "py": "贝德鲁肯",
+     "pre": "be",
+     "n": "be- 不可分、作用到表面：印在东西上",
+     "ex": [
+      "Wir bedrucken T-Shirts.",
+      "我们印 T 恤。",
+      "维尔 贝德鲁肯 提-舍茨。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "springen",
+   "icon": "🦘",
+   "title": "体育课跳山羊",
+   "v": "springen",
+   "zh": "跳",
+   "py": "施普林恩",
+   "story": [
+    "体育课第一项就是{springen}",
+    "我助跑时太紧张，提前{abspringen}了",
+    "第二次干脆{überspringen}这一项",
+    "同学生病，老师让我{einspringen}替他接力",
+    "听到哨声我从椅子上{aufspringen}——结果是下课铃"
+   ],
+   "words": [
+    {
+     "de": "springen",
+     "zh": "跳",
+     "py": "施普林恩",
+     "pre": "",
+     "n": "词根。springen 是「跳」",
+     "ex": [
+      "Die Katze springt auf den Tisch.",
+      "猫跳上桌子。",
+      "迪 卡策 施普林特 奥夫 登 提什。"
+     ]
+    },
+    {
+     "de": "abspringen",
+     "zh": "跳下；退出",
+     "py": "阿普施普林恩",
+     "pre": "ab",
+     "n": "ab- 离开：起跳离开；也指中途退出",
+     "ex": [
+      "Zwei Teilnehmer sind abgesprungen.",
+      "两个参与者退出了。",
+      "茨威 泰尔内默尔 辛特 阿普格施普龙恩。"
+     ]
+    },
+    {
+     "de": "überspringen",
+     "zh": "跳过",
+     "py": "于伯尔施普林恩",
+     "pre": "über",
+     "n": "über- 不可分、越过：直接跳过去",
+     "ex": [
+      "Ich überspringe dieses Kapitel.",
+      "我跳过这一章。",
+      "伊希 于伯尔施普林厄 迪泽斯 卡皮特尔。"
+     ],
+     "sep": false
+    },
+    {
+     "de": "einspringen",
+     "zh": "顶班、替补",
+     "py": "艾因施普林恩",
+     "pre": "ein",
+     "n": "ein- 进入：跳进来顶上",
+     "ex": [
+      "Kannst du morgen für mich einspringen?",
+      "你明天能替我顶班吗？",
+      "坎斯特 度 摩根 菲尔 米希 艾因施普林恩？"
+     ]
+    },
+    {
+     "de": "aufspringen",
+     "zh": "跳起来",
+     "py": "奥夫施普林恩",
+     "pre": "auf",
+     "n": "auf- 向上：一下子跳起来",
+     "ex": [
+      "Er springt vom Stuhl auf.",
+      "他从椅子上跳起来。",
+      "埃尔 施普林特 佛姆 施图尔 奥夫。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fliegen",
+   "icon": "✈️",
+   "title": "第一次回国",
+   "v": "fliegen",
+   "zh": "飞",
+   "py": "弗利根",
+   "story": [
+    "暑假我要{fliegen}回国",
+    "飞机早上七点{abfliegen}",
+    "我在飞机上把攻略{überfliegen}了一遍",
+    "九月再{zurückfliegen}维也纳",
+    "八个月时间一下就{verfliegen}了"
+   ],
+   "words": [
+    {
+     "de": "fliegen",
+     "zh": "飞",
+     "py": "弗利根",
+     "pre": "",
+     "n": "词根。fliegen 是「飞、坐飞机」",
+     "ex": [
+      "Ich fliege nach China.",
+      "我飞回中国。",
+      "伊希 弗利格 纳赫 希纳。"
+     ]
+    },
+    {
+     "de": "abfliegen",
+     "zh": "起飞",
+     "py": "阿普弗利根",
+     "pre": "ab",
+     "n": "ab- 离开：飞走 → 起飞。名词 der Abflug",
+     "ex": [
+      "Wann fliegt der Flieger ab?",
+      "飞机几点起飞？",
+      "万 弗利克特 德尔 弗利格尔 阿普？"
+     ]
+    },
+    {
+     "de": "überfliegen",
+     "zh": "粗略浏览；飞越",
+     "py": "于伯尔弗利根",
+     "pre": "über",
+     "n": "über- 不可分：从上面掠过 → 扫一眼",
+     "ex": [
+      "Ich überfliege den Text.",
+      "我快速扫一遍课文。",
+      "伊希 于伯尔弗利格 登 特克斯特。"
+     ],
+     "sep": false
+    },
+    {
+     "de": "zurückfliegen",
+     "zh": "飞回",
+     "py": "楚吕克弗利根",
+     "pre": "zurück",
+     "n": "zurück- 往回：飞回去",
+     "ex": [
+      "Wir fliegen am Montag zurück.",
+      "我们周一飞回去。",
+      "维尔 弗利根 阿姆 蒙塔克 楚吕克。"
+     ]
+    },
+    {
+     "de": "verfliegen",
+     "zh": "（时间）飞逝；消散",
+     "py": "费尔弗利根",
+     "pre": "ver",
+     "n": "ver- 不可分、消失：飞走不见了",
+     "ex": [
+      "Die Zeit verfliegt.",
+      "时间飞逝。",
+      "迪 采特 费尔弗利克特。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "räumen",
+   "icon": "🗑️",
+   "title": "妈妈视频查房",
+   "v": "räumen",
+   "zh": "收拾、腾开",
+   "py": "罗伊门",
+   "story": [
+    "妈妈说要视频看我房间，我赶紧{räumen}",
+    "先把桌子{aufräumen}",
+    "把脏衣服全{wegräumen}塞进柜子",
+    "吃剩的外卖也{abräumen}了",
+    "柜子满了，只好先把旧书{ausräumen}",
+    "最后我{einräumen}：沙发底下还藏着一堆"
+   ],
+   "words": [
+    {
+     "de": "räumen",
+     "zh": "收拾、腾开",
+     "py": "罗伊门",
+     "pre": "",
+     "n": "词根。räumen 是「腾地方、清理」，der Raum 是「空间」",
+     "ex": [
+      "Wir müssen den Keller räumen.",
+      "我们得把地下室清空。",
+      "维尔 米森 登 凯勒 罗伊门。"
+     ]
+    },
+    {
+     "de": "aufräumen",
+     "zh": "收拾整理",
+     "py": "奥夫罗伊门",
+     "pre": "auf",
+     "n": "auf- 完成：收拾好",
+     "ex": [
+      "Räum dein Zimmer auf!",
+      "收拾你的房间！",
+      "罗伊姆 代因 齐默尔 奥夫"
+     ]
+    },
+    {
+     "de": "wegräumen",
+     "zh": "收走",
+     "py": "韦克罗伊门",
+     "pre": "weg",
+     "n": "weg- 走开：收到看不见的地方",
+     "ex": [
+      "Räum das bitte weg!",
+      "请把这个收走！",
+      "罗伊姆 达斯 比特 韦克！"
+     ]
+    },
+    {
+     "de": "abräumen",
+     "zh": "收拾桌子",
+     "py": "阿普罗伊门",
+     "pre": "ab",
+     "n": "ab- 离开：把餐具从桌上撤下来",
+     "ex": [
+      "Kannst du den Tisch abräumen?",
+      "你能收一下桌子吗？",
+      "坎斯特 度 登 提什 阿普罗伊门？"
+     ]
+    },
+    {
+     "de": "ausräumen",
+     "zh": "清空",
+     "py": "奥斯罗伊门",
+     "pre": "aus",
+     "n": "aus- 出来：把里面的东西全拿出来",
+     "ex": [
+      "Ich räume den Schrank aus.",
+      "我把柜子清空。",
+      "伊希 罗伊默 登 施兰克 奥斯。"
+     ]
+    },
+    {
+     "de": "einräumen",
+     "zh": "放进去；承认",
+     "py": "艾因罗伊门",
+     "pre": "ein",
+     "n": "ein- 进入：放进柜子；也指「让步、承认」",
+     "ex": [
+      "Ich muss einen Fehler einräumen.",
+      "我得承认一个错误。",
+      "伊希 穆斯 艾嫩 费勒 艾因罗伊门。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wischen",
+   "icon": "🧽",
+   "title": "打翻一杯可乐",
+   "v": "wischen",
+   "zh": "擦",
+   "py": "维申",
+   "story": [
+    "我一挥手打翻了可乐，赶紧去{wischen}",
+    "先用纸巾{abwischen}桌子",
+    "再拿拖把把地上{aufwischen}",
+    "手机屏幕上的可乐一{wegwischen}，消息也被我划没了",
+    "字迹还被我{verwischen}成了一团"
+   ],
+   "words": [
+    {
+     "de": "wischen",
+     "zh": "擦",
+     "py": "维申",
+     "pre": "",
+     "n": "词根。wischen 是「擦、抹」",
+     "ex": [
+      "Ich wische den Boden.",
+      "我拖地。",
+      "伊希 维舍 登 博登。"
+     ]
+    },
+    {
+     "de": "abwischen",
+     "zh": "擦掉、擦干净",
+     "py": "阿普维申",
+     "pre": "ab",
+     "n": "ab- 离开：把脏东西擦下来",
+     "ex": [
+      "Wisch den Tisch ab!",
+      "把桌子擦一下！",
+      "维施 登 提什 阿普！"
+     ]
+    },
+    {
+     "de": "aufwischen",
+     "zh": "拖干净、擦干",
+     "py": "奥夫维申",
+     "pre": "auf",
+     "n": "auf- 向上：把地上的水吸起来",
+     "ex": [
+      "Ich wische das Wasser auf.",
+      "我把水擦干。",
+      "伊希 维舍 达斯 瓦瑟 奥夫。"
+     ]
+    },
+    {
+     "de": "wegwischen",
+     "zh": "抹掉；划走",
+     "py": "韦克维申",
+     "pre": "weg",
+     "n": "weg- 走开：一抹就没了（手机上划掉）",
+     "ex": [
+      "Wisch die Nachricht weg.",
+      "把消息划掉。",
+      "维施 迪 纳赫里希特 韦克。"
+     ]
+    },
+    {
+     "de": "verwischen",
+     "zh": "弄模糊",
+     "py": "费尔维申",
+     "pre": "ver",
+     "n": "ver- 不可分、弄坏：擦花了",
+     "ex": [
+      "Die Farbe ist verwischt.",
+      "颜料被抹花了。",
+      "迪 法尔贝 伊斯特 费尔维施特。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "füllen",
+   "icon": "📝",
+   "title": "在维也纳办居留",
+   "v": "füllen",
+   "zh": "装满、填",
+   "py": "菲伦",
+   "story": [
+    "办居留第一步：把表格{ausfüllen}",
+    "钢笔没墨了，我先去{nachfüllen}",
+    "顺手把水杯也{auffüllen}",
+    "结果把墨水{einfüllen}进了水杯…",
+    "柜员看着满桌狼藉，问我还要不要{füllen}第二张",
+    "我说：你只要{erfüllen}我一个愿望——让我回家"
+   ],
+   "words": [
+    {
+     "de": "füllen",
+     "zh": "装满、填",
+     "py": "菲伦",
+     "pre": "",
+     "n": "词根。füllen 是「装满」，voll 是「满」",
+     "ex": [
+      "Ich fülle das Glas.",
+      "我把杯子倒满。",
+      "伊希 菲勒 达斯 格拉斯。"
+     ]
+    },
+    {
+     "de": "ausfüllen",
+     "zh": "填写（表格）",
+     "py": "奥斯菲伦",
+     "pre": "aus",
+     "n": "aus- 完整：把空格全部填完",
+     "ex": [
+      "Bitte füllen Sie das Formular aus.",
+      "请填写这张表。",
+      "比特 菲伦 齐 达斯 佛尔穆拉尔 奥斯。"
+     ]
+    },
+    {
+     "de": "nachfüllen",
+     "zh": "补充、续杯",
+     "py": "纳赫菲伦",
+     "pre": "nach",
+     "n": "nach- 跟在后面：少了再补",
+     "ex": [
+      "Darf ich nachfüllen?",
+      "我能给您续上吗？",
+      "达尔夫 伊希 纳赫菲伦？"
+     ]
+    },
+    {
+     "de": "auffüllen",
+     "zh": "加满",
+     "py": "奥夫菲伦",
+     "pre": "auf",
+     "n": "auf- 向上：一直加到满",
+     "ex": [
+      "Ich fülle den Tank auf.",
+      "我把油箱加满。",
+      "伊希 菲勒 登 坦克 奥夫。"
+     ]
+    },
+    {
+     "de": "einfüllen",
+     "zh": "灌进去",
+     "py": "艾因菲伦",
+     "pre": "ein",
+     "n": "ein- 进入：倒进容器里",
+     "ex": [
+      "Füll das Wasser hier ein.",
+      "把水灌到这儿。",
+      "菲尔 达斯 瓦瑟 希尔 艾因。"
+     ]
+    },
+    {
+     "de": "erfüllen",
+     "zh": "实现、满足",
+     "py": "埃尔菲伦",
+     "pre": "er",
+     "n": "er- 不可分、达成：填满了 → 实现（愿望）、满足（条件）",
+     "ex": [
+      "Mein Traum hat sich erfüllt.",
+      "我的梦想实现了。",
+      "麦因 特劳姆 哈特 西希 埃尔菲尔特。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "passen",
+   "icon": "👔",
+   "title": "去面试前",
+   "v": "passen",
+   "zh": "合适",
+   "py": "帕森",
+   "story": [
+    "面试前一晚，我试衬衫合不合{passen}",
+    "店员说要{anpassen}一下袖长",
+    "第二天我太紧张，差点{verpassen}地铁",
+    "妈妈打电话说：路上要{aufpassen}",
+    "面试官说我的经历和岗位很{zusammenpassen}"
+   ],
+   "words": [
+    {
+     "de": "passen",
+     "zh": "合适",
+     "py": "帕森",
+     "pre": "",
+     "n": "词根。passen 是「合适、合身」",
+     "ex": [
+      "Die Hose passt mir nicht.",
+      "这条裤子我穿不合适。",
+      "迪 霍泽 帕斯特 米尔 尼希特。"
+     ]
+    },
+    {
+     "de": "anpassen",
+     "zh": "调整；适应",
+     "py": "安帕森",
+     "pre": "an",
+     "n": "an- 贴上：贴合到某处 → 调整、适应",
+     "ex": [
+      "Ich muss mich erst anpassen.",
+      "我得先适应一下。",
+      "伊希 穆斯 米希 埃尔斯特 安帕森。"
+     ]
+    },
+    {
+     "de": "verpassen",
+     "zh": "错过",
+     "py": "费尔帕森",
+     "pre": "ver",
+     "n": "ver- 不可分、弄错：没对上 → 错过",
+     "ex": [
+      "Ich habe den Bus verpasst.",
+      "我错过了公交。",
+      "伊希 哈贝 登 布斯 费尔帕斯特。"
+     ]
+    },
+    {
+     "de": "aufpassen",
+     "zh": "注意、小心",
+     "py": "奥夫帕森",
+     "pre": "auf",
+     "n": "auf- 向上：把注意力提起来",
+     "ex": [
+      "Pass auf!",
+      "小心！",
+      "帕斯 奥夫！"
+     ]
+    },
+    {
+     "de": "zusammenpassen",
+     "zh": "相配、合得来",
+     "py": "粗扎门帕森",
+     "pre": "zusammen",
+     "n": "zusammen- 一起：放在一起正合适",
+     "ex": [
+      "Die zwei passen gut zusammen.",
+      "这两人很般配。",
+      "迪 茨威 帕森 古特 粗扎门。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lernen",
+   "icon": "✏️",
+   "title": "学德语的第 100 天",
+   "v": "lernen",
+   "zh": "学习",
+   "py": "勒嫩",
+   "story": [
+    "我每天坚持{lernen}德语",
+    "第 100 天在面包店认识了一个人，算是{kennenlernen}",
+    "可一放假，我就{verlernen}了一半",
+    "老师说要从头{umlernen}发音",
+    "我问什么时候能{auslernen}——她笑了：一辈子"
+   ],
+   "words": [
+    {
+     "de": "lernen",
+     "zh": "学习",
+     "py": "勒嫩",
+     "pre": "",
+     "n": "词根。lernen 是「学」",
+     "ex": [
+      "Ich lerne jeden Tag.",
+      "我每天都学。",
+      "伊希 勒讷 耶登 塔克。"
+     ]
+    },
+    {
+     "de": "kennenlernen",
+     "zh": "认识（新朋友）",
+     "py": "肯嫩勒嫩",
+     "pre": "kennen",
+     "n": "kennen- 认得：学着认得 → 结识",
+     "ex": [
+      "Freut mich, Sie kennenzulernen!",
+      "很高兴认识您！",
+      "弗罗伊特 米希，齐 肯嫩粗勒嫩！"
+     ]
+    },
+    {
+     "de": "verlernen",
+     "zh": "忘掉（学过的）",
+     "py": "费尔勒嫩",
+     "pre": "ver",
+     "n": "ver- 不可分、丢失：学了又丢了",
+     "ex": [
+      "Ich habe mein Französisch verlernt.",
+      "我的法语全忘了。",
+      "伊希 哈贝 麦因 弗兰策西施 费尔勒恩特。"
+     ]
+    },
+    {
+     "de": "umlernen",
+     "zh": "重新学、改学",
+     "py": "乌姆勒嫩",
+     "pre": "um",
+     "n": "um- 换一个：换个方式重新学",
+     "ex": [
+      "Ich muss umlernen.",
+      "我得重新学。",
+      "伊希 穆斯 乌姆勒嫩。"
+     ],
+     "sep": true
+    },
+    {
+     "de": "auslernen",
+     "zh": "学成、出师",
+     "py": "奥斯勒嫩",
+     "pre": "aus",
+     "n": "aus- 到头：学完 → 出师。俗语 Man lernt nie aus 活到老学到老",
+     "ex": [
+      "Man lernt nie aus.",
+      "活到老，学到老。",
+      "曼 勒恩特 尼 奥斯。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "schieben",
+   "icon": "🛒",
+   "title": "超市推车大战",
+   "v": "schieben",
+   "zh": "推",
+   "py": "施本",
+   "story": [
+    "周六去超市，我负责{schieben}购物车",
+    "后面的人一直往前{vorschieben}",
+    "我把买东西{aufschieben}到周日就好了",
+    "排队时有人想{einschieben}插队",
+    "保安把他{abschieben}到最后",
+    "我只好把晚饭{verschieben}到八点"
+   ],
+   "words": [
+    {
+     "de": "schieben",
+     "zh": "推",
+     "py": "施本",
+     "pre": "",
+     "n": "词根。schieben 是「推、挪」",
+     "ex": [
+      "Ich schiebe den Wagen.",
+      "我推车。",
+      "伊希 施贝 登 瓦根。"
+     ]
+    },
+    {
+     "de": "vorschieben",
+     "zh": "往前推；找借口",
+     "py": "佛尔施本",
+     "pre": "vor",
+     "n": "vor- 往前：推到前面；也指拿某事当挡箭牌",
+     "ex": [
+      "Er schiebt Arbeit vor.",
+      "他拿工作当借口。",
+      "埃尔 席普特 阿尔拜特 佛尔。"
+     ]
+    },
+    {
+     "de": "aufschieben",
+     "zh": "拖延",
+     "py": "奥夫施本",
+     "pre": "auf",
+     "n": "auf- 向上：推到上面搁着 → 往后拖",
+     "ex": [
+      "Schieb das nicht auf!",
+      "别拖了！",
+      "席普 达斯 尼希特 奥夫！"
+     ]
+    },
+    {
+     "de": "einschieben",
+     "zh": "插进去",
+     "py": "艾因施本",
+     "pre": "ein",
+     "n": "ein- 进入：塞进中间",
+     "ex": [
+      "Ich schiebe einen Termin ein.",
+      "我插进一个约会。",
+      "伊希 施贝 艾嫩 特尔明 艾因。"
+     ]
+    },
+    {
+     "de": "abschieben",
+     "zh": "遣送；推掉",
+     "py": "阿普施本",
+     "pre": "ab",
+     "n": "ab- 离开：推走 → 遣返；把责任推掉",
+     "ex": [
+      "Er schiebt die Schuld ab.",
+      "他推卸责任。",
+      "埃尔 席普特 迪 舒尔特 阿普。"
+     ]
+    },
+    {
+     "de": "verschieben",
+     "zh": "推迟、挪动",
+     "py": "费尔施本",
+     "pre": "ver",
+     "n": "ver- 不可分、改变位置：挪到别的时间",
+     "ex": [
+      "Wir verschieben das Treffen.",
+      "我们把见面推迟。",
+      "维尔 费尔施本 达斯 特雷芬。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sparen",
+   "icon": "🐷",
+   "title": "攒钱去旅行",
+   "v": "sparen",
+   "zh": "节省",
+   "py": "施帕伦",
+   "story": [
+    "为了暑假旅行，我开始{sparen}",
+    "每个月{ansparen}一点",
+    "不打车，每天{einsparen}五欧",
+    "好吃的{aufsparen}到旅行时再吃",
+    "朋友说：你就{ersparen}我听你哭穷了吧"
+   ],
+   "words": [
+    {
+     "de": "sparen",
+     "zh": "节省、存钱",
+     "py": "施帕伦",
+     "pre": "",
+     "n": "词根。sparen 是「省、攒」",
+     "ex": [
+      "Ich spare für eine Reise.",
+      "我在为旅行攒钱。",
+      "伊希 施帕勒 菲尔 埃内 莱泽。"
+     ]
+    },
+    {
+     "de": "ansparen",
+     "zh": "攒起来",
+     "py": "安施帕伦",
+     "pre": "an",
+     "n": "an- 积累：一点点攒上去",
+     "ex": [
+      "Ich habe 500 Euro angespart.",
+      "我攒了 500 欧。",
+      "伊希 哈贝 菲夫洪德特 奥伊罗 安格施帕尔特。"
+     ]
+    },
+    {
+     "de": "einsparen",
+     "zh": "节约（开支）",
+     "py": "艾因施帕伦",
+     "pre": "ein",
+     "n": "ein- 收进来：省下来",
+     "ex": [
+      "Wir sparen Strom ein.",
+      "我们省电。",
+      "维尔 施帕伦 施特罗姆 艾因。"
+     ]
+    },
+    {
+     "de": "aufsparen",
+     "zh": "留着以后用",
+     "py": "奥夫施帕伦",
+     "pre": "auf",
+     "n": "auf- 保留：存起来备用",
+     "ex": [
+      "Ich spare mir das für später auf.",
+      "我留着以后用。",
+      "伊希 施帕勒 米尔 达斯 菲尔 施佩特尔 奥夫。"
+     ]
+    },
+    {
+     "de": "ersparen",
+     "zh": "免去；攒下",
+     "py": "埃尔施帕伦",
+     "pre": "er",
+     "n": "er- 不可分、得到：省出来；也指「让人免受」",
+     "ex": [
+      "Das kannst du dir ersparen.",
+      "这你就省省吧。",
+      "达斯 坎斯特 度 迪尔 埃尔施帕伦。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sammeln",
+   "icon": "🧺",
+   "title": "班级春游捡垃圾",
+   "v": "sammeln",
+   "zh": "收集",
+   "py": "萨梅恩",
+   "story": [
+    "春游的任务是在公园{sammeln}垃圾",
+    "我负责{aufsammeln}地上的瓶子",
+    "老师最后{einsammeln}大家的袋子",
+    "然后全班在门口{versammeln}拍合照",
+    "我的口袋里不知不觉{ansammeln}了一堆糖纸"
+   ],
+   "words": [
+    {
+     "de": "sammeln",
+     "zh": "收集",
+     "py": "萨梅恩",
+     "pre": "",
+     "n": "词根。sammeln 是「收集、聚」",
+     "ex": [
+      "Ich sammle Briefmarken.",
+      "我集邮。",
+      "伊希 扎姆勒 布里夫马尔肯。"
+     ]
+    },
+    {
+     "de": "aufsammeln",
+     "zh": "捡起来",
+     "py": "奥夫萨梅恩",
+     "pre": "auf",
+     "n": "auf- 向上：从地上捡起",
+     "ex": [
+      "Sammel bitte die Flaschen auf!",
+      "请把瓶子捡起来！",
+      "萨梅尔 比特 迪 弗拉申 奥夫！"
+     ]
+    },
+    {
+     "de": "einsammeln",
+     "zh": "收（作业、东西）",
+     "py": "艾因萨梅恩",
+     "pre": "ein",
+     "n": "ein- 收进来：一个个收上来",
+     "ex": [
+      "Der Lehrer sammelt die Hefte ein.",
+      "老师收作业本。",
+      "德尔 莱雷尔 萨梅尔特 迪 赫夫特 艾因。"
+     ]
+    },
+    {
+     "de": "versammeln",
+     "zh": "聚集、集合",
+     "py": "费尔萨梅恩",
+     "pre": "ver",
+     "n": "ver- 不可分：聚到一起。名词 die Versammlung 会议",
+     "ex": [
+      "Wir versammeln uns am Eingang.",
+      "我们在入口集合。",
+      "维尔 费尔萨梅恩 温斯 阿姆 艾因冈。"
+     ]
+    },
+    {
+     "de": "ansammeln",
+     "zh": "积攒、堆积",
+     "py": "安萨梅恩",
+     "pre": "an",
+     "n": "an- 积累：越堆越多",
+     "ex": [
+      "Hier hat sich viel Staub angesammelt.",
+      "这里积了很多灰。",
+      "希尔 哈特 西希 菲尔 施陶普 安格萨梅尔特。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "leihen",
+   "icon": "📖",
+   "title": "借书的连锁反应",
+   "v": "leihen",
+   "zh": "借",
+   "py": "莱恩",
+   "story": [
+    "我想{leihen}一本德语语法书",
+    "去图书馆{ausleihen}，结果被借光了",
+    "同学说他能把他的{verleihen}给我",
+    "可他的书是从别人那{entleihen}来的…"
+   ],
+   "words": [
+    {
+     "de": "leihen",
+     "zh": "借（给／来）",
+     "py": "莱恩",
+     "pre": "",
+     "n": "词根。leihen 是「借」，借给和借来都能用",
+     "ex": [
+      "Kannst du mir dein Fahrrad leihen?",
+      "你能把自行车借我吗？",
+      "坎斯特 度 米尔 代因 法尔拉特 莱恩？"
+     ]
+    },
+    {
+     "de": "ausleihen",
+     "zh": "借出来（图书馆）",
+     "py": "奥斯莱恩",
+     "pre": "aus",
+     "n": "aus- 出来：从图书馆借出来",
+     "ex": [
+      "Ich leihe mir ein Buch aus.",
+      "我借一本书。",
+      "伊希 莱厄 米尔 艾因 布赫 奥斯。"
+     ]
+    },
+    {
+     "de": "verleihen",
+     "zh": "出借；颁发",
+     "py": "费尔莱恩",
+     "pre": "ver",
+     "n": "ver- 不可分、给出去：借出去；也指颁奖",
+     "ex": [
+      "Er verleiht seine Bücher nicht gern.",
+      "他不爱借书给别人。",
+      "埃尔 费尔莱特 宰讷 比歇尔 尼希特 盖恩。"
+     ]
+    },
+    {
+     "de": "entleihen",
+     "zh": "借来（正式）",
+     "py": "恩特莱恩",
+     "pre": "ent",
+     "n": "ent- 不可分、取走：从别人那取来",
+     "ex": [
+      "Das Buch ist entliehen.",
+      "这本书已借出。",
+      "达斯 布赫 伊斯特 恩特利恩。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "reisen",
+   "icon": "🗺️",
+   "title": "说走就走的旅行",
+   "v": "reisen",
+   "zh": "旅行",
+   "py": "莱森",
+   "story": [
+    "我最爱{reisen}",
+    "周五下班直接{verreisen}",
+    "坐夜车{einreisen}意大利",
+    "朋友第二天才{anreisen}",
+    "周日一早又匆匆{abreisen}——周一还要上班"
+   ],
+   "words": [
+    {
+     "de": "reisen",
+     "zh": "旅行",
+     "py": "莱森",
+     "pre": "",
+     "n": "词根。reisen 是「旅行」，die Reise 是「旅程」",
+     "ex": [
+      "Ich reise gern.",
+      "我喜欢旅行。",
+      "伊希 莱泽 盖恩。"
+     ]
+    },
+    {
+     "de": "verreisen",
+     "zh": "出门旅行",
+     "py": "费尔莱森",
+     "pre": "ver",
+     "n": "ver- 不可分、离开：出远门（人不在家）",
+     "ex": [
+      "Wir verreisen im Sommer.",
+      "我们夏天出门旅行。",
+      "维尔 费尔莱森 伊姆 佐默尔。"
+     ]
+    },
+    {
+     "de": "einreisen",
+     "zh": "入境",
+     "py": "艾因莱森",
+     "pre": "ein",
+     "n": "ein- 进入：进入一个国家。名词 die Einreise",
+     "ex": [
+      "Ich reise in Italien ein.",
+      "我入境意大利。",
+      "伊希 莱泽 因 伊塔利恩 艾因。"
+     ]
+    },
+    {
+     "de": "anreisen",
+     "zh": "抵达",
+     "py": "安莱森",
+     "pre": "an",
+     "n": "an- 到达：到目的地。名词 die Anreise",
+     "ex": [
+      "Wann reist ihr an?",
+      "你们什么时候到？",
+      "万 赖斯特 伊尔 安？"
+     ]
+    },
+    {
+     "de": "abreisen",
+     "zh": "启程离开",
+     "py": "阿普莱森",
+     "pre": "ab",
+     "n": "ab- 离开：动身走了。名词 die Abreise",
+     "ex": [
+      "Wir reisen morgen ab.",
+      "我们明天走。",
+      "维尔 莱森 摩根 阿普。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "brennen",
+   "icon": "🔥",
+   "title": "第一次做红烧肉",
+   "v": "brennen",
+   "zh": "燃烧",
+   "py": "布伦嫩",
+   "story": [
+    "我第一次做红烧肉，火开得太大开始{brennen}",
+    "锅底的糖{anbrennen}了",
+    "我手忙脚乱，差点把手{verbrennen}",
+    "保险丝也{durchbrennen}了，全屋停电",
+    "室友说：下次你就在阳台{abbrennen}烟花算了"
+   ],
+   "words": [
+    {
+     "de": "brennen",
+     "zh": "燃烧",
+     "py": "布伦嫩",
+     "pre": "",
+     "n": "词根。brennen 是「烧、燃」",
+     "ex": [
+      "Das Holz brennt.",
+      "木头在烧。",
+      "达斯 霍尔茨 布伦特。"
+     ]
+    },
+    {
+     "de": "anbrennen",
+     "zh": "烧糊",
+     "py": "安布伦嫩",
+     "pre": "an",
+     "n": "an- 贴上：粘在锅底烧焦",
+     "ex": [
+      "Der Reis ist angebrannt.",
+      "米饭糊了。",
+      "德尔 赖斯 伊斯特 安格布兰特。"
+     ]
+    },
+    {
+     "de": "verbrennen",
+     "zh": "烧伤；烧掉",
+     "py": "费尔布伦嫩",
+     "pre": "ver",
+     "n": "ver- 不可分、毁掉：烧没了、烫伤",
+     "ex": [
+      "Ich habe mir die Hand verbrannt.",
+      "我把手烫了。",
+      "伊希 哈贝 米尔 迪 汉特 费尔布兰特。"
+     ]
+    },
+    {
+     "de": "durchbrennen",
+     "zh": "烧断",
+     "py": "杜尔希布伦嫩",
+     "pre": "durch",
+     "n": "durch- 穿过：烧穿 → 保险丝烧断",
+     "ex": [
+      "Die Sicherung ist durchgebrannt.",
+      "保险丝烧了。",
+      "迪 齐歇龙 伊斯特 杜尔希格布兰特。"
+     ],
+     "sep": true
+    },
+    {
+     "de": "abbrennen",
+     "zh": "燃放；烧毁",
+     "py": "阿普布伦嫩",
+     "pre": "ab",
+     "n": "ab- 离开：烧完；放烟花",
+     "ex": [
+      "Wir brennen ein Feuerwerk ab.",
+      "我们放烟花。",
+      "维尔 布伦嫩 艾因 佛伊尔韦尔克 阿普。"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "frieren",
+   "icon": "🥶",
+   "title": "维也纳的冬天",
+   "v": "frieren",
+   "zh": "冷、结冰",
+   "py": "弗里伦",
+   "story": [
+    "维也纳的一月，我在公交站{frieren}得发抖",
+    "多瑙河上的小湖都{zufrieren}了",
+    "我把吃不完的饺子{einfrieren}",
+    "第二天拿出来解冻，结果成了一锅面片",
+    "同学说：别在外面站太久，小心{erfrieren}"
+   ],
+   "words": [
+    {
+     "de": "frieren",
+     "zh": "冷、结冰",
+     "py": "弗里伦",
+     "pre": "",
+     "n": "词根。frieren 是「冻、觉得冷」：Ich friere 我好冷",
+     "ex": [
+      "Ich friere.",
+      "我好冷。",
+      "伊希 弗里勒。"
+     ]
+    },
+    {
+     "de": "zufrieren",
+     "zh": "冻住、封冻",
+     "py": "粗弗里伦",
+     "pre": "zu",
+     "n": "zu- 关上：冻得封起来",
+     "ex": [
+      "Der See ist zugefroren.",
+      "湖冻上了。",
+      "德尔 泽 伊斯特 粗格弗罗伦。"
+     ]
+    },
+    {
+     "de": "einfrieren",
+     "zh": "冷冻",
+     "py": "艾因弗里伦",
+     "pre": "ein",
+     "n": "ein- 进入：放进冰里",
+     "ex": [
+      "Ich friere das Fleisch ein.",
+      "我把肉冻起来。",
+      "伊希 弗里勒 达斯 弗莱施 艾因。"
+     ]
+    },
+    {
+     "de": "erfrieren",
+     "zh": "冻死、冻伤",
+     "py": "埃尔弗里伦",
+     "pre": "er",
+     "n": "er- 不可分、结果：冻到出事",
+     "ex": [
+      "Die Blumen sind erfroren.",
+      "花冻死了。",
+      "迪 布卢门 辛特 埃尔弗罗伦。"
      ]
     }
    ]
