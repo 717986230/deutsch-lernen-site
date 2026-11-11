@@ -10,6 +10,21 @@ const JSONH = { 'Content-Type': 'application/json; charset=utf-8' };
 import PACK_ARZT from './packs/arzt.json' with { type: 'json' };
 import PACK_WOHNEN from './packs/wohnen.json' with { type: 'json' };
 const PRO_PACKS = { arzt: PACK_ARZT, wohnen: PACK_WOHNEN };
+// 会员内容（2026-11-11 起「免费只留语句」）：短文 / 连载 / 对话 / 餐厅 / 搭配 / 词缀 不再打进
+// 静态页和 .dat，只经 /api/pro/content 发给有效会员。前端加锁能被改脚本绕过，这里才是真正的锁。
+// 文件就是仓库 data/ 里的同一份（wrangler 打包时内联），数据改了重新部署 Worker 即生效。
+import C_READINGS from '../data/readings.json' with { type: 'json' };
+import C_EN_READINGS from '../data/en_readings.json' with { type: 'json' };
+import C_SERIES from '../data/series.json' with { type: 'json' };
+import C_EN_SERIES from '../data/en_series.json' with { type: 'json' };
+import C_DIALOGUES from '../data/dialogs.json' with { type: 'json' };
+import C_EN_DIALOGUES from '../data/en_dialogs.json' with { type: 'json' };
+import C_RD_GLOSS from '../data/read_gloss.json' with { type: 'json' };
+import C_RESTO from '../data/restaurant.json' with { type: 'json' };
+import C_KOLLOC from '../data/kolloc.json' with { type: 'json' };
+import C_AFFIX from '../data/affix.json' with { type: 'json' };
+const PRO_CONTENT = { READINGS: C_READINGS, EN_READINGS: C_EN_READINGS, SERIES: C_SERIES, EN_SERIES: C_EN_SERIES,
+  DIALOGUES: C_DIALOGUES, EN_DIALOGUES: C_EN_DIALOGUES, RD_GLOSS: C_RD_GLOSS, RESTO: C_RESTO, KOLLOC: C_KOLLOC, AFFIX: C_AFFIX };
 // 兑换码字母表：去掉 0/O/1/I/L 这些手抄易混的字符。12 位 ≈ 59 bit，暴力猜不可行（另有频控）
 const CODE_ABC = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 // 2026-11-11 起只卖月卡 / 年卡，不再发永久码；已开通的永久会员（until≈100 年后）权益不变，
@@ -649,6 +664,16 @@ export default {
       if (!pack) return json({ err: '课包不存在' }, 404, cors);
       if (await proUntil(env, uid) <= Date.now()) return json({ err: '会员专享，开通后可用', pro: 0 }, 403, cors);
       return json({ pack }, 200, Object.assign({ 'Cache-Control': 'private, no-store' }, cors));
+    }
+    if (M === 'GET' && path === '/api/pro/content') {
+      // 会员内容：?k=READINGS 单个，或 ?k=READINGS,RD_GLOSS 一次多个（前端进短文页要两份）
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const keys = String(url.searchParams.get('k') || '').split(',').filter(Boolean);
+      if (!keys.length || keys.length > 4 || keys.some((k) => !PRO_CONTENT[k])) return json({ err: '内容不存在' }, 404, cors);
+      if (await proUntil(env, uid) <= Date.now()) return json({ err: '会员专享，开通后可用', pro: 0 }, 403, cors);
+      const data = {}; for (const k of keys) data[k] = PRO_CONTENT[k];
+      return json({ data }, 200, Object.assign({ 'Cache-Control': 'private, no-store' }, cors));
     }
     if (M === 'POST' && path === '/api/admin/codes') {
       // 站长在 stats.html 用 STATS_KEY 发码；与 /stats 共用猜错频控桶

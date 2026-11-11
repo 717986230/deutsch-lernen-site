@@ -18,6 +18,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize } from 'node:path';
 import { getChromium, skipNoBrowser } from './_browser.mjs';
+import { stubPro } from './_pro-stub.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8731;
@@ -46,7 +47,8 @@ const STUB = () => {
   window.fetch = function (u) {
     const s = String(u);
     const json = (j) => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(j) });
-    if (s.indexOf('/api/me') >= 0) return json({ user: { username: 'u1', nickname: 'U', avatar: '🦊', av_bg: '#58cc02' }, rank: 1, followers: 0, following: 0 });
+    if (s.indexOf('/api/me') >= 0) return json({ user: { username: 'u1', nickname: 'U', avatar: '🦊', av_bg: '#58cc02', pro_until: Date.now() + 864e5 }, rank: 1, followers: 0, following: 0 });
+    if (s.indexOf('/api/pro/content') >= 0) return real.apply(this, arguments);   // 会员内容走 Playwright 的 route 桩（_pro-stub）
     if (s.indexOf('/api/progress') >= 0) return json({ rev: 1, document: {} });
     if (s.indexOf('/api/') >= 0) return json({ list: [], badges: [] });
     return real.apply(this, arguments);
@@ -55,6 +57,7 @@ const STUB = () => {
 
 async function boot({ hash = '', token = 't1', label }) {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await stubPro(page);
   const errs = [];
   page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
   await page.addInitScript(STUB);
@@ -98,6 +101,7 @@ if (!out.active.includes('account')) bad(`未登录启动落在 ${out.active.joi
 const FAKE = 'a'.repeat(48);
 async function hashLogin(primed) {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await stubPro(page);
   await page.addInitScript(STUB);
   await page.addInitScript(`(function(){try{localStorage.removeItem('acct_token');${primed ? "sessionStorage.setItem('oauth_go','1');" : "sessionStorage.removeItem('oauth_go');"}}catch(e){}})();`);
   await page.goto(`http://localhost:${PORT}/index.html#acct_token=${FAKE}`, { waitUntil: 'domcontentloaded' });
@@ -124,6 +128,7 @@ if (real.leftover) bad('oauth_go 标记用完没清，第二次贴 token 链接�
 // 菜单分类里 92 个菜名多是英/日文，逐字母拼「Yaki Udon Kamoniku」学不到德语，
 // 加上之前一次性占掉 a2 句子拼写池的 12%。同分类里 51 个德语词不带 ref，照常参练。
 const pagePool = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await stubPro(pagePool);
 await pagePool.addInitScript(STUB);
 await pagePool.addInitScript(`try{localStorage.setItem('acct_token','t1')}catch(e){}`);
 await pagePool.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });

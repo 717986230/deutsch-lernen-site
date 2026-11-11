@@ -18,6 +18,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize } from 'node:path';
 import { getChromium, skipNoBrowser } from './_browser.mjs';
+import { stubPro } from './_pro-stub.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8736;
@@ -40,6 +41,7 @@ if (!browserEnv) { skipNoBrowser('图卡测验体检'); srv.close(); process.exi
 const { chromium, launch: launchOpts } = browserEnv;
 const browser = await chromium.launch(launchOpts);
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await stubPro(page);
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
 await page.addInitScript(() => {
@@ -48,7 +50,8 @@ await page.addInitScript(() => {
   window.fetch = function (u) {
     const s = String(u);
     const j = (x) => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(x) });
-    if (s.indexOf('/api/') >= 0) return j({ user: { username: 'u1' }, rank: 1, rev: 1, document: {}, list: [], total: 0, badges: [] });
+    if (s.indexOf('/api/pro/content') >= 0) return real.apply(this, arguments);   // 会员内容走 Playwright route 桩（_pro-stub）
+    if (s.indexOf('/api/') >= 0) return j({ user: { username: 'u1', pro_until: Date.now() + 864e5 }, rank: 1, rev: 1, document: {}, list: [], total: 0, badges: [] });
     return real.apply(this, arguments);
   };
   if (window.speechSynthesis) window.speechSynthesis.speak = function () {};

@@ -20,6 +20,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize, extname } from 'node:path';
 import { getChromium, skipNoBrowser } from './_browser.mjs';
+import { stubPro } from './_pro-stub.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8745;
@@ -53,6 +54,7 @@ const { chromium, launch: launchOpts } = browserEnv;
 const browser = await chromium.launch(launchOpts);
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
 const page = await ctx.newPage();
+await stubPro(page);
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
 await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); } catch (e) {} });

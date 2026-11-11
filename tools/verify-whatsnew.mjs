@@ -11,6 +11,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize } from 'node:path';
 import { getChromium, skipNoBrowser } from './_browser.mjs';
+import { stubPro } from './_pro-stub.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 let fail = 0;
@@ -50,6 +51,7 @@ const errs = [];
 async function open(vid) {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const page = await ctx.newPage();
+  await stubPro(page);
   page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
   await page.addInitScript((v) => {
     if (sessionStorage.getItem('_seeded')) return;

@@ -10,6 +10,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize } from 'node:path';
 import { getChromium, skipNoBrowser } from './_browser.mjs';
+import { stubPro } from './_pro-stub.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8738;
@@ -35,6 +36,7 @@ let checked = 0;
 for (const lang of ['de', 'en']) {
   for (const theme of ['light', 'dark']) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    await stubPro(page);
     const errs = [];
     page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
     await page.addInitScript(([l, t]) => {
@@ -45,7 +47,8 @@ for (const lang of ['de', 'en']) {
       window.fetch = function (u) {
         const s = String(u);
         const j = (x) => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(x) });
-        if (s.indexOf('/api/me') >= 0) return j({ user: { username: 'u1', nickname: 'U', avatar: '🦊', av_bg: '#58cc02' }, rank: 1, followers: 0, following: 0 });
+        if (s.indexOf('/api/pro/content') >= 0) return real.apply(this, arguments);   // 会员内容走 Playwright route 桩（_pro-stub）
+        if (s.indexOf('/api/me') >= 0) return j({ user: { username: 'u1', nickname: 'U', avatar: '🦊', av_bg: '#58cc02', pro_until: Date.now() + 864e5 }, rank: 1, followers: 0, following: 0 });
         if (s.indexOf('/api/') >= 0) return j({ rev: 1, document: {}, list: [], total: 0, badges: [] });
         return real.apply(this, arguments);
       };
@@ -80,6 +83,7 @@ for (const lang of ['de', 'en']) {
 // 也就是 rAF 分批循环确实在跑；顺带确认首批不为空（首屏不能是白的）。
 {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await stubPro(page);
   const batchErrs = [];
   page.on('pageerror', (e) => batchErrs.push(String(e).split('\n')[0]));
   await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); } catch (e) {} });
@@ -91,6 +95,8 @@ for (const lang of ['de', 'en']) {
   ]) {
     const r = await page.evaluate(async ([sec, fn, sel]) => {
       showSection(sec);
+      // 会员内容先从后端到货（体检里是 stubPro 桩）再测分批渲染
+      for (let i = 0; i < 200 && document.getElementById(sec).classList.contains('sec-locked'); i++) await new Promise((r) => setTimeout(r, 50));
       if (typeof window[fn] !== 'function') return { missing: 1 };
       window[fn]();
       const first = document.querySelectorAll(sel).length;   // 同步返回那一刻
@@ -114,6 +120,7 @@ for (const lang of ['de', 'en']) {
 // 漏调 _cardBack 背面就是空的 —— 不抛错、不报警，用户只会看到一张翻开的白卡。两条都钉住。
 {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await stubPro(page);
   const errs2 = [];
   page.on('pageerror', (e) => errs2.push(String(e).split('\n')[0]));
   await page.addInitScript(() => {

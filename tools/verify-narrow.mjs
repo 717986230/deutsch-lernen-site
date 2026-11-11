@@ -14,6 +14,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize } from 'node:path';
 import { getChromium, skipNoBrowser } from './_browser.mjs';
+import { stubPro } from './_pro-stub.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8748;
@@ -45,6 +46,7 @@ const LONG_NICK = { username: 'averyveryverylongusername_2026', nickname: '一�
 let scenes = 0;
 for (const theme of ['light', 'dark']) {
   const page = await browser.newPage({ viewport: { width: 360, height: 800 } });
+  await stubPro(page);
   const errs = [];
   page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
   await page.addInitScript(([th, nick]) => {
@@ -58,7 +60,8 @@ for (const theme of ['light', 'dark']) {
       const s = String(u);
       const j = (x) => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(x) });
       if (s.indexOf('/api/leaderboard') >= 0) return j({ by: 'known', total: 88, users: 226, list: Array.from({ length: 12 }, () => nick) });
-      if (s.indexOf('/api/') >= 0 || s.indexOf('/collect') >= 0) return j({ user: nick, rank: 1, rev: 1, document: {}, list: [], total: 0, users: 0, badges: [], followers: 3, following: 5 });
+      if (s.indexOf('/api/pro/content') >= 0) return real.apply(this, arguments);   // 会员内容走 Playwright route 桩（_pro-stub）
+      if (s.indexOf('/api/') >= 0 || s.indexOf('/collect') >= 0) return j({ user: Object.assign({ pro_until: Date.now() + 864e5 }, nick), rank: 1, rev: 1, document: {}, list: [], total: 0, users: 0, badges: [], followers: 3, following: 5 });
       return real.apply(this, arguments);
     };
   }, [theme, LONG_NICK]);
