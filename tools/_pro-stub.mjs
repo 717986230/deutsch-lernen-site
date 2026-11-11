@@ -8,7 +8,7 @@ import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const PRO_FILES = { READINGS: 'readings', EN_READINGS: 'en_readings', SERIES: 'series', EN_SERIES: 'en_series',
-  DIALOGUES: 'dialogs', EN_DIALOGUES: 'en_dialogs', RD_GLOSS: 'read_gloss', RESTO: 'restaurant', KOLLOC: 'kolloc', AFFIX: 'affix' };
+  DIALOGUES: 'dialogs', EN_DIALOGUES: 'en_dialogs', RD_GLOSS: 'read_gloss', RESTO: 'restaurant', KOLLOC: 'kolloc', AFFIX: 'affix', WORTSCHATZ: 'wortschatz' };
 
 /** 在 page.goto 之前调用。pro=false 时 /api/me 答非会员、内容接口 403，用来测解锁面板。 */
 export async function stubPro(page, { pro = true } = {}) {

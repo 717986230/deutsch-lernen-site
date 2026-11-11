@@ -14,7 +14,7 @@ import { stubPro } from './_pro-stub.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8738;
-const SECS = 'home phrases reading series dialog resto kolloc affix spell quiz rank grammar pronunciation numbers support pro me wordbook stats'.split(' ');
+const SECS = 'home phrases reading series dialog resto kolloc affix wortschatz spell quiz rank grammar pronunciation numbers support pro me wordbook stats'.split(' ');
 let fail = 0;
 const bad = (m) => { console.error('ERROR ' + m); fail++; };
 

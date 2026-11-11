@@ -28,7 +28,7 @@
 {"@type":"ListItem","position":1,"name":"英语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"英语语法速查"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:84273a1cbb61 -->
+<!-- src-hash:22832d7611f8 -->
 <style>#account{display:block}#account .auth-stage{display:none}
 
 :root{
@@ -72,6 +72,15 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .dlg-spk{border:none;background:transparent;cursor:pointer;font-size:15px;padding:0;line-height:1}
 .dlg-zh{font-size:13px;color:var(--text-dim);margin-top:3px}
 .dlg-py{font-size:12px;color:var(--text-dim);margin-top:1px}
+/* 分组高频词（#wortschatz） */
+.wt-de b{font-weight:800}
+.wt-gap{display:none;color:var(--text-faint);letter-spacing:2px}
+.wt-hide .rs-row:not(.wt-open) .wt-de{display:none}
+.wt-hide .rs-row:not(.wt-open) .wt-py{display:none}
+.wt-hide .rs-row:not(.wt-open) .wt-gap{display:block}
+.wt-hide .rs-row{cursor:pointer}
+.wt-star{margin-left:auto;flex:none;min-width:44px;min-height:44px;border:none;background:transparent;font-size:18px;cursor:pointer;color:var(--text-faint);line-height:1}
+.wt-star[aria-pressed=true]{color:var(--gold-text)}
 /* 动词搭配（#kolloc） */
 .kc-v{color:var(--blue-text)}
 .kc-gap{display:inline-block;min-width:3.2em;border-bottom:2px dashed var(--text-faint);color:transparent}
@@ -402,7 +411,7 @@ mark.sh{background:rgba(181,73,46,.32);color:inherit;border-radius:3px;padding:0
 .lock-panel .lock-card{border-left-color:var(--gold)}
 .lock-panel .lock-card .acct-btn{display:block;width:100%}
 .lock-panel .lock-card .btn{display:block;width:100%;text-align:center}
-html.nopro .hg-tile[href="#resto"] span::after,html.nopro .hg-tile[href="#kolloc"] span::after,html.nopro .hg-tile[href="#affix"] span::after{content:" 🔒";font-size:10px}
+html.nopro .hg-tile[href="#wortschatz"] span::after,html.nopro .hg-tile[href="#resto"] span::after,html.nopro .hg-tile[href="#kolloc"] span::after,html.nopro .hg-tile[href="#affix"] span::after{content:" 🔒";font-size:10px}
 .tip-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
 .tip-title{font-size:13px;color:var(--gold-text);margin:0 0 6px;letter-spacing:.5px}
 .tip-body{font-size:13px;color:var(--text-dim);line-height:1.7}

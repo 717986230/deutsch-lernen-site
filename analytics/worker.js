@@ -23,8 +23,9 @@ import C_RD_GLOSS from '../data/read_gloss.json' with { type: 'json' };
 import C_RESTO from '../data/restaurant.json' with { type: 'json' };
 import C_KOLLOC from '../data/kolloc.json' with { type: 'json' };
 import C_AFFIX from '../data/affix.json' with { type: 'json' };
+import C_WORTSCHATZ from '../data/wortschatz.json' with { type: 'json' };
 const PRO_CONTENT = { READINGS: C_READINGS, EN_READINGS: C_EN_READINGS, SERIES: C_SERIES, EN_SERIES: C_EN_SERIES,
-  DIALOGUES: C_DIALOGUES, EN_DIALOGUES: C_EN_DIALOGUES, RD_GLOSS: C_RD_GLOSS, RESTO: C_RESTO, KOLLOC: C_KOLLOC, AFFIX: C_AFFIX };
+  DIALOGUES: C_DIALOGUES, EN_DIALOGUES: C_EN_DIALOGUES, RD_GLOSS: C_RD_GLOSS, RESTO: C_RESTO, KOLLOC: C_KOLLOC, AFFIX: C_AFFIX, WORTSCHATZ: C_WORTSCHATZ };
 // 兑换码字母表：去掉 0/O/1/I/L 这些手抄易混的字符。12 位 ≈ 59 bit，暴力猜不可行（另有频控）
 const CODE_ABC = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 // 2026-11-11 起只卖月卡 / 年卡，不再发永久码；已开通的永久会员（until≈100 年后）权益不变，
