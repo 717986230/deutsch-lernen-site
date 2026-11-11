@@ -12,6 +12,11 @@ echo "① 拉取最新 worker.js / schema.sql / 迁移文件 ..."
 curl -fsSL "$BASE/worker.js"  -o worker.js
 curl -fsSL "$BASE/schema.sql" -o schema.sql
 curl -fsSL "$BASE/migrate-progress-documents.sql" -o migrate-progress-documents.sql
+# 会员内容（2026-11-11 起）：worker.js 直接 import ../data/*.json，独立目录也得把它们拉下来
+mkdir -p ../data
+for f in readings en_readings series en_series dialogs en_dialogs read_gloss restaurant kolloc affix; do
+  curl -fsSL "https://raw.githubusercontent.com/717986230/deutsch-lernen-site/main/data/$f.json" -o "../data/$f.json"
+done
 
 if [ ! -f wrangler.toml ]; then
   echo "   未发现 wrangler.toml，下载默认配置（记得填 GH_CLIENT_ID / GOOGLE_CLIENT_ID）"

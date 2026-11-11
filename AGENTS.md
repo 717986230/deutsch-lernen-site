@@ -53,6 +53,10 @@ npm run build        # = node build.mjs
 - **不引外部资源**：无 CDN、无外链字体/图片/脚本。全站离线可用。
 - 词库数据在构建时 XOR+Base64 加密，**不要把明文词库写进 `src.html`**。
   自检：`grep -c '"de":"Guten Morgen' index.html` 必须为 `0`。
+- **会员内容锁在后端**（2026-11-11 起免费只留语句）：`data/readings|en_readings|series|en_series|dialogs|en_dialogs|read_gloss|restaurant|kolloc|affix.json`
+  不进页面、不进 `.dat`（`build.mjs` 的 `LOCKED`），只由 `analytics/worker.js` 的 `/api/pro/content` 发给会员。
+  **改这些 json 后必须重新部署 Worker** 才生效；别把它们重新内联进 `src.html`。浏览器体检脚本要先 `stubPro(page)`（`tools/_pro-stub.mjs`），
+  否则这六个版块只能看到解锁面板。详见 `docs/COMMERCIAL.md`。
 
 ### 1.4 运维极简
 **一个 Worker + 一个 D1**，不新增服务、不新增第三方依赖。后端改动同步更新

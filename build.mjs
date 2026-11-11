@@ -91,11 +91,25 @@ async function build() {
   //    尤其英语库最大且很少用，避免首屏白解一大坨。
   // categories 也懒解密：硬登录门槛下登录页用不到词库，解锁后首次访问才解（见 src 的 setLang 上锁早退）
   const LAZY = new Set(['READINGS', 'SERIES', 'RD_GLOSS', 'DIALOGUES', 'RESTO', 'KOLLOC', 'AFFIX']);   // 打开对应版块才解码
+  // 会员内容（2026-11-11 起「免费只留语句」）：这些数据**不进页面、不进 .dat**，由 Worker 的
+  // /api/pro/content 按会员状态下发（analytics/worker.js 直接 import 同一份 data/*.json）。
+  // 页面里只留一个读 window._LKD 的 getter：没到货时返回空结构，渲染层不会炸；
+  // 到货（src.html 的 _lockLoad）后写入 _LKD 再重进版块。dev 构建也一样——锁就是锁，没有后门。
+  const LOCKED = {
+    READINGS: '[]', EN_READINGS: '[]', SERIES: '[]', EN_SERIES: '[]', DIALOGUES: '[]', EN_DIALOGUES: '[]',
+    RD_GLOSS: '{}', RESTO: '{units:[],menu:[]}', KOLLOC: '{verbs:[]}', AFFIX: '{roots:[],prefixes:{}}',
+  };
   let deFile = 'categories(inline)';
   for (const [name, path] of Object.entries(DATA_FILES)) {
     const json = JSON.stringify(JSON.parse(readFileSync(path, 'utf8'))); // 校验 + 压缩
     const ph = `__DATA_${name}__`;
     if (!html.includes(ph)) throw new Error(`src.html 缺少占位符 ${ph}`);
+    if (LOCKED[name]) {
+      const decl = `const ${name} = ${ph};`;
+      if (!html.includes(decl)) throw new Error(`src.html 缺少声明 ${decl}`);
+      html = html.replace(decl, `Object.defineProperty(window,'${name}',{configurable:true,get:function(){return (window._LKD&&window._LKD.${name})||${LOCKED[name]};}});`);
+      continue;
+    }
     if (name === 'categories' && !DEV) {
       // 德语词库最大(~360KB)且登录页/首页用不到：拆成独立 de.<hash>.dat，解锁后后台预取。
       // 未到货时 categories 为空数组，DE_CATEGORIES 读 window._DEC；到货后 _onDELoaded 补渲染。

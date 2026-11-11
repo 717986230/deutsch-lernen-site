@@ -12,6 +12,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize } from 'node:path';
 import { getChromium, skipNoBrowser } from './_browser.mjs';
+import { stubPro } from './_pro-stub.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8734;
@@ -34,13 +35,15 @@ if (!browserEnv) { skipNoBrowser('触摸目标体检'); srv.close(); process.exi
 const { chromium, launch: launchOpts } = browserEnv;
 const browser = await chromium.launch(launchOpts);
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await stubPro(page);
 await page.addInitScript(() => {
   localStorage.setItem('acct_token', 't1');
   const real = window.fetch;
   window.fetch = function (u) {
     const s = String(u);
     const j = (x) => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(x) });
-    if (s.indexOf('/api/me') >= 0) return j({ user: { username: 'u1', nickname: 'U', avatar: '🦊', av_bg: '#58cc02' }, rank: 1, followers: 0, following: 0 });
+    if (s.indexOf('/api/pro/content') >= 0) return real.apply(this, arguments);   // 会员内容走 Playwright route 桩（_pro-stub）
+    if (s.indexOf('/api/me') >= 0) return j({ user: { username: 'u1', nickname: 'U', avatar: '🦊', av_bg: '#58cc02', pro_until: Date.now() + 864e5 }, rank: 1, followers: 0, following: 0 });
     if (s.indexOf('/api/') >= 0) return j({ rev: 1, document: {}, list: [], total: 0, badges: [] });
     return real.apply(this, arguments);
   };
@@ -130,6 +133,7 @@ for (const sec of SECS) {
 // 单开一个无 token 的页面把它补上。
 {
   const anon = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await stubPro(anon);
   await anon.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
   await anon.waitForTimeout(600);
   const locked = await anon.evaluate(() => document.documentElement.classList.contains('locked'));

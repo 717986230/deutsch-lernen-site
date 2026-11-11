@@ -19,6 +19,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize } from 'node:path';
 import { getChromium, skipNoBrowser } from './_browser.mjs';
+import { stubPro } from './_pro-stub.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8742;
@@ -50,6 +51,7 @@ if (!env) { skipNoBrowser('英语端语言切换体检'); srv.close(); process.e
 const { chromium, launch: launchOpts } = env;
 const browser = await chromium.launch(launchOpts);
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await stubPro(page);
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
 await page.addInitScript(() => {

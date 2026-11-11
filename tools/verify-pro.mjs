@@ -31,7 +31,7 @@ const call = async (method, path, body, token, headers, ip) => {
   const res = await worker.fetch(new Request('https://api.test' + path, { method, headers: h,
     body: body === undefined ? undefined : JSON.stringify(body) }), env, { waitUntil() {} });
   let data = {}; try { data = await res.json(); } catch (_) {}
-  return { status: res.status, data };
+  return { status: res.status, data, headers: Object.fromEntries([...res.headers].map(([k, v]) => [k.toLowerCase(), v])) };
 };
 const DAY = 86400000;
 
@@ -80,6 +80,24 @@ if (r.status !== 200 || !Array.isArray(units) || units.length < 5) bad(`会员�
 r = await call('GET', '/api/pro/pack?id=nope', undefined, ta);
 if (r.status !== 404) bad('不存在的课包没有 404');
 
+// ── 会员内容（2026-11-11 起免费只留语句）：短文/连载/对话/餐厅/搭配/词缀只发给会员 ──
+r = await call('GET', '/api/pro/content?k=READINGS');
+if (r.status !== 401) bad(`未登录取会员内容没有 401（${r.status}）`); else ok('未登录取会员内容被拒（401）');
+r = await call('GET', '/api/pro/content?k=READINGS,RD_GLOSS', undefined, tb);
+if (r.status !== 403 || r.data.data) bad(`非会员拿到了会员内容（${r.status}）`); else ok('非会员取短文被拒（403）');
+r = await call('GET', '/api/pro/content?k=READINGS,RD_GLOSS', undefined, ta);
+if (r.status !== 200 || !Array.isArray(r.data.data && r.data.data.READINGS) || r.data.data.READINGS.length < 50 || !r.data.data.RD_GLOSS) bad(`会员取短文失败：${r.status}`);
+else ok(`会员拿到短文 ${r.data.data.READINGS.length} 篇 + 小注表`);
+for (const k of ['SERIES', 'DIALOGUES', 'RESTO', 'KOLLOC', 'AFFIX', 'EN_READINGS', 'EN_SERIES', 'EN_DIALOGUES']) {
+  r = await call('GET', '/api/pro/content?k=' + k, undefined, ta);
+  if (r.status !== 200 || !r.data.data || !r.data.data[k]) bad(`会员内容 ${k} 取不到（${r.status}）`);
+}
+ok('其余 8 份会员内容会员都能取到');
+r = await call('GET', '/api/pro/content?k=categories', undefined, ta);
+if (r.status !== 404) bad('语句库不该从会员接口出（应 404）'); else ok('语句库不走会员接口（404）');
+r = await call('GET', '/api/pro/content?k=READINGS&x=1', undefined, ta);
+if (r.headers && r.headers['cache-control'] !== 'private, no-store') bad('会员内容没有 no-store');
+
 // ── 公开展示：排行榜 / 主页只给档位，不给到期日 ──
 r = await call('GET', '/api/leaderboard');
 {
@@ -95,6 +113,8 @@ if (r.data.user.pro !== 1 || 'pro_until' in r.data.user) bad(`他人主页会员
 db.prepare('UPDATE memberships SET until=? WHERE uid=(SELECT id FROM users WHERE username=?)').run(Date.now() - 1000, 'alice');
 r = await call('GET', '/api/pro/pack?id=arzt', undefined, ta);
 if (r.status !== 403) bad('过期会员还能取课包'); else ok('会员过期后课包关闭');
+r = await call('GET', '/api/pro/content?k=AFFIX', undefined, ta);
+if (r.status !== 403) bad('过期会员还能取会员内容'); else ok('会员过期后短文等内容同样关闭');
 
 // ── 暴力猜码频控 ──
 let blocked = 0;

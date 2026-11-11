@@ -426,6 +426,12 @@ mark.sh{background:rgba(181,73,46,.32);color:inherit;border-radius:3px;padding:0
 .lc-sound{font-size:11px;color:var(--text-dim);line-height:1.5}
 .letter-card .speak-btn{margin-top:8px}
 /* TIPS */
+.section.sec-locked>*:not(.lock-panel){display:none!important}
+.lock-panel{max-width:560px;margin:0 auto}
+.lock-panel .lock-card{border-left-color:var(--gold)}
+.lock-panel .lock-card .acct-btn{display:block;width:100%}
+.lock-panel .lock-card .btn{display:block;width:100%;text-align:center}
+html.nopro .hg-tile[href="#resto"] span::after,html.nopro .hg-tile[href="#kolloc"] span::after,html.nopro .hg-tile[href="#affix"] span::after{content:" 🔒";font-size:10px}
 .tip-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
 .tip-title{font-size:13px;color:var(--gold-text);margin:0 0 6px;letter-spacing:.5px}
 .tip-body{font-size:13px;color:var(--text-dim);line-height:1.7}
@@ -2753,6 +2759,7 @@ function _syncLangSwitch(id){
 function showSection(id){
   // 语言状态和深链都走这里：不能让英语用户误入仍未实现的德语专属工具。
   if(LANG==='en'&&['body','resto','kolloc','affix'].indexOf(id)>=0)id='phrases';
+  if(typeof _lockKeys==='function'&&_lockKeys(id)&&!_lockReady(id)){_lockGate(id);return;}   // 会员内容：没到货先过门（见 _lockGate）
   _syncLangSwitch(id);
   if(typeof stopAutoPlay==='function')stopAutoPlay();
   if(typeof stopReading==='function')stopReading();
@@ -4511,9 +4518,77 @@ function checkKollocQ(btn){
 // ══════════════════════════════════════
 // ═════ 会员 · 兑换码（#pro）═════
 // 定价与课包目录是公开信息，写在这里；课包正文只从 /api/pro/pack 下发给有效会员。
-var PRO_CFG={"buyUrl": "", "plans": [["月卡", "¥9.9", "€1.5", "30 天，先试试看"], ["年卡", "¥99", "€13", "365 天，平均每月 ¥8.25"]], "perks": ["全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的课包自动解锁", "支持手册继续免费、无广告地更新"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}, {"id": "wohnen", "icon": "🏠", "title": "租房 · 办事 · 奥地利", "desc": "找房看房 · 租约押金 · 报修邻里 · 住址登记 · 银行开户，42 句带谐音", "preview": [["Ist die Wohnung noch frei?", "这套房子还空着吗？", "伊斯特 迪 沃农 诺赫 弗莱？"], ["Wann kann ich die Wohnung besichtigen?", "我什么时候可以来看房？", "万 坎 伊希 迪 沃农 贝西希提根？"], ["Wie hoch ist die Miete?", "房租是多少？", "维 霍赫 伊斯特 迪 米特？"]]}]};
+var PRO_CFG={"buyUrl": "", "plans": [["月卡", "¥9.9", "€1.5", "30 天，先试试看"], ["年卡", "¥99", "€13", "365 天，平均每月 ¥8.25"]], "perks": ["解锁短文、留学连载、对话、餐厅特训、动词搭配、词缀记忆六大版块（免费版只保留语句与练习）", "全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的内容自动解锁，打开过的断网也能学", "支持手册继续无广告地更新"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}, {"id": "wohnen", "icon": "🏠", "title": "租房 · 办事 · 奥地利", "desc": "找房看房 · 租约押金 · 报修邻里 · 住址登记 · 银行开户，42 句带谐音", "preview": [["Ist die Wohnung noch frei?", "这套房子还空着吗？", "伊斯特 迪 沃农 诺赫 弗莱？"], ["Wann kann ich die Wohnung besichtigen?", "我什么时候可以来看房？", "万 坎 伊希 迪 沃农 贝西希提根？"], ["Wie hoch ist die Miete?", "房租是多少？", "维 霍赫 伊斯特 迪 米特？"]]}]};
 var _pro={until:null,pack:null,unit:0,loading:false,msg:''};
 function _proActive(){return !!(_pro.until&&_pro.until>Date.now());}
+// ═════ 会员内容锁（2026-11-11 起「免费只留语句」）═════
+// 短文/连载/对话/餐厅/搭配/词缀的数据**不在页面里**（build.mjs LOCKED 只留空壳 getter），进版块前先过这里：
+// 非会员看到解锁面板；会员按需向 /api/pro/content 要数据，落到 window._LKD 后再真正进版块。
+// 前端这套只是体验层，真正的锁在 Worker（无会员直接 403）。会员拉过的内容顺手写进 CacheStorage
+// （pro-data），断网也能继续学；/api/me 回报到期或退出登录即清掉。
+var LOCK_SECS={reading:['READINGS','RD_GLOSS'],series:['SERIES'],dialog:['DIALOGUES'],resto:['RESTO'],kolloc:['KOLLOC'],affix:['AFFIX']};
+var LOCK_EN={reading:['EN_READINGS'],series:['EN_SERIES'],dialog:['EN_DIALOGUES']};
+var LOCK_NAMES={reading:'短文',series:'留学连载',dialog:'对话',resto:'餐厅特训',kolloc:'动词搭配',affix:'词缀记忆'};
+window._LKD=window._LKD||{};
+var _lkP={};
+function _lockKeys(id){return (LANG==='en'?LOCK_EN[id]:LOCK_SECS[id])||null;}
+function _lockReady(id){var k=_lockKeys(id),i;if(!k)return true;for(i=0;i<k.length;i++)if(!window._LKD[k[i]])return false;return true;}
+// 会员状态是否已知：本次会话问过 /api/me，或本机缓存的用户摘要里带着 pro_until
+function _proKnown(){if(_pro.until!==null)return true;if(ACCT.user&&typeof ACCT.user.pro_until==='number'){_pro.until=ACCT.user.pro_until;return true;}return false;}
+function _lockMark(){try{document.documentElement.classList.toggle('nopro',_pro.until!==null&&!_proActive());}catch(e){}}
+function _lockStore(d){for(var k in d)if(Object.prototype.hasOwnProperty.call(d,k)&&d[k])window._LKD[k]=d[k];}
+function _lockCachePut(d){try{if(!self.caches||typeof Response==='undefined')return;caches.open('pro-data').then(function(c){for(var k in d)if(Object.prototype.hasOwnProperty.call(d,k))c.put('/pro-data/'+k,new Response(JSON.stringify(d[k]),{headers:{'Content-Type':'application/json'}}))['catch'](function(){});})['catch'](function(){});}catch(e){}}
+function _lockCacheGet(keys){
+  if(!self.caches)return Promise.resolve(false);
+  return caches.open('pro-data').then(function(c){return Promise.all(keys.map(function(k){return c.match('/pro-data/'+k).then(function(r){return r?r.json():null;}).then(function(v){if(v)window._LKD[k]=v;return !!v;});}));})
+    .then(function(a){for(var i=0;i<a.length;i++)if(!a[i])return false;return true;})['catch'](function(){return false;});
+}
+function _lockPurge(){window._LKD={};_lkP={};try{if(self.caches)caches['delete']('pro-data')['catch'](function(){});}catch(e){}}
+// 拉取缺的几份；网络不通时退回会员上次的本地缓存。403 = 服务端说不是会员：同步本地状态并清缓存
+function _lockFetch(keys){
+  var miss=keys.filter(function(k){return !window._LKD[k];});if(!miss.length)return Promise.resolve();
+  var q=miss.join(',');if(_lkP[q])return _lkP[q];
+  var p=apiFetch('/api/pro/content?k='+q).then(function(r){
+    if(r&&r.ok&&r.data&&r.data.data){_lockStore(r.data.data);_lockCachePut(r.data.data);return;}
+    if(r&&r.status===403){_pro.until=0;if(ACCT.user){ACCT.user.pro_until=0;_saveUser();}_lockPurge();_lockMark();throw {pro:0};}
+    if(r&&r.status===401)throw {auth:0};
+    return _lockCacheGet(miss).then(function(got){if(!got)throw {net:1};});
+  });
+  _lkP[q]=p.then(function(){delete _lkP[q];},function(e){delete _lkP[q];throw e;});
+  return _lkP[q];
+}
+function _lockPanelHtml(id){
+  var nm=LOCK_NAMES[id]||'这个版块',price=(PRO_CFG.plans[0]&&PRO_CFG.plans[0][1])||'';
+  return '<div class="tip-card lock-card"><div class="tip-title">🔒 '+nm+'是会员内容</div><div class="tip-body">免费版可以一直用「语句」和拼写、测验练习；短文、留学连载、对话、餐厅特训、动词搭配、词缀记忆和全部课包是会员专享'+(price?'，月卡 '+price+' 起':'')+'。</div>'
+    +(ACCT.token?'<button class="acct-btn" type="button" style="margin-top:12px" onclick="showSection(\'pro\')">👑 开通会员 / 输入兑换码</button>':'<button class="acct-btn" type="button" style="margin-top:12px" onclick="showSection(\'account\')">先登录</button>')
+    +'<button class="btn" type="button" style="margin-top:10px" onclick="showSection(\'phrases\')">回到语句</button></div>';
+}
+// 版块门：先把版块切出来放一块面板（非会员=解锁提示，会员=加载中），数据到货后再走一遍真正的 showSection
+function _lockGate(id){
+  var sec=document.getElementById(id);if(!sec)return;
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  sec.classList.add('active');sec.classList.add('sec-locked');
+  var p=sec.querySelector('.lock-panel');if(!p){p=document.createElement('div');p.className='lock-panel';sec.insertBefore(p,sec.firstChild);}
+  try{_histPush(id);}catch(e){}
+  // 导航高亮跟着切（真正的 showSection 还没跑，这里补一下，否则底栏还亮着上一页）
+  try{var nb=(id==='series'||id==='dialog')?'reading':id,bs={series:'reading',dialog:'reading',resto:'home',kolloc:'home',affix:'home'}[id]||id;
+    document.querySelectorAll('.nav-btn').forEach(function(b){var on=(b.getAttribute('onclick')||'').indexOf("'"+nb+"'")>=0;b.classList.toggle('active',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+    document.querySelectorAll('#bottomNav .bn-btn').forEach(function(b){var on=b.getAttribute('data-sec')===bs;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});}catch(e){}
+  window.scrollTo(0,0);
+  var go=function(){
+    _lockMark();
+    if(!_proActive()){p.innerHTML=_lockPanelHtml(id);try{track('lock_hit',{s:id});}catch(e){}return;}
+    p.innerHTML=_LD;
+    _lockFetch(_lockKeys(id)).then(function(){p.innerHTML='';sec.classList.remove('sec-locked');showSection(id);},function(e){
+      if(e&&e.pro===0){p.innerHTML=_lockPanelHtml(id);return;}
+      var auth=e&&e.auth===0;
+      p.innerHTML='<div class="tip-card"><div class="tip-title">'+(auth?'登录已过期':'内容加载失败')+'</div><div class="tip-body">'+(auth?'请重新登录后再试。':'请检查网络后重试；会员打开过的内容断网也能看。')+'</div><button class="acct-btn" type="button" style="margin-top:10px" onclick="showSection(\''+(auth?'account':id)+'\')">'+(auth?'去登录':'重试')+'</button></div>';
+    });
+  };
+  if(!ACCT.token){p.innerHTML=_lockPanelHtml(id);return;}
+  if(_proKnown())go();
+  else{p.innerHTML=_LD;apiFetch('/api/me').then(function(r){if(r&&r.ok&&r.data&&r.data.user){_pro.until=+r.data.user.pro_until||0;_syncAcctUser(r.data.user);}else if(_pro.until===null)_pro.until=0;go();});}
+}
 function _proDate(t){var d=new Date(t);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 function proStop(){try{if(typeof _stopPageRead==='function')_stopPageRead();}catch(e){}}
 function proInit(){
@@ -5999,9 +6074,9 @@ function apiFetch(path,opts){opts=opts||{};var h=opts.headers||{};if(ACCT.token)
 function acctSetAuth(token,user){ACCT.token=token;ACCT.user=user;try{localStorage.setItem('acct_token',token);localStorage.setItem('acct_user',JSON.stringify(user));}catch(e){}}
 function _saveUser(){try{localStorage.setItem('acct_user',JSON.stringify(ACCT.user));}catch(e){}}
 // 本地缓存的用户摘要：首页问候区要画头像 + 头像框 + 会员铭牌，所以连 frame / pro_until 一起存；每次拿到 /api/me 就刷新
-function _syncAcctUser(u){if(!u)return;ACCT.user={username:u.username,nickname:u.nickname,avatar:u.avatar,av_bg:u.av_bg,frame:u.frame||'',pro_until:+u.pro_until||0};_saveUser();try{renderHomeDash();}catch(e){}}
+function _syncAcctUser(u){if(!u)return;ACCT.user={username:u.username,nickname:u.nickname,avatar:u.avatar,av_bg:u.av_bg,frame:u.frame||'',pro_until:+u.pro_until||0};_saveUser();if(_pro.until===null||_pro.until!==ACCT.user.pro_until)_pro.until=ACCT.user.pro_until;if(!(ACCT.user.pro_until>Date.now()))_lockPurge();_lockMark();try{renderHomeDash();}catch(e){}}
 function acctClearLocal(){ACCT.token=null;ACCT.user=null;try{localStorage.removeItem('acct_token');localStorage.removeItem('acct_user');}catch(e){}}
-function acctLogout(){try{if(ACCT.token&&API_BASE)apiFetch('/api/logout',{method:'POST'});}catch(e){}acctClearLocal();document.documentElement.classList.add('locked');showSection('account');}
+function acctLogout(){try{if(ACCT.token&&API_BASE)apiFetch('/api/logout',{method:'POST'});}catch(e){}acctClearLocal();_pro.until=null;try{_lockPurge();}catch(e){}document.documentElement.classList.add('locked');showSection('account');}
 // 深链（分享出来的 #reading 等）进站时不弹「每日一句」：别人点链接是来看那一页的，
 // 一进来就被整屏弹窗挡住只会让人关掉网页。只有正常打开（落到默认页）才弹。
 // ══════════════ 上新引导（What's New）══════════════
@@ -6100,6 +6175,7 @@ function wnGo(i,seq,pos){
     t.el=el;
     if(el){try{el.scrollIntoView({block:'center'});}catch(err){el.scrollIntoView();}}
     setTimeout(function(){if(_wn.tour===t){_wnPlace();try{tip.querySelector('.wn-tip-ok').focus();}catch(err){}}},el?260:0);
+    setTimeout(function(){if(_wn.tour===t)_wnPlace();},1400);   // 异步重绘后再校一次位置
   },380);
 }
 function _wnPlace(){
@@ -6108,6 +6184,8 @@ function _wnPlace(){
   tip.style.visibility='';
   if(!t.el){ring.style.display='none';tip.style.top=Math.round(vh*0.35)+'px';return;}
   var r=t.el.getBoundingClientRect();
+  // 版块可能在定位后又异步重绘（如「我的」拿到 /api/me 后整卡重画），入口被挤出视口：先拉回视口再放圈和气泡
+  if(r.bottom<0||r.top>vh){try{t.el.scrollIntoView({block:'center'});}catch(err){t.el.scrollIntoView();}r=t.el.getBoundingClientRect();}
   ring.style.display='';
   ring.style.left=(r.left-pad)+'px';ring.style.top=(r.top-pad)+'px';ring.style.width=(r.width+pad*2)+'px';ring.style.height=(r.height+pad*2)+'px';
   var th=tip.offsetHeight||120,below=r.bottom+pad+12;
