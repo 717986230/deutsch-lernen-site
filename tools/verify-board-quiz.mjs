@@ -45,7 +45,7 @@ await stubPro(page);
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
 await page.addInitScript(() => {
-  localStorage.setItem('acct_token', 't1');
+  localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]');
   const real = window.fetch;
   window.fetch = function (u) {
     const s = String(u);

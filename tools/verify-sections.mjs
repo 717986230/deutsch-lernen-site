@@ -40,7 +40,7 @@ for (const lang of ['de', 'en']) {
     const errs = [];
     page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
     await page.addInitScript(([l, t]) => {
-      localStorage.setItem('acct_token', 't1');
+      localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]');
       localStorage.setItem('theme', t);
       if (l === 'en') localStorage.setItem('lang', 'en');
       const real = window.fetch;
@@ -86,7 +86,7 @@ for (const lang of ['de', 'en']) {
   await stubPro(page);
   const batchErrs = [];
   page.on('pageerror', (e) => batchErrs.push(String(e).split('\n')[0]));
-  await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); } catch (e) {} });
+  await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]'); } catch (e) {} });
   await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => window._DEC, null, { timeout: 25000 }).catch(() => {});
   for (const [name, sec, fn, sel, minTotal] of [
@@ -124,7 +124,7 @@ for (const lang of ['de', 'en']) {
   const errs2 = [];
   page.on('pageerror', (e) => errs2.push(String(e).split('\n')[0]));
   await page.addInitScript(() => {
-    try { localStorage.setItem('acct_token', 't1'); } catch (e) {}
+    try { localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]'); } catch (e) {}
     if (window.speechSynthesis) window.speechSynthesis.speak = (u) => { setTimeout(() => { try { u.onend && u.onend(); } catch (e) {} }, 30); };
   });
   await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });

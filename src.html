@@ -1737,7 +1737,7 @@ body.lang-en #homeBoost{display:none!important}
     <p style="text-align:center;font-size:11px;color:var(--text-faint);margin-top:18px">词典兜底数据来源：<a href="https://github.com/gugray/HanDeDict" style="color:var(--text-faint)" rel="license noopener" target="_blank">HanDeDict</a>（CC BY-SA 3.0）</p>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-top:22px">打赏之外 —— <b>把网站分享给同学</b>，也是莫大的支持 🙌</p>
     <div style="text-align:center;margin-top:8px"><button class="btn" onclick="copyShare(this)">📋 复制网址分享</button></div>
-    <div style="max-width:420px;margin:26px auto 0;padding:14px 18px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;text-align:center">
+    <div id="contactAuthor" style="max-width:420px;margin:26px auto 0;padding:14px 18px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;text-align:center">
       <div style="font-size:14px;color:var(--text);font-weight:600">💬 联系作者</div>
       <div style="font-size:13px;color:var(--text-dim);margin-top:6px;line-height:1.8">使用心得、纠错、想加的功能，都欢迎来聊：<br>QQ：<b style="color:var(--gold-text);font-size:15px;letter-spacing:.5px" id="qqNum">717986230</b> <button class="btn" style="padding:3px 12px;font-size:12px;margin-left:6px" onclick="copyQQ(this)">复制</button></div>
       <div style="font-size:13px;color:var(--text-dim);margin-top:14px">或者微信扫码加我好友 👇</div>
@@ -6103,6 +6103,45 @@ function _wnUnseen(){
   return out;
 }
 function _wnDot(){var d=document.getElementById('wnDot');if(!d)return;var n=_wnUnseen().length;d.textContent=n?String(n):'';d.style.display=n?'':'none';}
+// ══════════════ 全站公告（一次性弹窗）══════════════
+// 和「上新了」不同：公告是运营通知，新老用户都弹，但每条只弹一次（按 id 记进 localStorage.annSeen）。
+// 换下一条公告时改 ANNOUNCE.id 即可；不想再弹任何公告就把 ANNOUNCE 设为 null。
+// 体检脚本（tools/verify-*.mjs）登录时一并写 annSeen=["*"]，否则弹窗会挡住它们要点的按钮；verify-announce 专门测公告本身。
+// 公告开着时「上新了」提示条先不出，关掉公告后再走 wnBoot，免得两个提示叠在一起。
+var ANNOUNCE={id:'2026-11-rank-top3',icon:'🏆',title:'榜单前三，送年卡会员！'};
+var _ann={ov:null};
+function _annSeen(){try{var a=JSON.parse(localStorage.getItem('annSeen')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}}
+function annBoot(){
+  if(!ANNOUNCE||_ann.ov)return false;
+  var seen=_annSeen();if(seen.indexOf(ANNOUNCE.id)>=0||seen.indexOf('*')>=0)return false;   // '*'：浏览器体检脚本用，跳过一切公告
+  setTimeout(function(){
+    if(document.documentElement.classList.contains('locked')||_ann.ov){return;}
+    var ov=document.createElement('div');ov.className='wn-ov ann-ov';ov.onclick=function(ev){if(ev.target===ov)annClose();};
+    ov.innerHTML='<div class="wn-sheet ann-sheet" role="dialog" aria-modal="true" aria-labelledby="annTitle">'
+      +'<div class="wn-head"><h3 id="annTitle">'+_esc(ANNOUNCE.icon+' '+ANNOUNCE.title)+'</h3><button type="button" class="wn-x" aria-label="关闭" onclick="annClose()">×</button></div>'
+      +'<div class="ann-body">'
+      +'<p>感谢每一位坚持来这里学德语、学英语的你！这个小站能一直更新下去，靠的就是你们每天的打卡和反馈 ❤️</p>'
+      +'<p>为了说声谢谢：<b>任何一个学习排行榜</b>（📖 掌握词 / 🔥 最长打卡 / ⚡ 累计学习）<b>排名前三</b>的同学，都可以<b>找作者免费领取一张「年卡会员」兑换码</b>。</p>'
+      +'<div class="ann-how"><div class="ann-how-t">怎么领</div>截一张你在榜上的排名图（带上昵称），发给作者：<br>'
+      +'QQ：<b class="ann-qq">717986230</b> <button type="button" class="btn ann-copy" onclick="copyQQ(this)">复制</button><br>或在「支持作者」页微信扫码加好友。</div>'
+      +'<p class="ann-thx">再次感谢大家的陪伴，Viel Erfolg! 🎉</p>'
+      +'</div>'
+      +'<div class="ann-btns"><button type="button" class="ann-b2" onclick="annGo(\'support\')">联系作者</button><button type="button" class="ann-b1" onclick="annGo(\'rank\')">看看排行榜 ›</button></div>'
+      +'</div>';
+    document.body.appendChild(ov);_ann.ov=ov;
+    try{var s=_annSeen();s.push(ANNOUNCE.id);localStorage.setItem('annSeen',JSON.stringify(s));}catch(e){}
+    try{ov.querySelector('.wn-x').focus();}catch(e){}
+    try{track('view',{s:'announce'});}catch(e){}
+  },600);
+  return true;
+}
+function annClose(){if(!_ann.ov)return;_ann.ov.remove();_ann.ov=null;try{wnBoot();}catch(e){}}
+function annGo(sec){
+  annClose();
+  try{showSection(sec);}catch(e){}
+  if(sec==='support')setTimeout(function(){var el=document.getElementById('contactAuthor');if(el){try{el.scrollIntoView({block:'center'});}catch(e){el.scrollIntoView();}}},300);
+}
+try{document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&_ann.ov)annClose();});}catch(e){}
 function wnBoot(){
   if(_wn.booted)return;_wn.booted=true;
   _wnDot();
@@ -6198,7 +6237,7 @@ try{
   window.addEventListener('resize',function(){if(_wn.tour)_wnPlace();});
   document.addEventListener('keydown',function(ev){if(ev.key==='Escape'){if(_wn.tour)wnEnd();else if(_wn.ov)wnClose();}});
 }catch(e){}
-function acctEnter(){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();var d=START_SEC,deep=false;try{if(_deepSec){d=_deepSec;_deepSec=null;deep=true;}}catch(e){}showSection(d);try{wnBoot();}catch(e){}}
+function acctEnter(){document.documentElement.classList.remove('locked');if(typeof appInit==='function')appInit();var d=START_SEC,deep=false;try{if(_deepSec){d=_deepSec;_deepSec=null;deep=true;}}catch(e){}showSection(d);try{if(!annBoot())wnBoot();}catch(e){try{wnBoot();}catch(e2){}}}
 function acctTab(w){var lg=w==='login';document.getElementById('tabLogin').classList.toggle('on',lg);document.getElementById('tabReg').classList.toggle('on',!lg);document.getElementById('paneLogin').style.display=lg?'':'none';document.getElementById('paneReg').style.display=lg?'none':'';}
 function acctRegister(){var u=(document.getElementById('rgUser').value||'').trim().toLowerCase();var nick=(document.getElementById('rgNick').value||'').trim();var pw=document.getElementById('rgPass').value||'';var err=document.getElementById('rgErr');err.textContent='';if(!/^[a-z0-9_]{3,20}$/.test(u)){err.textContent='用户名 3-20 位，仅小写字母/数字/下划线';return;}if(pw.length<6){err.textContent='密码至少 6 位';return;}var _em=(document.getElementById('rgEmail')||{}).value||'';apiFetch('/api/register',{method:'POST',body:{username:u,nickname:nick,password:pw,email:_em}}).then(function(r){if(!r.ok){err.textContent=r.status===0?'网络不可用，请检查连接后重试':((r.data&&r.data.err)||'注册失败');return;}acctSetAuth(r.data.token,r.data.user);if(r.data.recovery){showRecovery(r.data.recovery,true);}else{acctStartSession();}},function(){err.textContent='网络错误，请重试';});}
 function acctLogin(){var u=(document.getElementById('lgUser').value||'').trim().toLowerCase();var pw=document.getElementById('lgPass').value||'';var err=document.getElementById('lgErr');err.textContent='';if(!u||!pw){err.textContent='请输入用户名和密码';return;}apiFetch('/api/login',{method:'POST',body:{username:u,password:pw}}).then(function(r){if(!r.ok){err.textContent=r.status===0?'网络不可用，请检查连接后重试':((r.data&&r.data.err)||'登录失败');return;}acctSetAuth(r.data.token,r.data.user);acctStartSession();},function(){err.textContent='网络错误，请重试';});}
@@ -6807,6 +6846,21 @@ function spFinish(){document.getElementById('spBar').style.width='100%';document
 .wn-tip-b button{min-height:44px;padding:0 12px;border:0;background:none;font-family:inherit;font-size:14px;cursor:pointer;color:var(--text-dim)}
 .wn-tip-b .wn-tip-ok{color:var(--gold-text);font-weight:700}
 .wn-dot{margin-left:8px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--gold);color:var(--on-brand);font-size:11px;font-style:normal;font-weight:700;line-height:18px;text-align:center}
+.ann-ov{z-index:1450;align-items:center;padding:16px}
+.ann-sheet{border-radius:20px;max-width:440px}
+.ann-body{font-size:14px;line-height:1.75;color:var(--text-dim)}
+.ann-body p{margin:6px 0 10px}
+.ann-body b{color:var(--text)}
+.ann-how{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin:4px 0 10px}
+.ann-how-t{font-weight:700;color:var(--text);margin-bottom:2px}
+.ann-how b.ann-qq{color:var(--gold-text);font-size:15px;letter-spacing:.5px}
+.ann-copy{position:relative;padding:3px 12px;font-size:12px;margin-left:4px;min-height:32px}
+.ann-copy::after{content:"";position:absolute;inset:-6px -4px}
+.ann-thx{text-align:center;color:var(--text)}
+.ann-btns{display:flex;gap:10px;margin-top:6px}
+.ann-btns button{flex:1;min-height:44px;border-radius:12px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.ann-b1{border:0;background:var(--gold);color:var(--on-brand)}
+.ann-b2{border:1px solid var(--border);background:transparent;color:var(--text)}
 @media (prefers-reduced-motion:reduce){.wn-bar,.wn-sheet{animation:none}.wn-ring{transition:none}}
 </style>
 <script>

@@ -37,7 +37,7 @@ const browser = await chromium.launch(launchOpts);
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
 await stubPro(page);
 await page.addInitScript(() => {
-  localStorage.setItem('acct_token', 't1');
+  localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]');
   const real = window.fetch;
   window.fetch = function (u) {
     const s = String(u);

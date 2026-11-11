@@ -57,7 +57,7 @@ const page = await ctx.newPage();
 await stubPro(page);
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
-await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); } catch (e) {} });
+await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]'); } catch (e) {} });
 
 const cached = async () => page.evaluate(async () => {
   if (!self.caches) return [];

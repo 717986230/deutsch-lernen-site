@@ -83,7 +83,7 @@ async function open(mode) {
   page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
   page.on('dialog', async (d) => { errs.push('弹出 dialog：' + d.message()); await d.dismiss(); });
   await page.addInitScript(STUB, [EVIL, mode]);
-  await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); } catch (e) {} });
+  await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]'); } catch (e) {} });
   await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => window._DEC, null, { timeout: 20000 }).catch(() => {});
   return { page, errs };
