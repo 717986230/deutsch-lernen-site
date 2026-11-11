@@ -12,7 +12,9 @@ import PACK_WOHNEN from './packs/wohnen.json' with { type: 'json' };
 const PRO_PACKS = { arzt: PACK_ARZT, wohnen: PACK_WOHNEN };
 // 兑换码字母表：去掉 0/O/1/I/L 这些手抄易混的字符。12 位 ≈ 59 bit，暴力猜不可行（另有频控）
 const CODE_ABC = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-const CODE_DAYS = [30, 365, 36500];          // 月卡 / 年卡 / 永久（100 年）
+// 2026-11-11 起只卖月卡 / 年卡，不再发永久码；已开通的永久会员（until≈100 年后）权益不变，
+// 库里已发出未用的永久码照样能兑换（兑换读的是码自己的 days）。
+const CODE_DAYS = [30, 365];                 // 月卡 / 年卡
 const normCode = (c) => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^UUOO/, '');
 async function sha256Hex(t) {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
@@ -24,6 +26,11 @@ function newCode() {
   const c = [...a].map(x => CODE_ABC[x % CODE_ABC.length]).join('');
   return 'UUOO-' + c.slice(0, 4) + '-' + c.slice(4, 8) + '-' + c.slice(8, 12);
 }
+async function chosenFrame(env, uid) {
+  const r = await env.DB.prepare('SELECT frame FROM user_frames WHERE uid=?').bind(uid).first();
+  return r ? r.frame : null;
+}
+
 async function proUntil(env, uid) {
   const r = await env.DB.prepare('SELECT until FROM memberships WHERE uid=?').bind(uid).first();
   return r ? r.until : 0;
@@ -32,6 +39,16 @@ async function proUntil(env, uid) {
 // 头像白名单：emoji + 背景色（只接受集合内的值，防注入/超长；无图片上传=无审核负担）
 const AV_EMOJI = ['🦊', '🐼', '🐨', '🐯', '🦁', '🐶', '🐱', '🐰', '🐻', '🐸', '🐵', '🦉', '🐧', '🐢', '🦄', '🐲', '🌷', '🌟', '🍀', '🔥', '🚀', '⚽', '🎨', '🎧', '📚', '☕', '🥨', '🗼'];
 const AV_BG = ['#58cc02', '#1cb0f6', '#ff9600', '#ff4b4b', '#ce82ff', '#2b70c9', '#ff86d0', '#00c2a8', '#f5b800', '#7a869a'];
+// 会员专属头像（预设原创 SVG，存成 'm:<id>'）：值 = 需要的会员档位（1 会员 / 2 永久）。
+// 会员到期后读出时自动退回默认头像，续费即恢复。
+const MEMBER_AV = { 'm:dragon': 1, 'm:phoenix': 1, 'm:kitsune': 1, 'm:astro': 1, 'm:owl': 1, 'm:mecha': 1, 'm:goldking': 2, 'm:abyssking': 2 };
+// 成就头像（存 'a:<id>'）：值 = 需要点亮的徽章。徽章是算出来的不会掉，但仍按当下资格校验，防直接写库
+const ACH_AV = { 'a:flamewolf': 'streak7', 'a:knight': 'streak30', 'a:icefox': 'streak100', 'a:whale': 'word1000', 'a:cybercat': 'word3000', 'a:thundereagle': 'study2000', 'a:sakurabunny': 'quiz1000', 'a:starbear': 'founder' };
+const avOf = (av, tier, badges) => {
+  if (MEMBER_AV[av] && tier < MEMBER_AV[av]) return '🦊';
+  if (ACH_AV[av] && !(badges || []).includes(ACH_AV[av])) return '🦊';
+  return av;
+};
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const cleanText = (v, n) => String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, n);
 
@@ -349,6 +366,7 @@ export default {
         env.DB.prepare('DELETE FROM activity WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM vido_state WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM memberships WHERE uid=?1').bind(uid),
+        env.DB.prepare('DELETE FROM user_frames WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM users WHERE id=?1').bind(uid),
       ]);
       return json({ ok: 1 }, 200, cors);
@@ -583,6 +601,20 @@ export default {
     // ───────── 会员：兑换码兑换 / 课包下发 / 后台发码 ─────────
     // 收款在站外（爱发电等平台卖兑换码），站内只认码：不绑定任何支付商，换渠道不改代码。
     // 码只存 SHA-256，库泄露也拿不到可用的码；兑换用「WHERE used_by IS NULL」单语句抢占，防并发重复兑换。
+    // 佩戴头像框：只能戴自己已点亮徽章对应的框，或有效会员的会员框；'none' = 不戴
+    if (M === 'POST' && path === '/api/frame') {
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      const b = await body(req);
+      const want = String(b.frame || 'none').slice(0, 24);
+      if (want !== 'none') {
+        const row = await env.DB.prepare('SELECT badges FROM users WHERE id=?').bind(uid).first();
+        const tier = proTier(await proUntil(env, uid));
+        if (frameOf(want, badgeList(row && row.badges, uid), tier) !== want) return json({ err: '这款头像框还没解锁' }, 403, cors);
+      }
+      await env.DB.prepare('INSERT INTO user_frames (uid,frame,updated) VALUES (?,?,?) ON CONFLICT(uid) DO UPDATE SET frame=excluded.frame,updated=excluded.updated').bind(uid, want, Date.now()).run();
+      return json({ ok: 1, frame: want === 'none' ? '' : want }, 200, cors);
+    }
     if (M === 'POST' && path === '/api/redeem') {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '请先登录再兑换' }, 401, cors);
@@ -772,6 +804,8 @@ export default {
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, uid);
       u.pro_until = await proUntil(env, uid);
+      u.frame = frameOf(await chosenFrame(env, uid), u.badges.split(',').filter(Boolean), proTier(u.pro_until));
+      u.avatar = avOf(u.avatar, proTier(u.pro_until), u.badges.split(',').filter(Boolean));
       return json({ user: u, profiles: profiles.results || [], rank: rank.c, followers: fc.followers, following: fc.following }, 200, cors);
     }
     // ───────── 社交：关注 / 取关 / 关注列表 ─────────
@@ -791,8 +825,8 @@ export default {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
       // 多查一列 u.id 只为算创始人，不外泄（下面构造返回对象时不带它）
-      const rows = await env.DB.prepare('SELECT u.id,u.username,u.nickname,u.avatar,u.av_bg,u.known,u.best_streak,u.level,u.badges FROM follows f JOIN users u ON u.id=f.followee WHERE f.follower=? ORDER BY u.known DESC LIMIT 100').bind(uid).all();
-      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: badgeList(r.badges, r.id).length }));
+      const rows = await env.DB.prepare('SELECT u.id,u.username,u.nickname,u.avatar,u.av_bg,u.known,u.best_streak,u.level,u.badges,(SELECT until FROM memberships WHERE uid=u.id) AS pu,(SELECT frame FROM user_frames WHERE uid=u.id) AS fr FROM follows f JOIN users u ON u.id=f.followee WHERE f.follower=? ORDER BY u.known DESC LIMIT 100').bind(uid).all();
+      const list = rows.results.map(r => ({ username: r.username, nickname: r.nickname, avatar: avOf(r.avatar, proTier(r.pu), badgeList(r.badges, r.id)), av_bg: r.av_bg, known: r.known, streak: r.best_streak, level: r.level, badges: badgeList(r.badges, r.id).length, pro: proTier(r.pu), frame: frameOf(r.fr, badgeList(r.badges, r.id), proTier(r.pu)) }));
       return json({ list }, 200, cors);
     }
     // 修改资料：昵称 / 头像 / 背景色 / 个性签名（需登录，服务端校验）
@@ -807,7 +841,12 @@ export default {
         set.push('nickname=?'); bind.push(nick);
       }
       if (b.avatar != null) {
-        if (!AV_EMOJI.includes(b.avatar)) return json({ err: '头像不在可选范围' }, 400, cors);
+        if (MEMBER_AV[b.avatar]) {
+          if (proTier(await proUntil(env, uid)) < MEMBER_AV[b.avatar]) return json({ err: MEMBER_AV[b.avatar] === 2 ? '这个头像是永久会员专属' : '这个头像是会员专属' }, 403, cors);
+        } else if (ACH_AV[b.avatar]) {
+          const row = await env.DB.prepare('SELECT badges FROM users WHERE id=?').bind(uid).first();
+          if (!badgeList(row && row.badges, uid).includes(ACH_AV[b.avatar])) return json({ err: '这个头像要先点亮对应徽章' }, 403, cors);
+        } else if (!AV_EMOJI.includes(b.avatar)) return json({ err: '头像不在可选范围' }, 400, cors);
         set.push('avatar=?'); bind.push(b.avatar);
       }
       if (b.email != null) {
@@ -856,10 +895,11 @@ export default {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
       const rows = await env.DB.prepare(
-        'SELECT a.type,a.data,a.ts,u.username,u.nickname,u.avatar,u.av_bg FROM activity a JOIN users u ON u.id=a.uid ' +
+        'SELECT a.type,a.data,a.ts,u.username,u.nickname,u.avatar,u.av_bg,u.id AS uid,u.badges,(SELECT until FROM memberships WHERE uid=u.id) AS pu FROM activity a JOIN users u ON u.id=a.uid ' +
         'WHERE a.uid=? OR a.uid IN (SELECT followee FROM follows WHERE follower=?) ORDER BY a.ts DESC LIMIT 50'
       ).bind(uid, uid).all();
-      return json({ list: rows.results }, 200, cors);
+      const list = rows.results.map(r => { const { pu, uid: ruid, badges, ...rest } = r; rest.avatar = avOf(r.avatar, proTier(pu), badgeList(badges, ruid)); return rest; });
+      return json({ list }, 200, cors);
     }
 
     // ───────── 排行榜 / 公开主页 ─────────
@@ -884,13 +924,15 @@ export default {
       const [count, rows] = await Promise.all([
         env.DB.prepare(countSQL).bind(...binds).first(),
         env.DB.prepare(
-        'SELECT id,username,nickname,avatar,av_bg,known,best_streak,total,level,badges FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
+        'SELECT id,username,nickname,avatar,av_bg,known,best_streak,total,level,badges,(SELECT until FROM memberships WHERE uid=users.id) AS pu,(SELECT frame FROM user_frames WHERE uid=users.id) AS fr FROM users WHERE ' + where + ' ORDER BY ' + col + ' DESC, updated ASC LIMIT 50'
         ).bind(...binds).all(),
       ]);
       const list = rows.results.map(r => ({
-        username: r.username, nickname: r.nickname, avatar: r.avatar, av_bg: r.av_bg, level: r.level,
+        username: r.username, nickname: r.nickname, avatar: avOf(r.avatar, proTier(r.pu), badgeList(r.badges, r.id)), av_bg: r.av_bg, level: r.level,
         known: r.known, streak: r.best_streak, total: r.total,
         badges: badgeList(r.badges, r.id).length,     // id 只用来算创始人，不进返回体
+        pro: proTier(r.pu),                           // 只给档位 0/1/2，不外泄到期日
+        frame: frameOf(r.fr, badgeList(r.badges, r.id), proTier(r.pu)),
       }));
       return json({ by, total: Number(count?.total || 0), list }, 200, cors);
     }
@@ -900,6 +942,9 @@ export default {
       if (!u) return json({ err: '用户不存在' }, 404, cors);
       const pid = u.id; delete u.id;
       u.badges = badgeList(u.badges, pid).join(',');   // 同上：别人看别人的资料页
+      u.pro = proTier(await proUntil(env, pid));        // 公开主页只给会员档位，不给到期日
+      u.frame = frameOf(await chosenFrame(env, pid), u.badges.split(',').filter(Boolean), u.pro);
+      u.avatar = avOf(u.avatar, u.pro, u.badges.split(',').filter(Boolean));
       const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
       const fc = await followCounts(env, pid);
       let isFollowing = false;
@@ -915,6 +960,23 @@ export default {
     return new Response('uuoo app', { headers: cors });
   },
 };
+
+// 头像框：每枚徽章对应一款，会员另有 pro / pro_life 两款。
+// 存的是用户的选择；读的时候按当下资格再校验 —— 会员过期、徽章不在了，就退回默认。
+// 默认：永久会员戴 pro_life、会员戴 pro，其余不戴；用户选 'none' 表示明确不戴。
+// 永久会员的「双龙戏珠」框有 8 种元素龙：pro_life（金龙）+ pro_life-<元素>
+const PRO_LIFE_RE = /^pro_life(-(flame|ice|thunder|water|wind|abyss|rainbow))?$/;
+function frameOf(chosen, badges, tier) {
+  if (chosen === 'none') return '';
+  if (chosen && ((chosen === 'pro' && tier >= 1) || (tier === 2 && PRO_LIFE_RE.test(chosen)) || badges.indexOf(chosen) >= 0)) return chosen;
+  return tier === 2 ? 'pro_life' : tier === 1 ? 'pro' : '';
+}
+
+// 会员档位（公开展示用）：0 非会员 / 1 会员（月卡、年卡）/ 2 永久。到期日只回给本人（/api/me）。
+function proTier(until) {
+  const left = (Number(until) || 0) - Date.now();
+  return left <= 0 ? 0 : left > 50 * 365 * 86400000 ? 2 : 1;
+}
 
 async function followCounts(env, uid) {
   const a = await env.DB.prepare('SELECT COUNT(*) c FROM follows WHERE followee=?').bind(uid).first();
@@ -943,10 +1005,10 @@ function badgeList(stored, uid) {
 function computeBadges(s, uid) {
   const b = [];
   if (uid && uid <= FOUNDER_MAX) b.push('founder');
-  [[7, 'streak7'], [30, 'streak30'], [100, 'streak100'], [365, 'streak365']].forEach(([n, id]) => { if (s.best >= n) b.push(id); });
-  [[100, 'word100'], [500, 'word500'], [1000, 'word1000'], [2000, 'word2000']].forEach(([n, id]) => { if (s.known >= n) b.push(id); });
-  [[500, 'study500'], [2000, 'study2000'], [10000, 'study10000']].forEach(([n, id]) => { if (s.total >= n) b.push(id); });
-  [[200, 'quiz200'], [1000, 'quiz1000']].forEach(([n, id]) => { if (s.quiz >= n) b.push(id); });
+  [[3, 'streak3'], [7, 'streak7'], [30, 'streak30'], [100, 'streak100'], [365, 'streak365']].forEach(([n, id]) => { if (s.best >= n) b.push(id); });
+  [[100, 'word100'], [500, 'word500'], [1000, 'word1000'], [2000, 'word2000'], [3000, 'word3000']].forEach(([n, id]) => { if (s.known >= n) b.push(id); });
+  [[100, 'study100'], [500, 'study500'], [2000, 'study2000'], [10000, 'study10000']].forEach(([n, id]) => { if (s.total >= n) b.push(id); });
+  [[50, 'quiz50'], [200, 'quiz200'], [1000, 'quiz1000']].forEach(([n, id]) => { if (s.quiz >= n) b.push(id); });
   return b;
 }
 

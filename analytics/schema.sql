@@ -163,6 +163,13 @@ CREATE TABLE IF NOT EXISTS memberships (
   updated INTEGER NOT NULL
 );
 
+-- 头像框：用户自选佩戴哪一款（'none' = 不戴）。单独成表免 ALTER；读的时候服务端再按徽章/会员资格校验一次
+CREATE TABLE IF NOT EXISTS user_frames (
+  uid INTEGER PRIMARY KEY,
+  frame TEXT NOT NULL,
+  updated INTEGER NOT NULL
+);
+
 -- 兑换码：只存规范化后 12 位码的 SHA-256；used_by 为空表示未用
 CREATE TABLE IF NOT EXISTS redeem_codes (
   hash TEXT PRIMARY KEY,

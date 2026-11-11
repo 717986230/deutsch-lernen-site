@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120"><defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#fde68a"/><stop offset="0.33" stop-color="#fbcfe8"/><stop offset="0.67" stop-color="#bfdbfe"/><stop offset="1.00" stop-color="#fde68a"/></linearGradient><linearGradient id="shell" x1="0" y1="0" x2="0" y2="1"><stop offset="0.00" stop-color="#ffffff"/><stop offset="0.50" stop-color="#fffbeb"/><stop offset="1.00" stop-color="#fde68a"/></linearGradient><filter id="g2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="gl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><style>
+.spin{transform-origin:60px 60px;animation:spin var(--d,10s) linear infinite}
+.rspin{transform-origin:60px 60px;animation:spin var(--d,14s) linear infinite reverse}
+.tw{transform-box:fill-box;transform-origin:center;animation:tw 2.2s ease-in-out infinite}
+.bob{transform-box:fill-box;transform-origin:center;animation:bob 2.6s ease-in-out infinite}
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 3s ease-in-out infinite}
+.flk{transform-box:fill-box;transform-origin:50% 100%;animation:flk .9s ease-in-out infinite alternate}
+.pulse{transform-origin:60px 60px;animation:pulse 2.4s ease-in-out infinite}
+.wave{transform-origin:60px 60px;animation:wave 2.4s ease-out infinite}
+.rise{transform-box:fill-box;animation:rise 2.4s ease-in infinite}
+.blink{animation:blink 1.6s steps(1) infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.5)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+@keyframes flk{0%{transform:scaleY(.82) skewX(-3deg)}100%{transform:scaleY(1.12) skewX(3deg)}}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes wave{0%{transform:scale(.9);opacity:.85}100%{transform:scale(1.22);opacity:0}}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-26px);opacity:0}}
+@keyframes blink{0%,100%{opacity:0}8%,14%{opacity:1}20%{opacity:0}52%,56%{opacity:1}60%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}</style></defs><circle cx="60" cy="60" r="44" fill="none" stroke="url(#eg)" stroke-width="4"/><circle cx="60" cy="60" r="47" fill="none" stroke="#fde68a" stroke-width="6" opacity=".35" filter="url(#g2)"/><path d="M14 84L22 76L30 86L38 76L46 88L54 78L62 90L70 78L78 88L86 76L94 86L102 76L108 84Q100 118 60 118Q20 118 14 84Z" fill="url(#shell)" stroke="#e7c98a" stroke-width="1.2"/><circle cx="34" cy="100" r="2" fill="#fde68a" opacity=".7"/><circle cx="80" cy="104" r="2.6" fill="#fbcfe8" opacity=".7"/><circle cx="58" cy="108" r="1.6" fill="#bfdbfe" opacity=".8"/><g class="bob"><circle cx="96" cy="26" r="8.5" fill="#fde047"/><path d="M89 22C90 17 96 15 99 18" fill="none" stroke="#facc15" stroke-width="1.5"/><circle cx="98.5" cy="24" r="1.2" fill="#422006"/><path d="M103 26L108 27.5L103 29Z" fill="#fb923c"/><ellipse cx="94" cy="29" rx="2" ry="1.2" fill="#fda4af" opacity=".8"/></g><path class="tw" style="animation-delay:0s" fill="#fde68a" d="M77.16 105.83000000000001Q77.16 107.15 78.47999999999999 107.15Q77.16 107.15 77.16 108.47Q77.16 107.15 75.84 107.15Q77.16 107.15 77.16 105.83000000000001Z"/><path class="tw" style="animation-delay:0.37s" fill="#fde68a" d="M14.48 34.43Q14.48 36.3 16.35 36.3Q14.48 36.3 14.48 38.169999999999995Q14.48 36.3 12.61 36.3Q14.48 36.3 14.48 34.43Z"/><path class="tw" style="animation-delay:0.74s" fill="#fde68a" d="M110.67 44Q110.67 46.42 113.09 46.42Q110.67 46.42 110.67 48.84Q110.67 46.42 108.25 46.42Q110.67 46.42 110.67 44Z"/><path class="tw" style="animation-delay:1.11s" fill="#fde68a" d="M31.2 103.89Q31.2 105.21 32.519999999999996 105.21Q31.2 105.21 31.2 106.52999999999999Q31.2 105.21 29.88 105.21Q31.2 105.21 31.2 103.89Z"/></svg>

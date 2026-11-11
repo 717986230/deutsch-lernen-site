@@ -4,7 +4,8 @@
 
 | 项 | 现状 |
 |---|---|
-| 价格 | 年卡 ¥68 / €9；永久 ¥499 / €59（`src.html` 里 `PRO_CFG.plans`，改价只改这里） |
+| 会员外观 | 19 款徽章头像框（`tools/gen-frames.mjs`）；永久会员「双龙戏珠」框 8 种元素龙：3D 渲染的透明动态 AVIF（`tools/dragon3d/scene.js` three.js 场景 → `node tools/render-dragon3d.mjs` 用预装 Chromium 逐帧渲染 + ffmpeg 封装，大图 300px 约 200KB / 小图 150px，网站运行时不加载 three.js；不支持动态 AVIF 的浏览器退回 `tools/gen-frame-prolife.mjs` 生成的同名 SVG 平面版）；会员专属头像 8 款（`tools/gen-avatars.mjs` → `avatars/`，龙崽等 6 款会员可用、金龙王/暗龙王永久专属），全部原创 SVG |
+| 价格 | 月卡 ¥9.9 / €1.5；年卡 ¥99 / €13（`src.html` 里 `PRO_CFG.plans`，改价只改这里）。2026-11-11 起**停售永久卡**：已开通的永久会员权益不变（金色铭牌 / 永久会员头像框照常），后台不再发永久码 |
 | 购买渠道 | 暂为「加作者微信」付款后发码；开了售卖页（如爱发电商品自动发码）后把链接填进 `PRO_CFG.buyUrl` |
 | 发码 | `stats.html` →「生成会员兑换码」，需要 STATS_KEY；码只显示一次 |
 | 兑换 | 「我的 → 会员 · 兑换码」，`POST /api/redeem` |

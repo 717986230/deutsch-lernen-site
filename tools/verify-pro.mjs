@@ -39,14 +39,16 @@ const DAY = 86400000;
 let r = await call('POST', '/api/admin/codes', { n: 3, days: 365 }, null, { 'X-Admin-Key': 'wrong' });
 if (r.status !== 403) bad(`错误密钥也能发码（${r.status}）`); else ok('错误密钥发码被拒（403）');
 r = await call('POST', '/api/admin/codes', { n: 3, days: 7 }, null, { 'X-Admin-Key': env.STATS_KEY });
-if (r.status !== 400) bad(`非法天数也能发码（${r.status}）`); else ok('天数只认 30/365/36500');
+if (r.status !== 400) bad(`非法天数也能发码（${r.status}）`); else ok('天数只认 30/365');
+r = await call('POST', '/api/admin/codes', { n: 1, days: 36500 }, null, { 'X-Admin-Key': env.STATS_KEY });
+if (r.status !== 400) bad('停售后仍能发永久码'); else ok('永久码已停发（400）');
 r = await call('POST', '/api/admin/codes', { n: 3, days: 365, batch: 'test' }, null, { 'X-Admin-Key': env.STATS_KEY });
 const codes = r.data.codes || [];
 if (codes.length !== 3 || !codes.every((c) => /^UUOO-[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(c))) bad(`发码格式不对：${JSON.stringify(r.data)}`);
 else ok('发出 3 个年卡码，格式 UUOO-XXXX-XXXX-XXXX');
 const dump = JSON.stringify(db.prepare('SELECT * FROM redeem_codes').all());
 if (codes.some((c) => dump.includes(c.slice(5).replace(/-/g, '')))) bad('库里存了明文兑换码'); else ok('库里只有哈希，没有明文码');
-const life = (await call('POST', '/api/admin/codes', { n: 1, days: 36500 }, null, { 'X-Admin-Key': env.STATS_KEY })).data.codes[0];
+const life = (await call('POST', '/api/admin/codes', { n: 1, days: 30 }, null, { 'X-Admin-Key': env.STATS_KEY })).data.codes[0];   // 月卡；下面把 carol 手动改成历史永久会员
 
 // ── 用户 ──
 const reg = async (u) => (await call('POST', '/api/register', { username: u, nickname: u, password: 'pass-' + u + '-123' })).data.token;
@@ -78,6 +80,17 @@ if (r.status !== 200 || !Array.isArray(units) || units.length < 5) bad(`会员�
 r = await call('GET', '/api/pro/pack?id=nope', undefined, ta);
 if (r.status !== 404) bad('不存在的课包没有 404');
 
+// ── 公开展示：排行榜 / 主页只给档位，不给到期日 ──
+r = await call('GET', '/api/leaderboard');
+{
+  const la = r.data.list.find((x) => x.username === 'alice'), lb = r.data.list.find((x) => x.username === 'bob');
+  if (!la || la.pro !== 1 || !lb || lb.pro !== 0) bad(`排行榜会员档位不对：${JSON.stringify([la, lb])}`);
+  else if (JSON.stringify(r.data).match(/"(pu|until|pro_until)"/)) bad('排行榜泄露了会员到期日');
+  else ok('排行榜带会员档位（年卡=1、非会员=0），不含到期日');
+}
+r = await call('GET', '/api/profile?name=alice', undefined, tb);
+if (r.data.user.pro !== 1 || 'pro_until' in r.data.user) bad(`他人主页会员字段不对：${JSON.stringify(r.data.user)}`); else ok('他人主页只给会员档位');
+
 // 过期：手动把到期时间改到过去
 db.prepare('UPDATE memberships SET until=? WHERE uid=(SELECT id FROM users WHERE username=?)').run(Date.now() - 1000, 'alice');
 r = await call('GET', '/api/pro/pack?id=arzt', undefined, ta);
@@ -97,8 +110,53 @@ if (r.status !== 429) bad('被限流期间仍可兑换（应先等窗口过去�
 const tc = await reg('carol');
 await call('POST', '/api/redeem', { code: life }, tc, null, '192.0.2.9');
 const cid = db.prepare("SELECT id FROM users WHERE username='carol'").get().id;
-if (!db.prepare('SELECT 1 FROM memberships WHERE uid=?').get(cid)) bad('永久码兑换后没有会员记录');
+if (!db.prepare('SELECT 1 FROM memberships WHERE uid=?').get(cid)) bad('兑换后没有会员记录');
+db.prepare('UPDATE memberships SET until=? WHERE uid=?').run(Date.now() + 36500 * DAY, cid);   // 模拟已开通的永久会员
+await call('POST', '/api/follow', { name: 'carol' }, tb);
+r = await call('GET', '/api/following', undefined, tb);
+{ const fc = (r.data.list || []).find((x) => x.username === 'carol'); if (!fc || fc.pro !== 2) bad(`关注列表永久会员档位不对：${JSON.stringify(fc)}`); else ok('关注列表/永久会员档位 = 2'); }
+// ── 头像框：只能戴已解锁的；公开接口按资格下发 ──
+const lbFrame = async (u) => ((await call('GET', '/api/leaderboard')).data.list.find((x) => x.username === u) || {}).frame;
+if (await lbFrame('carol') !== 'pro_life') bad('永久会员默认没戴永久会员框'); else ok('永久会员默认戴「永久会员」框');
+r = await call('POST', '/api/frame', { frame: 'streak365' }, tc);
+if (r.status !== 403) bad(`没点亮的徽章框也能戴（${r.status}）`); else ok('未解锁的头像框戴不上（403）');
+r = await call('POST', '/api/frame', { frame: 'pro' }, tb);
+if (r.status !== 403) bad('非会员戴上了会员框'); else ok('非会员戴不上会员框');
+r = await call('POST', '/api/frame', { frame: 'founder' }, tc);   // 前 100 名注册 = 创始人徽章
+if (!r.data.ok || await lbFrame('carol') !== 'founder') bad(`创始人框没戴上：${JSON.stringify(r.data)}`); else ok('戴上已点亮徽章的框，排行榜同步显示');
+r = await call('GET', '/api/profile?name=carol', undefined, tb);
+if (r.data.user.frame !== 'founder') bad('他人主页没带头像框'); else ok('他人主页带头像框');
+r = await call('POST', '/api/frame', { frame: 'pro_life-ice' }, tc);
+if (!r.data.ok || await lbFrame('carol') !== 'pro_life-ice') bad(`永久会员换不了冰龙：${JSON.stringify(r.data)}`); else ok('永久会员可换元素龙（冰龙），排行榜同步');
+r = await call('POST', '/api/frame', { frame: 'pro_life-lava' }, tc);
+if (r.status !== 403) bad(`不存在的龙配色没被拒（${r.status}）`); else ok('不存在的龙配色被拒');
+// ── 会员专属头像 ──
+r = await call('POST', '/api/profile/update', { avatar: 'm:dragon' }, tb);
+if (r.status !== 403) bad(`非会员用上了会员专属头像（${r.status}）`); else ok('非会员选不了会员专属头像（403）');
+r = await call('POST', '/api/profile/update', { avatar: 'm:abyssking' }, tc);
+if (r.status !== 200) bad(`永久会员选不了永久专属头像：${JSON.stringify(r.data)}`);
+r = await call('GET', '/api/profile?name=carol', undefined, tb);
+if (r.data.user.avatar !== 'm:abyssking') bad('主页没显示会员专属头像'); else ok('永久会员可用专属头像，他人主页可见');
+r = await call('POST', '/api/profile/update', { avatar: 'a:flamewolf' }, tb);   // bob 没有 7 天打卡徽章
+if (r.status !== 403) bad(`没点亮徽章也能用成就头像（${r.status}）`); else ok('没点亮徽章选不了成就头像（403）');
+r = await call('POST', '/api/profile/update', { avatar: 'a:starbear' }, tc);     // carol 是前 100 名注册 = 创始人
+if (r.status !== 200) bad(`创始人选不了星穹熊：${JSON.stringify(r.data)}`);
+r = await call('GET', '/api/profile?name=carol', undefined, tb);
+if (r.data.user.avatar !== 'a:starbear') bad('主页没显示成就头像'); else ok('点亮徽章后可用成就头像，他人主页可见');
+r = await call('POST', '/api/profile/update', { avatar: 'm:abyssking' }, tc);
+r = await call('POST', '/api/profile/update', { avatar: 'm:hack' }, tc);
+if (r.status !== 400) bad(`乱填的专属头像没被拒（${r.status}）`); else ok('白名单外的专属头像被拒');
+await call('POST', '/api/frame', { frame: 'none' }, tc);
+if (await lbFrame('carol') !== '') bad('摘下头像框后仍显示'); else ok('选「不戴」后不显示任何框');
+r = await call('POST', '/api/frame', { frame: 'pro' }, tc);
+db.prepare('UPDATE memberships SET until=? WHERE uid=?').run(Date.now() - 1000, cid);
+if (await lbFrame('carol') !== '') bad('会员过期后仍戴着会员框'); else ok('会员过期后会员框自动摘下');
+r = await call('GET', '/api/profile?name=carol', undefined, tb);
+if (r.data.user.avatar !== '🦊') bad(`会员过期后专属头像没退回默认：${r.data.user.avatar}`); else ok('会员过期后专属头像自动退回默认');
+r = await call('POST', '/api/frame', { frame: 'x'.repeat(200) }, tc);
+if (r.status !== 403) bad(`乱填框名没被拒（${r.status}）`); else ok('乱填的框名被拒');
 await call('POST', '/api/account/delete', { password: 'pass-carol-123' }, tc);
+if (db.prepare('SELECT 1 FROM user_frames WHERE uid=?').get(cid)) bad('注销账号后头像框记录还在');
 if (db.prepare('SELECT 1 FROM memberships WHERE uid=?').get(cid)) bad('注销账号后会员记录还在'); else ok('注销账号连会员记录一起删除');
 
 // ── 课包内容体检：每个 packs/*.json 都要在 worker 登记、在 PRO_CFG 有目录；字段齐全、谐音只含中文 ──
