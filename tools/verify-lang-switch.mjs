@@ -55,7 +55,7 @@ await stubPro(page);
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
 await page.addInitScript(() => {
-  try { localStorage.setItem('acct_token', 't1'); localStorage.setItem('siteLang', 'en'); } catch (e) {}
+  try { localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]'); localStorage.setItem('siteLang', 'en'); } catch (e) {}
 });
 await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
 await page.waitForFunction(() => window._ENC, null, { timeout: 25000 })

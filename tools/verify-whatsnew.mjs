@@ -56,7 +56,7 @@ async function open(vid) {
   await page.addInitScript((v) => {
     if (sessionStorage.getItem('_seeded')) return;
     sessionStorage.setItem('_seeded', '1');
-    localStorage.setItem('acct_token', 't1');
+    localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]');
     if (v) localStorage.setItem('_vid', v);
   }, vid);
   await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });

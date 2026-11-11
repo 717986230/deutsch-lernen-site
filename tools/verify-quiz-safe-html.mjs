@@ -48,7 +48,7 @@ const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
 await stubPro(page);
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
-await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); } catch (e) {} });
+await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]'); } catch (e) {} });
 await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
 await page.waitForFunction(() => window._DEC, null, { timeout: 20000 }).catch(() => {});
 await page.evaluate(() => showSection('quiz'));

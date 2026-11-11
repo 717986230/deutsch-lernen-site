@@ -50,7 +50,7 @@ async function open(pro) {
   const errs = [];
   page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
   await stubPro(page, { pro });
-  await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); } catch (e) {} });
+  await page.addInitScript(() => { try { localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]'); } catch (e) {} });
   await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => window._DEC, null, { timeout: 25000 }).catch(() => bad('词库没到货'));
   return { ctx, page, errs };

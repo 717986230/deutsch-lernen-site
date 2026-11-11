@@ -50,7 +50,7 @@ for (const theme of ['light', 'dark']) {
   const errs = [];
   page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
   await page.addInitScript(([th, nick]) => {
-    localStorage.setItem('acct_token', 't1'); localStorage.setItem('theme', th);
+    localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]'); localStorage.setItem('theme', th);
     localStorage.setItem('spWrong_de', JSON.stringify({
       'die Geschwindigkeitsbeschränkung': { zh: '限速（一个特别长的中文释义用来检查换行）', py: '迪 格施温迪希凯茨贝施伦孔', n: 7, ts: 2 } }));
     window.confirm = () => true;

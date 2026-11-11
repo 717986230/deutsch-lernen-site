@@ -36,7 +36,7 @@ async function visit(hash) {
   const errs = [];
   page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
   await page.addInitScript(() => {
-    localStorage.setItem('acct_token', 't1');
+    localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]');
     // 不桩 speechSynthesis：Chromium 本身就执行自动播放策略，无手势朗读会以 not-allowed 失败
   });
   await page.goto(`http://localhost:${PORT}/index.html${hash}`, { waitUntil: 'networkidle' });

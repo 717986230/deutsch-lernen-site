@@ -43,7 +43,7 @@ await stubPro(page);
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
 await page.addInitScript(() => {
-  try { localStorage.setItem('acct_token', 't1'); } catch (e) {}
+  try { localStorage.setItem('acct_token', 't1'); localStorage.setItem('annSeen', '["*"]'); } catch (e) {}
   if (window.speechSynthesis) window.speechSynthesis.speak = function () {};
 });
 await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });

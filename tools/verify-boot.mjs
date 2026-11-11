@@ -61,7 +61,7 @@ async function boot({ hash = '', token = 't1', label }) {
   const errs = [];
   page.on('pageerror', (e) => errs.push(String(e).split('\n')[0]));
   await page.addInitScript(STUB);
-  await page.addInitScript(`(function(){try{${token ? `localStorage.setItem('acct_token',${JSON.stringify(token)})` : `localStorage.removeItem('acct_token')`}}catch(e){}})();`);
+  await page.addInitScript(`(function(){try{${token ? `localStorage.setItem('acct_token',${JSON.stringify(token)});localStorage.setItem('annSeen','["*"]')` : `localStorage.removeItem('acct_token')`}}catch(e){}})();`);
   await page.goto(`http://localhost:${PORT}/index.html${hash}`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1200);
   for (const e of errs) bad(`${label} 抛错：${e}`);
@@ -130,7 +130,7 @@ if (real.leftover) bad('oauth_go 标记用完没清，第二次贴 token 链接�
 const pagePool = await browser.newPage({ viewport: { width: 390, height: 844 } });
 await stubPro(pagePool);
 await pagePool.addInitScript(STUB);
-await pagePool.addInitScript(`try{localStorage.setItem('acct_token','t1')}catch(e){}`);
+await pagePool.addInitScript(`try{localStorage.setItem('acct_token','t1');localStorage.setItem('annSeen','["*"]')}catch(e){}`);
 await pagePool.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
 await pagePool.waitForFunction(() => window._DEC, null, { timeout: 20000 }).catch(() => {});
 const pool = await pagePool.evaluate(() => {
