@@ -67,6 +67,9 @@ if (existsSync(join(ROOT, 'data/affix.json'))) {
     note(w.ex[0], w.ex[2], `affix.json[${w.de} 例句]`);
   }
 }
+if (existsSync(join(ROOT, 'data/wortschatz.json'))) {
+  for (const g of rd('data/wortschatz.json').groups) for (const w of g.words) note(w.de, w.py, `wortschatz.json[${g.name}]`);
+}
 for (const b of rd('data/boards.json')) for (const it of b.items) note(it[0], it[2], `boards.json[${b.name}]`);
 
 // src.html 里还有几张只存在于代码里的表

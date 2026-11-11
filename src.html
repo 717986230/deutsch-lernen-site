@@ -101,6 +101,15 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .dlg-spk{border:none;background:transparent;cursor:pointer;font-size:15px;padding:0;line-height:1}
 .dlg-zh{font-size:13px;color:var(--text-dim);margin-top:3px}
 .dlg-py{font-size:12px;color:var(--text-dim);margin-top:1px}
+/* 分组高频词（#wortschatz） */
+.wt-de b{font-weight:800}
+.wt-gap{display:none;color:var(--text-faint);letter-spacing:2px}
+.wt-hide .rs-row:not(.wt-open) .wt-de{display:none}
+.wt-hide .rs-row:not(.wt-open) .wt-py{display:none}
+.wt-hide .rs-row:not(.wt-open) .wt-gap{display:block}
+.wt-hide .rs-row{cursor:pointer}
+.wt-star{margin-left:auto;flex:none;min-width:44px;min-height:44px;border:none;background:transparent;font-size:18px;cursor:pointer;color:var(--text-faint);line-height:1}
+.wt-star[aria-pressed=true]{color:var(--gold-text)}
 /* 动词搭配（#kolloc） */
 .kc-v{color:var(--blue-text)}
 .kc-gap{display:inline-block;min-width:3.2em;border-bottom:2px dashed var(--text-faint);color:transparent}
@@ -431,7 +440,7 @@ mark.sh{background:rgba(181,73,46,.32);color:inherit;border-radius:3px;padding:0
 .lock-panel .lock-card{border-left-color:var(--gold)}
 .lock-panel .lock-card .acct-btn{display:block;width:100%}
 .lock-panel .lock-card .btn{display:block;width:100%;text-align:center}
-html.nopro .hg-tile[href="#resto"] span::after,html.nopro .hg-tile[href="#kolloc"] span::after,html.nopro .hg-tile[href="#affix"] span::after{content:" 🔒";font-size:10px}
+html.nopro .hg-tile[href="#wortschatz"] span::after,html.nopro .hg-tile[href="#resto"] span::after,html.nopro .hg-tile[href="#kolloc"] span::after,html.nopro .hg-tile[href="#affix"] span::after{content:" 🔒";font-size:10px}
 .tip-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
 .tip-title{font-size:13px;color:var(--gold-text);margin:0 0 6px;letter-spacing:.5px}
 .tip-body{font-size:13px;color:var(--text-dim);line-height:1.7}
@@ -811,6 +820,11 @@ body.lang-en #homeBoost{display:none!important}
       <a class="hg-tile" href="/kinder/"><div class="fic fic-video" style="font-size:24px;line-height:1">🦦</div><span>儿童德语</span></a>
       <a class="hg-tile" href="/oeif/"><div class="fic fic-red" style="font-size:22px;line-height:1">🇦🇹</div><span>奥地利 A1–C2</span></a>
       <a class="hg-tile" href="/ielts/"><div class="fic fic-blue" style="font-size:22px;line-height:1">🇬🇧</div><span>雅思词汇</span></a>
+    </div>
+    <div class="hg-title">分组高频词</div>
+    <div class="hg-grid">
+      <a class="hg-tile" href="#wortschatz" onclick="wtOpen(-1);return false"><div class="fic fic-orange" style="font-size:22px;line-height:1">📚</div><span>分组词表</span></a>
+      <a class="hg-tile" href="#wortschatz" onclick="wtQuiz(-1);return false"><div class="fic fic-green" style="font-size:22px;line-height:1">🎯</div><span>看中文选词</span></a>
     </div>
     <div class="hg-title">动词搭配</div>
     <div class="hg-grid">
@@ -1522,6 +1536,11 @@ body.lang-en #homeBoost{display:none!important}
         <div style="color:var(--text);font-weight:700;margin-bottom:4px">动词变位</div>
         <div style="font-size:12px;color:var(--text-dim)" id="qdConj">选对的变位形式</div>
       </div>
+      <div class="card de-only-block" onclick="wtQuiz(-1)" style="text-align:center;padding:20px">
+        <div style="font-size:28px;margin-bottom:8px">📚</div>
+        <div style="color:var(--text);font-weight:700;margin-bottom:4px">分组高频词</div>
+        <div style="font-size:12px;color:var(--text-dim)" id="qdWort">看中文选德语</div>
+      </div>
       <div class="card de-only-block" onclick="startQuiz('kolloc')" style="text-align:center;padding:20px">
         <div style="font-size:28px;margin-bottom:8px">🧩</div>
         <div style="color:var(--text);font-weight:700;margin-bottom:4px">动词搭配</div>
@@ -1628,6 +1647,18 @@ body.lang-en #homeBoost{display:none!important}
     <div class="level-tabs rs-tabs" id="rsTabs" role="tablist"></div>
     <div id="rsBody"></div>
     <p style="text-align:center;margin:26px 0 6px"><button class="btn" type="button" onclick="showSection('reading');setReadTopic('restaurant')">📖 再读 9 篇餐厅短文</button></p>
+  </div>
+</div>
+
+<div id="wortschatz" class="section">
+  <div class="container">
+    <div class="hero-label" style="text-align:center;padding-top:20px">Grundwortschatz</div>
+    <h2 class="page-title">分组高频词</h2>
+    <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:10px" id="wtSub">按生活场景分组，名词带冠词（<span class="art-der">der</span> · <span class="art-die">die</span> · <span class="art-das">das</span>）<br>点 🔊 听发音，点 ☆ 收进生词本</p>
+    <button class="rs-cta" type="button" onclick="wtQuiz(_wt.g)">🎯 看中文选德语 · <span id="wtDue">四选一，记不住的会再考</span></button>
+    <div class="rs-chips" id="wtGroups" role="tablist"></div>
+    <div class="rs-seg" role="group" aria-label="显示方式"><button type="button" id="wtShow" class="on" onclick="wtHide(false)">📖 全部显示</button><button type="button" id="wtHideBtn" onclick="wtHide(true)">🙈 遮住德语</button></div>
+    <div id="wtBody"></div>
   </div>
 </div>
 
@@ -2758,7 +2789,7 @@ function _syncLangSwitch(id){
 }
 function showSection(id){
   // 语言状态和深链都走这里：不能让英语用户误入仍未实现的德语专属工具。
-  if(LANG==='en'&&['body','resto','kolloc','affix'].indexOf(id)>=0)id='phrases';
+  if(LANG==='en'&&['body','resto','kolloc','affix','wortschatz'].indexOf(id)>=0)id='phrases';
   if(typeof _lockKeys==='function'&&_lockKeys(id)&&!_lockReady(id)){_lockGate(id);return;}   // 会员内容：没到货先过门（见 _lockGate）
   _syncLangSwitch(id);
   if(typeof stopAutoPlay==='function')stopAutoPlay();
@@ -2790,9 +2821,10 @@ function showSection(id){
   if(id==='dialog'&&typeof renderDialogues==='function')renderDialogues();
   if(id==='resto'&&typeof rsInit==='function')rsInit();
   if(id==='kolloc'&&typeof kcInit==='function')kcInit();
+  if(id==='wortschatz'&&typeof wtInit==='function')wtInit();
   if(id==='affix'&&typeof afInit==='function')afInit();
   if(id==='pro'&&typeof proInit==='function')proInit();
-  var _bsec={me:'account',account:'account',wordbook:'account',stats:'account',rank:'account',support:'account',pro:'account',series:'reading',dialog:'reading',quiz:'spell',resto:'home',kolloc:'home',affix:'home',pronunciation:'home',numbers:'home',grammar:'home',body:'home','en-pron':'home','en-num':'home','en-grammar':'home'}[id]||id;
+  var _bsec={me:'account',account:'account',wordbook:'account',stats:'account',rank:'account',support:'account',pro:'account',series:'reading',dialog:'reading',quiz:'spell',resto:'home',kolloc:'home',affix:'home',wortschatz:'home',pronunciation:'home',numbers:'home',grammar:'home',body:'home','en-pron':'home','en-num':'home','en-grammar':'home'}[id]||id;
   document.querySelectorAll('#bottomNav .bn-btn').forEach(function(b){var on=b.getAttribute('data-sec')===_bsec;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   // 图解页(body)自己就是查词界面，再挂一个「拼读查词」既重复又和选中词浮条抢位置
   document.body.classList.toggle('hide-fab',id==='home'||id==='account'||id==='me'||id==='rank'||id==='spell'||id==='body');
@@ -2806,7 +2838,7 @@ function showSection(id){
 var _rendered={};
 
 // ── 版块历史：pushState 记录版块，返回键/右滑在站内后退不退站；#hash 白名单深链 ──
-var SEC_IDS='home pronunciation numbers grammar phrases reading series dialog resto kolloc affix quiz spell rank body support pro legal me account en-pron en-num en-grammar wordbook stats'.split(' ');
+var SEC_IDS='home pronunciation numbers grammar phrases reading series dialog resto kolloc affix wortschatz quiz spell rank body support pro legal me account en-pron en-num en-grammar wordbook stats'.split(' ');
 var _histNav=false,_histInit=false,_deepSec=null;
 // 打开站点直接落在「语句」：首页是导览页，天天用的是背句子，少一次点击。
 // 首页仍在底部导航里，随时可回。改这里一处，下面三个入口都跟着走。
@@ -3819,6 +3851,9 @@ let mq={score:0,total:0,mode:'',current:null,roundLen:10};
 let quizLevel='all';
 function startQuiz(mode){
   if(!_deEnsure(function(){startQuiz(mode);})){try{_toast('词库加载中，马上开始…',1500);}catch(e){}return;}
+  // 会员版块的练习（搭配 / 分组词）：数据没到货就先进版块走会员门，别对着空数据出题
+  var _qSec={kolloc:'kolloc',wort:'wortschatz'}[mode];
+  if(_qSec&&typeof _lockReady==='function'&&!_lockReady(_qSec)){showSection(_qSec);return;}
   if(mode==='wrongbook'&&!_quizWrongPool().length){try{_toast('还没有错题，先去测验里刷几道题吧',2000);}catch(e){}return;}
   const roundLen=(mode==='wrongbook')?Math.min(10,_quizWrongPool().length):10;
   mq={score:0,total:0,mode:mode,current:null,roundLen:roundLen,wrong:[]};
@@ -3923,6 +3958,7 @@ function nextQ(){
   if(mq.mode==='gender'){ nextGenderQ(); return; }
   if(mq.mode==='conj'){ nextConjQ(); return; }
   if(mq.mode==='kolloc'){ nextKollocQ(); return; }
+  if(mq.mode==='wort'){ nextWortQ(); return; }
   const all=getAllPhrases();
   // 错题库：出题对象换成 spWrong 里的错词，干扰项仍从完整词库抽（错题库本身可能凑不够 4 个选项）
   const isWrongbook=mq.mode==='wrongbook';
@@ -4113,6 +4149,7 @@ function _ladSubs(){
   d=_ladDue('k:');var kt=d.due?(d.due+' 组待复习'):(d.seen?('已练 '+d.seen+' / '+_kcAll().length+' 组'):'');
   var kq=document.getElementById('qdKolloc');if(kq)kq.textContent=kt?('选对的动词 · '+kt):'Zeit ___ → haben';
   var kd=document.getElementById('kcDue');if(kd)kd.textContent=kt||'看中文和名词，选对动词';
+  try{_wtSubs();}catch(e){}
 }
 function _ladNote(txt){var n=document.getElementById('ladNext');if(n)n.textContent=txt;}
 // 练习测验·冠词题（猜 der/die/das）—— 德语最难点专项
@@ -4287,6 +4324,7 @@ function setReadTopic(t){
 const DIALOGUES = __DATA_DIALOGUES__;
 const RESTO = __DATA_RESTO__;
 const KOLLOC = __DATA_KOLLOC__;
+const WORTSCHATZ = __DATA_WORTSCHATZ__;
 const AFFIX = __DATA_AFFIX__;
 var _dlgRendered=false,_dlgPlaying=-1;
 function _getDialogues(){return LANG==='en'?EN_DIALOGUES:DIALOGUES;}
@@ -4411,6 +4449,129 @@ function afReadAll(btn){
   });
 }
 // ══════════════════════════════════════
+// 分组高频词（#wortschatz）：按生活场景分组的入门高频词（问候、家人、食物、交通……），名词带冠词
+// ══════════════════════════════════════
+// 数据：WORTSCHATZ = data/wortschatz.json（groups[{id,icon,name,tip,words[{de,zh,py,n?}]}]），会员内容，经 /api/pro/content 下发。
+// 词表：分组 chips + 遮住德语自测（点卡片翻开）+ ☆ 收进生词本。
+// 练习：练习测验框架（mode 'wort'），看中文从同组词里四选一；间隔复习复用 qLadder，键为 'w:'+德语。
+var _wt={g:-1,hide:false,qg:-1};
+var _wtFlat=null;
+function _wtAll(){
+  if(_wtFlat)return _wtFlat;
+  var out=[],i,j,G=WORTSCHATZ.groups;
+  for(i=0;i<G.length;i++)for(j=0;j<G[i].words.length;j++){var w=G[i].words[j];out.push({gi:i,wi:j,de:w.de,zh:w.zh,py:w.py,n:w.n});}
+  return out.length?(_wtFlat=out):out;   // 数据没到货时别把空表缓存住
+}
+// der/die/das + 名词：整词按冠词上色（和语句版块的冠词配色一致）
+function _wtDe(de){
+  var m=/^(der|die|das) (.+)$/.exec(de);
+  if(!m)return _esc(de);
+  return '<span class="art-'+m[1]+'"><b>'+m[1]+'</b> '+_esc(m[2])+'</span>';
+}
+function wtOpen(g){_wt.g=g;showSection('wortschatz');}
+function wtInit(){
+  var c=document.getElementById('wtGroups');if(!c)return;
+  var G=WORTSCHATZ.groups;if(_wt.g>=G.length)_wt.g=-1;
+  var h='<button type="button" role="tab" aria-selected="'+(_wt.g<0)+'" class="'+(_wt.g<0?'on':'')+'" onclick="wtGroup(-1)">全部 '+_wtAll().length+'</button>';
+  for(var i=0;i<G.length;i++)h+='<button type="button" role="tab" aria-selected="'+(_wt.g===i)+'" class="'+(_wt.g===i?'on':'')+'" onclick="wtGroup('+i+')">'+G[i].icon+' '+_esc(G[i].name)+' '+G[i].words.length+'</button>';
+  c.innerHTML=h;
+  try{_wtSubs();}catch(e){}
+  wtRender();
+}
+function wtGroup(i){if(typeof _stopPageRead==='function')_stopPageRead();_wt.g=i;wtInit();
+  var c=document.getElementById('wtGroups'),on=c&&c.querySelector('.on');if(on&&on.scrollIntoView)try{on.scrollIntoView({block:'nearest',inline:'center'});}catch(e){}}
+function wtHide(on){_wt.hide=on;
+  var a=document.getElementById('wtShow'),b=document.getElementById('wtHideBtn');
+  if(a)a.className=on?'':'on';if(b)b.className=on?'on':'';
+  var el=document.getElementById('wtBody');if(el){el.classList.toggle('wt-hide',on);var o=el.querySelectorAll('.wt-open');for(var i=0;i<o.length;i++)o[i].classList.remove('wt-open');}
+}
+function _wtInWb(de){try{return !!_wbGet()[String(de).trim().toLowerCase()];}catch(e){return false;}}
+function wtRender(){
+  var el=document.getElementById('wtBody');if(!el)return;
+  var G=WORTSCHATZ.groups,h='',i,j;
+  for(i=0;i<G.length;i++){if(_wt.g>=0&&_wt.g!==i)continue;var g=G[i];
+    h+='<div class="rs-h"><span>'+g.icon+' '+_esc(g.name)+'</span> <small>'+g.words.length+' 个</small><button class="btn" type="button" onclick="wtReadAll('+i+',this)">🔊 全部朗读</button></div>';
+    h+='<p class="kc-tip">'+_esc(g.tip)+'</p><div class="rs-list">';
+    for(j=0;j<g.words.length;j++){var w=g.words[j],st=_wtInWb(w.de);
+      h+='<div class="rs-row" id="wt'+i+'_'+j+'" onclick="wtFlip(this,event)"><button class="speak-btn" type="button" aria-label="朗读" onclick="wtSay('+i+','+j+',this)">🔊</button><div style="min-width:0;flex:1">'
+        +'<div class="rs-de wt-de" lang="de">'+_wtDe(w.de)+'</div><div class="wt-gap" aria-hidden="true">？？？ 点一下看答案</div>'
+        +'<div class="rs-zh">'+_esc(w.zh)+'</div><div class="rs-py wt-py">'+_esc(w.py)+'</div>'
+        +(w.n?'<span class="rs-n">💡 '+_esc(w.n)+'</span>':'')
+        +'</div><button class="wt-star" type="button" aria-pressed="'+st+'" aria-label="'+(st?'移出生词本':'收进生词本')+'" onclick="wtStar('+i+','+j+',this)">'+(st?'★':'☆')+'</button></div>';
+    }
+    h+='</div>';
+  }
+  el.innerHTML=h;el.classList.toggle('wt-hide',_wt.hide);
+}
+function wtFlip(row,ev){if(!_wt.hide)return;if(ev&&ev.target&&ev.target.closest&&ev.target.closest('button'))return;
+  if(!row.classList.contains('wt-open')){row.classList.add('wt-open');var p=row.id.slice(2).split('_');wtSay(+p[0],+p[1],null);}}
+function wtSay(i,j,btn){var g=WORTSCHATZ.groups[i],w=g&&g.words[j];if(!w)return;
+  var row=document.getElementById('wt'+i+'_'+j);if(row&&_wt.hide)row.classList.add('wt-open');
+  speakWithLocale(w.de,'de',btn||null);}
+function wtStar(i,j,btn){
+  var g=WORTSCHATZ.groups[i],w=g&&g.words[j];if(!w)return;
+  var o=_wbGet(),k=w.de.trim().toLowerCase(),on;
+  if(o[k]){delete o[k];_wbSave(o);on=false;try{_toast('已移出生词本',1200);}catch(e){}}
+  else{on=!!_wbAdd(w.de,w.de,w.zh,null);try{_toast(on?'📒 已收进生词本，到时间会提醒你复习':'没收进去，请稍后再试',1600);}catch(e){}}
+  if(btn){btn.setAttribute('aria-pressed',String(on));btn.setAttribute('aria-label',on?'移出生词本':'收进生词本');btn.textContent=on?'★':'☆';}
+}
+function wtReadAll(i,btn){
+  var g=WORTSCHATZ.groups[i],items=[],ids=[];
+  for(var j=0;j<g.words.length;j++){items.push(g.words[j].de);ids.push('wt'+i+'_'+j);}
+  _startPageRead('wt'+i,items,'de',btn,function(k){
+    var os=document.querySelectorAll('#wortschatz .rs-row.on');for(var q=0;q<os.length;q++)os[q].classList.remove('on');
+    var e=k>=0&&document.getElementById(ids[k]);if(e){e.classList.add('on');if(_wt.hide)e.classList.add('wt-open');try{e.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){}}
+  });
+}
+function _wtSubs(){
+  var d=_ladDue('w:'),n=_wtAll().length,t=d.due?(d.due+' 个待复习'):(d.seen?('已练 '+d.seen+(n?' / '+n:'')+' 个'):'');
+  var a=document.getElementById('qdWort');if(a)a.textContent=t?('看中文选德语 · '+t):'看中文选德语';
+  var b=document.getElementById('wtDue');if(b)b.textContent=t||'四选一，记不住的会再考';
+}
+function wtQuiz(g){
+  _wt.qg=(typeof g==='number')?g:-1;
+  showSection('quiz');startQuiz('wort');
+  var a=document.getElementById('mainQuizArea');if(a&&a.scrollIntoView)try{a.scrollIntoView({block:'start'});}catch(e){}
+}
+// 看中文 → 四个德语里选一个。干扰项从同一组里抽（同类词才有区分度），中文相同的不进干扰项。
+function nextWortQ(){
+  var all=_wtAll(),pool=[],keys=[],i;
+  if(!all.length){showSection('wortschatz');return;}
+  for(i=0;i<all.length;i++)if(_wt.qg<0||all[i].gi===_wt.qg)pool.push(all[i]);
+  if(!pool.length){_wt.qg=-1;pool=all;}
+  for(i=0;i<pool.length;i++)keys.push('w:'+pool[i].de);
+  var pk=_ladPick(keys),it=pool[pk.i],G=WORTSCHATZ.groups,grp=G[it.gi];
+  mq.ladKey=keys[pk.i];mq.current={de:it.de,zh:it.zh,py:it.py};mq.wt=it;
+  var cand=[],seenZh={};seenZh[it.zh]=1;
+  for(i=0;i<all.length;i++){var x=all[i];if(x.gi===it.gi&&x.de!==it.de&&!seenZh[x.zh]){cand.push(x.de);seenZh[x.zh]=1;}}
+  if(cand.length<3)for(i=0;i<all.length;i++){var y=all[i];if(y.gi!==it.gi&&!seenZh[y.zh]){cand.push(y.de);seenZh[y.zh]=1;}}
+  var opts=_rsShuffle([it.de].concat(_rsShuffle(cand).slice(0,3))),oh='';
+  for(i=0;i<opts.length;i++)oh+='<button class="quiz-opt"'+(opts[i]===it.de?' data-correct="1"':'')+' lang="de" onclick="checkWortQ(this)">'+_esc(opts[i])+'</button>';
+  document.getElementById('mainQuizArea').innerHTML='<div class="quiz-box">'+quizHeader()+_ladTag(pk)
+    +'<div class="quiz-hint">'+grp.icon+' '+_esc(grp.name)+(_wt.qg>=0?' · 只练这一组':'')+'</div>'
+    +'<div class="quiz-q" style="font-size:22px">'+_esc(it.zh)+'</div>'
+    +'<div class="quiz-opts">'+oh+'</div>'
+    +'<div id="ladNext" class="quiz-hint" style="min-height:1.4em" aria-live="polite"></div>'
+    +'<div id="wtEx" class="quiz-hint" style="min-height:2.8em"></div>'
+    +'<button class="btn" onclick="startQuiz(\'wort\')" style="font-size:12px">重新开始</button> <button class="btn" onclick="wtOpen('+(_wt.qg>=0?_wt.qg:-1)+')" style="font-size:12px">📚 看词表</button></div>';
+}
+function checkWortQ(btn){
+  var box=document.getElementById('mainQuizArea');
+  box.querySelectorAll('.quiz-opt').forEach(function(b){b.disabled=true;});
+  mq.total++;
+  var correctBtn=box.querySelector('.quiz-opt[data-correct="1"]'),ok=btn===correctBtn;
+  _ottiPop(box.querySelector('.quiz-box'),ok?'happy':'sorry');
+  if(ok){btn.classList.add('correct');mq.score++;burstAt(btn);}
+  else{btn.classList.add('wrong');if(correctBtn)correctBtn.classList.add('correct');}
+  _ladNote(_ladMark(mq.ladKey,ok));
+  var it=mq.wt,ex=document.getElementById('wtEx');
+  if(ex&&it)ex.innerHTML='<b lang="de">'+_wtDe(it.de)+'</b> · '+_esc(it.py)+(it.n?'<br>💡 '+_esc(it.n):'');
+  try{speakDE(it.de);}catch(e){}
+  try{_wtSubs();}catch(e){}
+  var done=mq.total>=mq.roundLen;
+  setTimeout(done?showQuizResult:nextQ,ok?1800:3000);
+}
+// ══════════════════════════════════════
 // 动词搭配（#kolloc）：Verb + Nomen 固定搭配（Zeit haben / eine Frage stellen …）
 // ══════════════════════════════════════
 // 数据：KOLLOC = data/kolloc.json（verbs[{v,zh,py,tip,items[{de,zh,py,n?,ex:[de,zh,py]}]}]），懒解码。
@@ -4423,7 +4584,7 @@ function _kcAll(){
   var out=[],i,j,V=KOLLOC.verbs;
   for(i=0;i<V.length;i++)for(j=0;j<V[i].items.length;j++){var it=V[i].items[j];
     out.push({vi:i,ii:j,v:V[i].v,de:it.de,zh:it.zh,py:it.py,stem:it.de.slice(0,it.de.length-V[i].v.length).replace(/\s+$/,''),ex:it.ex});}
-  return (_kcFlat=out);
+  return out.length?(_kcFlat=out):out;   // 数据没到货时别把空表缓存住
 }
 function kcOpen(v){_kc.v=v;showSection('kolloc');}
 function kcInit(){
@@ -4518,7 +4679,7 @@ function checkKollocQ(btn){
 // ══════════════════════════════════════
 // ═════ 会员 · 兑换码（#pro）═════
 // 定价与课包目录是公开信息，写在这里；课包正文只从 /api/pro/pack 下发给有效会员。
-var PRO_CFG={"buyUrl": "", "plans": [["月卡", "¥9.9", "€1.5", "30 天，先试试看"], ["年卡", "¥99", "€13", "365 天，平均每月 ¥8.25"]], "perks": ["解锁短文、留学连载、对话、餐厅特训、动词搭配、词缀记忆六大版块（免费版只保留语句与练习）", "全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的内容自动解锁，打开过的断网也能学", "支持手册继续无广告地更新"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}, {"id": "wohnen", "icon": "🏠", "title": "租房 · 办事 · 奥地利", "desc": "找房看房 · 租约押金 · 报修邻里 · 住址登记 · 银行开户，42 句带谐音", "preview": [["Ist die Wohnung noch frei?", "这套房子还空着吗？", "伊斯特 迪 沃农 诺赫 弗莱？"], ["Wann kann ich die Wohnung besichtigen?", "我什么时候可以来看房？", "万 坎 伊希 迪 沃农 贝西希提根？"], ["Wie hoch ist die Miete?", "房租是多少？", "维 霍赫 伊斯特 迪 米特？"]]}]};
+var PRO_CFG={"buyUrl": "", "plans": [["月卡", "¥9.9", "€1.5", "30 天，先试试看"], ["年卡", "¥99", "€13", "365 天，平均每月 ¥8.25"]], "perks": ["解锁短文、留学连载、对话、分组高频词、餐厅特训、动词搭配、词缀记忆七大版块（免费版只保留语句与练习）", "全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的内容自动解锁，打开过的断网也能学", "支持手册继续无广告地更新"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}, {"id": "wohnen", "icon": "🏠", "title": "租房 · 办事 · 奥地利", "desc": "找房看房 · 租约押金 · 报修邻里 · 住址登记 · 银行开户，42 句带谐音", "preview": [["Ist die Wohnung noch frei?", "这套房子还空着吗？", "伊斯特 迪 沃农 诺赫 弗莱？"], ["Wann kann ich die Wohnung besichtigen?", "我什么时候可以来看房？", "万 坎 伊希 迪 沃农 贝西希提根？"], ["Wie hoch ist die Miete?", "房租是多少？", "维 霍赫 伊斯特 迪 米特？"]]}]};
 var _pro={until:null,pack:null,unit:0,loading:false,msg:''};
 function _proActive(){return !!(_pro.until&&_pro.until>Date.now());}
 // ═════ 会员内容锁（2026-11-11 起「免费只留语句」）═════
@@ -4526,9 +4687,9 @@ function _proActive(){return !!(_pro.until&&_pro.until>Date.now());}
 // 非会员看到解锁面板；会员按需向 /api/pro/content 要数据，落到 window._LKD 后再真正进版块。
 // 前端这套只是体验层，真正的锁在 Worker（无会员直接 403）。会员拉过的内容顺手写进 CacheStorage
 // （pro-data），断网也能继续学；/api/me 回报到期或退出登录即清掉。
-var LOCK_SECS={reading:['READINGS','RD_GLOSS'],series:['SERIES'],dialog:['DIALOGUES'],resto:['RESTO'],kolloc:['KOLLOC'],affix:['AFFIX']};
+var LOCK_SECS={reading:['READINGS','RD_GLOSS'],series:['SERIES'],dialog:['DIALOGUES'],resto:['RESTO'],kolloc:['KOLLOC'],affix:['AFFIX'],wortschatz:['WORTSCHATZ']};
 var LOCK_EN={reading:['EN_READINGS'],series:['EN_SERIES'],dialog:['EN_DIALOGUES']};
-var LOCK_NAMES={reading:'短文',series:'留学连载',dialog:'对话',resto:'餐厅特训',kolloc:'动词搭配',affix:'词缀记忆'};
+var LOCK_NAMES={reading:'短文',series:'留学连载',dialog:'对话',resto:'餐厅特训',kolloc:'动词搭配',affix:'词缀记忆',wortschatz:'分组高频词'};
 window._LKD=window._LKD||{};
 var _lkP={};
 function _lockKeys(id){return (LANG==='en'?LOCK_EN[id]:LOCK_SECS[id])||null;}
@@ -4559,7 +4720,7 @@ function _lockFetch(keys){
 }
 function _lockPanelHtml(id){
   var nm=LOCK_NAMES[id]||'这个版块',price=(PRO_CFG.plans[0]&&PRO_CFG.plans[0][1])||'';
-  return '<div class="tip-card lock-card"><div class="tip-title">🔒 '+nm+'是会员内容</div><div class="tip-body">免费版可以一直用「语句」和拼写、测验练习；短文、留学连载、对话、餐厅特训、动词搭配、词缀记忆和全部课包是会员专享'+(price?'，月卡 '+price+' 起':'')+'。</div>'
+  return '<div class="tip-card lock-card"><div class="tip-title">🔒 '+nm+'是会员内容</div><div class="tip-body">免费版可以一直用「语句」和拼写、测验练习；短文、留学连载、对话、分组高频词、餐厅特训、动词搭配、词缀记忆和全部课包是会员专享'+(price?'，月卡 '+price+' 起':'')+'。</div>'
     +(ACCT.token?'<button class="acct-btn" type="button" style="margin-top:12px" onclick="showSection(\'pro\')">👑 开通会员 / 输入兑换码</button>':'<button class="acct-btn" type="button" style="margin-top:12px" onclick="showSection(\'account\')">先登录</button>')
     +'<button class="btn" type="button" style="margin-top:10px" onclick="showSection(\'phrases\')">回到语句</button></div>';
 }
@@ -4571,7 +4732,7 @@ function _lockGate(id){
   var p=sec.querySelector('.lock-panel');if(!p){p=document.createElement('div');p.className='lock-panel';sec.insertBefore(p,sec.firstChild);}
   try{_histPush(id);}catch(e){}
   // 导航高亮跟着切（真正的 showSection 还没跑，这里补一下，否则底栏还亮着上一页）
-  try{var nb=(id==='series'||id==='dialog')?'reading':id,bs={series:'reading',dialog:'reading',resto:'home',kolloc:'home',affix:'home'}[id]||id;
+  try{var nb=(id==='series'||id==='dialog')?'reading':id,bs={series:'reading',dialog:'reading',resto:'home',kolloc:'home',affix:'home',wortschatz:'home'}[id]||id;
     document.querySelectorAll('.nav-btn').forEach(function(b){var on=(b.getAttribute('onclick')||'').indexOf("'"+nb+"'")>=0;b.classList.toggle('active',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
     document.querySelectorAll('#bottomNav .bn-btn').forEach(function(b){var on=b.getAttribute('data-sec')===bs;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});}catch(e){}
   window.scrollTo(0,0);
@@ -5723,7 +5884,7 @@ var PIC_BOARDS=[
   ["brauchen","需要","布劳黑恩","🧰",["brauche","brauchst","braucht","brauchen","braucht","brauchen"]],["bringen","带来","布林根","📦",["bringe","bringst","bringt","bringen","bringt","bringen"]],["geben","给","盖本","🎁",["gebe","gibst","gibt","geben","gebt","geben"]],
   ["nehmen","拿/取","内梅恩","✋",["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"]],["schlafen","睡觉","施拉芬","😴",["schlafe","schläfst","schläft","schlafen","schlaft","schlafen"]],["haben","有","哈本","👜",["habe","hast","hat","haben","habt","haben"]],
   ["sein","是","扎因","🟰",["bin","bist","ist","sind","seid","sind"]],["machen","做/干","马赫恩","🔨",["mache","machst","macht","machen","macht","machen"]],["essen","吃","埃森","🍽️",["esse","isst","isst","essen","esst","essen"]],
-  ["trinken","喝","特灵肯","🥤",["trinke","trinkst","trinkt","trinken","trinkt","trinken"]],["gehen","去/走","盖恩","🚶",["gehe","gehst","geht","gehen","geht","gehen"]],["kommen","来","科门","👋",["komme","kommst","kommt","kommen","kommt","kommen"]],
+  ["trinken","喝","特林肯","🥤",["trinke","trinkst","trinkt","trinken","trinkt","trinken"]],["gehen","去/走","盖恩","🚶",["gehe","gehst","geht","gehen","geht","gehen"]],["kommen","来","科门","👋",["komme","kommst","kommt","kommen","kommt","kommen"]],
   ["sprechen","说","施普雷程","🗣️",["spreche","sprichst","spricht","sprechen","sprecht","sprechen"]],["schreiben","写","施莱本","✍️",["schreibe","schreibst","schreibt","schreiben","schreibt","schreiben"]],["sehen","看","泽恩","👀",["sehe","siehst","sieht","sehen","seht","sehen"]]]}
 ];
 var _curBoard="koerper";

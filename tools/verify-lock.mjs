@@ -43,7 +43,7 @@ const env = await getChromium();
 if (!env) { skipNoBrowser('会员内容锁体检'); srv.close(); process.exit(0); }
 const browser = await env.chromium.launch(env.launch);
 
-const LOCKED = 'reading series dialog resto kolloc affix'.split(' ');
+const LOCKED = 'reading series dialog resto kolloc affix wortschatz'.split(' ');
 async function open(pro) {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const page = await ctx.newPage();

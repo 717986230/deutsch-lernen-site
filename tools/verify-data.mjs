@@ -110,6 +110,29 @@ function checkKolloc(path) {
   if (d.verbs.length < 4) bad(`${path} 动词少于 4 个，练习凑不齐选项`);
   console.log(`  ${path}: ${d.verbs.length} 个动词 ${n} 组搭配`);
 }
+// 分组高频词（2026-11）：每组要有图标/名称/说明，每个词 de/zh/py 齐全、谐音全中文，德语不重复；
+// 名词一律带 der/die/das（练习和上色都靠它），组内至少 4 个词才凑得齐四选一。
+function checkWortschatz(path) {
+  if (!existsSync(path)) return;
+  const d = rd(path);
+  let n = 0;
+  const seen = new Set(), ids = new Set();
+  for (const g of d.groups) {
+    for (const k of ['id', 'icon', 'name', 'tip']) if (!String(g[k] || '').trim()) bad(`${path} 分组缺字段 ${k}`);
+    if (ids.has(g.id)) bad(`${path} 分组 id「${g.id}」重复`);
+    ids.add(g.id);
+    if (!Array.isArray(g.words) || g.words.length < 4) bad(`${path} [${g.name}] 少于 4 个词`);
+    for (const w of g.words || []) {
+      n++;
+      for (const k of ['de', 'zh', 'py']) if (!String(w[k] || '').trim()) bad(`${path} [${g.name}] 「${w.de}」缺 ${k}`);
+      if (w.py && !CJK.test(w.py)) bad(`${path} [${g.name}] 「${w.de}」谐音含非中文字符: ${w.py}`);
+      if (/^(der|die|das)\s/.test(w.de) && !/^(德尔|迪|达斯)\s/.test(w.py)) bad(`${path} 「${w.de}」谐音要以冠词谐音开头`);
+      if (seen.has(w.de)) bad(`${path} 「${w.de}」重复`);
+      seen.add(w.de);
+    }
+  }
+  console.log(`  ${path}: ${d.groups.length} 组 ${n} 个词`);
+}
 // 词缀情景记忆（2026-11）：故事里每个 {词} 都要在 words 里有解析，词都以词根结尾、以前缀开头
 function checkAffix(path) {
   if (!existsSync(path)) return;
@@ -144,6 +167,7 @@ checkDialogs('data/dialogs.json');
 checkDialogs('data/en_dialogs.json');
 checkResto('data/restaurant.json');
 checkKolloc('data/kolloc.json');
+checkWortschatz('data/wortschatz.json');
 checkAffix('data/affix.json');
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 内容数据全部通过');
