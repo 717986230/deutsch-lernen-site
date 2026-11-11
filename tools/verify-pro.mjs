@@ -126,11 +126,26 @@ r = await call('POST', '/api/frame', { frame: 'founder' }, tc);   // 前 100 名
 if (!r.data.ok || await lbFrame('carol') !== 'founder') bad(`创始人框没戴上：${JSON.stringify(r.data)}`); else ok('戴上已点亮徽章的框，排行榜同步显示');
 r = await call('GET', '/api/profile?name=carol', undefined, tb);
 if (r.data.user.frame !== 'founder') bad('他人主页没带头像框'); else ok('他人主页带头像框');
+r = await call('POST', '/api/frame', { frame: 'pro_life-ice' }, tc);
+if (!r.data.ok || await lbFrame('carol') !== 'pro_life-ice') bad(`永久会员换不了冰龙：${JSON.stringify(r.data)}`); else ok('永久会员可换元素龙（冰龙），排行榜同步');
+r = await call('POST', '/api/frame', { frame: 'pro_life-lava' }, tc);
+if (r.status !== 403) bad(`不存在的龙配色没被拒（${r.status}）`); else ok('不存在的龙配色被拒');
+// ── 会员专属头像 ──
+r = await call('POST', '/api/profile/update', { avatar: 'm:dragon' }, tb);
+if (r.status !== 403) bad(`非会员用上了会员专属头像（${r.status}）`); else ok('非会员选不了会员专属头像（403）');
+r = await call('POST', '/api/profile/update', { avatar: 'm:abyssking' }, tc);
+if (r.status !== 200) bad(`永久会员选不了永久专属头像：${JSON.stringify(r.data)}`);
+r = await call('GET', '/api/profile?name=carol', undefined, tb);
+if (r.data.user.avatar !== 'm:abyssking') bad('主页没显示会员专属头像'); else ok('永久会员可用专属头像，他人主页可见');
+r = await call('POST', '/api/profile/update', { avatar: 'm:hack' }, tc);
+if (r.status !== 400) bad(`乱填的专属头像没被拒（${r.status}）`); else ok('白名单外的专属头像被拒');
 await call('POST', '/api/frame', { frame: 'none' }, tc);
 if (await lbFrame('carol') !== '') bad('摘下头像框后仍显示'); else ok('选「不戴」后不显示任何框');
 r = await call('POST', '/api/frame', { frame: 'pro' }, tc);
 db.prepare('UPDATE memberships SET until=? WHERE uid=?').run(Date.now() - 1000, cid);
 if (await lbFrame('carol') !== '') bad('会员过期后仍戴着会员框'); else ok('会员过期后会员框自动摘下');
+r = await call('GET', '/api/profile?name=carol', undefined, tb);
+if (r.data.user.avatar !== '🦊') bad(`会员过期后专属头像没退回默认：${r.data.user.avatar}`); else ok('会员过期后专属头像自动退回默认');
 r = await call('POST', '/api/frame', { frame: 'x'.repeat(200) }, tc);
 if (r.status !== 403) bad(`乱填框名没被拒（${r.status}）`); else ok('乱填的框名被拒');
 await call('POST', '/api/account/delete', { password: 'pass-carol-123' }, tc);
