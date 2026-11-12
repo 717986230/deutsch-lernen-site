@@ -180,3 +180,23 @@ CREATE TABLE IF NOT EXISTS redeem_codes (
   used_at INTEGER
 );
 CREATE INDEX IF NOT EXISTS idx_redeem_used ON redeem_codes(used_by);
+
+-- 最近活跃时间（排行榜只收 30 天内活跃的人）：登录、或带有效登录态访问后端时写入，每人每小时最多更新一次。
+-- 单独建表而不是给 users 补列：CREATE TABLE IF NOT EXISTS 可重复执行，部署流程不用改。
+CREATE TABLE IF NOT EXISTS user_seen (
+  uid INTEGER PRIMARY KEY,
+  ts  INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_user_seen_ts ON user_seen(ts);
+-- 放在文件末尾：回填要用到上面的 sessions/activity 等表。
+-- 回填（可重复执行，只补表里还没有的人）：取已有的最晚活动痕迹——
+-- 资料/同步/进度/Vido 更新时间、最近一次登录（会话到期时间 − 180 天）、动态时间。
+INSERT OR IGNORE INTO user_seen (uid, ts)
+SELECT u.id, MAX(
+  COALESCE(u.updated, 0),
+  COALESCE(u.created, 0),
+  COALESCE((SELECT MAX(exp) - 180 * 86400000 FROM sessions WHERE uid = u.id), 0),
+  COALESCE((SELECT MAX(ts) FROM activity WHERE uid = u.id), 0),
+  COALESCE((SELECT MAX(updated) FROM user_progress_documents WHERE uid = u.id), 0),
+  COALESCE((SELECT updated FROM vido_state WHERE uid = u.id), 0)
+) FROM users u;

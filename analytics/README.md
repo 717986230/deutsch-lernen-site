@@ -85,10 +85,11 @@ wrangler deploy                                                 # 部署新版 w
   - ⚠️ **改动 `email` 必须带 `password` 重验当前密码**（与「重新生成恢复码」同规矩）：找回邮箱是账号的第二把钥匙，只凭会话就能改的话，借到一台已登录的手机即可 `email_code` → `reset` 拿走整个账号。密码错返回 400 并计入登录频控桶。
   - 第三方登录账号（`provider≠pw`）**不允许**设置找回邮箱 —— 它们没有密码可二次验证，丢失访问的正解是回去用 GitHub/Google 重新登录。
   - 邮箱一旦变更，`email_ok` 归零、未用完的验证码（`mail_*`）一并清空。
-- `GET  /api/me`（带 token）→ 自己的资料 + 排名；`email` **只返回掩码**（如 `t***@qq.com`），另有 `hasEmail` 布尔位。**不再返回 phone**
+- `GET  /api/me`（带 token）→ 自己的资料 + 排名（同时刷新「最近活跃」）；`email` **只返回掩码**（如 `t***@qq.com`），另有 `hasEmail` 布尔位。**不再返回 phone**
 - `GET  /api/leaderboard?by=known|streak|total` → Top 50（`badges` 是**数量**，不是列表）
   - 每项带 `pro`：会员档位 `0` 非会员 / `1` 会员（月卡、年卡）/ `2` 永久，用于头像框和铭牌；`/api/following`、`/api/profile` 同样带 `pro`。**到期日只在 `/api/me` 的 `pro_until` 里回给本人**，公开接口不外泄。
-  - 返回 `{by, total, list}`：**不筛选，所有注册账号都上榜**（0 分排最后），`total` = 全部人数（好友榜为好友人数）。
+  - 返回 `{by, total, list}`：**只收 30 天内活跃的账号**（0 分也上榜、排最后），`total` = 活跃人数（好友榜为活跃好友人数）。
+  - 「活跃」看表 `user_seen(uid, ts)`：登录/注册时写入，之后每次带有效 token 请求后端（打开网站会自动请求 `/api/me`）每人每小时最多刷新一次。部署时 `schema.sql` 会按资料/同步/进度/Vido 更新时间、最近一次登录、动态时间回填老用户。`/api/me`、`/api/profile` 的 `rank` 同样只在活跃用户里排。
 - `GET  /api/profile?name=<用户名>` → 公开主页数据（带 token 时含 isFollowing/关注数）
 - `POST /api/follow` / `POST /api/unfollow`（带 token）`{name}` → 关注 / 取关
 - `GET  /api/following`（带 token）→ 我关注的人列表
