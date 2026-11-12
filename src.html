@@ -6265,16 +6265,17 @@ function _wnUnseen(){
 }
 function _wnDot(){var d=document.getElementById('wnDot');if(!d)return;var n=_wnUnseen().length;d.textContent=n?String(n):'';d.style.display=n?'':'none';}
 // ══════════════ 全站公告（一次性弹窗）══════════════
-// 和「上新了」不同：公告是运营通知，新老用户都弹，但每条只弹一次（按 id 记进 localStorage.annSeen）。
+// 和「上新了」不同：公告是运营通知，新老用户都弹。every:true 时每次打开网站都弹（站长 2026-11-12 要求）；
+// 去掉 every 则每条只弹一次（按 id 记进 localStorage.annSeen）。
 // 换下一条公告时改 ANNOUNCE.id 即可；不想再弹任何公告就把 ANNOUNCE 设为 null。
 // 体检脚本（tools/verify-*.mjs）登录时一并写 annSeen=["*"]，否则弹窗会挡住它们要点的按钮；verify-announce 专门测公告本身。
 // 公告开着时「上新了」提示条先不出，关掉公告后再走 wnBoot，免得两个提示叠在一起。
-var ANNOUNCE={id:'2026-11-rank-top3',icon:'🏆',title:'榜单前三，送年卡会员！'};
+var ANNOUNCE={id:'2026-11-rank-top10',every:true,icon:'🏆',title:'榜单前三送年卡，前十送月卡！'};
 var _ann={ov:null};
 function _annSeen(){try{var a=JSON.parse(localStorage.getItem('annSeen')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}}
 function annBoot(){
   if(!ANNOUNCE||_ann.ov)return false;
-  var seen=_annSeen();if(seen.indexOf(ANNOUNCE.id)>=0||seen.indexOf('*')>=0)return false;   // '*'：浏览器体检脚本用，跳过一切公告
+  var seen=_annSeen();if((!ANNOUNCE.every&&seen.indexOf(ANNOUNCE.id)>=0)||seen.indexOf('*')>=0)return false;   // '*'：浏览器体检脚本用，跳过一切公告
   setTimeout(function(){
     if(document.documentElement.classList.contains('locked')||_ann.ov){return;}
     var ov=document.createElement('div');ov.className='wn-ov ann-ov';ov.onclick=function(ev){if(ev.target===ov)annClose();};
@@ -6282,7 +6283,7 @@ function annBoot(){
       +'<div class="wn-head"><h3 id="annTitle">'+_esc(ANNOUNCE.icon+' '+ANNOUNCE.title)+'</h3><button type="button" class="wn-x" aria-label="关闭" onclick="annClose()">×</button></div>'
       +'<div class="ann-body">'
       +'<p>感谢每一位坚持来这里学德语、学英语的你！这个小站能一直更新下去，靠的就是你们每天的打卡和反馈 ❤️</p>'
-      +'<p>为了说声谢谢：<b>任何一个学习排行榜</b>（📖 掌握词 / 🔥 最长打卡 / ⚡ 累计学习）<b>排名前三</b>的同学，都可以<b>找作者免费领取一张「年卡会员」兑换码</b>。</p>'
+      +'<p>为了说声谢谢：<b>任何一个学习排行榜</b>（📖 掌握词 / 🔥 最长打卡 / ⚡ 累计学习）<b>排名前三</b>的同学，可以<b>找作者免费领取一张「年卡会员」兑换码</b>；<b>前十名</b>（第 4–10 名）可以领一张<b>「月卡会员」兑换码</b>。</p>'
       +'<div class="ann-how"><div class="ann-how-t">怎么领</div>截一张你在榜上的排名图（带上昵称），发给作者：<br>'
       +'QQ：<b class="ann-qq">717986230</b> <button type="button" class="btn ann-copy" onclick="copyQQ(this)">复制</button><br>或在「支持作者」页微信扫码加好友。</div>'
       +'<p class="ann-thx">再次感谢大家的陪伴，Viel Erfolg! 🎉</p>'
@@ -6290,7 +6291,7 @@ function annBoot(){
       +'<div class="ann-btns"><button type="button" class="ann-b2" onclick="annGo(\'support\')">联系作者</button><button type="button" class="ann-b1" onclick="annGo(\'rank\')">看看排行榜 ›</button></div>'
       +'</div>';
     document.body.appendChild(ov);_ann.ov=ov;
-    try{var s=_annSeen();s.push(ANNOUNCE.id);localStorage.setItem('annSeen',JSON.stringify(s));}catch(e){}
+    if(!ANNOUNCE.every){try{var s=_annSeen();s.push(ANNOUNCE.id);localStorage.setItem('annSeen',JSON.stringify(s));}catch(e){}}
     try{ov.querySelector('.wn-x').focus();}catch(e){}
     try{track('view',{s:'announce'});}catch(e){}
   },600);
