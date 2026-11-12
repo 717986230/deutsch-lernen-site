@@ -383,6 +383,7 @@ export default {
         env.DB.prepare('DELETE FROM vido_state WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM memberships WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM user_frames WHERE uid=?1').bind(uid),
+        env.DB.prepare('DELETE FROM user_seen WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM users WHERE id=?1').bind(uid),
       ]);
       return json({ ok: 1 }, 200, cors);
@@ -827,7 +828,7 @@ export default {
       u.hasEmail = !!u.email;
       u.email = maskEmail(u.email);
       u.badges = badgeList(u.badges, uid).join(',');   // 没同步过也要看得到创始人
-      const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
+      const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>? AND ' + ACTIVE_SQL).bind(u.known || 0, activeCut()).first();
       const fc = await followCounts(env, uid);
       u.pro_until = await proUntil(env, uid);
       u.frame = frameOf(await chosenFrame(env, uid), u.badges.split(',').filter(Boolean), proTier(u.pro_until));
@@ -937,14 +938,14 @@ export default {
       const q = url.searchParams.get('by');
       const by = Object.prototype.hasOwnProperty.call(cols, q) ? q : 'known';
       const col = cols[by];
-      // 不筛选：所有注册账号都上榜（0 分的排在最后），total = 全部人数。
-      // 以前只收 col>0，站长实测 DB 226 人页面只显示 88，被当成 bug。
-      let where = '1=1', binds = [];
+      // 只收 30 天内活跃过的账号（站长 2026-11-12 拍板），0 分的也上榜、排在最后；total = 活跃人数。
+      // 以前只收 col>0，站长实测 DB 226 人页面只显示 88，被当成 bug —— 所以分数不做门槛，只看活跃。
+      let where = ACTIVE_SQL, binds = [activeCut()];
       if (url.searchParams.get('scope') === 'friends') {
         const uid = await auth(req, env);
         if (!uid) return json({ err: '未登录' }, 401, cors);
         where += ' AND (id=? OR id IN (SELECT followee FROM follows WHERE follower=?))';
-        binds = [uid, uid];
+        binds.push(uid, uid);
       }
       const countSQL = 'SELECT COUNT(*) AS total FROM users WHERE ' + where;
       const [count, rows] = await Promise.all([
@@ -971,7 +972,7 @@ export default {
       u.pro = proTier(await proUntil(env, pid));        // 公开主页只给会员档位，不给到期日
       u.frame = frameOf(await chosenFrame(env, pid), u.badges.split(',').filter(Boolean), u.pro);
       u.avatar = avOf(u.avatar, u.pro, u.badges.split(',').filter(Boolean));
-      const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>?').bind(u.known || 0).first();
+      const rank = await env.DB.prepare('SELECT COUNT(*)+1 c FROM users WHERE known>? AND ' + ACTIVE_SQL).bind(u.known || 0, activeCut()).first();
       const fc = await followCounts(env, pid);
       let isFollowing = false;
       const viewer = await auth(req, env);
@@ -1091,7 +1092,9 @@ async function newSession(env, uid) {
     env.DB.prepare('DELETE FROM oauth_state WHERE exp<?').bind(now),
     env.DB.prepare('DELETE FROM ratelimit WHERE exp<?').bind(now),
     env.DB.prepare('INSERT INTO sessions (token,uid,exp) VALUES (?,?,?)').bind(token, uid, now + SESSION_TTL_MS),
+    env.DB.prepare('INSERT INTO user_seen (uid,ts) VALUES (?,?) ON CONFLICT(uid) DO UPDATE SET ts=excluded.ts').bind(uid, now),
   ]);
+  _seenMem.set(uid, now);
   return token;
 }
 // 只接受 Authorization: Bearer，避免 token 出现在 URL、Referer 或访问日志中。
@@ -1104,5 +1107,25 @@ async function auth(req, env) {
   if (!t) return null;
   const s = await env.DB.prepare('SELECT uid,exp FROM sessions WHERE token=?').bind(t).first();
   if (!s || s.exp < Date.now()) return null;
+  await touchSeen(env, s.uid);
   return s.uid;
 }
+// 「最近活跃」= 最近一次带有效登录态访问后端（打开网站会自动请求 /api/me，学习会同步）。
+// 排行榜只收 ACTIVE_MS 内活跃过的人。同一 isolate 内每人每小时最多写一次，
+// SQL 里再用 WHERE 兜底，避免每个请求都写库。
+const ACTIVE_MS = 30 * 86400000;
+const SEEN_EVERY_MS = 3600000;
+const _seenMem = new Map();
+async function touchSeen(env, uid) {
+  const now = Date.now();
+  if (now - (_seenMem.get(uid) || 0) < SEEN_EVERY_MS) return;
+  _seenMem.set(uid, now);
+  if (_seenMem.size > 5000) _seenMem.clear();
+  try {
+    await env.DB.prepare('INSERT INTO user_seen (uid,ts) VALUES (?,?) ON CONFLICT(uid) DO UPDATE SET ts=excluded.ts WHERE user_seen.ts<excluded.ts-?')
+      .bind(uid, now, SEEN_EVERY_MS).run();
+  } catch (e) { console.error('touchSeen failed:', e && e.message); }  // 记活跃失败不能挡住正常请求
+}
+// 排行榜/名次通用筛选：只算 30 天内活跃的账号（拼进 WHERE，配合 activeCut() 绑定参数）
+const ACTIVE_SQL = 'id IN (SELECT uid FROM user_seen WHERE ts>=?)';
+function activeCut() { return Date.now() - ACTIVE_MS; }

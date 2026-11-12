@@ -28,7 +28,7 @@
 {"@type":"ListItem","position":1,"name":"德语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"主题词表"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:881013a1bbaf -->
+<!-- src-hash:1c8da3fcadab -->
 <style>#account{display:block}#account .auth-stage{display:none}
 
 :root{
@@ -37,6 +37,8 @@
   --tab-h:calc(58px + env(safe-area-inset-bottom));--gold:#b5492e;--gold-dim:#b5492e55;--gold-faint:#b5492e1c;--bg:#f6f1e7;--bg2:#fffdf8;--bg3:#fffdf8;--surface:#fffdf8;--surface-2:#faf5ec;--nav-bg:rgba(246,241,231,.9);--border:rgba(26,32,53,.1);--shadow:0 1px 2px rgba(30,38,64,.05),0 18px 40px -24px rgba(30,38,64,.28);--text:#1a2035;--text-dim:#434b65;--text-faint:#5f6374;--red:#c4573a;--green:#6a8c63;--blue:#5f88a8;--stripe:rgba(26,32,53,.025);--art-der:#2f6189;--art-die:#b13a2c;--art-das:#3f6b38;--gold-text:#983b24;--ok-text:#3a5c34;--blue-text:#3f6886;--red-text:#a8382a;--orange-text:#8f4f12;--on-brand:#fffdf8;--lv0:#4b6b45;--lva1:#355d7a;--lva2:#7a5a12;--lvb1:#9a4a1c;--lvb2:#a8382a;--lvc1:#7d4a6a;--lvc2:#45507a;}:root[data-theme="dark"]{--bg:#0d1120;--bg2:#131a2b;--bg3:#131a2b;--surface:#131a2b;--surface-2:#19213a;--nav-bg:rgba(13,17,32,.88);--border:rgba(242,235,221,.1);--shadow:0 1px 0 rgba(255,255,255,.04) inset,0 20px 40px -24px rgba(0,0,0,.7);--text:#f2ebdd;--text-dim:#c8c1b3;--text-faint:#9c9aa2;--gold-text:#f29a7b;--ok-text:#b5d1ac;--blue-text:#8fb2cc;--red-text:#f29a7b;--orange-text:#e8b65a;--lv0:#97b88e;--lva1:#8fb2cc;--lva2:#e8b65a;--lvb1:#f2a07a;--lvb2:#f29a7b;--lvc1:#d3a4c4;--lvc2:#aab4e0;--gold-faint:#e57c5a24;--gold-dim:#e57c5a77;--stripe:rgba(242,235,221,.03);--art-der:#8fb2cc;--art-die:#f29a7b;--art-das:#a9c99f;;--gold:#e57c5a;--on-brand:#1a1206}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1120;--bg2:#131a2b;--bg3:#131a2b;--surface:#131a2b;--surface-2:#19213a;--nav-bg:rgba(13,17,32,.88);--border:rgba(242,235,221,.1);--shadow:0 1px 0 rgba(255,255,255,.04) inset,0 20px 40px -24px rgba(0,0,0,.7);--text:#f2ebdd;--text-dim:#c8c1b3;--text-faint:#9c9aa2;--gold-text:#f29a7b;--ok-text:#b5d1ac;--blue-text:#8fb2cc;--red-text:#f29a7b;--orange-text:#e8b65a;--lv0:#97b88e;--lva1:#8fb2cc;--lva2:#e8b65a;--lvb1:#f2a07a;--lvb2:#f29a7b;--lvc1:#d3a4c4;--lvc2:#aab4e0;--gold-faint:#e57c5a24;--gold-dim:#e57c5a77;--stripe:rgba(242,235,221,.03);--art-der:#8fb2cc;--art-die:#f29a7b;--art-das:#a9c99f;;--gold:#e57c5a;--on-brand:#1a1206}}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-height:100vh;overflow-x:hidden}
+/* 顶栏是 fixed：scrollIntoView({block:'start'}) 默认贴到视口最上沿，正好被顶栏盖住（测验区标题、图解锚点都中过）。留出顶栏高度 */
+html{scroll-padding-top:64px}
 /* der/die/das 词性颜色记忆（蓝/红/绿，与语法版块一致）*/
 .art-der{color:var(--art-der)}.art-die{color:var(--art-die)}.art-das{color:var(--art-das)}
 .card-de .art-der,.card-de .art-die,.card-de .art-das{font-weight:800}
