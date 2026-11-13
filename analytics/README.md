@@ -93,7 +93,7 @@ wrangler deploy                                                 # 部署新版 w
 - `GET  /api/profile?name=<用户名>` → 公开主页数据（带 token 时含 isFollowing/关注数）
 - `POST /api/follow` / `POST /api/unfollow`（带 token）`{name}` → 关注 / 取关
 - `GET  /api/following`（带 token）→ 我关注的人列表
-- `POST /api/frame`（带 token）`{frame}` → 佩戴头像框；只能戴已点亮徽章对应的框或有效会员的 `pro`；永久会员可戴 `pro_life` 及 7 种元素龙 `pro_life-{flame,ice,thunder,water,wind,abyss,rainbow}`，`none` = 不戴，否则 403。表 `user_frames`。公开接口（排行榜/关注/主页/me）下发 `frame` 时**按当下资格再校验**，会员过期或徽章不在就退回默认（永久会员 `pro_life`、会员 `pro`、其余不戴）
+- `POST /api/frame`（带 token）`{frame}` → 佩戴头像框；只能戴已点亮徽章对应的框或有效会员的 `pro`；永久会员及**年卡有效期内**（兑换过 ≥365 天码且 `used_at+days` 未过，见 `perkOf`）可戴 `pro_life` 及 7 种元素龙 `pro_life-{flame,ice,thunder,water,wind,abyss,rainbow}`，`none` = 不戴，否则 403。表 `user_frames`。公开接口（排行榜/关注/主页/me）下发 `frame` 时**按当下资格再校验**，会员过期或徽章不在就退回默认（永久/年卡 `pro_life`、月卡 `pro`、其余不戴）。公开接口另给 `yr`（1 = 年卡，前端铭牌显示「年卡」），`/api/me` 给 `pro_perk`（2 = 可用龙框/龙王头像）
 - `GET  /api/feed`（带 token）→ 学习动态：关注的人+自己的系统事件（点亮徽章/打卡破纪录）
 - `GET  /api/leaderboard?by=...&scope=friends`（带 token）→ 好友榜（只含我和我关注的人）
 - `POST /api/account/password`（带 token）`{old,new}` → 修改密码（仅密码账号；成功后踢掉除当前外全部会话）
