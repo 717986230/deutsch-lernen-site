@@ -116,6 +116,38 @@ if (r.status !== 403) bad('过期会员还能取课包'); else ok('会员过期�
 r = await call('GET', '/api/pro/content?k=AFFIX', undefined, ta);
 if (r.status !== 403) bad('过期会员还能取会员内容'); else ok('会员过期后短文等内容同样关闭');
 
+// ── 年卡 / 月卡区分（2026-11-13）：龙框 + 金龙王/暗龙王头像只给年卡及永久；公开接口 yr=1 标年卡铭牌 ──
+{
+  const mk = async (days) => (await call('POST', '/api/admin/codes', { n: 1, days }, null, { 'X-Admin-Key': env.STATS_KEY })).data.codes[0];
+  const tm = await reg('mona'), ty = await reg('yuki');
+  await call('POST', '/api/redeem', { code: await mk(30) }, tm, null, '192.0.2.31');
+  await call('POST', '/api/redeem', { code: await mk(365) }, ty, null, '192.0.2.32');
+  let x = await call('GET', '/api/me', undefined, tm);
+  if (x.data.user.pro_perk !== 1) bad(`月卡 pro_perk 应为 1：${x.data.user.pro_perk}`);
+  x = await call('GET', '/api/me', undefined, ty);
+  if (x.data.user.pro_perk !== 2 || x.data.user.frame !== 'pro_life') bad(`年卡 /api/me 不对：${JSON.stringify([x.data.user.pro_perk, x.data.user.frame])}`);
+  else ok('年卡 pro_perk=2，默认戴双龙框；月卡 pro_perk=1');
+  x = await call('POST', '/api/frame', { frame: 'pro_life-flame' }, tm);
+  if (x.status !== 403) bad(`月卡戴上了龙框（${x.status}）`); else ok('月卡戴不上龙框（403）');
+  x = await call('POST', '/api/frame', { frame: 'pro_life-flame' }, ty);
+  if (!x.data.ok) bad(`年卡戴不上火龙：${JSON.stringify(x.data)}`); else ok('年卡可换元素龙（火龙）');
+  x = await call('POST', '/api/profile/update', { avatar: 'm:goldking' }, tm);
+  if (x.status !== 403) bad(`月卡用上了金龙王头像（${x.status}）`); else ok('月卡选不了金龙王头像（403）');
+  x = await call('POST', '/api/profile/update', { avatar: 'm:goldking' }, ty);
+  if (x.status !== 200) bad(`年卡用不了金龙王头像（${x.status}）`); else ok('年卡可用金龙王头像');
+  x = await call('GET', '/api/leaderboard');
+  const lm = x.data.list.find((u) => u.username === 'mona'), ly = x.data.list.find((u) => u.username === 'yuki');
+  if (!lm || lm.yr !== 0 || lm.pro !== 1 || !ly || ly.yr !== 1 || ly.pro !== 1 || ly.frame !== 'pro_life-flame' || ly.avatar !== 'm:goldking') bad(`排行榜年卡/月卡区分不对：${JSON.stringify([lm, ly])}`);
+  else ok('排行榜：年卡 yr=1 带龙框龙头像，月卡 yr=0');
+  x = await call('GET', '/api/profile?name=yuki', undefined, tm);
+  if (x.data.user.yr !== 1 || x.data.user.frame !== 'pro_life-flame') bad(`他人主页年卡字段不对：${JSON.stringify(x.data.user)}`); else ok('他人主页带年卡标记和龙框');
+  // 年卡用完后续的是月卡：龙权益随年卡结束，会员本身仍有效
+  db.prepare("UPDATE redeem_codes SET used_at=? WHERE used_by=(SELECT id FROM users WHERE username='yuki')").run(Date.now() - 366 * DAY);
+  x = await call('GET', '/api/me', undefined, ty);
+  if (x.data.user.pro_perk !== 1 || x.data.user.frame !== 'pro' || x.data.user.avatar !== '🦊') bad(`年卡过期后龙权益没收回：${JSON.stringify([x.data.user.pro_perk, x.data.user.frame, x.data.user.avatar])}`);
+  else ok('年卡期过后（只剩月卡）龙框/龙头像自动收回，退回会员框');
+}
+
 // ── 暴力猜码频控 ──
 let blocked = 0;
 for (let i = 0; i < 14; i++) {
