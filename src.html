@@ -6322,42 +6322,65 @@ function _wnUnseen(){
   return out;
 }
 function _wnDot(){var d=document.getElementById('wnDot');if(!d)return;var n=_wnUnseen().length;d.textContent=n?String(n):'';d.style.display=n?'':'none';}
-// ══════════════ 全站公告（一次性弹窗）══════════════
-// 和「上新了」不同：公告是运营通知，新老用户都弹。every:true 时每次打开网站都弹（站长 2026-11-12 要求）；
-// 去掉 every 则每条只弹一次（按 id 记进 localStorage.annSeen）。
-// 换下一条公告时改 ANNOUNCE.id 即可；不想再弹任何公告就把 ANNOUNCE 设为 null。
+// ══════════════ 全站公告（弹窗）══════════════
+// 和「上新了」不同：公告是运营通知，新老用户都弹。2026-11-14 起内容不再写死在这里：
+// 站长在 stats.html「📢 公告弹窗」里编辑/发布/下线，存在后端 site_announce 表，这里登录后 GET /api/announce 取。
+// 公告字段：{id,every,icon,title,body,contact,btns:[{t,go}]}。every:true 每次打开都弹；否则按 id 只弹一次（记 localStorage.annSeen）。
+// body 是纯文本：空行分段、**加粗**，一律先转义再渲染；按钮只能跳 SEC_IDS 里的版块，不渲染任何链接/HTML。
+// 网络不通时用上次拿到的（localStorage.annCache）；?annpreview=1 时弹 stats.html 写进 localStorage.annDraft 的草稿（只预览、不记看过）。
 // 体检脚本（tools/verify-*.mjs）登录时一并写 annSeen=["*"]，否则弹窗会挡住它们要点的按钮；verify-announce 专门测公告本身。
-// 公告开着时「上新了」提示条先不出，关掉公告后再走 wnBoot，免得两个提示叠在一起。
-var ANNOUNCE={id:'2026-11-rank-top10',every:true,icon:'🏆',title:'榜单前三送年卡，前十送月卡！'};
+// 公告开着时「上新了」提示条先不出，关掉公告（或这次没有公告）后再走 wnBoot，免得两个提示叠在一起。
 var _ann={ov:null};
 function _annSeen(){try{var a=JSON.parse(localStorage.getItem('annSeen')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}}
+function _annBodyHtml(t){
+  return String(t||'').split(/\n\s*\n/).map(function(p){
+    p=p.replace(/^\s+|\s+$/g,'');if(!p)return '';
+    return '<p>'+_esc(p).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')+'</p>';
+  }).join('');
+}
+function _annDraft(){try{if(/[?&]annpreview=1/.test(location.search)){var d=JSON.parse(localStorage.getItem('annDraft')||'null');if(d&&d.title)return d;}}catch(e){}return null;}
 function annBoot(){
-  if(!ANNOUNCE||_ann.ov)return false;
-  var seen=_annSeen();if((!ANNOUNCE.every&&seen.indexOf(ANNOUNCE.id)>=0)||seen.indexOf('*')>=0)return false;   // '*'：浏览器体检脚本用，跳过一切公告
+  if(_ann.ov)return false;
+  var draft=_annDraft();if(draft){_annShow(draft,true);return true;}
+  if(_annSeen().indexOf('*')>=0||!API_BASE)return false;   // '*'：浏览器体检脚本用，跳过一切公告
+  var done=false,cached=null;
+  try{cached=JSON.parse(localStorage.getItem('annCache')||'null');}catch(e){}
+  function go(a){
+    if(done)return;done=true;
+    if(a&&a.title&&(a.every||_annSeen().indexOf(a.id)<0))_annShow(a,false);else{try{wnBoot();}catch(e){}}
+  }
+  try{
+    fetch(API_BASE+'/api/announce').then(function(r){if(!r.ok)throw r.status;return r.json();}).then(function(j){
+      var a=j&&j.ann?j.ann:null;try{localStorage.setItem('annCache',JSON.stringify(a));}catch(e){}go(a);
+    })['catch'](function(){go(cached);});
+  }catch(e){go(cached);}
+  setTimeout(function(){go(cached);},4000);   // 网太慢：4 秒还没回就先按上次的来
+  return true;
+}
+function _annShow(A,preview){
   setTimeout(function(){
     if(document.documentElement.classList.contains('locked')||_ann.ov){return;}
+    var btns=[],i,b;
+    for(i=0;A.btns&&i<A.btns.length&&btns.length<2;i++){b=A.btns[i];if(b&&b.t&&SEC_IDS.indexOf(b.go)>=0)btns.push(b);}
+    if(!btns.length)btns=[{t:'知道了',go:''}];
     var ov=document.createElement('div');ov.className='wn-ov ann-ov';ov.onclick=function(ev){if(ev.target===ov)annClose();};
     ov.innerHTML='<div class="wn-sheet ann-sheet" role="dialog" aria-modal="true" aria-labelledby="annTitle">'
-      +'<div class="wn-head"><h3 id="annTitle">'+_esc(ANNOUNCE.icon+' '+ANNOUNCE.title)+'</h3><button type="button" class="wn-x" aria-label="关闭" onclick="annClose()">×</button></div>'
-      +'<div class="ann-body">'
-      +'<p>感谢每一位坚持来这里学德语、学英语的你！这个小站能一直更新下去，靠的就是你们每天的打卡和反馈 ❤️</p>'
-      +'<p>为了说声谢谢：<b>任何一个学习排行榜</b>（📖 掌握词 / 🔥 最长打卡 / ⚡ 累计学习）<b>排名前三</b>的同学，可以<b>找作者免费领取一张「年卡会员」兑换码</b>；<b>前十名</b>（第 4–10 名）可以领一张<b>「月卡会员」兑换码</b>。</p>'
-      +'<div class="ann-how"><div class="ann-how-t">怎么领</div>截一张你在榜上的排名图（带上昵称），发给作者：<br>'
-      +'QQ：<b class="ann-qq">717986230</b> <button type="button" class="btn ann-copy" onclick="copyQQ(this)">复制</button><br>或在「支持作者」页微信扫码加好友。</div>'
-      +'<p class="ann-thx">再次感谢大家的陪伴，Viel Erfolg! 🎉</p>'
+      +'<div class="wn-head"><h3 id="annTitle">'+(preview?'<span class="ann-pv">预览</span>':'')+_esc((A.icon?A.icon+' ':'')+A.title)+'</h3><button type="button" class="wn-x" aria-label="关闭" onclick="annClose()">×</button></div>'
+      +'<div class="ann-body">'+_annBodyHtml(A.body)
+      +(A.contact?'<div class="ann-how"><div class="ann-how-t">联系作者</div>QQ：<b class="ann-qq">717986230</b> <button type="button" class="btn ann-copy" onclick="copyQQ(this)">复制</button><br>或在「支持作者」页微信扫码加好友。</div>':'')
       +'</div>'
-      +'<div class="ann-btns"><button type="button" class="ann-b2" onclick="annGo(\'support\')">联系作者</button><button type="button" class="ann-b1" onclick="annGo(\'rank\')">看看排行榜 ›</button></div>'
+      +'<div class="ann-btns">'+btns.map(function(x,k){return '<button type="button" class="'+(k===btns.length-1?'ann-b1':'ann-b2')+'" onclick="annGo(\''+x.go+'\')">'+_esc(x.t)+'</button>';}).join('')+'</div>'
       +'</div>';
     document.body.appendChild(ov);_ann.ov=ov;
-    if(!ANNOUNCE.every){try{var s=_annSeen();s.push(ANNOUNCE.id);localStorage.setItem('annSeen',JSON.stringify(s));}catch(e){}}
+    if(!preview&&!A.every){try{var s=_annSeen();s.push(A.id);localStorage.setItem('annSeen',JSON.stringify(s.slice(-50)));}catch(e){}}
     try{ov.querySelector('.wn-x').focus();}catch(e){}
-    try{track('view',{s:'announce'});}catch(e){}
-  },600);
-  return true;
+    if(!preview){try{track('view',{s:'announce'});}catch(e){}}
+  },300);
 }
 function annClose(){if(!_ann.ov)return;_ann.ov.remove();_ann.ov=null;try{wnBoot();}catch(e){}}
 function annGo(sec){
   annClose();
+  if(!sec)return;
   try{showSection(sec);}catch(e){}
   if(sec==='support')setTimeout(function(){var el=document.getElementById('contactAuthor');if(el){try{el.scrollIntoView({block:'center'});}catch(e){el.scrollIntoView();}}},300);
 }
@@ -7081,7 +7104,7 @@ function spFinish(){document.getElementById('spBar').style.width='100%';document
 .ann-how b.ann-qq{color:var(--gold-text);font-size:15px;letter-spacing:.5px}
 .ann-copy{position:relative;padding:3px 12px;font-size:12px;margin-left:4px;min-height:32px}
 .ann-copy::after{content:"";position:absolute;inset:-6px -4px}
-.ann-thx{text-align:center;color:var(--text)}
+.ann-pv{display:inline-block;vertical-align:2px;margin-right:6px;padding:1px 8px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-dim);font-size:12px;font-weight:600}
 .ann-btns{display:flex;gap:10px;margin-top:6px}
 .ann-btns button{flex:1;min-height:44px;border-radius:12px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
 .ann-b1{border:0;background:var(--gold);color:var(--on-brand)}

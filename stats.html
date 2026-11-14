@@ -53,6 +53,18 @@ td:last-child,th:last-child{text-align:right;font-variant-numeric:tabular-nums}
 th{color:var(--text-dim);font-weight:600;font-size:12px}
 .empty{color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0}
 .err{color:#d33;font-size:13px;text-align:center;padding:14px 0}
+/* 公告编辑 */
+.af{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.af label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-dim)}
+.af-l{font-size:13px;color:var(--text-dim);min-width:4.5em}
+.af input,.af select,.af-col textarea{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;min-height:40px}
+.af label input{flex:1;min-width:0}
+.af select{flex:1;min-width:0}
+.af-col{display:block;font-size:13px;color:var(--text-dim);margin-bottom:10px}
+.af-col textarea{display:block;width:100%;margin-top:4px;resize:vertical;line-height:1.6}
+.af-tip{font-size:12px;color:var(--text-muted)}
+.af-chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);min-height:36px;margin-bottom:4px;cursor:pointer}
+.af-chk input{width:18px;height:18px}
 .theme{position:fixed;top:14px;right:14px;border:1px solid var(--border);background:var(--surface-2);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:15px}
 </style>
 </head>
@@ -81,6 +93,32 @@ th{color:var(--text-dim);font-weight:600;font-size:12px}
     </div>
     <div id="cmsg" class="sub" style="text-align:left"></div>
     <textarea id="cout" readonly style="width:100%;box-sizing:border-box;min-height:140px;display:none;font-family:ui-monospace,monospace;font-size:14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:10px"></textarea>
+  </details>
+  <details id="annBox" style="margin:18px 0;border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:var(--surface-2)">
+    <summary style="cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center">📢 公告弹窗（编辑 / 发布 / 下线）</summary>
+    <div class="sub" style="text-align:left;margin:6px 0 10px">用上面的 STATS_KEY。发布或下线后，最多 1 分钟全站生效（用户登录后打开网站时弹出）。</div>
+    <div id="annState" class="sub" style="text-align:left;margin:0 0 10px">读取线上公告中…</div>
+    <div class="af">
+      <label>图标 <input id="aIcon" maxlength="8" style="width:64px" placeholder="🏆"></label>
+      <label style="flex:1">标题 <input id="aTitle" maxlength="40" placeholder="一句话标题（最多 40 字）"></label>
+    </div>
+    <label class="af-col">正文 <span class="af-tip">空一行 = 新段落；**文字** = 加粗；最多 1500 字</span>
+      <textarea id="aBody" maxlength="1500" rows="9"></textarea></label>
+    <div class="af">
+      <span class="af-l">多久弹一次</span>
+      <div class="seg" id="aEvery"><button data-v="1" class="on">每次打开都弹</button><button data-v="0">每人只弹一次</button></div>
+    </div>
+    <label class="af-chk" id="aRenewRow"><input type="checkbox" id="aRenew"> 已经看过的人也再弹一次（只改错字就别勾）</label>
+    <label class="af-chk"><input type="checkbox" id="aContact"> 正文下面附「联系作者」框（QQ 一键复制 + 微信提示）</label>
+    <div class="af"><span class="af-l">按钮 1</span><input id="aB1t" maxlength="12" placeholder="按钮文字" style="width:96px"><select id="aB1g"></select></div>
+    <div class="af"><span class="af-l">按钮 2</span><input id="aB2t" maxlength="12" placeholder="按钮文字" style="width:96px"><select id="aB2g"></select></div>
+    <div class="sub" style="text-align:left;margin:-2px 0 10px">按钮文字留空 = 不要这个按钮；两个都空时弹窗只有「知道了」。最后一个按钮是绿色主按钮。</div>
+    <div class="af">
+      <button class="btn ghost" onclick="annPreview()">👀 预览</button>
+      <button class="btn" onclick="annPublish()">发布</button>
+      <button class="btn ghost" onclick="annOff()" style="margin-left:auto">下线公告</button>
+    </div>
+    <div id="annMsg" class="sub" style="text-align:left;margin:8px 0 0"></div>
   </details>
   <div id="out" style="display:none">
     <div class="hero"><div class="label">浏览量 PV（近 <span id="dLab">7</span> 天）</div><div class="num" id="pv">–</div></div>
@@ -181,6 +219,79 @@ function genCodes(){
       m.textContent='已生成 '+x.j.codes.length+' 个（'+({365:'年卡',36500:'永久',30:'月卡'}[x.j.days])+'）。累计发码 '+x.j.total+' 个，已兑换 '+x.j.used+' 个。';
     })['catch'](function(){m.textContent='网络不通';});
 }
+
+// ───────── 公告弹窗：编辑 / 预览 / 发布 / 下线（后端 /api/announce + /api/admin/announce）─────────
+var ANN_GO=[['','（选择跳到哪）'],['support','联系作者（支持作者页）'],['rank','排行榜'],['pro','会员开通'],['home','首页'],['me','我的'],['phrases','语句'],['reading','短文'],['quiz','练习'],['spell','拼写'],['grammar','语法']];
+var _annEvery=true;
+['aB1g','aB2g'].forEach(function(id){document.getElementById(id).innerHTML=ANN_GO.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>';}).join('');});
+function annEvery(v){_annEvery=!!v;document.querySelectorAll('#aEvery button').forEach(function(x){x.classList.toggle('on',(x.dataset.v==='1')===_annEvery);});document.getElementById('aRenewRow').style.display=_annEvery?'none':'';}
+document.getElementById('aEvery').addEventListener('click',function(e){var b=e.target.closest('button');if(b)annEvery(b.dataset.v==='1');});
+function annFill(a){
+  a=a||{};
+  document.getElementById('aIcon').value=a.icon||'';
+  document.getElementById('aTitle').value=a.title||'';
+  document.getElementById('aBody').value=a.body||'';
+  document.getElementById('aContact').checked=!!a.contact;
+  document.getElementById('aRenew').checked=false;
+  annEvery(a.every!==false);
+  var bs=a.btns||[];
+  [1,2].forEach(function(n){var b=bs[n-1]||{};document.getElementById('aB'+n+'t').value=b.t||'';document.getElementById('aB'+n+'g').value=b.go||'';});
+}
+function annForm(){
+  var btns=[];
+  [1,2].forEach(function(n){var t=document.getElementById('aB'+n+'t').value.trim(),g=document.getElementById('aB'+n+'g').value;if(t)btns.push({t:t,go:g});});
+  return {icon:document.getElementById('aIcon').value.trim(),title:document.getElementById('aTitle').value.trim(),body:document.getElementById('aBody').value.trim(),
+    every:_annEvery,contact:document.getElementById('aContact').checked,btns:btns};
+}
+function annCheck(a){
+  if(!a.title)return '标题不能为空';
+  if(!a.body)return '正文不能为空';
+  for(var i=0;i<a.btns.length;i++)if(!a.btns[i].go)return '按钮「'+a.btns[i].t+'」还没选跳到哪';
+  return '';
+}
+function annStateText(a,updated){
+  var t=updated?'（'+new Date(updated).toLocaleString('zh-CN',{hour12:false})+' 更新）':'';
+  if(a===null)return '当前状态：<b>已下线</b>，用户打开网站不会弹公告'+t+'。填好下面的内容点「发布」即可重新上线。';
+  return '当前状态：<b>线上</b>'+(updated?t:'（还没在这里发布过，显示的是代码里的默认公告）')+'，'+(a.every?'每次打开都弹':'每人只弹一次')+'。下面已填入线上内容，改完点「发布」。';
+}
+function annLoad(){
+  var st=document.getElementById('annState');
+  fetch(API+'/api/announce',{cache:'no-store'}).then(function(r){if(!r.ok)throw r.status;return r.json();}).then(function(j){
+    st.innerHTML=annStateText(j.ann,j.updated);annFill(j.ann||{every:true,contact:true});
+  })['catch'](function(){st.textContent='读不到线上公告（后端还没部署这项功能，或网络不通）。';});
+}
+function annPreview(){
+  var a=annForm(),e=annCheck(a),m=document.getElementById('annMsg');
+  if(e){m.textContent=e;return;}
+  try{localStorage.setItem('annDraft',JSON.stringify(a));}catch(x){m.textContent='浏览器不让存草稿，没法预览';return;}
+  // stats.html 和网站同域，草稿经 localStorage 交给首页；首页要已登录才弹
+  window.open('index.html?annpreview=1','_blank');
+  m.textContent='已在新标签页打开预览（需要这个浏览器已登录网站）。预览不会发给任何人。';
+}
+function annPost(payload,done){
+  var key=document.getElementById('key').value.trim(),m=document.getElementById('annMsg');
+  if(!key){m.textContent='请先在最上面输入 STATS_KEY';return;}
+  try{localStorage.setItem('statsKey',key);}catch(e){}
+  m.textContent='提交中…';
+  fetch(API+'/api/admin/announce',{method:'POST',headers:{'Content-Type':'text/plain','X-Admin-Key':key},body:JSON.stringify(payload)})
+    .then(function(r){return r.json().then(function(j){return {s:r.status,j:j};},function(){return {s:r.status,j:{}};});})
+    .then(function(x){
+      if(x.s!==200){m.textContent=x.s===403?'密钥不对':x.s===404?'后端还没部署公告功能（去 rj-yy 仓库 Actions → 部署手册后端 → Run workflow）':(x.j.err||('失败 '+x.s));return;}
+      document.getElementById('annState').innerHTML=annStateText(x.j.ann,x.j.updated);
+      if(x.j.ann)annFill(x.j.ann);
+      m.textContent=done;
+    })['catch'](function(){m.textContent='网络不通';});
+}
+function annPublish(){
+  var a=annForm(),e=annCheck(a);
+  if(e){document.getElementById('annMsg').textContent=e;return;}
+  annPost({ann:a,renew:!a.every&&document.getElementById('aRenew').checked},'✓ 已发布，1 分钟内全站生效。');
+}
+function annOff(){
+  if(!confirm('确定下线公告？下线后用户打开网站不再弹出。'))return;
+  annPost({ann:null},'✓ 已下线，1 分钟内全站生效。');
+}
+annLoad();
 </script>
 </body>
 </html>

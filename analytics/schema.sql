@@ -200,3 +200,10 @@ SELECT u.id, MAX(
   COALESCE((SELECT MAX(updated) FROM user_progress_documents WHERE uid = u.id), 0),
   COALESCE((SELECT updated FROM vido_state WHERE uid = u.id), 0)
 ) FROM users u;
+
+-- 全站公告（单行 k=1）：站长在 stats.html 编辑发布；data 为公告 JSON，'null' 表示已下线。没有这行时 Worker 用代码里的默认公告
+CREATE TABLE IF NOT EXISTS site_announce (
+  k INTEGER PRIMARY KEY CHECK (k = 1),
+  data TEXT NOT NULL,
+  updated INTEGER NOT NULL
+);

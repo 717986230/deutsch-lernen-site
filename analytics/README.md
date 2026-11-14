@@ -77,6 +77,8 @@ wrangler deploy                                                 # 部署新版 w
 - `GET /api/pro/pack?id=arzt`（带 token）→ `{pack}`；非会员或已过期 `403`。课包正文在 `analytics/packs/*.json`，随 Worker 打包
 - `GET /api/pro/content?k=READINGS,RD_GLOSS`（带 token）→ `{data:{READINGS:[…],RD_GLOSS:{…}}}`；未登录 `401`，非会员/已过期 `403`，未知键 `404`，一次最多 4 个键，`Cache-Control: private, no-store`。键：READINGS / EN_READINGS / SERIES / EN_SERIES / DIALOGUES / EN_DIALOGUES / RD_GLOSS / RESTO / KOLLOC / AFFIX / WORTSCHATZ（2026-11-11 起「免费只留语句」：这六个版块的数据不再打进静态页，worker.js 直接 `import ../data/*.json`，**改了这些 json 要重新部署 Worker**）
 - `POST /api/admin/codes`（请求头 `X-Admin-Key: <STATS_KEY>`）`{n≤200, days∈30/365, batch?}`（永久码 2026-11-11 停发；已发出的仍可兑换） → `{codes,total,used}`；明文码只在这次响应里出现，库里存 SHA-256。站长在 `stats.html` 的「生成会员兑换码」里用
+- `GET /api/announce`（公开）→ `{ann,updated}`，全站公告弹窗；`ann` 为 `{id,every,icon,title,body,contact,btns:[{t,go}]}` 或 `null`（已下线）；表 `site_announce` 没有行时给代码里的 `DEFAULT_ANN`。`Cache-Control: public, max-age=60`
+- `POST /api/admin/announce`（请求头 `X-Admin-Key: <STATS_KEY>`）`{ann:{…},renew?}` 发布 / `{ann:null}` 下线 → `{ok,ann,updated}`。`body` 纯文本（空行分段、`**加粗**`，前端转义渲染），`btns` 最多 2 个、`go` 只收站内版块 id；不勾 `renew` 沿用旧 id（只弹一次的公告改错字不再打扰看过的人）。站长在 `stats.html` 的「📢 公告弹窗」里用
 - `GET /api/me` 的 `user` 多一个 `pro_until`（毫秒，0 = 非会员）。表：`memberships`、`redeem_codes`（见 schema.sql），注销账号时删除会员记录
 - `POST /api/sync`（带 token）`{lang,known,streak,best,total,quiz,level}` → 更新排行榜/徽章用的摘要，明细由 `/api/progress` 单独恢复
   - 数值上限：`known` ≤ 20000、`streak`/`best` ≤ 3650、`total`/`quiz` ≤ 1000000。这几列入库走 `MAX()`（多设备合并必需，换设备时不能让本地的 0 清空云端），**代价是只能往上不能往下**，所以上限必须说得通 —— 德语 4253 条 + 英语 7192 条词，20000 已是「全站都认识」还富余一倍。彻底杜绝刷分要服务端记分，本站是离线优先、客户端权威，做不到。
