@@ -685,15 +685,39 @@ export default {
       const data = {}; for (const k of keys) data[k] = PRO_CONTENT[k];
       return json({ data }, 200, Object.assign({ 'Cache-Control': 'private, no-store' }, cors));
     }
+    // ───────── 全站公告：站长在 stats.html 编辑/发布/下线，首页登录后弹出 ─────────
+    if (M === 'GET' && path === '/api/announce') {
+      // 公开只读。缓存 60 秒：发布/下线后最多一分钟全站生效，又不至于每次打开都打到 D1
+      let ann = DEFAULT_ANN, updated = 0;
+      try {
+        const row = await env.DB.prepare('SELECT data,updated FROM site_announce WHERE k=1').first();
+        if (row) { ann = JSON.parse(row.data); updated = row.updated; }
+      } catch (e) { if (!/no such table/i.test(String(e && e.message))) throw e; }   // 先部署 Worker、后跑 schema 时仍给默认公告
+      return json({ ann, updated }, 200, Object.assign({ 'Cache-Control': 'public, max-age=60' }, cors));
+    }
+    if (M === 'POST' && path === '/api/admin/announce') {
+      const deny = await adminDeny(req, env, cors);
+      if (deny) return deny;
+      const b = await body(req);
+      let ann = null;
+      if (b.ann) {
+        const r = normAnn(b.ann);
+        if (r.err) return json({ err: r.err }, 400, cors);
+        ann = r.ann;
+        // 只弹一次的公告按 id 记「看过」：沿用旧 id = 改错字不再打扰看过的人；renew 或首次发布才换新 id
+        let prev = null;
+        try { const row = await env.DB.prepare('SELECT data FROM site_announce WHERE k=1').first(); prev = row ? JSON.parse(row.data) : null; } catch {}
+        ann.id = (!b.renew && prev && prev.id) ? prev.id : 'a' + Date.now().toString(36);
+      }
+      const now = Date.now();
+      await env.DB.prepare('INSERT INTO site_announce (k,data,updated) VALUES (1,?,?) ON CONFLICT(k) DO UPDATE SET data=excluded.data, updated=excluded.updated')
+        .bind(JSON.stringify(ann), now).run();
+      return json({ ok: 1, ann, updated: now }, 200, cors);
+    }
     if (M === 'POST' && path === '/api/admin/codes') {
       // 站长在 stats.html 用 STATS_KEY 发码；与 /stats 共用猜错频控桶
-      const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
-      const sc = await rateCheck(env, 'stk:' + ip, RL.stk.limit);
-      if (!sc.ok) return tooMany(cors, sc.retry);
-      const k = String(req.headers.get('X-Admin-Key') || '');
-      let same = !!env.STATS_KEY && k.length === env.STATS_KEY.length;
-      for (let i = 0; i < k.length; i++) same = same && k.charCodeAt(i) === env.STATS_KEY.charCodeAt(i);
-      if (!same) { await rateHit(env, 'stk:' + ip, RL.stk.limit, RL.stk.win); return json({ err: 'forbidden' }, 403, cors); }
+      const deny = await adminDeny(req, env, cors);
+      if (deny) return deny;
       const b = await body(req);
       const n = Math.max(1, Math.min(200, b.n | 0));
       const days = +b.days;
@@ -1071,6 +1095,45 @@ async function oauthUpsert(env, provider, pid, login, name) {
   return r.meta.last_row_id;
 }
 
+// 站长接口鉴权：请求头 X-Admin-Key 必须等于 STATS_KEY；猜错与 /stats 共用每 IP 频控桶。通过返回 null
+async function adminDeny(req, env, cors) {
+  const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
+  const sc = await rateCheck(env, 'stk:' + ip, RL.stk.limit);
+  if (!sc.ok) return tooMany(cors, sc.retry);
+  const k = String(req.headers.get('X-Admin-Key') || '');
+  let same = !!env.STATS_KEY && k.length === env.STATS_KEY.length;
+  for (let i = 0; i < k.length; i++) same = same && k.charCodeAt(i) === env.STATS_KEY.charCodeAt(i);
+  if (!same) { await rateHit(env, 'stk:' + ip, RL.stk.limit, RL.stk.win); return json({ err: 'forbidden' }, 403, cors); }
+  return null;
+}
+// 公告：纯文本 + **加粗**，前端转义后渲染；按钮只能跳站内版块（go 为版块 id），不收任何链接/HTML
+const ANN_GO = /^[a-z][a-z-]{1,19}$/;
+function normAnn(a) {
+  const keepNl = (v, n) => String(v == null ? '' : v).replace(/\r\n?/g, '\n').replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, '').trim().slice(0, n);
+  const ann = {
+    every: !!a.every,
+    icon: cleanText(a.icon, 8),
+    title: cleanText(a.title, 40),
+    body: keepNl(a.body, 1500),
+    contact: !!a.contact,
+    btns: (Array.isArray(a.btns) ? a.btns : []).slice(0, 2)
+      .map((x) => ({ t: cleanText(x && x.t, 12), go: cleanText(x && x.go, 20) }))
+      .filter((x) => x.t && ANN_GO.test(x.go)),
+  };
+  if (!ann.title) return { err: '标题不能为空' };
+  if (!ann.body) return { err: '正文不能为空' };
+  return { ann };
+}
+// 还没在后台发布过时用这条（= 2026-11-12 起线上那条「榜单前三送年卡」）
+const DEFAULT_ANN = {
+  id: '2026-11-rank-top10', every: true, icon: '🏆', title: '榜单前三送年卡，前十送月卡！',
+  body: '感谢每一位坚持来这里学德语、学英语的你！这个小站能一直更新下去，靠的就是你们每天的打卡和反馈 ❤️\n\n'
+    + '为了说声谢谢：**任何一个学习排行榜**（📖 掌握词 / 🔥 最长打卡 / ⚡ 累计学习）**排名前三**的同学，可以**找作者免费领取一张「年卡会员」兑换码**；'
+    + '**前十名**（第 4–10 名）可以领一张**「月卡会员」兑换码**。\n\n'
+    + '怎么领：截一张你在榜上的排名图（带上昵称），发给作者。\n\n再次感谢大家的陪伴，Viel Erfolg! 🎉',
+  contact: true,
+  btns: [{ t: '联系作者', go: 'support' }, { t: '看看排行榜 ›', go: 'rank' }],
+};
 function json(obj, status, cors) { return new Response(JSON.stringify(obj), { status: status || 200, headers: Object.assign({}, JSONH, cors || {}) }); }
 const tooMany = (cors, retry) => json({ err: '操作过于频繁，请稍后再试', retry }, 429, cors);
 
