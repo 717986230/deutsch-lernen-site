@@ -181,6 +181,34 @@ async function build() {
     const wn = JSON.stringify(JSON.parse(readFileSync('data/whatsnew.json', 'utf8'))).replace(/</g, '\\u003c');
     html = html.replace(WN, () => `var WHATSNEW = ${wn};`);
   }
+  // 会员锁面板的「里面有什么」：只放**数量 + 前几个标题**，正文仍只经 Worker 下发。
+  // 数量从同一份 data/*.json 现算，内容扩充后面板自动跟着变，不用手改文案。
+  {
+    const LS = 'var LOCK_STATS = __LOCK_STATS__;';
+    if (!html.includes(LS)) throw new Error(`src.html 缺少声明 ${LS}`);
+    const rd = (f) => JSON.parse(readFileSync(`data/${f}.json`, 'utf8'));
+    const sum = (a, k) => a.reduce((n, x) => n + x[k].length, 0);
+    const R = rd('readings').filter((x) => x.topic !== 'restaurant');
+    const RS = rd('restaurant'), K = rd('kolloc'), A = rd('affix'), W = rd('wortschatz');
+    const t3 = (a, k) => a.slice(0, 3).map((x) => x[k]);
+    const st = {
+      de: {
+        reading: { n: R.length + ' 篇分级短文（入门到 C2）· 逐句中文 + 谐音 + 朗读', t: t3(R, 'zh') },
+        series: { n: rd('series').length + ' 集留学连载', t: t3(rd('series'), 'zh') },
+        dialog: { n: rd('dialogs').length + ' 段情景对话', t: t3(rd('dialogs'), 'scene') },
+        resto: { n: RS.units.length + ' 个场景 · ' + sum(RS.units, 'phrases') + ' 句 + 奥地利菜单', t: t3(RS.units, 'name') },
+        kolloc: { n: K.verbs.length + ' 个高频动词 · ' + sum(K.verbs, 'items') + ' 组搭配', t: t3(K.verbs, 'v') },
+        affix: { n: A.roots.length + ' 个词根 · ' + sum(A.roots, 'words') + ' 个词', t: [] },
+        wortschatz: { n: W.groups.length + ' 组 · ' + sum(W.groups, 'words') + ' 个高频词 + 看中文选词练习', t: t3(W.groups, 'name') },
+      },
+      en: {
+        reading: { n: rd('en_readings').length + ' 篇分级短文 · 逐句中文 + 朗读', t: t3(rd('en_readings'), 'zh') },
+        series: { n: rd('en_series').length + ' 集连载', t: t3(rd('en_series'), 'zh') },
+        dialog: { n: rd('en_dialogs').length + ' 段情景对话', t: t3(rd('en_dialogs'), 'scene') },
+      },
+    };
+    html = html.replace(LS, () => `var LOCK_STATS = ${JSON.stringify(st).replace(/</g, '\\u003c')};`);
+  }
   // 解码器/垫片注入在第一个数据声明之前（dev 也注入，保证老内核行为一致）
   // 生产模式 categories 已被替换成 var categories=[];var _deP=... 的 de.dat 加载器，锚点随之变化
   const catStart = DEV ? html.indexOf('const categories = ') : html.indexOf('var categories=[];var _deP=');
