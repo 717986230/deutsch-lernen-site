@@ -28,7 +28,7 @@
 {"@type":"ListItem","position":1,"name":"英语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"英语语法速查"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:1e14e1b55de3 -->
+<!-- src-hash:01e2806c6dfa -->
 <style>#account{display:block}#account .auth-stage{display:none}
 
 :root{
@@ -1086,6 +1086,51 @@ body{padding-bottom:var(--tab-h)}
 .ann-b1{border:0;background:var(--gold);color:var(--on-brand)}
 .ann-b2{border:1px solid var(--border);background:transparent;color:var(--text)}
 @media (prefers-reduced-motion:reduce){.wn-bar,.wn-sheet{animation:none}.wn-ring{transition:none}}
+
+
+/* ═══ 设计规范（2026-11-15 统一审美）═══
+   全站只用这一套尺度：圆角 4 档、阴影 2 档、按钮 2 种（赭红实心主按钮 / 描边次按钮，一律胶囊）、
+   卡片统一 --r-lg + --shadow。新写的样式请直接用这些变量，不要再写裸的 px 圆角/阴影。
+   颜色令牌仍在最上面的 :root（深浅两套）。 */
+:root{--r-xs:6px;--r-sm:10px;--r-md:14px;--r-lg:18px;--r-pill:999px;
+  --shadow-pop:0 14px 30px -12px rgba(20,26,46,.45);--btn-h:44px;--hero-gap:18px}
+:root[data-theme="dark"]{--shadow-pop:0 14px 30px -10px rgba(0,0,0,.75)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--shadow-pop:0 14px 30px -10px rgba(0,0,0,.75)}}
+/* 卡片：同一圆角、同一描边、同一阴影 */
+html body .card,html body .acct-card,html body .dash,html body .boost-inline,html body .voice-tip,html body .home-more,
+html body .me-menu,html body .sp-setup,html body .sp-card,html body .quiz-box,html body .lg-box,html body .hg-tile,
+html body .lock-panel .lock-card{border-radius:var(--r-lg)}
+html body .hg-tile,html body .me-menu{box-shadow:var(--shadow)}
+html body .tip-card{border-radius:var(--r-xs) var(--r-lg) var(--r-lg) var(--r-xs)}
+html body .lock-panel .lock-card{border-radius:var(--r-xs) var(--r-lg) var(--r-lg) var(--r-xs)}
+/* 卡片里的小块（统计格、输入框、字母卡） */
+html body .prof-stat,html body .letter-card,html body .acct-input,html body .lock-plan,html body #voiceGuide{border-radius:var(--r-md)}
+/* 按钮：主按钮赭红实心胶囊，次按钮描边胶囊，高度一致 */
+html body .acct-btn,html body .oauth-btn{border-radius:var(--r-pill);min-height:var(--btn-h);padding-top:0;padding-bottom:0;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:0}
+html body .oauth-btn{background:var(--surface);border:1px solid var(--line-strong);font-weight:600}
+html body .acct-btn{box-shadow:0 6px 16px -8px rgba(181,73,46,.6)}
+html body .acct-field+.acct-btn,html body .acct-err+.acct-btn{margin-top:6px}
+.me-actions{display:flex;gap:10px;margin-top:18px}
+.me-actions>button{flex:1;margin:0!important;width:auto}
+html body .me-logout{width:100%;margin:10px 0 0;color:var(--text-dim)}
+/* 悬浮按钮同一层阴影 */
+html body .fab-read,html body .phfab{box-shadow:var(--shadow-pop)}
+/* 标题区与正文之间统一留白 */
+.page-sub{text-align:center;font-size:13px;color:var(--text-dim);line-height:1.7;margin:-6px auto var(--hero-gap);max-width:520px}
+html body .prac-seg{margin-bottom:var(--hero-gap)}
+#stats .page-title,#pro .page-title{margin-bottom:var(--hero-gap)}
+/* 拼写级别 6 档：「零基础」三个字给宽一点，不再顶边 */
+html body .sp-seg.sp-seg6{grid-template-columns:1.25fr repeat(5,1fr)}
+html body .sp-setup .sp-row{gap:6px}
+/* 测验入口：手机两列，桌面自动铺开 */
+.quiz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.quiz-grid .card{margin:0;padding:18px 10px!important;display:flex;flex-direction:column;align-items:center;justify-content:center}
+/* 首页问候里的会员角标：与文字居中对齐（overflow:hidden 的 inline-block 基线在底边，会被顶高） */
+html body .dash-hi .pro-tag.mini{vertical-align:middle;position:relative;top:-2px}
+/* 可展开行统一用 › 指示 */
+.voice-tip .chev{margin-left:auto;flex:none;font-size:22px;line-height:1;color:var(--text-faint)}
+/* 「拼读查词」悬浮钮只在学习版块出现，账号/会员/统计等页面不挡内容 */
+body.sec-me .phfab,body.sec-pro .phfab,body.sec-support .phfab,body.sec-stats .phfab,body.sec-rank .phfab,body.sec-account .phfab,body.sec-wordbook .phfab{display:none}
 </style>
 </head>
 <body class="lang-en">
