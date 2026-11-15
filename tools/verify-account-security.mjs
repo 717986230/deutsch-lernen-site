@@ -272,6 +272,40 @@ const unset = await call('GET', '/stats', undefined, undefined, { 'CF-Connecting
 if (unset.status === 200) bad('没配 STATS_KEY 时 /stats 竟然放行了');
 else ok(`没配 STATS_KEY 时一律拒绝（${unset.status}）`);
 
+// ─────────────────────────────────────────────────────────
+// ⑨ /stats 走请求头密钥；⑩ 关注频控；⑪ 注销要把所有带 uid 的个人数据删净
+// ─────────────────────────────────────────────────────────
+env.STATS_KEY = 'super-secret-key';
+const hdr = await call('GET', '/stats', undefined, undefined, { 'CF-Connecting-IP': '198.51.100.21', 'X-Admin-Key': 'super-secret-key' });
+if (hdr.status !== 200) bad(`X-Admin-Key 请求头传密钥被拒：${hdr.status}`); else ok('/stats 支持用请求头传密钥（不进 URL）');
+delete env.STATS_KEY;
+
+const fa = await call('POST', '/api/register', { username: 'fol_a', nickname: 'A', password: 'correct-horse' });
+await call('POST', '/api/register', { username: 'fol_b', nickname: 'B', password: 'correct-horse' });
+let fol429 = 0;
+for (let i = 0; i < 70; i++) { const r = await call('POST', i % 2 ? '/api/unfollow' : '/api/follow', { name: 'fol_b' }, fa.data.token); if (r.status === 429) fol429++; }
+if (!fol429) bad('关注/取关连刷 70 次一次都没被限流'); else ok(`关注/取关连刷 70 次，拦下 ${fol429} 次`);
+
+// 线上 user_progress_documents 是 migrate-progress-documents.sql 建的，那份没有外键 —— 级联删不会发生。
+// 关掉外键来模拟线上老库，逼 worker 显式删。
+db.exec('PRAGMA foreign_keys=OFF');
+const del = await call('POST', '/api/register', { username: 'leaver', nickname: 'L', password: 'correct-horse' });
+const dt = del.data.token;
+await call('POST', '/api/sync', { lang: 'de', known: 5, streak: 1, best: 1, total: 5, quiz: 1 }, dt);
+await call('POST', '/api/sync', { lang: 'en', known: 3, streak: 1, best: 1, total: 3, quiz: 1 }, dt);
+await call('PUT', '/api/progress', { lang: 'de', rev: 0, document: { k: 1 } }, dt);
+await call('PUT', '/api/vido', { rev: 0, document: { hidden: [], videos: [] } }, dt);
+await call('POST', '/api/follow', { name: 'fol_b' }, dt);
+const leaverId = db.prepare('SELECT id FROM users WHERE username=?').get('leaver').id;
+const gone = await call('POST', '/api/account/delete', { password: 'correct-horse' }, dt);
+if (gone.status !== 200) bad(`注销失败：${gone.status} ${JSON.stringify(gone.data)}`);
+const uidTables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map((r) => r.name)
+  .filter((t) => db.prepare(`PRAGMA table_info(${t})`).all().some((c) => c.name === 'uid'));
+const left = uidTables.filter((t) => db.prepare(`SELECT COUNT(*) c FROM ${t} WHERE uid=?`).get(leaverId).c > 0);
+const leftF = db.prepare('SELECT COUNT(*) c FROM follows WHERE follower=? OR followee=?').get(leaverId, leaverId).c;
+if (left.length || leftF) bad(`注销后这些表还留着该用户的数据：${left.concat(leftF ? ['follows'] : []).join(', ')}`);
+else ok(`注销后 ${uidTables.length} 张带 uid 的表 + follows 全部删净`);
+
 console.log(`账号安全回归：重放 ${3} 组接管路径 + 排行榜排序 + 邮箱探测 + OAuth 登录 CSRF + 同步灌水/刷分 + /stats 密钥爆破`);
 if (fail) { console.error(`\n共 ${fail} 处问题`); process.exit(1); }
 console.log('OK 账号接管路径全部堵住，正常找回流程未受影响');
