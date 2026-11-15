@@ -28,7 +28,7 @@
 {"@type":"ListItem","position":1,"name":"德语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"德语语法速查"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:dbeb15da8932 -->
+<!-- src-hash:1e14e1b55de3 -->
 <style>#account{display:block}#account .auth-stage{display:none}
 
 :root{
@@ -409,7 +409,15 @@ mark.sh{background:rgba(181,73,46,.32);color:inherit;border-radius:3px;padding:0
 .letter-card .speak-btn{margin-top:8px}
 /* TIPS */
 .section.sec-locked>*:not(.lock-panel){display:none!important}
-.lock-panel{max-width:560px;margin:0 auto}
+.lock-panel{max-width:560px;margin:12px auto 0;padding:0 16px;box-sizing:border-box}
+.lock-panel .lock-card{border-radius:12px}
+.lock-pv{margin:8px 0 10px;padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:14px;line-height:1.6}
+.lock-pv-n{font-weight:600;color:var(--text)}
+.lock-pv ul{margin:6px 0 0;padding-left:20px;color:var(--text-dim)}
+.lock-pv-more{list-style:none;margin-left:-20px;padding-left:20px}
+.lock-plans{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.lock-plan{flex:1;min-width:120px;text-align:center;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text)}
+.lock-plan b{color:var(--gold-text)}
 .lock-panel .lock-card{border-left-color:var(--gold)}
 .lock-panel .lock-card .acct-btn{display:block;width:100%}
 .lock-panel .lock-card .btn{display:block;width:100%;text-align:center}
@@ -808,7 +816,14 @@ body.lang-en #homeBoost{display:none!important}
 .mav-pick button small{font-size:10.5px;color:var(--text-faint);line-height:1.2}
 .mav-pick button.locked img{filter:grayscale(1);opacity:.5}
 .prof-head .fr{margin:14px 10px 14px 6px}
-.fr-sec{margin-top:18px}
+.fr-sec{margin-top:8px}
+.me-fold{margin-top:14px;border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:0 12px}
+.me-fold>summary{display:flex;align-items:center;gap:10px;min-height:52px;cursor:pointer;list-style:none;font-weight:600;color:var(--text)}
+.me-fold>summary::-webkit-details-marker{display:none}
+.me-fold>summary::after{content:'›';margin-left:auto;font-size:20px;color:var(--text-faint);transition:transform .2s}
+.me-fold[open]>summary::after{transform:rotate(90deg)}
+.me-fold>summary small{font-weight:400;font-size:13px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.me-fold[open]{padding-bottom:12px}
 .fr-up{display:block;margin:6px 0 12px;padding:12px 14px;min-height:44px;box-sizing:border-box;border-radius:12px;border:1.5px dashed var(--border);color:var(--text-dim);font-size:13px;line-height:1.6;text-decoration:none}
 .fr-up b{color:var(--red-text)}
 .fr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}

@@ -56,7 +56,7 @@ npm run build        # = node build.mjs
 - **会员内容锁在后端**（2026-11-11 起免费只留语句）：`data/readings|en_readings|series|en_series|dialogs|en_dialogs|read_gloss|restaurant|kolloc|affix|wortschatz.json`
   不进页面、不进 `.dat`（`build.mjs` 的 `LOCKED`），只由 `analytics/worker.js` 的 `/api/pro/content` 发给会员。
   **改这些 json 后必须重新部署 Worker** 才生效；别把它们重新内联进 `src.html`。浏览器体检脚本要先 `stubPro(page)`（`tools/_pro-stub.mjs`），
-  否则这六个版块只能看到解锁面板。详见 `docs/COMMERCIAL.md`。
+  否则这七个会员版块只能看到解锁面板。详见 `docs/COMMERCIAL.md`。
 
 ### 1.4 运维极简
 **一个 Worker + 一个 D1**，不新增服务、不新增第三方依赖。后端改动同步更新
