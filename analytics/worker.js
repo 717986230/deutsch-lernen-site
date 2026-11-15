@@ -268,7 +268,7 @@ export default {
       // 返回的是聚合数据（PV/UV、热门页面、城市分布），不含原始 IP，但站点流量画像
       // 本来也不该谁都能翻。失败计入每 IP 的桶，猜错 20 次这一小时就别猜了。
       const sIp = req.headers.get('CF-Connecting-IP') || 'unknown';
-      const sc = await rateCheck(env, 'stk:' + sIp, RL.stk.limit);
+      const sc = await rateTake(env, [['stk:' + sIp, RL.stk.limit, RL.stk.win]]);   // 先占额度、对了再退（防并发猜）
       if (!sc.ok) return new Response('too many', { status: 429, headers: Object.assign({ 'Retry-After': String(sc.retry || 60) }, cors) });
       // 逐字符全比完再判，别一遇到不同就早退。（说实话跨公网的时间差被抖动淹没，
       // 真正起作用的是上面的限流；这几行只是把这个问题彻底关掉。）
@@ -282,9 +282,9 @@ export default {
       // ?key= 仍兼容，老书签不至于突然打不开。
       const sKey = req.headers.get('X-Admin-Key') || url.searchParams.get('key');
       if (!env.STATS_KEY || !eqConst(sKey, env.STATS_KEY)) {
-        await rateHit(env, 'stk:' + sIp, RL.stk.limit, RL.stk.win);
         return new Response('forbidden', { status: 403, headers: cors });   // 带 CORS，stats.html 才读得到 403 显示「密钥不对」
       }
+      await sc.refund();
       const days = Math.min(90, +url.searchParams.get('days') || 7);
       const since = Date.now() - days * 86400000;
       const pv = await env.DB.prepare('SELECT COUNT(*) c FROM events WHERE ts>?').bind(since).first();
@@ -338,8 +338,17 @@ export default {
       if (em.val && await env.DB.prepare('SELECT id FROM users WHERE email=?').bind(em.val).first())
         return json({ err: '该邮箱已被使用' }, 400, cors);
       const salt = rndHex(16), hash = await pbkdf2(pw, salt), now = Date.now();
-      const r = await env.DB.prepare('INSERT INTO users (username,nickname,pass_salt,pass_hash,provider,avatar,av_bg,email,created,updated) VALUES (?,?,?,?,?,?,?,?,?,?)')
-        .bind(name, nick, salt, hash, 'pw', pick(AV_EMOJI), pick(AV_BG), em.val, now, now).run();
+      // 上面的 SELECT 只是为了给出友好提示；真正把关的是 username / email 的唯一索引——
+      // 两个人同时注册同一个名字时，两边都能通过 SELECT，后插入的那个在这里撞唯一约束
+      let r;
+      try {
+        r = await env.DB.prepare('INSERT INTO users (username,nickname,pass_salt,pass_hash,provider,avatar,av_bg,email,created,updated) VALUES (?,?,?,?,?,?,?,?,?,?)')
+          .bind(name, nick, salt, hash, 'pw', pick(AV_EMOJI), pick(AV_BG), em.val, now, now).run();
+      } catch (e) {
+        if (isUniqueErr(e, 'email')) return json({ err: '该邮箱已被使用' }, 400, cors);
+        if (isUniqueErr(e, 'username')) return json({ err: '用户名已被占用' }, 400, cors);
+        throw e;
+      }
       const newUid = r.meta.last_row_id;
       const recovery = await setRecovery(env, newUid); // 明文仅此一次返回，之后只剩哈希
       return json({ token: await newSession(env, newUid), user: { username: name, nickname: nick }, recovery }, 200, cors);
@@ -348,24 +357,15 @@ export default {
       const b = await body(req);
       const name = String(b.username || '').trim().toLowerCase();
       const ip = req.headers.get('CF-Connecting-IP') || '';
-      // 进来先查两桶是否已超限（只读不计；失败后才计数）
-      if (ip) {
-        const c = await rateCheck(env, 'lgf:' + ip, RL.lgf.limit);
-        if (!c.ok) return tooMany(cors, c.retry);
-      }
-      if (name) {
-        const c = await rateCheck(env, 'lgu:' + name, RL.lgu.limit);
-        if (!c.ok) return tooMany(cors, c.retry);
-      }
-      const fail = async () => { // 验密失败：IP 桶 + 用户名桶各计一次
-        if (ip) await rateHit(env, 'lgf:' + ip, RL.lgf.limit, RL.lgf.win);
-        if (name) await rateHit(env, 'lgu:' + name, RL.lgu.limit, RL.lgu.win);
-        return json({ err: '用户名或密码错误' }, 400, cors);
-      };
+      // IP 桶 + 用户名桶先各占一次额度（原子计数防并发爆破），验对了再退回 —— 只有失败才真正计数
+      const rt = await rateTake(env, [[ip && 'lgf:' + ip, RL.lgf.limit, RL.lgf.win], [name && 'lgu:' + name, RL.lgu.limit, RL.lgu.win]]);
+      if (!rt.ok) return tooMany(cors, rt.retry);
+      const fail = () => json({ err: '用户名或密码错误' }, 400, cors);
       const u = await env.DB.prepare('SELECT id,username,nickname,pass_salt,pass_hash FROM users WHERE username=?').bind(name).first();
       if (!u || !u.pass_hash) return fail();
       const hash = await pbkdf2(String(b.password || ''), u.pass_salt);
       if (hash !== u.pass_hash) return fail();
+      await rt.refund();
       return json({ token: await newSession(env, u.id), user: { username: u.username, nickname: u.nickname } }, 200, cors);
     }
 
@@ -377,13 +377,11 @@ export default {
       const u = await env.DB.prepare('SELECT id,username,pass_salt,pass_hash FROM users WHERE id=?').bind(uid).first();
       if (!u) return json({ err: '账号不存在' }, 404, cors);
       if (u.pass_hash) { // 密码账号：必须验密（不接受 confirm 绕过）
-        const c = await rateCheck(env, 'lgu:' + u.username, RL.lgu.limit);
-        if (!c.ok) return tooMany(cors, c.retry);
+        const rt = await rateTake(env, [['lgu:' + u.username, RL.lgu.limit, RL.lgu.win]]);
+        if (!rt.ok) return tooMany(cors, rt.retry);
         const hash = await pbkdf2(String(b.password || ''), u.pass_salt);
-        if (hash !== u.pass_hash) {
-          await rateHit(env, 'lgu:' + u.username, RL.lgu.limit, RL.lgu.win);
-          return json({ err: '密码错误' }, 400, cors);
-        }
+        if (hash !== u.pass_hash) return json({ err: '密码错误' }, 400, cors);
+        await rt.refund();
       } else { // OAuth 账号：必须输入自己的用户名确认（不接受 password 绕过）
         if (String(b.confirm || '') !== u.username) return json({ err: '确认信息不符' }, 400, cors);
       }
@@ -413,12 +411,10 @@ export default {
       if (!u) return json({ err: '账号不存在' }, 404, cors);
       // 密码账号必须验当前密码：否则借到一台已登录的手机就能换走恢复码
       if (u.provider === 'pw' && u.pass_hash) {
-        const c = await rateCheck(env, 'lgu:' + u.username, RL.lgu.limit);
-        if (!c.ok) return tooMany(cors, c.retry);
-        if (await pbkdf2(String(b.password || ''), u.pass_salt) !== u.pass_hash) {
-          await rateHit(env, 'lgu:' + u.username, RL.lgu.limit, RL.lgu.win);
-          return json({ err: '密码错误' }, 400, cors);
-        }
+        const rt = await rateTake(env, [['lgu:' + u.username, RL.lgu.limit, RL.lgu.win]]);
+        if (!rt.ok) return tooMany(cors, rt.retry);
+        if (await pbkdf2(String(b.password || ''), u.pass_salt) !== u.pass_hash) return json({ err: '密码错误' }, 400, cors);
+        await rt.refund();
       }
       return json({ recovery: await setRecovery(env, uid) }, 200, cors);
     }
@@ -428,13 +424,11 @@ export default {
       const name = String(b.username || '').trim().toLowerCase();
       const ip = req.headers.get('CF-Connecting-IP') || '';
       const generic = json({ ok: 1, msg: '若该用户名已绑定邮箱，验证码已发出，请查收（含垃圾箱）' }, 200, cors);
-      if (ip) { const c = await rateCheck(env, 'mli:' + ip, RL.mli.limit); if (!c.ok) return tooMany(cors, c.retry); }
-      if (name) { const c = await rateCheck(env, 'mls:' + name, RL.mls.limit); if (!c.ok) return tooMany(cors, c.retry); }
+      // 每次请求都计、且先计后查：存在与否耗时一致，防账号枚举；原子计数也防并发连发轰炸邮箱
+      if (ip) { const c = await rateHit(env, 'mli:' + ip, RL.mli.limit, RL.mli.win); if (!c.ok) return tooMany(cors, c.retry); }
       if (!name) return generic;
+      { const c = await rateHit(env, 'mls:' + name, RL.mls.limit, RL.mls.win); if (!c.ok) return tooMany(cors, c.retry); }
       const u = await env.DB.prepare('SELECT id,email FROM users WHERE username=?').bind(name).first();
-      // 计数放在查库之后、发信之前：存在与否都计，避免用耗时差异探测账号
-      if (ip) await rateHit(env, 'mli:' + ip, RL.mli.limit, RL.mli.win);
-      await rateHit(env, 'mls:' + name, RL.mls.limit, RL.mls.win);
       if (!u || !u.email) return generic;
       const code = genMailCode(), salt = rndHex(16), hash = await pbkdf2(code, salt);
       const sent = await sendMail(env, u.email, code);
@@ -454,15 +448,12 @@ export default {
       const code = normRecovery(b.code);
       const nw = String(b.new || '');
       const ip = req.headers.get('CF-Connecting-IP') || '';
-      if (ip) { const c = await rateCheck(env, 'rst:' + ip, RL.rst.limit); if (!c.ok) return tooMany(cors, c.retry); }
-      if (name) { const c = await rateCheck(env, 'rsu:' + name, RL.rst.limit); if (!c.ok) return tooMany(cors, c.retry); }
       if (nw.length < 6) return json({ err: '新密码至少 6 位' }, 400, cors);
+      // 先原子占额度、成功再退回（见 rateTake）：防同时发一大批请求绕过次数上限
+      const rt = await rateTake(env, [[ip && 'rst:' + ip, RL.rst.limit, RL.rst.win], [name && 'rsu:' + name, RL.rst.limit, RL.rst.win]]);
+      if (!rt.ok) return tooMany(cors, rt.retry);
       // 失败一律返回同一句，避免暴露「用户名是否存在 / 是否设过恢复码」
-      const fail = async () => {
-        if (ip) await rateHit(env, 'rst:' + ip, RL.rst.limit, RL.rst.win);
-        if (name) await rateHit(env, 'rsu:' + name, RL.rst.limit, RL.rst.win);
-        return json({ err: '用户名或恢复码不正确' }, 400, cors);
-      };
+      const fail = () => json({ err: '用户名或恢复码不正确' }, 400, cors);
       const mailCode = String(b.emailCode || '').replace(/\D/g, '');
       if (!name || (!code && !mailCode)) return fail();
       const u = await env.DB.prepare('SELECT id,provider,pass_hash,rec_salt,rec_hash,mail_salt,mail_hash,mail_exp,mail_try FROM users WHERE username=?').bind(name).first();
@@ -471,28 +462,31 @@ export default {
       // 给 GitHub/Google 账号凭空造出一条用户名+密码的登录通道（/api/login 只看
       // pass_hash 不看 provider）。这类账号丢失访问的正解是回去用第三方重新登录。
       if (u.provider !== 'pw' && !u.pass_hash) return fail();
-      let passed = false;
       if (mailCode) {                                    // ① 邮箱验证码
         if (!u.mail_hash || !u.mail_exp || Date.now() > u.mail_exp) return fail();
-        if ((u.mail_try || 0) >= MAIL_MAX_TRY) return fail();
-        if (await pbkdf2(mailCode, u.mail_salt) === u.mail_hash) passed = true;
-        else {                                           // 试错计数，满 5 次这枚码作废
-          await env.DB.prepare('UPDATE users SET mail_try=? WHERE id=?').bind((u.mail_try || 0) + 1, u.id).run();
-          return fail();
-        }
+        // 试错计数：**先**原子占一次（满 5 次这枚码作废），再验。以前是「读 mail_try → 验 → 写 mail_try+1」，
+        // 并发请求读到的都是同一个旧值，5 次上限可以被一口气几百个请求绕过去爆破 6 位码。
+        const slot = await env.DB.prepare('UPDATE users SET mail_try=COALESCE(mail_try,0)+1 WHERE id=? AND mail_hash=? AND mail_exp>? AND COALESCE(mail_try,0)<? RETURNING mail_try')
+          .bind(u.id, u.mail_hash, Date.now(), MAIL_MAX_TRY).first();
+        if (!slot) return fail();
+        if (await pbkdf2(mailCode, u.mail_salt) !== u.mail_hash) return fail();
+        // 一次性：用条件更新「抢」这枚码，并发的第二个请求抢不到就算失败；走邮箱通道则证明邮箱确属本人
+        const took = await env.DB.prepare('UPDATE users SET mail_hash=NULL,mail_salt=NULL,mail_exp=NULL,mail_try=0,email_ok=1 WHERE id=? AND mail_hash=?')
+          .bind(u.id, u.mail_hash).run();
+        if (!(took.meta && took.meta.changes)) return fail();
       } else {                                           // ② 恢复码
         if (!u.rec_hash) return fail();
         if (await pbkdf2(code, u.rec_salt) !== u.rec_hash) return fail();
-        passed = true;
+        // 同样一次性抢占：旧恢复码立刻作废（下面马上发新的）；顺带清掉未用完的邮箱验证码
+        const took = await env.DB.prepare('UPDATE users SET rec_hash=NULL,rec_salt=NULL,mail_hash=NULL,mail_salt=NULL,mail_exp=NULL,mail_try=0 WHERE id=? AND rec_hash=?')
+          .bind(u.id, u.rec_hash).run();
+        if (!(took.meta && took.meta.changes)) return fail();
       }
-      if (!passed) return fail();
+      await rt.refund();
       const salt = rndHex(16), hash = await pbkdf2(nw, salt);
       await env.DB.batch([
         env.DB.prepare('UPDATE users SET pass_salt=?,pass_hash=?,updated=? WHERE id=?').bind(salt, hash, Date.now(), u.id),
         env.DB.prepare('DELETE FROM sessions WHERE uid=?').bind(u.id), // 重置后所有设备都要重登
-        // 验证码一次性：无论走哪条通道都清掉；走邮箱通道则证明邮箱确属本人
-        env.DB.prepare('UPDATE users SET mail_hash=NULL,mail_salt=NULL,mail_exp=NULL,mail_try=0' +
-          (mailCode ? ',email_ok=1' : '') + ' WHERE id=?').bind(u.id),
       ]);
       const recovery = await setRecovery(env, u.id); // 旧码已用掉，立刻换一枚
       return json({ ok: 1, token: await newSession(env, u.id), recovery }, 200, cors);
@@ -506,13 +500,11 @@ export default {
       if (u.provider !== 'pw' || !u.pass_hash) return json({ err: '该账号为第三方登录，无密码可改' }, 400, cors);
       const nw = String(b.new || '');
       if (nw.length < 6) return json({ err: '新密码至少 6 位' }, 400, cors);
-      const c = await rateCheck(env, 'lgu:' + u.username, RL.lgu.limit);
-      if (!c.ok) return tooMany(cors, c.retry);
+      const rt = await rateTake(env, [['lgu:' + u.username, RL.lgu.limit, RL.lgu.win]]);
+      if (!rt.ok) return tooMany(cors, rt.retry);
       const oldHash = await pbkdf2(String(b.old || ''), u.pass_salt);
-      if (oldHash !== u.pass_hash) {
-        await rateHit(env, 'lgu:' + u.username, RL.lgu.limit, RL.lgu.win);
-        return json({ err: '原密码错误' }, 400, cors);
-      }
+      if (oldHash !== u.pass_hash) return json({ err: '原密码错误' }, 400, cors);
+      await rt.refund();
       const salt = rndHex(16), hash = await pbkdf2(nw, salt);
       // 改密成功：踢掉当前会话之外的全部会话
       await env.DB.batch([
@@ -569,14 +561,12 @@ export default {
       const code = url.searchParams.get('code'), state = url.searchParams.get('state');
       const drop = { 'Set-Cookie': setCookie('', 0) };                    // 无论成败都把 Cookie 清掉
       const denyOauth = () => new Response(null, { status: 302, headers: Object.assign({ Location: site + '/#login?err=oauth' }, drop) });
-      const st = state && await env.DB.prepare('SELECT exp FROM oauth_state WHERE state=?').bind(state).first();
+      // state 一次性：DELETE…RETURNING 原子「取走」，同一个 state 并发回调两次只有一次拿得到
+      // （以前先 SELECT 再 DELETE，两次回调能同时通过，各建一个账号 / 各发一个会话）
+      const st = state && await env.DB.prepare('DELETE FROM oauth_state WHERE state=? RETURNING exp').bind(state).first();
       if (!code || !st || st.exp < Date.now()) return denyOauth();
-      // 这一步是新加的：state 必须来自**同一个浏览器**
-      if (!state || readCookie(COOKIE) !== state) {
-        await env.DB.prepare('DELETE FROM oauth_state WHERE state=?').bind(state).run();
-        return denyOauth();
-      }
-      await env.DB.prepare('DELETE FROM oauth_state WHERE state=?').bind(state).run();
+      // state 必须来自**同一个浏览器**
+      if (readCookie(COOKIE) !== state) return denyOauth();
       const tr = await fetch(prov.tokenUrl, {
         method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ client_id: cid, client_secret: prov.secret(env), code, redirect_uri: redirect, grant_type: 'authorization_code' }),
@@ -653,28 +643,34 @@ export default {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '请先登录再兑换' }, 401, cors);
       const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
-      const cu = await rateCheck(env, 'rdu:' + uid, RL.rdu.limit);
-      const ci = await rateCheck(env, 'rdi:' + ip, RL.rdi.limit);
-      if (!cu.ok || !ci.ok) return tooMany(cors, Math.max(cu.retry, ci.retry));
+      const rt = await rateTake(env, [['rdu:' + uid, RL.rdu.limit, RL.rdu.win], ['rdi:' + ip, RL.rdi.limit, RL.rdi.win]]);
+      if (!rt.ok) return tooMany(cors, rt.retry);
       const b = await body(req);
       const code = normCode(b.code);
       const now = Date.now();
-      let row = null;
+      let row = null, hash = '';
       if (code.length === 12) {
+        hash = await sha256Hex(code);
         row = await env.DB.prepare('UPDATE redeem_codes SET used_by=?, used_at=? WHERE hash=? AND used_by IS NULL RETURNING days')
-          .bind(uid, now, await sha256Hex(code)).first();
+          .bind(uid, now, hash).first();
       }
-      if (!row) {
-        await rateHit(env, 'rdu:' + uid, RL.rdu.limit, RL.rdu.win);
-        await rateHit(env, 'rdi:' + ip, RL.rdi.limit, RL.rdi.win);
-        return json({ err: '兑换码无效或已被使用' }, 400, cors);
+      if (!row) return json({ err: '兑换码无效或已被使用' }, 400, cors);
+      await rt.refund();
+      // 续期叠加：还没到期就从到期日往后加，已过期从现在算。
+      // 必须在 SQL 里一句算完：以前是「读 until → JS 里加天数 → 写回」，同一人同时兑两张码时
+      // 两边读到同一个旧值，后写的覆盖先写的，白丢一张码的天数。
+      const add = row.days * 86400000;
+      let m;
+      try {
+        m = await env.DB.prepare('INSERT INTO memberships (uid,until,updated) VALUES (?1,?2+?3,?2) ' +
+          'ON CONFLICT(uid) DO UPDATE SET until=MAX(memberships.until,?2)+?3, updated=?2 RETURNING until')
+          .bind(uid, now, add).first();
+      } catch (e) {
+        // 加天数失败就把码还回去，别出现「码用掉了、会员没到账」
+        await env.DB.prepare('UPDATE redeem_codes SET used_by=NULL, used_at=NULL WHERE hash=? AND used_by=? AND used_at=?').bind(hash, uid, now).run();
+        throw e;
       }
-      // 续期叠加：还没到期就从到期日往后加，已过期从现在算
-      const cur = await proUntil(env, uid);
-      const until = Math.max(cur, now) + row.days * 86400000;
-      await env.DB.prepare('INSERT INTO memberships (uid,until,updated) VALUES (?,?,?) ON CONFLICT(uid) DO UPDATE SET until=excluded.until, updated=excluded.updated')
-        .bind(uid, until, now).run();
-      return json({ ok: 1, pro_until: until, days: row.days }, 200, cors);
+      return json({ ok: 1, pro_until: m.until, days: row.days }, 200, cors);
     }
     if (M === 'GET' && path === '/api/pro/pack') {
       const uid = await auth(req, env);
@@ -808,52 +804,60 @@ export default {
           .bind(uid, lang, lang === 'de' ? (old.known || 0) : 0, lang === 'de' ? (old.streak || 0) : 0, lang === 'de' ? (old.best_streak || 0) : 0, lang === 'de' ? (old.total || 0) : 0, lang === 'de' ? (old.quiz || 0) : 0, lang === 'de' ? (old.level || 'A1') : 'A1', Date.now()).run();
         profile = await env.DB.prepare('SELECT known,streak,best_streak,total,quiz,level FROM user_language_profiles WHERE uid=? AND lang=?').bind(uid, lang).first();
       }
-      // 客户端是离线优先，换设备时它的累计值可能比云端低。用于徽章的必须是
-      // 实际会写入的合并结果，不能用请求体的较小值，否则一次同步会把已解锁徽章抹掉。
-      const merged = {
-        known: Math.max(profile.known || 0, known),
-        streak,
-        best: Math.max(profile.best_streak || 0, best, streak),
-        total: Math.max(profile.total || 0, total),
-        quiz: Math.max(profile.quiz || 0, quiz),
-      };
-      const list = computeBadges(merged, uid);
-      const badges = list.join(',');
       const now = Date.now();
       // known/total/quiz 只增不减：这三个是累计量，用户不可能「忘掉」已掌握的词。
       // 无条件覆盖会让**新设备首次登录时用本地的 0 清空服务端数据** ——
       // 而 DEPLOY.md 承诺的正是「换设备重新登录可恢复进度」，覆盖式写入会直接打破它。
       // 顺带也堵掉了用一次 POST 把别人挤下排行榜的路（只能往上刷，不能改低）。
       // streak 例外：断签后本就该降回去，故保持直接赋值。
-      await env.DB.prepare(
-        'UPDATE user_language_profiles SET known=?,streak=?,best_streak=?,total=?,quiz=?,level=?,updated=? WHERE uid=? AND lang=?')
-        .bind(merged.known, merged.streak, merged.best, merged.total, merged.quiz, level, now, uid, lang).run();
+      // MAX() 必须写在 SQL 里、并用 RETURNING 拿回写后的值：以前在 JS 里先读再算再写，
+      // 两台设备同时同步时，后写的那台会用它读到的旧值把先写的较大值盖掉。
+      const merged0 = await env.DB.prepare(
+        'UPDATE user_language_profiles SET known=MAX(known,?1),streak=?2,best_streak=MAX(best_streak,?3,?2),' +
+        'total=MAX(total,?4),quiz=MAX(quiz,?5),level=?6,updated=?7 WHERE uid=?8 AND lang=?9 ' +
+        'RETURNING known,streak,best_streak AS best,total,quiz')
+        .bind(known, streak, best, total, quiz, level, now, uid, lang).first();
+      // 客户端是离线优先，换设备时它的累计值可能比云端低。用于徽章的必须是
+      // 实际写入后的合并结果，不能用请求体的较小值，否则一次同步会把已解锁徽章抹掉。
+      const merged = merged0 || { known, streak, best: Math.max(best, streak), total, quiz };
+      const list = computeBadges(merged, uid);
       // 德语保留旧排行榜/徽章兼容；英语统计绝不能覆盖德语的全站公开档案。
       if (lang === 'de') await env.DB.prepare(
         'UPDATE users SET known=MAX(known,?),streak=?,best_streak=MAX(best_streak,?,?),' +
-        'total=MAX(total,?),quiz=MAX(quiz,?),level=?,badges=?,updated=? WHERE id=?')
-        .bind(merged.known, merged.streak, merged.best, merged.streak, merged.total, merged.quiz, level, badges, now, uid).run();
+        'total=MAX(total,?),quiz=MAX(quiz,?),level=?,updated=? WHERE id=?')
+        .bind(merged.known, merged.streak, merged.best, merged.streak, merged.total, merged.quiz, level, now, uid).run();
+      // 徽章只增不减，按「比较后交换」合并：只有库里的值仍是我读到的那份时才写入并集，
+      // 否则重读再合。这样两台设备同时同步不会互相抹掉对方刚点亮的徽章，
+      // 而且「新点亮了哪些」只有真正写进去的那个请求知道 —— 动态不会被发两遍。
+      let fresh = [];
+      if (lang === 'de') {
+        let cur = old.badges || '';
+        for (let tries = 0; tries < 5; tries++) {
+          const had = new Set(cur.split(',').filter(Boolean));
+          const add = list.filter(id => !had.has(id));
+          if (!add.length) break;
+          const next = [...had, ...add].join(',');
+          const w = await env.DB.prepare("UPDATE users SET badges=? WHERE id=? AND COALESCE(badges,'')=?").bind(next, uid, cur).run();
+          if (w.meta && w.meta.changes) { fresh = add; break; }
+          const r = await env.DB.prepare('SELECT badges FROM users WHERE id=?').bind(uid).first();
+          cur = (r && r.badges) || '';
+        }
+      }
       // 学习动态：纯系统事件（新徽章 / 打卡破纪录），供关注者的 Feed。
       // 只在 lang==='de' 时发：去重靠的是 users.badges / users.best_streak，
       // 而这两列**只有德语分支才回写**。英语同步下 old.badges 永远是旧值，
       // 于是同一批徽章每同步一次就重插一次 —— 实测同样内容连同步 9 次，
       // activity 从 6 行涨到 54 行，且限流是 30 次/分钟，等于每分钟能灌 180 行。
       if (old && lang === 'de') {
-        const had = new Set((old.badges || '').split(',').filter(Boolean));
-        let acts = list.filter(id => !had.has(id)).map(id => ['badge', id]);
+        let acts = fresh.map(id => ['badge', id]);
         const newBest = merged.best;
         if (newBest > (old.best_streak || 0) && newBest >= 3) acts.push(['streak', String(newBest)]);
         acts = acts.slice(0, 10);
         if (acts.length) {
-          // 再兜一道：库里已经有的同类动态不重复插。上面的语言判断哪天被人改了，
-          // 也不至于又变成灌水口子。
-          const seenRows = await env.DB.prepare(
-            'SELECT type,data FROM activity WHERE uid=? AND type IN (?,?)').bind(uid, 'badge', 'streak').all();
-          const seenAct = new Set((seenRows.results || []).map(r => r.type + '\u0000' + r.data));
-          acts = acts.filter(([t, d]) => !seenAct.has(t + '\u0000' + d));
-        }
-        if (acts.length) {
-          const st = env.DB.prepare('INSERT INTO activity (uid,type,data,ts) VALUES (?,?,?,?)');
+          // 再兜一道：库里已经有的同类动态不重复插。「查重 + 插入」写成一句 INSERT…SELECT…WHERE NOT EXISTS，
+          // SQLite 单语句原子，两台设备同时破纪录也只会留一条；上面的语言判断哪天被人改了，也不至于又变成灌水口子。
+          const st = env.DB.prepare('INSERT INTO activity (uid,type,data,ts) SELECT ?1,?2,?3,?4 ' +
+            'WHERE NOT EXISTS (SELECT 1 FROM activity WHERE uid=?1 AND type=?2 AND data=?3)');
           await env.DB.batch(acts.map(([t, d]) => st.bind(uid, t, d, now)));
         }
       }
@@ -930,12 +934,10 @@ export default {
         if (!me) return json({ err: '账号不存在' }, 404, cors);
         if ((me.email || '') !== (em.val || '')) {
           if (me.provider === 'pw' && me.pass_hash) {
-            const c = await rateCheck(env, 'lgu:' + me.username, RL.lgu.limit);
-            if (!c.ok) return tooMany(cors, c.retry);
-            if (await pbkdf2(String(b.password || ''), me.pass_salt) !== me.pass_hash) {
-              await rateHit(env, 'lgu:' + me.username, RL.lgu.limit, RL.lgu.win);
-              return json({ err: '请输入当前密码以确认修改邮箱' }, 400, cors);
-            }
+            const rt = await rateTake(env, [['lgu:' + me.username, RL.lgu.limit, RL.lgu.win]]);
+            if (!rt.ok) return tooMany(cors, rt.retry);
+            if (await pbkdf2(String(b.password || ''), me.pass_salt) !== me.pass_hash) return json({ err: '请输入当前密码以确认修改邮箱' }, 400, cors);
+            await rt.refund();
           } else {
             // 第三方账号既没密码也没恢复码，会话内无从二次验证。它们本来就靠
             // GitHub/Google 回来登录，不需要找回邮箱 —— 直接不给改。
@@ -957,7 +959,8 @@ export default {
       if (b.sig != null) { set.push('sig=?'); bind.push(cleanText(b.sig, 60)); }
       if (!set.length) return json({ err: '无更新内容' }, 400, cors);
       set.push('updated=?'); bind.push(Date.now()); bind.push(uid);
-      await env.DB.prepare('UPDATE users SET ' + set.join(',') + ' WHERE id=?').bind(...bind).run();
+      try { await env.DB.prepare('UPDATE users SET ' + set.join(',') + ' WHERE id=?').bind(...bind).run(); }
+      catch (e) { if (isUniqueErr(e, 'email')) return json({ err: '该邮箱已被使用' }, 400, cors); throw e; }
       const u = await env.DB.prepare('SELECT username,nickname,avatar,av_bg,sig FROM users WHERE id=?').bind(uid).first();
       return json({ ok: 1, user: u }, 200, cors);
     }
@@ -1095,27 +1098,46 @@ function computeBadges(s, uid) {
 
 // OAuth 用户：已存在则返回 id，否则新建（用户名唯一、随机头像）
 async function oauthUpsert(env, provider, pid, login, name) {
-  const found = await env.DB.prepare('SELECT id FROM users WHERE provider=? AND provider_id=?').bind(provider, pid).first();
+  const find = () => env.DB.prepare('SELECT id FROM users WHERE provider=? AND provider_id=? ORDER BY id LIMIT 1').bind(provider, pid).first();
+  const found = await find();
   if (found) return found.id;
   const raw = provider === 'google' ? ('g_' + String(login || pid).split('@')[0]) : ('gh_' + (login || pid));
   let base = raw.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 18) || (provider[0] + '_' + pid);
   let uname = base, i = 1;
   while (await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(uname).first()) uname = base + (++i);
   const nick = cleanText(name || login || uname, 20) || uname, now = Date.now();
-  const r = await env.DB.prepare('INSERT INTO users (username,nickname,provider,provider_id,avatar,av_bg,created,updated) VALUES (?,?,?,?,?,?,?,?)')
-    .bind(uname, nick, provider, pid, pick(AV_EMOJI), pick(AV_BG), now, now).run();
-  return r.meta.last_row_id;
+  // 「查无此名 → 插入」之间可能被别的请求抢先占了同名：撞唯一约束就换下一个后缀重试
+  for (let tries = 0; tries < 5; tries++) {
+    try {
+      const r = await env.DB.prepare('INSERT INTO users (username,nickname,provider,provider_id,avatar,av_bg,created,updated) ' +
+        'SELECT ?,?,?,?,?,?,?,? WHERE NOT EXISTS (SELECT 1 FROM users WHERE provider=? AND provider_id=?)')
+        .bind(uname, nick, provider, pid, pick(AV_EMOJI), pick(AV_BG), now, now, provider, pid).run();
+      if (r.meta && r.meta.changes) return r.meta.last_row_id;
+      const again = await find();                 // 同一个第三方账号刚被并发的另一次登录建好了
+      if (again) return again.id;
+    } catch (e) {
+      if (!isUniqueErr(e, 'username')) throw e;
+    }
+    uname = base + (++i);
+  }
+  throw new Error('oauthUpsert: 用户名重试次数用尽');
+}
+// D1/SQLite 唯一约束冲突：错误信息形如「UNIQUE constraint failed: users.email」
+function isUniqueErr(e, col) {
+  const m = String((e && e.message) || e);
+  return /UNIQUE constraint failed/i.test(m) && (!col || m.indexOf('.' + col) >= 0);
 }
 
 // 站长接口鉴权：请求头 X-Admin-Key 必须等于 STATS_KEY；猜错与 /stats 共用每 IP 频控桶。通过返回 null
 async function adminDeny(req, env, cors) {
   const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
-  const sc = await rateCheck(env, 'stk:' + ip, RL.stk.limit);
-  if (!sc.ok) return tooMany(cors, sc.retry);
+  const rt = await rateTake(env, [['stk:' + ip, RL.stk.limit, RL.stk.win]]);
+  if (!rt.ok) return tooMany(cors, rt.retry);
   const k = String(req.headers.get('X-Admin-Key') || '');
   let same = !!env.STATS_KEY && k.length === env.STATS_KEY.length;
   for (let i = 0; i < k.length; i++) same = same && k.charCodeAt(i) === env.STATS_KEY.charCodeAt(i);
-  if (!same) { await rateHit(env, 'stk:' + ip, RL.stk.limit, RL.stk.win); return json({ err: 'forbidden' }, 403, cors); }
+  if (!same) return json({ err: 'forbidden' }, 403, cors);
+  await rt.refund();
   return null;
 }
 // 公告：纯文本 + **加粗**，前端转义后渲染；按钮只能跳站内版块（go 为版块 id），不收任何链接/HTML
@@ -1161,12 +1183,21 @@ async function rateHit(env, key, limit, windowMs) {
   ).bind(key, now + windowMs, now).first();
   return { ok: r.cnt <= limit, retry: Math.max(1, Math.ceil((r.exp - now) / 1000)) };
 }
-// 只读检查是否已超限（不计数；配额已耗尽即 cnt>=limit 就拒）
-async function rateCheck(env, key, limit) {
-  const now = Date.now();
-  const r = await env.DB.prepare('SELECT cnt,exp FROM ratelimit WHERE k=?').bind(key).first();
-  if (!r || r.exp <= now || r.cnt < limit) return { ok: true, retry: 0 };
-  return { ok: false, retry: Math.max(1, Math.ceil((r.exp - now) / 1000)) };
+// 「只计失败」的频控桶（验密、恢复码、兑换码、站长密钥）：**先占额度、验对了再退回**。
+// 以前是「先只读查一眼 → 验失败才 +1」，查和计之间隔着一次 PBKDF2（几十毫秒），
+// 同时发 100 个请求时 100 个都能通过只读检查 —— 10 次/10 分钟的上限形同虚设，
+// 6 位邮箱验证码、密码都能被并发爆破。现在每个请求先原子 +1 拿到自己的序号，超了就拒（并退回，被拒不算失败）。
+// rules: [[key, limit, windowMs], ...]；key 为空的跳过。返回 { ok, retry, refund() }。
+async function rateTake(env, rules) {
+  rules = rules.filter((r) => r[0]);
+  const rs = [];
+  for (const [k, limit, win] of rules) rs.push(await rateHit(env, k, limit, win));
+  const refund = async () => {
+    if (rules.length) await env.DB.batch(rules.map(([k]) => env.DB.prepare('UPDATE ratelimit SET cnt=cnt-1 WHERE k=? AND cnt>0').bind(k)));
+  };
+  const over = rs.filter((r) => !r.ok);
+  if (over.length) { await refund(); return { ok: false, retry: Math.max(...over.map((r) => r.retry)), refund: async () => {} }; }
+  return { ok: true, retry: 0, refund };
 }
 async function body(req) { try { return JSON.parse(await req.text()); } catch { return {}; } }
 function rndHex(n) { const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(x => x.toString(16).padStart(2, '0')).join(''); }
