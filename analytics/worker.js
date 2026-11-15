@@ -168,6 +168,7 @@ const RL = {
   stk: { limit: 20, win: 3600000 }, // /stats 密钥猜错：每 IP 1 小时 20 次（仅失败计）
   rdu: { limit: 10, win: 3600000 }, // 兑换码输错：每用户 1 小时 10 次（仅失败计）
   rdi: { limit: 30, win: 3600000 }, // 兑换码输错：每 IP 1 小时 30 次（仅失败计）
+  fol: { limit: 60, win: 3600000 }, // 关注/取关：每用户 1 小时 60 次（每请求计）
 };
 
 // 第三方登录配置（GitHub / Google 同一套 OAuth2 流程，差异抽到这里）
@@ -268,7 +269,7 @@ export default {
       // 本来也不该谁都能翻。失败计入每 IP 的桶，猜错 20 次这一小时就别猜了。
       const sIp = req.headers.get('CF-Connecting-IP') || 'unknown';
       const sc = await rateCheck(env, 'stk:' + sIp, RL.stk.limit);
-      if (!sc.ok) return new Response('too many', { status: 429, headers: { 'Retry-After': String(Math.ceil((sc.retry || 60) / 1000)) } });
+      if (!sc.ok) return new Response('too many', { status: 429, headers: Object.assign({ 'Retry-After': String(sc.retry || 60) }, cors) });
       // 逐字符全比完再判，别一遇到不同就早退。（说实话跨公网的时间差被抖动淹没，
       // 真正起作用的是上面的限流；这几行只是把这个问题彻底关掉。）
       const eqConst = (a, b) => {
@@ -277,9 +278,12 @@ export default {
         for (let i = 0; i < Math.max(a.length, b.length); i++) r |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
         return r === 0;
       };
-      if (!env.STATS_KEY || !eqConst(url.searchParams.get('key'), env.STATS_KEY)) {
+      // 密钥优先走请求头 X-Admin-Key（和发码/公告接口一致）：放在 URL 里会进浏览器历史和访问日志。
+      // ?key= 仍兼容，老书签不至于突然打不开。
+      const sKey = req.headers.get('X-Admin-Key') || url.searchParams.get('key');
+      if (!env.STATS_KEY || !eqConst(sKey, env.STATS_KEY)) {
         await rateHit(env, 'stk:' + sIp, RL.stk.limit, RL.stk.win);
-        return new Response('forbidden', { status: 403 });
+        return new Response('forbidden', { status: 403, headers: cors });   // 带 CORS，stats.html 才读得到 403 显示「密钥不对」
       }
       const days = Math.min(90, +url.searchParams.get('days') || 7);
       const since = Date.now() - days * 86400000;
@@ -383,9 +387,14 @@ export default {
       } else { // OAuth 账号：必须输入自己的用户名确认（不接受 password 绕过）
         if (String(b.confirm || '') !== u.username) return json({ err: '确认信息不符' }, 400, cors);
       }
-      // 硬删：会话 → 关注关系（双向）→ 动态 → Vido 数据 → 账号本体。匿名埋点与账号无关联，不动。
+      // 硬删：会话 → 关注关系（双向）→ 动态 → 学习明细/分语言档案 → Vido 数据 → 会员/外观 → 账号本体。
+      // 匿名埋点与账号无关联，不动；redeem_codes.used_by 只留一个已失效的数字 id 作发码对账，不含个人信息。
+      // 学习明细两张表虽在 schema 里声明了 ON DELETE CASCADE，但 SQLite 的外键要连接级 PRAGMA 才生效，
+      // 老库又是迁移脚本补的表 —— 不能指望级联，显式删（2026-11 审核发现注销后这两张表的行还在）。
       await env.DB.batch([
         env.DB.prepare('DELETE FROM sessions WHERE uid=?1').bind(uid),
+        env.DB.prepare('DELETE FROM user_progress_documents WHERE uid=?1').bind(uid),
+        env.DB.prepare('DELETE FROM user_language_profiles WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM follows WHERE follower=?1 OR followee=?1').bind(uid),
         env.DB.prepare('DELETE FROM activity WHERE uid=?1').bind(uid),
         env.DB.prepare('DELETE FROM vido_state WHERE uid=?1').bind(uid),
@@ -872,6 +881,9 @@ export default {
     if (M === 'POST' && (path === '/api/follow' || path === '/api/unfollow')) {
       const uid = await auth(req, env);
       if (!uid) return json({ err: '未登录' }, 401, cors);
+      // 关注/取关以前不限流：一个号能每秒对全站刷关注，灌爆 follows 表和别人的粉丝数
+      const fr = await rateHit(env, 'follow:' + uid, RL.fol.limit, RL.fol.win);
+      if (!fr.ok) return tooMany(cors, fr.retry);
       const b = await body(req);
       const name = String(b.name || '').trim().toLowerCase();
       const t = await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(name).first();

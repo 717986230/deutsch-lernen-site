@@ -181,7 +181,7 @@ function load(){
   if(!key){msg.className='err';msg.textContent='请先输入 STATS_KEY';return;}
   try{localStorage.setItem('statsKey',key);}catch(e){}
   msg.className='empty';msg.textContent='加载中…';msg.style.display='';
-  fetch(API+'/stats?key='+encodeURIComponent(key)+'&days='+_days).then(function(r){
+  fetch(API+'/stats?days='+_days,{headers:{'X-Admin-Key':key}}).then(function(r){
     if(r.status===403)throw '密钥不对';
     if(!r.ok)throw '服务异常 '+r.status;
     return r.json();
