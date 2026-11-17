@@ -59,6 +59,69 @@ async function perkTier(env, uid) {
   return perkOf(r && r.pu, r && r.yu);
 }
 
+// ───────── 爱发电（afdian.com）自动开通会员 ─────────
+// 流程：网站「我的 → 会员」的购买按钮带上 custom_order_id=<付款凭据 ref>（/api/pay/ref 发给本人）跳到爱发电方案页；
+// 付款后爱发电回调 POST /api/afdian/webhook。回调内容**一律不信**：只取订单号，用 AFDIAN_TOKEN 调官方 query-order
+// 二次核验（状态=已支付、金额），再按 ref 找到账号开通。没带 ref（直接在爱发电下单）的订单先记成一张未用的「码」，
+// 用户在兑换框里输入爱发电订单号即可认领；回调丢了也不怕，认领时会现查爱发电。
+// 订单落在 redeem_codes（hash = sha256('afd:'+订单号)，batch='afdian'）：天然一单一用，年卡龙权益（YU_SQL）照常生效。
+// AFDIAN_USER_ID 是公开值（wrangler.toml）；AFDIAN_TOKEN 是密钥，只在 Cloudflare 后台设成 Secret。
+const AFD_API = 'https://afdian.com/api/open/query-order';
+const AFD_NO_RE = /^\d{16,40}$/;               // 爱发电订单号是一长串数字
+// 按每月单价认档：≥ ¥50 算年卡（365 天/份），≥ ¥5 算月卡（30 天/份）；爱发电多月折扣、优惠券都按实付摊到每份
+function afdDays(o) {
+  const n = Math.max(1, parseInt(o.month, 10) || 1);
+  const unit = (parseFloat(o.total_amount) || 0) / n;
+  if (unit >= 50) return 365 * n;
+  if (unit >= 5) return 30 * n;
+  return 0;
+}
+async function afdRefSig(env, uid) { return (await sha256Hex('afdref:' + env.AFDIAN_TOKEN + ':' + uid)).slice(0, 12); }
+// ref = <uid 36 进制>x<签名>：签名用 AFDIAN_TOKEN 派生，别人伪造不了；也不在前端暴露数字 id 原文
+async function afdRef(env, uid) { return uid.toString(36) + 'x' + await afdRefSig(env, uid); }
+async function afdRefUid(env, ref) {
+  const m = /^([0-9a-z]{1,10})x([0-9a-f]{12})$/.exec(String(ref || ''));
+  if (!m || !env.AFDIAN_TOKEN) return 0;
+  const uid = parseInt(m[1], 36);
+  return uid > 0 && (await afdRefSig(env, uid)) === m[2] ? uid : 0;
+}
+async function md5Hex(t) {
+  const d = await crypto.subtle.digest('MD5', new TextEncoder().encode(t));   // Workers 支持 MD5（爱发电签名要求）
+  return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+// 向爱发电查一张订单。返回 订单对象 / null（查无此单）；网络或签名出错抛异常
+async function afdQuery(env, no) {
+  if (!env.AFDIAN_USER_ID || !env.AFDIAN_TOKEN) throw new Error('afdian not configured');
+  const params = JSON.stringify({ out_trade_no: no });
+  const ts = Math.floor(Date.now() / 1000);
+  const sign = await md5Hex(env.AFDIAN_TOKEN + 'params' + params + 'ts' + ts + 'user_id' + env.AFDIAN_USER_ID);
+  const r = await fetch(AFD_API, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user_id: env.AFDIAN_USER_ID, params, ts, sign }) });
+  const j = await r.json().catch(() => null);
+  if (!j || j.ec !== 200) throw new Error('afdian query ec=' + (j && j.ec) + ' em=' + (j && j.em));
+  const list = (j.data && j.data.list) || [];
+  return list.find(o => String(o.out_trade_no) === no) || null;
+}
+// 给 uid 开通/续期 days 天（与 /api/redeem 同一句原子 SQL）
+async function addPro(env, uid, days, now) {
+  return env.DB.prepare('INSERT INTO memberships (uid,until,updated) VALUES (?1,?2+?3,?2) ' +
+    'ON CONFLICT(uid) DO UPDATE SET until=MAX(memberships.until,?2)+?3, updated=?2 RETURNING until')
+    .bind(uid, now, days * 86400000).first();
+}
+// 把核验过的订单入账：先登记（重复回调 / 重复认领靠主键挡掉），uid 有值就直接记为已用并开通。
+// 返回 { days, until } 表示这次开通了；{ days } 表示已登记待认领；null 表示不是会员订单或早已处理过
+async function afdBook(env, o, uid) {
+  const days = afdDays(o);
+  if (o.status !== 2 || !days) return null;
+  const hash = await sha256Hex('afd:' + o.out_trade_no), now = Date.now();
+  const row = await env.DB.prepare('INSERT INTO redeem_codes (hash,days,batch,created,used_by,used_at) VALUES (?,?,?,?,?,?) ON CONFLICT(hash) DO NOTHING RETURNING days')
+    .bind(hash, days, 'afdian', now, uid || null, uid ? now : null).first();
+  if (!row) return null;
+  if (!uid) return { days };
+  try { const m = await addPro(env, uid, days, now); return { days, until: m.until }; }
+  catch (e) { await env.DB.prepare('UPDATE redeem_codes SET used_by=NULL, used_at=NULL WHERE hash=?').bind(hash).run(); throw e; }
+}
+
 // 头像白名单：emoji + 背景色（只接受集合内的值，防注入/超长；无图片上传=无审核负担）
 const AV_EMOJI = ['🦊', '🐼', '🐨', '🐯', '🦁', '🐶', '🐱', '🐰', '🐻', '🐸', '🐵', '🦉', '🐧', '🐢', '🦄', '🐲', '🌷', '🌟', '🍀', '🔥', '🚀', '⚽', '🎨', '🎧', '📚', '☕', '🥨', '🗼'];
 const AV_BG = ['#58cc02', '#1cb0f6', '#ff9600', '#ff4b4b', '#ce82ff', '#2b70c9', '#ff86d0', '#00c2a8', '#f5b800', '#7a869a'];
@@ -646,6 +709,28 @@ export default {
       const rt = await rateTake(env, [['rdu:' + uid, RL.rdu.limit, RL.rdu.win], ['rdi:' + ip, RL.rdi.limit, RL.rdi.win]]);
       if (!rt.ok) return tooMany(cors, rt.retry);
       const b = await body(req);
+      // 爱发电订单号（一长串数字）：认领没带 ref 的爱发电订单。本地没登记（回调丢了）就现查爱发电再入账
+      const afdNo = String(b.code || '').replace(/\s+/g, '');
+      if (AFD_NO_RE.test(afdNo)) {
+        const ahash = await sha256Hex('afd:' + afdNo), anow = Date.now();
+        let has = await env.DB.prepare('SELECT used_by FROM redeem_codes WHERE hash=?').bind(ahash).first();
+        if (!has) {
+          let o = null;
+          try { o = await afdQuery(env, afdNo); } catch (e) { console.error('[afdian] claim query failed: ' + (e && e.message)); await rt.refund(); return json({ err: '暂时查不到爱发电订单，请稍后再试' }, 503, cors); }
+          if (o) await afdBook(env, o, 0);
+        }
+        const arow = await env.DB.prepare('UPDATE redeem_codes SET used_by=?, used_at=? WHERE hash=? AND used_by IS NULL RETURNING days').bind(uid, anow, ahash).first();
+        if (!arow) {
+          has = has || await env.DB.prepare('SELECT used_by FROM redeem_codes WHERE hash=?').bind(ahash).first();
+          if (has && has.used_by === uid) { await rt.refund(); return json({ ok: 1, pro_until: await proUntil(env, uid), days: 0, already: 1 }, 200, cors); }
+          return json({ err: has ? '这张爱发电订单已经开通过会员了' : '没找到这张已支付的爱发电会员订单' }, 400, cors);
+        }
+        await rt.refund();
+        let am;
+        try { am = await addPro(env, uid, arow.days, anow); }
+        catch (e) { await env.DB.prepare('UPDATE redeem_codes SET used_by=NULL, used_at=NULL WHERE hash=? AND used_by=? AND used_at=?').bind(ahash, uid, anow).run(); throw e; }
+        return json({ ok: 1, pro_until: am.until, days: arow.days }, 200, cors);
+      }
       const code = normCode(b.code);
       const now = Date.now();
       let row = null, hash = '';
@@ -671,6 +756,30 @@ export default {
         throw e;
       }
       return json({ ok: 1, pro_until: m.until, days: row.days }, 200, cors);
+    }
+    // ───────── 爱发电 ─────────
+    if (M === 'GET' && path === '/api/pay/ref') {
+      // 本人的付款凭据，前端拼进爱发电下单链接的 custom_order_id；没配 AFDIAN_TOKEN 时返回空，前端退回「输订单号认领」
+      const uid = await auth(req, env);
+      if (!uid) return json({ err: '未登录' }, 401, cors);
+      return json({ ref: env.AFDIAN_TOKEN ? await afdRef(env, uid) : '' }, 200, Object.assign({ 'Cache-Control': 'private, no-store' }, cors));
+    }
+    if (M === 'POST' && path === '/api/afdian/webhook') {
+      // 爱发电要求回 {"ec":200}，否则判失败。查无此单（含后台「发送测试」的样例单）/ 非会员订单也回 200；
+      // 只有查爱发电失败这类临时错误回 500，留给爱发电重发，用户也还能拿订单号来认领。
+      const b = await body(req);
+      const o0 = b && b.data && b.data.order;
+      const no = String((o0 && o0.out_trade_no) || '');
+      if (!AFD_NO_RE.test(no)) return json({ ec: 200, em: 'ignored' });
+      let o;
+      try { o = await afdQuery(env, no); }
+      catch (e) { console.error('[afdian] webhook query failed: ' + (e && e.message)); return json({ ec: 500, em: 'retry' }, 500); }
+      if (!o) return json({ ec: 200, em: 'not found' });
+      let uid = await afdRefUid(env, o.custom_order_id || '');
+      if (uid && !(await env.DB.prepare('SELECT 1 FROM users WHERE id=?').bind(uid).first())) uid = 0;   // 账号已注销：留给订单号认领
+      const r = await afdBook(env, o, uid);
+      console.log('[afdian] order ' + no.slice(-6) + ' ' + (r ? (r.until ? 'granted ' + r.days + 'd' : 'booked ' + r.days + 'd') : 'skipped'));
+      return json({ ec: 200, em: 'ok' });
     }
     if (M === 'GET' && path === '/api/pro/pack') {
       const uid = await auth(req, env);
