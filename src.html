@@ -301,8 +301,7 @@ body.no-gloss .rd-word rt{display:none}
 .spk-panel label{display:flex;align-items:center;gap:6px;white-space:nowrap}
 .spk-panel input[type=range]{width:110px;accent-color:var(--gold)}
 .spk-panel input[type=checkbox]{accent-color:var(--gold);width:15px;height:15px}
-select.voice-pick{height:34px;padding:0 8px;border:1px solid var(--border);border-radius:var(--r-sm,8px);background:var(--surface);color:var(--text);font-size:13px;text-overflow:ellipsis}
-.spk-panel select.voice-pick{max-width:170px;text-overflow:ellipsis}
+.spk-rate-v{color:var(--gold-text);font-weight:600;white-space:nowrap}
 .spk-panel select{border:1px solid var(--border);border-radius:8px;padding:2px 6px;background:var(--surface-2);color:var(--gold-text);font-family:inherit}
 #spkRateV{color:var(--gold-text);font-weight:600;min-width:32px}
 .card-zh{font-size:14px;color:var(--text-dim);margin-bottom:0}
@@ -878,7 +877,7 @@ body.lang-en #homeBoost{display:none!important}
 
     <div class="sec-title"><span class="sec-title-icon">🔡</span><span class="sec-title-text">26个基础字母 + 4个特殊字符</span><button id="letterAllBtn" class="btn" type="button" style="margin-left:auto;padding:7px 12px;font-size:12px" onclick="toggleLetterAll()">🔊 全部朗读</button></div>
     <div style="margin-bottom:10px;font-size:12px;color:var(--text-dim)">💡 括号内为该字母的<b style="color:var(--gold-text)">名称读音</b>，发音栏说明该字母在单词中的<b style="color:var(--gold-text)">实际发音</b></div>
-    <div class="voice-pick-wrap" style="display:none;margin:0 0 10px"><label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim)"><span style="white-space:nowrap">🎙️ 朗读嗓音</span><select class="voice-pick" aria-label="选择朗读嗓音（听着别扭就换一个）" title="听着别扭就换一个" onchange="setVoicePref(this.value)" style="flex:1;min-width:0;font-size:13px"></select></label></div>
+    <div style="margin:0 0 10px;font-size:13px;color:var(--text-dim);display:flex;align-items:center;gap:8px">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.6" id="pronRate" class="spk-rate" aria-label="朗读语速" oninput="setSpkRate(this.value)" style="flex:1;min-width:0;accent-color:var(--gold)"> <span id="pronRateV" class="spk-rate-v">0.60</span> 🐇</div>
     <div class="letter-grid" id="letterGrid"></div>
 
     <div class="tip-card" style="border-left-color:var(--red-text)">
@@ -1506,11 +1505,10 @@ body.lang-en #homeBoost{display:none!important}
       <span id="playAllInfo" style="font-size:12px;color:var(--text-dim)"></span>
     </div>
     <div class="spk-panel">
-      <label>语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="spkRate" oninput="setSpkRate(this.value)"> <span id="spkRateV">0.62</span></label>
+      <label>语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.6" id="spkRate" oninput="setSpkRate(this.value)"> <span id="spkRateV">0.60</span></label>
       <label>遍数 <select id="spkRepeat" onchange="spkSet('repeat',+this.value)"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select></label>
       <label><input type="checkbox" id="spkZh" checked onchange="spkSet('zh',this.checked)"> 读中文</label>
       <label><input type="checkbox" id="spkShuffle" onchange="spkSet('shuffle',this.checked)"> 乱序</label>
-      <label class="voice-pick-wrap" style="display:none">嗓音 <select class="voice-pick" aria-label="选择朗读嗓音" onchange="setVoicePref(this.value)"></select></label>
     </div>
     <div style="margin:8px 0"><label style="font-size:13px;color:var(--text-dim);cursor:pointer"><input type="checkbox" id="onlyUnknown" onchange="toggleOnlyUnknown(this.checked)"> 只看没学会的（藏起拼写已答对的词，专攻生词）</label></div>
     <div id="phraseResults" style="font-size:12px;color:var(--gold-text);margin:8px 0"></div>
@@ -1598,7 +1596,7 @@ body.lang-en #homeBoost{display:none!important}
     </div>
     <p id="readSub" style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">0基础 → C2 循序渐进 · 中德对照 · 🔊 慢速朗读</p>
     <button id="loopAllBtn" class="fab-read" type="button" aria-label="循环朗读全部短文" onclick="toggleLoopAll()">🔊 循环朗读</button>
-    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:var(--gold)"> <span id="readRateV" style="color:var(--gold-text);font-weight:600">0.62</span> 🐇</div>
+    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.6" id="readRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:var(--gold)"> <span id="readRateV" style="color:var(--gold-text);font-weight:600">0.60</span> 🐇</div>
     <!-- 逐词小注只有德语有（renderReadings 里英语走 p[0] 原文、不过 wrapWords），
          所以英语端整段藏掉：否则既写着「点德语词」，又在推销一个点不动的功能。 -->
     <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:15px">▶ 整篇朗读 · 点句即听<span class="de-only-block"> · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></span></p>
@@ -1622,7 +1620,7 @@ body.lang-en #homeBoost{display:none!important}
     </div>
     <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-bottom:4px">原创连续剧 · 中德对照 · 🔊 慢速朗读 · 点词查义</p>
     <button id="seriesLoopBtn" class="fab-read" type="button" aria-label="循环朗读全部连载" onclick="toggleSeriesLoop()">🔊 全部朗读</button>
-    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.62" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:var(--gold)"> <span id="seriesRateV" style="color:var(--gold-text);font-weight:600">0.62</span> 🐇</div>
+    <div style="text-align:center;margin:2px 0 6px;font-size:13px;color:var(--text-dim)">🐢 朗读语速 <input type="range" min="0.35" max="1.6" step="0.05" value="0.6" id="seriesRate" oninput="setSpkRate(this.value)" style="vertical-align:middle;width:150px;accent-color:var(--gold)"> <span id="seriesRateV" style="color:var(--gold-text);font-weight:600">0.60</span> 🐇</div>
     <div class="sec-title"><span class="sec-title-icon">🎬</span><span class="sec-title-text">原创连载 · 留学生活</span><span class="sec-title-count" id="seriesCount"></span></div>
     <p style="font-size:12px;color:var(--text-faint);margin:0 0 15px">每集一篇、剧情连贯 · ▶ 朗读整集 · 点句即听<span class="de-only-block"> · <b style="color:var(--gold-text)">点德语词</b>查词义 <button class="btn gloss-btn" style="padding:2px 10px;font-size:11px;margin-left:4px;vertical-align:middle" onclick="toggleGloss()">隐藏词义</button></span></p>
     <div class="level-tabs" id="seriesLevelTabs"></div>
@@ -2760,7 +2758,6 @@ function setLang(lang){
   document.body.classList.toggle('lang-en',LANG==='en');
   updateQuizCardLang();
   updatePhrasesSub();
-  if(typeof renderVoicePick==='function')try{renderVoicePick();}catch(e){}
   // 词句版块默认回到「全部」级别，避免英语词少时空白
   activeLevel = (LANG==='en')?'0':activeLevel;
   activeCat='all';
@@ -3655,18 +3652,35 @@ function _cardBack(d){
 // ══════════════ 德语朗读（贴合真实德国发音）══════════════
 // 用浏览器德语语音引擎(de-DE)朗读德语原文，自动优选系统德语真人语音
 // 朗读设置（控制面板，localStorage 记忆）
-let _spk={rate:0.62,repeat:2,zh:true,shuffle:false};
+let _spk={rate:0.6,repeat:2,zh:true,shuffle:false};
 try{Object.assign(_spk,JSON.parse(localStorage.getItem('spkCfg')||'{}'));}catch(e){}
+// 语速一律落在滑块刻度上（0.35–1.6，步长 0.05）：老默认值 0.62 不在刻度上，滑块显示 0.6、旁边写 0.62，
+// 存档里也可能是字符串或坏值 —— 统一在这里收口。
+function _normRate(v){v=+v;if(!(v>0))v=0.6;v=Math.round(v*20)/20;return Math.max(0.35,Math.min(1.6,v));}
+_spk.rate=_normRate(_spk.rate);
+// 曾经有过「换嗓音」选项，已按站长要求去掉：固定用标准德语（de-DE）里音质最好的嗓子
+delete _spk.voiceDe;delete _spk.voiceEn;
 function spkSet(k,v){_spk[k]=v;try{localStorage.setItem('spkCfg',JSON.stringify(_spk));}catch(e){}}
-function setSpkRate(v){ // 语速：词句区/阅读区共享，改一处两边同步
-  v=+v; spkSet('rate',v);
-  ['spkRate','readRate','seriesRate'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=v;});
-  ['spkRateV','readRateV','seriesRateV'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=v;});
+// 全站四个语速滑块（词句 / 短文 / 连载 / 发音页）共用一个值，改一处处处同步
+var _RATE_IDS=['spkRate','readRate','seriesRate','pronRate'];
+function _rateWord(v){return v<0.55?'很慢':v<0.8?'慢':v<1.05?'正常':v<1.3?'快':'很快';}
+function _syncRateUI(){
+  var v=_spk.rate,t=v.toFixed(2)+' '+_rateWord(v);
+  for(var i=0;i<_RATE_IDS.length;i++){
+    var e=document.getElementById(_RATE_IDS[i]);if(e)e.value=v;
+    var l=document.getElementById(_RATE_IDS[i]+'V');if(l)l.textContent=t;
+  }
+}
+var _rateT=0;
+function setSpkRate(v){
+  spkSet('rate',_normRate(v));
+  _syncRateUI();
+  // 以前改语速要等「下一句」才生效：读长段落时拖了滑块半天没变化，像是坏了。
+  // 现在停手 250ms 后，正在读的这一句按新语速从头重读。
+  clearTimeout(_rateT);_rateT=setTimeout(_ttsApplyRate,250);
 }
 function spkInitPanel(){
-  try{renderVoicePick();}catch(e){}
-  const r=document.getElementById('spkRate');if(r){r.value=_spk.rate;document.getElementById('spkRateV').textContent=_spk.rate;}
-  const rr=document.getElementById('readRate');if(rr){rr.value=_spk.rate;document.getElementById('readRateV').textContent=_spk.rate;}
+  _syncRateUI();
   const p=document.getElementById('spkRepeat');if(p)p.value=String(_spk.repeat);
   const z=document.getElementById('spkZh');if(z)z.checked=_spk.zh;
   const s=document.getElementById('spkShuffle');if(s)s.checked=_spk.shuffle;
@@ -3676,7 +3690,7 @@ let _deVoice=null,_zhVoice=null,_enVoice=null;
 // ── 选嗓子：按音质打分，而不是「列表里第一个 de-DE」 ──
 // 实测同一台设备会列出好几种德语嗓子：iOS 17+ 每种语言都带 Eddy/Flo/Grandma/Rocko… 这类
 // 低质「Eloquence」怪声，安卓有 eSpeak，Edge 有「Online (Natural)」神经语音。老逻辑只认几个名字，
-// 认不出来就取第一个 de-DE，经常落到怪声上。这里给每个嗓子打分，取最高；用户也可在面板里手选。
+// 认不出来就取第一个 de-DE，经常落到怪声上。这里给每个嗓子打分，取最高（只在标准 de-DE 里挑）。
 var _VOICE_BAD=/espeak|eloquence|compact|grandma|grandpa|\boma\b|\bopa\b|rocko|shelley|sandy|\breed\b|\beddy\b|\bflo\b|bells|bubbles|cellos|organ|whisper|zarvox|trinoids|albert|bad news|good news|jester|superstar|wobble|boing|junior|ralph|fred\b|kathy/i;
 var _VOICE_GOOD=/natural|neural|premium|enhanced|erweitert|verbessert|wavenet|studio/i;
 var _VOICE_KNOWN=/anna|petra|markus|yannick|helena|katja|conrad|amala|seraphina|florian|killian|hedda|stefan|google|vicki|marlene|samantha|daniel|karen|moira|aria|jenny|guy|zira|ava|evan|tingting|婷婷|xiaoxiao|huihui|yunxi|mei-jia/i;
@@ -3684,7 +3698,7 @@ function _vLang(v){return (v&&v.lang||'').replace(/_/g,'-').toLowerCase();}
 function _voiceScore(v,want,region){
   var l=_vLang(v),n=(v&&v.name)||'',s=0;
   if(l.indexOf(want)!==0)return -1;
-  if(l===region)s+=20;
+  if(l===region)s+=100;          // 标准口音（德语=德国 de-DE）压倒一切：有 de-DE 就绝不用奥地利/瑞士嗓子
   if(_VOICE_GOOD.test(n))s+=30;
   if(_VOICE_KNOWN.test(n))s+=15;
   if(_VOICE_BAD.test(n))s-=60;
@@ -3692,46 +3706,18 @@ function _voiceScore(v,want,region){
   if(v['default'])s+=2;
   return s;
 }
-function _bestVoice(vs,want,region,saved){
+function _bestVoice(vs,want,region){
   var i,best=null,bs=-1,sc;
-  if(saved)for(i=0;i<vs.length;i++)if(vs[i].name===saved&&_vLang(vs[i]).indexOf(want)===0)return vs[i];
   for(i=0;i<vs.length;i++){sc=_voiceScore(vs[i],want,region);if(sc>bs){bs=sc;best=vs[i];}}
   return best;
-}
-// 当前语言下可选的嗓子（好的排前面，怪声排最后）
-function _voiceList(){
-  var vs=[];try{vs=speechSynthesis.getVoices()||[];}catch(e){}
-  var en=(typeof LANG!=='undefined'&&LANG==='en'),want=en?'en':'de',region=en?'en-us':'de-de';
-  return vs.filter(function(v){return _vLang(v).indexOf(want)===0;})
-    .sort(function(a,b){return _voiceScore(b,want,region)-_voiceScore(a,want,region);});
 }
 function pickGermanVoice(){
   if(!('speechSynthesis' in window))return;
   var vs=[];try{vs=speechSynthesis.getVoices()||[];}catch(e){}
-  _deVoice=_bestVoice(vs,'de','de-de',_spk.voiceDe);
-  _enVoice=_bestVoice(vs,'en','en-us',_spk.voiceEn);
-  _zhVoice=_bestVoice(vs,'zh','zh-cn',null);
+  _deVoice=_bestVoice(vs,'de','de-de');
+  _enVoice=_bestVoice(vs,'en','en-us');
+  _zhVoice=_bestVoice(vs,'zh','zh-cn');
   try{updateVoiceTip();}catch(e){}
-  try{renderVoicePick();}catch(e){}
-}
-// 「嗓音」下拉：凡是带 .voice-pick 的 <select> 都会被填充（词句面板、发音页各一个）
-function renderVoicePick(){
-  var sels=document.querySelectorAll('select.voice-pick');if(!sels.length)return;
-  var list=_voiceList(),en=(typeof LANG!=='undefined'&&LANG==='en'),cur=en?_spk.voiceEn:_spk.voiceDe;
-  var h='<option value="">自动（推荐）</option>';
-  for(var i=0;i<list.length;i++){
-    var v=list[i],nm=String(v.name||'').replace(/[<>&"]/g,'');
-    h+='<option value="'+nm+'"'+(nm===cur?' selected':'')+'>'+nm+(v.localService?'':' ☁')+'</option>';
-  }
-  for(var j=0;j<sels.length;j++){
-    sels[j].innerHTML=h;sels[j].value=cur||'';
-    var wrap=sels[j].closest('.voice-pick-wrap');if(wrap)wrap.style.display=list.length>1?'':'none';
-  }
-}
-function setVoicePref(name){
-  spkSet(LANG==='en'?'voiceEn':'voiceDe',name||'');
-  pickGermanVoice();
-  try{speakDE(LANG==='en'?'Hello! Nice to meet you.':'Guten Tag! Ich lerne Deutsch.');}catch(e){}   // 选完立刻试听
 }
 function updateVoiceTip(){var el=document.getElementById('voiceTip');if(!el)return;var good=false;try{var vs=(window.speechSynthesis&&speechSynthesis.getVoices)?speechSynthesis.getVoices():[];good=vs.some(function(v){var l=(v.lang||'').toLowerCase();if(l.indexOf('de')!==0)return false;return v.localService||/google|microsoft|anna|petra|markus|helena|yannick/i.test(v.name||'');});}catch(e){}el.style.display=good?'none':'';}
 if('speechSynthesis' in window){ pickGermanVoice(); speechSynthesis.onvoiceschanged=pickGermanVoice; }
@@ -3761,13 +3747,16 @@ function _ttsText(t){
 }
 // ── 统一造 utterance：语言/嗓子/语速/文本整理都在这一处 ──
 // lang: 'de' | 'en' | 省略（跟随当前站点语言）
-var _uttHold=[],_ttsKA=0;
+var _uttHold=[],_ttsKA=0,_curUtt=null;
 function _utt(text,lang,rate){
   var en=lang?lang==='en':(typeof LANG!=='undefined'&&LANG==='en');
   var u=new SpeechSynthesisUtterance(_ttsText(text));
   u.lang=en?'en-US':'de-DE';
   var v=en?_enVoice:_deVoice;if(v)u.voice=v;
   u.rate=rate||_spk.rate;u.pitch=1;
+  u._lang=en?'en':'de';u._rate=rate||0;          // _rate=0 表示跟随语速滑块
+  u.addEventListener('start',function(){_curUtt=u;});
+  u.addEventListener('end',function(){if(_curUtt===u)_curUtt=null;});
   // Chrome 会把没人引用的 utterance 回收掉，onend 就永远不来 —— 连读/循环朗读会卡在半路
   _uttHold.push(u);if(_uttHold.length>4)_uttHold.shift();
   // 电脑版 Chrome 的 Google 在线嗓子念到约 15 秒会无声截断；每 10 秒 pause/resume 一下续命。
@@ -3851,6 +3840,17 @@ function _ttsProbe(u){
     try{_ttsHint();}catch(e){}
   },1500);
 }
+// 语速滑块拖动后：把正在读的这一句按新语速重读（接力回调原样转给新句，连读不会断）
+function _ttsApplyRate(){
+  var old=_curUtt;
+  try{if(!old||old._rate||!speechSynthesis.speaking||speechSynthesis.paused)return;}catch(e){return;}
+  if(Math.abs(old.rate-_spk.rate)<0.001)return;
+  var u=_utt(old.text,old._lang);
+  u.onstart=old.onstart;u.onend=old.onend;u.onerror=old.onerror;u.onboundary=old.onboundary;
+  old.onstart=old.onend=old.onerror=old.onboundary=null;   // cancel 会给旧句派发 end/error，别让它推进接力
+  _curUtt=null;
+  try{speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}
+}
 function speakDE(text,btn){
   if(window.__noTTS||!('speechSynthesis' in window)){_ttsHint();return;}
   speechSynthesis.cancel();
@@ -3925,7 +3925,7 @@ function _playLetter(letter,lang,run,btn,next){
   p.timer=setTimeout(function(){
     if(run!==p.run)return;
     if(window.__noTTS||!('speechSynthesis' in window)){stopLetterAudio();_ttsHint();return;}
-    var u=_utt(_letterSay(letter,lang),lang==='en'?'en':'de',.85);
+    var u=_utt(_letterSay(letter,lang),lang==='en'?'en':'de');
     if(btn){document.querySelectorAll('.speak-btn.speaking').forEach(function(b){b.classList.remove('speaking');});btn.classList.add('speaking');}
     u.onend=function(){if(run!==p.run)return;if(btn)btn.classList.remove('speaking');if(next)next();};
     u.onerror=function(e){if(run!==p.run)return;if(btn)btn.classList.remove('speaking');stopLetterAudio();_ttsErr(e);};
