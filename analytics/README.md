@@ -74,6 +74,9 @@ wrangler deploy                                                 # 部署新版 w
 - `GET /api/vido`（带 token）→ `{rev,document}`，Vido（`/vido/`）里隐藏的卡片和自己加的视频；没存过时 `document` 为 `null`
 - `PUT /api/vido`（带 token）`{rev,document:{hidden,videos}}` → 写入；冲突返回 `409` 及服务端版本。上限 5000 个隐藏、300 个视频、900KB
 - `POST /api/redeem`（带 token）`{code}` → `{ok,pro_until,days}`；码无效/已用 `400`；每用户 1 小时输错 10 次、每 IP 30 次后 `429`。续期从到期日往后叠加
+  - 也收**爱发电订单号**（16–40 位数字，可带空格）：认领没带 ref 的爱发电订单。本地未登记时现查爱发电 query-order 核验（已支付 + 金额），一单只能一人认领；本人重复认领回 `{ok,already:1}`；查单失败 `503`
+- `GET /api/pay/ref`（带 token）→ `{ref}`：本人的付款凭据（`<uid36>x<签名>`，签名由 `AFDIAN_TOKEN` 派生），前端拼进爱发电下单链接的 `custom_order_id`；未配 `AFDIAN_TOKEN` 时 `ref` 为空
+- `POST /api/afdian/webhook`（爱发电回调，无鉴权）→ `{ec:200}`。回调内容不可信：只取订单号，用 `AFDIAN_USER_ID` + `AFDIAN_TOKEN` 调官方 query-order 二次核验，按**官方返回**的 `custom_order_id` 找账号开通；没 ref 的先登记待认领。按每份单价认档：≥¥50 年卡 365 天/份，≥¥5 月卡 30 天/份，其余忽略。订单记在 `redeem_codes`（`hash=sha256('afd:'+订单号)`，`batch='afdian'`），重复回调靠主键挡掉，年卡龙权益照常。查无此单（含后台「发送测试」）回 200；查单失败回 `500` 让爱发电重发
 - `GET /api/pro/pack?id=arzt`（带 token）→ `{pack}`；非会员或已过期 `403`。课包正文在 `analytics/packs/*.json`，随 Worker 打包
 - `GET /api/pro/content?k=READINGS,RD_GLOSS`（带 token）→ `{data:{READINGS:[…],RD_GLOSS:{…}}}`；未登录 `401`，非会员/已过期 `403`，未知键 `404`，一次最多 4 个键，`Cache-Control: private, no-store`。键：READINGS / EN_READINGS / SERIES / EN_SERIES / DIALOGUES / EN_DIALOGUES / RD_GLOSS / RESTO / KOLLOC / AFFIX / WORTSCHATZ（2026-11-11 起「免费只留语句」：这六个版块的数据不再打进静态页，worker.js 直接 `import ../data/*.json`，**改了这些 json 要重新部署 Worker**）
 - `POST /api/admin/codes`（请求头 `X-Admin-Key: <STATS_KEY>`）`{n≤200, days∈30/365, batch?}`（永久码 2026-11-11 停发；已发出的仍可兑换） → `{codes,total,used}`；明文码只在这次响应里出现，库里存 SHA-256。站长在 `stats.html` 的「生成会员兑换码」里用

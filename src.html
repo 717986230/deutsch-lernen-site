@@ -1744,7 +1744,7 @@ body.lang-en #homeBoost{display:none!important}
         <li>本站内容<b>仅供语言学习参考</b>。词句释义、谐音标注等由人工整理，可能存在疏漏，<b>不构成任何专业建议</b>（包括但不限于考试、翻译、法律、医疗用途）。</li>
         <li>请勿利用本站从事违法活动，勿尝试攻击、爬取或干扰服务正常运行。</li>
         <li>本站现有内容<b>免费提供、不作可用性承诺</b>，可能因维护、故障或不可抗力中断。</li>
-        <li><b>会员与兑换码</b>：会员通过兑换码开通，解锁会员课包。兑换码属于数字内容，<b>兑换即视为开始提供服务，兑换后不予退款</b>；兑换码未使用前可联系作者退款。会员数据（到期时间）与账号绑定，注销账号时一并删除且不可恢复。兑换码只保存不可逆的哈希值。</li>
+        <li><b>会员与兑换码</b>：会员通过兑换码或在爱发电（afdian.com）付款开通，解锁会员课包。爱发电付款只用于核对订单并开通对应会员，本站不接触你的支付信息。兑换码属于数字内容，<b>兑换即视为开始提供服务，兑换后不予退款</b>；兑换码未使用前可联系作者退款。会员数据（到期时间）与账号绑定，注销账号时一并删除且不可恢复。兑换码只保存不可逆的哈希值。</li>
         <li>在法律允许范围内，站方不对使用本站产生的任何间接损失承担责任。</li>
         <li>本站保留修改本协议的权利，重大变更会在本页面公示。</li>
       </ul>
@@ -4861,8 +4861,13 @@ function checkKollocQ(btn){
 // ══════════════════════════════════════
 // ═════ 会员 · 兑换码（#pro）═════
 // 定价与课包目录是公开信息，写在这里；课包正文只从 /api/pro/pack 下发给有效会员。
-var PRO_CFG={"buyUrl": "", "plans": [["月卡", "¥9.9", "€1.5", "30 天，先试试看"], ["年卡", "¥99", "€13", "365 天，平均每月 ¥8.25；送双龙头像框 + 龙王头像 + 年卡铭牌"]], "perks": ["解锁短文、留学连载、对话、分组高频词、餐厅特训、动词搭配、词缀记忆七大版块（免费版只保留语句与练习）", "全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的内容自动解锁，打开过的断网也能学", "支持手册继续无广告地更新", "年卡专享：🐉 双龙戏珠动态头像框（8 种龙任选）、金龙王 / 暗龙王头像、红金「年卡」铭牌（月卡是紫色「月卡」铭牌）"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}, {"id": "wohnen", "icon": "🏠", "title": "租房 · 办事 · 奥地利", "desc": "找房看房 · 租约押金 · 报修邻里 · 住址登记 · 银行开户，42 句带谐音", "preview": [["Ist die Wohnung noch frei?", "这套房子还空着吗？", "伊斯特 迪 沃农 诺赫 弗莱？"], ["Wann kann ich die Wohnung besichtigen?", "我什么时候可以来看房？", "万 坎 伊希 迪 沃农 贝西希提根？"], ["Wie hoch ist die Miete?", "房租是多少？", "维 霍赫 伊斯特 迪 米特？"]]}]};
-var _pro={until:null,pack:null,unit:0,loading:false,msg:''};
+var PRO_CFG={"buyUrl": "", "afdian": {"page": "", "month": "", "year": ""}, "plans": [["月卡", "¥9.9", "€1.5", "30 天，先试试看"], ["年卡", "¥99", "€13", "365 天，平均每月 ¥8.25；送双龙头像框 + 龙王头像 + 年卡铭牌"]], "perks": ["解锁短文、留学连载、对话、分组高频词、餐厅特训、动词搭配、词缀记忆七大版块（免费版只保留语句与练习）", "全部会员课包（每个都是情景句子 + 会听到的话 + 谐音 + 真人发音朗读）", "以后上新的内容自动解锁，打开过的断网也能学", "支持手册继续无广告地更新", "年卡专享：🐉 双龙戏珠动态头像框（8 种龙任选）、金龙王 / 暗龙王头像、红金「年卡」铭牌（月卡是紫色「月卡」铭牌）"], "packs": [{"id": "arzt", "icon": "🩺", "title": "看病就医 · 奥地利", "desc": "约诊挂号 · 说症状 · 诊室里 · 药房 · 急诊，47 句带谐音", "preview": [["Grüß Gott, ich möchte einen Termin vereinbaren.", "您好，我想预约一下。", "格吕斯 戈特，伊希 麦希特 艾嫩 特尔明 费尔艾恩巴伦。"], ["Ich bin neu hier. Nehmen Sie neue Patienten?", "我是新来的。你们接收新病人吗？", "伊希 宾 诺伊 希尔。内门 齐 诺伊厄 帕齐恩滕？"], ["Haben Sie heute noch einen Termin frei?", "今天还有空的号吗？", "哈本 齐 霍伊特 诺赫 艾嫩 特尔明 弗莱？"]]}, {"id": "wohnen", "icon": "🏠", "title": "租房 · 办事 · 奥地利", "desc": "找房看房 · 租约押金 · 报修邻里 · 住址登记 · 银行开户，42 句带谐音", "preview": [["Ist die Wohnung noch frei?", "这套房子还空着吗？", "伊斯特 迪 沃农 诺赫 弗莱？"], ["Wann kann ich die Wohnung besichtigen?", "我什么时候可以来看房？", "万 坎 伊希 迪 沃农 贝西希提根？"], ["Wie hoch ist die Miete?", "房租是多少？", "维 霍赫 伊斯特 迪 米特？"]]}]};
+var _pro={until:null,pack:null,unit:0,loading:false,msg:'',ref:''};
+// 爱发电：PRO_CFG.afdian.month/year 填方案 plan_id 后出现直购按钮，链接带本人 ref（/api/pay/ref），付款后后端回调自动开通；
+// 只填 page 时跳主页，付款后把爱发电订单号贴进兑换框认领（后端现查爱发电核验）。
+function _afdOn(){var a=PRO_CFG.afdian||{};return !!(a.month||a.year||a.page);}
+function _afdUrl(plan){return 'https://afdian.com/order/create?plan_id='+encodeURIComponent(plan)+'&product_type=0&month=1'+(_pro.ref?'&custom_order_id='+encodeURIComponent(_pro.ref):'');}
+function proPaid(){_pro.msg='';_pro.until=null;proInit();try{_toast('正在刷新会员状态…',1500);}catch(e){}}
 function _proActive(){return !!(_pro.until&&_pro.until>Date.now());}
 // ═════ 会员内容锁（2026-11-11 起「免费只留语句」）═════
 // 短文/连载/对话/餐厅/搭配/词缀的数据**不在页面里**（build.mjs LOCKED 只留空壳 getter），进版块前先过这里：
@@ -4941,8 +4946,9 @@ function proStop(){try{if(typeof _stopPageRead==='function')_stopPageRead();}cat
 function proInit(){
   proRender();
   if(!ACCT.token)return;
+  if(_afdOn()&&!_pro.ref)apiFetch('/api/pay/ref').then(function(r){if(r&&r.ok&&r.data&&r.data.ref){_pro.ref=r.data.ref;proRender();}});
   apiFetch('/api/me').then(function(r){
-    if(r&&r.ok&&r.data&&r.data.user){_pro.until=r.data.user.pro_until||0;_pro.perk=+r.data.user.pro_perk||0;}
+    if(r&&r.ok&&r.data&&r.data.user){_pro.until=r.data.user.pro_until||0;_pro.perk=+r.data.user.pro_perk||0;try{if(ACCT.user){ACCT.user.pro_until=_pro.until;_saveUser();}}catch(e){}_lockMark();}
     else if(_pro.until===null)_pro.until=0;
     proRender();
   });
@@ -4954,7 +4960,7 @@ function _proStatusHtml(){
     var kn=life?'永久会员':(_pro.perk===2?'年卡会员':'月卡会员');
     return '<div class="tip-card pro-on"><div class="tip-title">👑 '+kn+'已开通</div><div class="tip-body">'+(life?'双龙戏珠头像框、龙王头像随时可换':'有效期至 <b>'+_proDate(_pro.until)+'</b>，续费会从到期日往后叠加')+'</div></div>';
   }
-  return '<div class="tip-card"><div class="tip-title">'+(_pro.until?'会员已于 '+_proDate(_pro.until)+' 到期':'还不是会员')+'</div><div class="tip-body">买到兑换码后，在下面输入即可开通。</div></div>';
+  return '<div class="tip-card"><div class="tip-title">'+(_pro.until?'会员已于 '+_proDate(_pro.until)+' 到期':'还不是会员')+'</div><div class="tip-body">'+(_afdOn()?'在下面用爱发电付款，付完自动开通；也可以输入兑换码。':'买到兑换码后，在下面输入即可开通。')+'</div></div>';
 }
 function _proRow(p,ui,pi){
   return '<div class="rs-row" id="prp'+pi+'"><button class="speak-btn" type="button" aria-label="朗读" onclick="proSay('+ui+','+pi+',this)">🔊</button><div><div class="rs-de" lang="de">'+_esc(p.de)+'</div><div class="rs-zh">'+_esc(p.zh)+'</div><div class="rs-py">'+_esc(p.py)+'</div>'+(p.n?'<span class="rs-n">💡 '+_esc(p.n)+'</span>':'')+'</div></div>';
@@ -4983,12 +4989,21 @@ function proRender(){
       for(var j=0;j<pk.preview.length;j++){var v=pk.preview[j];h+='<div class="rs-row"><button class="speak-btn" type="button" aria-label="朗读" onclick="proSayText('+i+','+j+',this)">🔊</button><div><div class="rs-de" lang="de">'+_esc(v[0])+'</div><div class="rs-zh">'+_esc(v[1])+'</div><div class="rs-py">'+_esc(v[2])+'</div></div></div>';}
       h+='</div>';}
     h+='</div>';}
-  h+='<div class="sec-title" style="margin-top:14px"><span class="sec-title-icon">🎟️</span><span class="sec-title-text">输入兑换码</span></div>';
-  h+='<div class="acct-card"><div class="acct-field"><label for="proCode">兑换码</label><input class="acct-input" id="proCode" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="UUOO-XXXX-XXXX-XXXX" onkeydown="if(event.key===\'Enter\'){event.preventDefault();proRedeem();}"></div><div class="acct-err" id="proErr">'+_esc(_pro.msg)+'</div><button class="acct-btn" type="button" id="proGo" onclick="proRedeem()">兑换</button></div>';
+  var afd=_afdOn();
+  h+='<div class="sec-title" style="margin-top:14px"><span class="sec-title-icon">🎟️</span><span class="sec-title-text">输入兑换码'+(afd?' / 爱发电订单号':'')+'</span></div>';
+  h+='<div class="acct-card"><div class="acct-field"><label for="proCode">'+(afd?'兑换码或爱发电订单号':'兑换码')+'</label><input class="acct-input" id="proCode" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="'+(afd?'UUOO-XXXX-XXXX-XXXX 或 2026…订单号':'UUOO-XXXX-XXXX-XXXX')+'" onkeydown="if(event.key===\'Enter\'){event.preventDefault();proRedeem();}"></div><div class="acct-err" id="proErr">'+_esc(_pro.msg)+'</div><button class="acct-btn" type="button" id="proGo" onclick="proRedeem()">兑换</button></div>';
   h+='<div class="sec-title" style="margin-top:14px"><span class="sec-title-icon">💳</span><span class="sec-title-text">价格与购买</span></div><div class="tip-card"><div class="tip-body">';
   for(var k=0;k<PRO_CFG.plans.length;k++){var pl=PRO_CFG.plans[k];h+='<div style="display:flex;justify-content:space-between;gap:10px;padding:6px 0"><b>'+_esc(pl[0])+'</b><span>'+_esc(pl[1])+' / '+_esc(pl[2])+'</span></div><div style="font-size:12px;color:var(--text-dim);margin-bottom:6px">'+_esc(pl[3])+'</div>';}
   h+='<ul style="margin:8px 0 0 18px;padding:0">';for(var m=0;m<PRO_CFG.perks.length;m++)h+='<li>'+_esc(PRO_CFG.perks[m])+'</li>';h+='</ul></div></div>';
-  if(PRO_CFG.buyUrl)h+='<a class="acct-btn" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box" href="'+_esc(PRO_CFG.buyUrl)+'" target="_blank" rel="noopener">去购买兑换码</a>';
+  if(afd){var A=PRO_CFG.afdian,pls=[['month','月卡'],['year','年卡']],nb=0;
+    if(!ACCT.token)h+='<button class="acct-btn" type="button" onclick="showSection(\'account\')">先登录，再用爱发电购买</button>';
+    else{for(var q=0;q<pls.length;q++){var pid=A[pls[q][0]];if(!pid)continue;var pr=PRO_CFG.plans[q]||[pls[q][1],''];nb++;
+        h+='<a class="acct-btn afd-buy" style="display:flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box;margin-top:'+(nb>1?'10px':'0')+'" href="'+_esc(_afdUrl(pid))+'" target="_blank" rel="noopener" onclick="try{track(\'pro_buy\',{p:\''+pls[q][0]+'\'})}catch(e){}">⚡ 爱发电购买'+_esc(pr[0])+' '+_esc(pr[1])+'</a>';}
+      if(!nb&&A.page)h+='<a class="acct-btn afd-buy" style="display:flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box" href="'+_esc(A.page)+'" target="_blank" rel="noopener">⚡ 去爱发电购买</a>';
+      h+='<p style="font-size:12px;color:var(--text-dim);text-align:center;margin:8px 0 0;line-height:1.7">'+(nb?'用当前账号付款后自动开通，回来点「我已付款」刷新即可。':'付款后在爱发电「我的订单」复制订单号，粘贴到上面的兑换框。')+'<br>没开通？把爱发电订单号粘到上面的兑换框也能认领。</p>';
+      h+='<button class="btn" type="button" style="display:block;margin:8px auto 0" onclick="proPaid()">我已付款，刷新状态</button>';}
+  }
+  else if(PRO_CFG.buyUrl)h+='<a class="acct-btn" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box" href="'+_esc(PRO_CFG.buyUrl)+'" target="_blank" rel="noopener">去购买兑换码</a>';
   else h+='<button class="acct-btn" type="button" onclick="showSection(\'support\')">加作者微信购买兑换码</button><p style="font-size:12px;color:var(--text-dim);text-align:center;margin:8px 0 0">付款后会收到一串兑换码，回到这里输入即可。</p>';
   h+='<p style="font-size:12px;color:var(--text-dim);margin:14px 0 0">兑换码是数字内容，兑换后即开通、不支持退款；码未使用前可联系作者退款。详见 <a href="#legal" onclick="showSection(\'legal\');return false" style="color:var(--gold-text)">用户协议</a>。</p>';
   el.innerHTML=h;
@@ -4996,7 +5011,7 @@ function proRender(){
 function proRedeem(){
   var inp=document.getElementById('proCode'),btn=document.getElementById('proGo');if(!inp)return;
   var c=(inp.value||'').trim();
-  if(!c){_pro.msg='请输入兑换码';proRender();return;}
+  if(!c){_pro.msg=_afdOn()?'请输入兑换码或爱发电订单号':'请输入兑换码';proRender();return;}
   if(btn){btn.disabled=true;btn.textContent='兑换中…';}
   apiFetch('/api/redeem',{method:'POST',body:{code:c}}).then(function(r){
     if(r&&r.ok&&r.data&&r.data.ok){_pro.until=r.data.pro_until;_pro.msg='';try{_toast('🎉 会员已开通',2500);}catch(e){}try{track('pro_redeem',{d:r.data.days});}catch(e){}}

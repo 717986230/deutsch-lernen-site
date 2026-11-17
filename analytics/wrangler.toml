@@ -17,6 +17,9 @@ SITE_URL = "https://www.uuoo.site"
 GH_CLIENT_ID = "Ov23liyrQtw2yZr6DeYg"
 # Google OAuth Client ID（公开值）；Secret 用 `wrangler secret put GOOGLE_CLIENT_SECRET`
 GOOGLE_CLIENT_ID = ""
+# 爱发电开发者 user_id（公开值）；API Token 是密钥：在 Cloudflare 后台 uuoo-analytics → 设置 → 变量和机密 → 添加「密钥」AFDIAN_TOKEN
+# （或 wrangler secret put AFDIAN_TOKEN）。爱发电后台 Webhook URL 填 https://uuoo-analytics.uuoo.workers.dev/api/afdian/webhook
+AFDIAN_USER_ID = "6abc65a2dd4b11f19d3d52540025c377"
 
 # 定时清理：每天凌晨 4 点删过期埋点（保留 90 天）与过期会话/state/频控计数。
 # 不配这个，events 表会一直涨到 D1 的 10GB 上限。
