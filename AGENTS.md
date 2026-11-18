@@ -51,7 +51,8 @@ npm run build        # = node build.mjs
 - **不做 UGC**：不接受用户上传的文本/图片/头像。头像只能从预设 emoji + 预设背景色里选。
   （零存储、零外链、零审核负担——这是刻意的产品决策，别"顺手"加上传功能。）
 - **不引外部资源**：无 CDN、无外链字体/图片/脚本。全站离线可用。
-  唯一例外：「🎬 原声例句」(#clips) 和 Vido 一样，视频文件走 jsDelivr（rj-yy 的 media-NN 分支，自由许可片）；
+  唯一例外：「🎬 原声例句」(#clips) 和 Vido 一样，视频文件走 jsDelivr（rj-yy 的 media-NN 整片 / cut-NN 每句切片，自由许可片）；
+  用户主动切到「▶ YouTube 官方」时才嵌入 youtube-nocookie 官方播放器（先探测 i.ytimg.com，打不开就回到站内片段）；
   索引 `/vido/clips.json` 由 rj-yy `scripts/build_collections.py` 生成、sync-vido 同步，**不要在本仓库手改**。
 - 词库数据在构建时 XOR+Base64 加密，**不要把明文词库写进 `src.html`**。
   自检：`grep -c '"de":"Guten Morgen' index.html` 必须为 `0`。

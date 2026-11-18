@@ -1693,7 +1693,9 @@ body.lang-en #homeBoost{display:none!important}
     <form class="say-row" onsubmit="clSearch();return false" role="search"><input type="search" id="clInput" enterkeyhint="search" autocomplete="off" aria-label="搜原声例句" placeholder="输入德语或中文，如 Wetter / 天气"><button type="submit" class="say-go">搜</button></form>
     <div class="say-chips" id="clChips"></div>
     <div class="cl-player" id="clPlayer" style="display:none">
+      <div class="cl-mode" role="group" aria-label="播放来源"><button type="button" id="clModeCut" class="on" aria-pressed="true" onclick="clSetMode('cut')">⚡ 站内片段</button><button type="button" id="clModeYt" aria-pressed="false" onclick="clSetMode('yt')">▶ YouTube 官方</button></div>
       <video id="clVideo" playsinline webkit-playsinline preload="metadata"></video>
+      <iframe id="clYt" title="YouTube 官方播放器" style="display:none" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
       <div class="cl-cap"><div class="cl-de" id="clDe" lang="de"></div><div class="cl-zh" id="clZh"></div><div class="cl-py" id="clPy"></div></div>
       <div class="cl-ctrl"><button type="button" onclick="clReplay()">🔁 重播</button><button type="button" id="clRateBtn" aria-pressed="false" onclick="clRate()">🐢 0.75× 慢放</button><button type="button" onclick="clNext()">⏭ 换一幕</button></div>
       <div class="cl-src" id="clSrc"></div>
@@ -4979,10 +4981,21 @@ function _clShow(list,q,total){
   if(info){info.innerHTML=q?(list.length?'原声里有 <b>'+total+'</b> 句'+(total>list.length?'（先看最短的 '+list.length+' 句）':'')+' · 来自 '+V.length+' 部真实德语视频':'原声库里没找到「'+_esc(q)+'」，换个词或用原形试试'):'随便听听 · <button type="button" class="cl-retry" onclick="clRandom(false)">🔄 换一批</button>';}
   var lq=q&&!/[一-鿿]/.test(q)?q.toLowerCase():'';
   el.innerHTML=list.map(function(ci,k){var c=C[ci],v=V[c[0]],d=Math.max(1,Math.round(c[2]-c[1]));
-    return '<button type="button" class="cl-item" data-k="'+k+'"><span class="cl-play" aria-hidden="true">▶</span><span class="cl-txt"><b lang="de">'+(lq?_hl(_esc(c[3]),lq):_esc(c[3]))+'</b><i>'+_esc(c[4])+'</i><small>'+_esc(v[6].split(' · ')[0])+' · '+_esc(v[1])+' · '+d+' 秒</small></span></button>';}).join('');
+    return '<button type="button" class="cl-item" data-k="'+k+'"><span class="cl-play" aria-hidden="true">▶</span><span class="cl-txt"><b lang="de">'+(lq?_hl(_esc(c[3]),lq):_esc(c[3]))+'</b><i>'+_esc(c[4])+'</i><small>'+_esc(v[6].split(' · ')[0])+' · '+_esc(v[1])+' · '+d+' 秒'+(v[7]?' · <span class="cl-yt">YouTube</span>':'')+'</small></span></button>';}).join('');
   el.onclick=function(e){var b=e.target.closest&&e.target.closest('.cl-item');if(b)clPlay(+b.getAttribute('data-k'));};
-  // 预取第一条的视频元数据：点播放时不用再等握手（WinkLingo 流畅的关键之一）
-  if(list.length)_clSrc(V[C[list[0]][0]],true);
+  // 预取第一条：有切片就把那几十 KB 整段拉下来，没有就先拿整片的元数据（WinkLingo 流畅的关键）
+  if(list.length)_clPrefetch(list[0]);
+}
+// 两种播放来源，都照 WinkLingo：
+//   片段 = 每句预先切好的几秒小 mp4（v[8] 前缀 + 片内序号 c[6]），走 jsDelivr CDN；没切片就退回整片定位播放
+//   YouTube = 嵌入官方播放器（youtube-nocookie），只用存下的 id 和起止秒数；国内打不开会先探测，失败自动回到片段
+var CL_MODE_KEY='clMode';
+function _clMode(){try{return localStorage.getItem(CL_MODE_KEY)==='yt'?'yt':'cut';}catch(e){return 'cut';}}
+function _clCutUrl(ci){var c=CLIPS.c[ci],v=CLIPS.v[c[0]];return v[8]&&c[6]!=null?v[8]+c[6]+'.mp4':'';}
+function _clPrefetch(ci){
+  var u=_clCutUrl(ci);
+  if(u){try{fetch(u,{mode:'cors',credentials:'omit'}).catch(function(){});}catch(e){}return;}
+  _clSrc(CLIPS.v[CLIPS.c[ci][0]],true);
 }
 function _clSrc(v,pre){
   var vd=document.getElementById('clVideo');if(!vd)return vd;
@@ -4992,21 +5005,72 @@ function _clSrc(v,pre){
   }
   return vd;
 }
+function _clYtProbe(id,cb){
+  if(_cl.ytOk!=null){cb(_cl.ytOk);return;}
+  var done=false,img=new Image(),fin=function(ok){if(done)return;done=true;_cl.ytOk=ok;cb(ok);};
+  img.onload=function(){fin(img.naturalWidth>0);};img.onerror=function(){fin(false);};
+  setTimeout(function(){fin(false);},4500);
+  img.src='https://i.ytimg.com/vi/'+id+'/default.jpg?'+Date.now();
+}
+function clSetMode(m){
+  try{localStorage.setItem(CL_MODE_KEY,m);}catch(e){}
+  _clModeUI();if(_cl.i>=0)clPlay(_cl.i);
+}
+function _clModeUI(){
+  var m=_clMode(),a=document.getElementById('clModeCut'),b=document.getElementById('clModeYt');
+  if(a){a.classList.toggle('on',m==='cut');a.setAttribute('aria-pressed',String(m==='cut'));}
+  if(b){b.classList.toggle('on',m==='yt');b.setAttribute('aria-pressed',String(m==='yt'));}
+}
+function _clShowFrame(yt){
+  var vd=document.getElementById('clVideo'),fr=document.getElementById('clYt'),rb=document.getElementById('clRateBtn');
+  if(vd)vd.style.display=yt?'none':'block';if(fr)fr.style.display=yt?'block':'none';
+  if(rb)rb.style.display=yt?'none':'';   // 官方播放器不开 API 就调不了倍速，干脆不给按钮
+  if(!yt&&fr&&fr.getAttribute('src'))fr.setAttribute('src','about:blank');
+}
 function clPlay(k){
   if(!CLIPS||k<0||k>=_cl.res.length)return;
   try{if(typeof stopAutoPlay==='function')stopAutoPlay();speechSynthesis.cancel();}catch(e){}
-  _cl.i=k;var c=CLIPS.c[_cl.res[k]],v=CLIPS.v[c[0]];
+  _cl.i=k;var ci=_cl.res[k],c=CLIPS.c[ci],v=CLIPS.v[c[0]];
   var box=document.getElementById('clPlayer');box.style.display='block';
   document.getElementById('clDe').textContent=c[3];document.getElementById('clZh').textContent=c[4];
   document.getElementById('clPy').textContent=c[5]?'谐音：'+c[5]:'';
-  document.getElementById('clSrc').innerHTML='《'+_esc(v[1])+'》'+_esc(v[2])+' · '+_esc(v[5])+' · <a href="/vido/">看完整视频 →</a>';
+  document.getElementById('clSrc').innerHTML='《'+_esc(v[1])+'》'+_esc(v[2])+' · '+_esc(v[5])+' · '+(v[7]?'<a href="https://www.youtube.com/watch?v='+encodeURIComponent(v[7])+'&t='+Math.floor(c[1])+'s" target="_blank" rel="noopener">在 YouTube 打开 →</a>':'<a href="/vido/">看完整视频 →</a>');
+  var mb=document.querySelector('#clPlayer .cl-mode');if(mb)mb.style.display=v[7]?'':'none';   // 这部片没有 YouTube 官方版就不给切换
+  _clModeUI();
   var it=document.querySelectorAll('#clList .cl-item');for(var i=0;i<it.length;i++)it[i].classList.toggle('on',i===k);
-  var vd=_clSrc(v,false);
-  _cl.stopAt=c[2]+0.25;
-  var go=function(){try{vd.currentTime=Math.max(0,c[1]-0.15);}catch(e){}vd.playbackRate=_cl.rate;var p=vd.play();if(p&&p.catch)p.catch(function(){});_clWatch();};
-  if(vd.readyState>=1)go();else{vd.addEventListener('loadedmetadata',function f(){vd.removeEventListener('loadedmetadata',f);go();});try{vd.load();}catch(e){}}
+  if(_cl.res.length>1)_clPrefetch(_cl.res[(k+1)%_cl.res.length]);   // 下一句提前到货，「换一幕」不卡
   try{box.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}
-  try{track('clip',{v:v[0]});}catch(e){}
+  try{track('clip',{v:v[0],m:_clMode()});}catch(e){}
+  if(_clMode()==='yt'&&v[7]){
+    clStop();
+    _clYtProbe(v[7],function(ok){
+      if(_cl.i!==k)return;
+      if(!ok){try{_toast('YouTube 在当前网络打不开（国内需要能访问 YouTube 的网络），已切回站内片段',2600);}catch(e){}try{localStorage.setItem(CL_MODE_KEY,'cut');}catch(e){}_clModeUI();_clPlayVideo(c,v,ci);return;}
+      _clShowFrame(true);
+      var fr=document.getElementById('clYt');
+      fr.setAttribute('src','https://www.youtube-nocookie.com/embed/'+encodeURIComponent(v[7])+'?start='+Math.max(0,Math.floor(c[1]-0.2))+'&end='+Math.ceil(c[2]+0.4)+'&autoplay=1&playsinline=1&rel=0&modestbranding=1&cc_load_policy=0');
+    });
+    return;
+  }
+  _clPlayVideo(c,v,ci);
+}
+function _clPlayVideo(c,v,ci){
+  _clShowFrame(false);
+  var vd=document.getElementById('clVideo'),cut=_clCutUrl(ci);
+  var full=function(){
+    vd.onended=null;vd.removeAttribute('data-cut');
+    vd=_clSrc(v,false);_cl.stopAt=c[2]+0.25;
+    var go=function(){try{vd.currentTime=Math.max(0,c[1]-0.15);}catch(e){}vd.playbackRate=_cl.rate;var p=vd.play();if(p&&p.catch)p.catch(function(){});_clWatch();};
+    if(vd.readyState>=1)go();else{vd.addEventListener('loadedmetadata',function f(){vd.removeEventListener('loadedmetadata',f);go();});try{vd.load();}catch(e){}}
+  };
+  if(!cut){full();return;}
+  // 切片：整段就是这一句，从 0 播到尾，不用定位
+  cancelAnimationFrame(_cl.raf);
+  vd.setAttribute('data-id','');vd.setAttribute('data-cut','1');vd.preload='auto';
+  vd.onerror=function(){if(vd.getAttribute('data-cut'))full();};   // 切片还没上 CDN/失败 → 退回整片定位
+  vd.src=cut;vd.playbackRate=_cl.rate;
+  var p=vd.play();if(p&&p.catch)p.catch(function(){});
+  vd.addEventListener('loadedmetadata',function f(){vd.removeEventListener('loadedmetadata',f);vd.playbackRate=_cl.rate;});
 }
 function _clWatch(){
   cancelAnimationFrame(_cl.raf);var vd=document.getElementById('clVideo');
@@ -5016,7 +5080,7 @@ function _clWatch(){
 function clReplay(){if(_cl.i>=0)clPlay(_cl.i);}
 function clNext(){if(!_cl.res.length)return;clPlay((_cl.i+1)%_cl.res.length);}
 function clRate(){_cl.rate=_cl.rate===1?0.75:1;var b=document.getElementById('clRateBtn');if(b)b.setAttribute('aria-pressed',String(_cl.rate!==1));var vd=document.getElementById('clVideo');if(vd)vd.playbackRate=_cl.rate;if(b)b.classList.toggle('on',_cl.rate!==1);}
-function clStop(){var vd=document.getElementById('clVideo');if(vd&&!vd.paused)try{vd.pause();}catch(e){}cancelAnimationFrame(_cl.raf);}
+function clStop(){var vd=document.getElementById('clVideo');if(vd&&!vd.paused)try{vd.pause();}catch(e){}cancelAnimationFrame(_cl.raf);var fr=document.getElementById('clYt');if(fr&&fr.getAttribute('src')&&fr.getAttribute('src')!=='about:blank')fr.setAttribute('src','about:blank');}
 function clHintUpd(q){
   var a=document.getElementById('clHint');if(!a)return;var si=document.getElementById('searchInput');q=((si&&si.value)||q||'').trim();
   var ok=(typeof LANG==='undefined'||LANG!=='en')&&(q.length>=3||(/[一-鿿]/.test(q)&&q.length>=2));
@@ -7601,6 +7665,12 @@ body.sec-me .phfab,body.sec-pro .phfab,body.sec-support .phfab,body.sec-stats .p
 .cm-star[aria-pressed=true]{color:var(--gold-text);border-color:var(--gold-text)}
 .cm-slow::after,.cm-star::after{content:'';position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
 
+.cl-player iframe{display:block;width:100%;aspect-ratio:16/9;border:0;background:#000}
+.cl-mode{display:flex;gap:6px;padding:8px 10px;background:var(--surface-2)}
+.cl-mode button{flex:1;min-height:44px;border-radius:var(--r-pill,999px);border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.cl-mode button.on{background:var(--gold);border-color:var(--gold);color:var(--on-brand)}
+.cl-mode button:disabled{opacity:.45;cursor:not-allowed}
+.cl-yt{color:var(--red-text);font-weight:600}
 /* 🎬 原声例句 */
 .cl-player{margin:12px 0;border-radius:var(--r-md,16px);overflow:hidden;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
 .cl-player video{display:block;width:100%;aspect-ratio:16/9;background:#000}
