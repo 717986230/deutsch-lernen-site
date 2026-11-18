@@ -310,10 +310,6 @@ body.no-gloss .rd-word rt{display:none}
 .card-syn b{color:var(--text);font-weight:600;font-style:italic}
 .card-py{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--gold-faint)}
 .card.flipped .card-py{display:block}
-.sh-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--text-dim)}
-.sh-row button{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:13px;font-weight:600;cursor:pointer}
-.sh-row button:disabled{opacity:.45;cursor:default}
-.sh-row button.sh-on{border-color:var(--red-text);color:var(--red-text)}
 /* 拼读拆解 */
 .ph-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:3px}
 .ph-chip{display:inline-flex;flex-direction:column;align-items:center;padding:3px 7px;border-radius:8px;background:rgba(181,73,46,.08);border:1px solid var(--gold-faint)}
@@ -897,7 +893,7 @@ body.lang-en #homeBoost{display:none!important}
         <b>V</b> → 发"f"音 ✦ Vater＝法特尔，不是"瓦特尔"<br>
         <b>W</b> → 发"v"音 ✦ Wasser＝瓦瑟，不是英语的"w"<br>
         <b>Z</b> → 发"ts"音 ✦ zu＝粗，Zeit＝采特，不是"兹"<br>
-        <b>S</b> → 母音间发"z兹" ✦ See＝泽，sonst＝宗斯特<br>
+        <b>S</b> → 元音前发"z兹" ✦ See＝泽，sonst＝宗斯特<br>
         <b>Q</b> → qu发"kv" ✦ Qualität＝克瓦利泰特，不是"kw"
       </div>
     </div>
@@ -909,7 +905,7 @@ body.lang-en #homeBoost{display:none!important}
       <tr><td class="pron-letter">Ä / ä</td><td class="pron-sound">类似"诶"拉长</td><td class="pron-zh">诶</td><td class="pron-example">Mädchen（女孩）= 梅特兴</td></tr>
       <tr><td class="pron-letter">Ö / ö</td><td class="pron-sound">圆唇发"诶"</td><td class="pron-zh">呃（圆唇）</td><td class="pron-example">schön（美）= 舍恩</td></tr>
       <tr><td class="pron-letter">Ü / ü</td><td class="pron-sound">圆唇发"衣"</td><td class="pron-zh">于</td><td class="pron-example">grün（绿）= 格吕恩</td></tr>
-      <tr><td class="pron-letter">ß</td><td class="pron-sound">双重S音</td><td class="pron-zh">斯</td><td class="pron-example">Straße（街道）= 施特拉瑟</td></tr>
+      <tr><td class="pron-letter">ß</td><td class="pron-sound">清音 s（同 ss）</td><td class="pron-zh">斯</td><td class="pron-example">Straße（街道）= 施特拉瑟</td></tr>
     </table>
 
     <div class="sec-title"><span class="sec-title-icon">🔗</span><span class="sec-title-text">常见字母组合发音</span></div>
@@ -919,7 +915,7 @@ body.lang-en #homeBoost{display:none!important}
       <tr><td class="pron-letter">ie</td><td>发长"i"音</td><td class="pron-zh">伊</td><td class="pron-example">viel（多）= 菲尔</td></tr>
       <tr><td class="pron-letter">eu/äu</td><td>发"oi"音</td><td class="pron-zh">欧伊</td><td class="pron-example">Freund（朋友）= 弗罗因特</td></tr>
       <tr><td class="pron-letter">au</td><td>发"ao"音</td><td class="pron-zh">奥</td><td class="pron-example">blau（蓝）= 布劳</td></tr>
-      <tr><td class="pron-letter">ch</td><td>舌后摩擦音</td><td class="pron-zh">希/赫</td><td class="pron-example">ich（我）= 伊希；Bach = 巴赫</td></tr>
+      <tr><td class="pron-letter">ch</td><td>a/o/u/au 后喉音"赫"，其余轻擦"希"</td><td class="pron-zh">希/赫</td><td class="pron-example">ich（我）= 伊希；Bach = 巴赫</td></tr>
       <tr><td class="pron-letter">sch</td><td>类似"sh"</td><td class="pron-zh">施</td><td class="pron-example">schön（美）= 舍恩</td></tr>
       <tr><td class="pron-letter">sp/st</td><td>词首发"shp/sht"</td><td class="pron-zh">施普/施特</td><td class="pron-example">Sprache（语言）= 施普拉赫</td></tr>
       <tr><td class="pron-letter">qu</td><td>发"kv"音</td><td class="pron-zh">克瓦</td><td class="pron-example">Qualität = 克瓦利泰特</td></tr>
@@ -930,8 +926,8 @@ body.lang-en #homeBoost{display:none!important}
     </table>
 
     <div class="sec-title"><span class="sec-title-icon">📌</span><span class="sec-title-text">关键发音规则</span></div>
-    <div class="tip-card"><div class="tip-title">规则1：字尾 -e 轻读</div><div class="tip-body">词尾的e通常发轻声"呃"。例：<b>Hunde</b>（狗们）= 洪德<b>呃</b>，<b>Sprache</b>（语言）= 斯普拉赫<b>呃</b></div></div>
-    <div class="tip-card"><div class="tip-title">规则2：-ig 结尾发"希"</div><div class="tip-body">词尾-ig发/ɪç/音，近似"希"。例：<b>richtig</b>（正确的）= 里希<b>希</b>，<b>lustig</b>（有趣的）= 卢斯<b>希</b></div></div>
+    <div class="tip-card"><div class="tip-title">规则1：字尾 -e 轻读</div><div class="tip-body">词尾的e通常发轻声"呃"。例：<b>Hunde</b>（狗们）= 洪德<b>呃</b>，<b>Sprache</b>（语言）= 施普拉赫<b>呃</b></div></div>
+    <div class="tip-card"><div class="tip-title">规则2：-ig 结尾发"希"</div><div class="tip-body">词尾-ig发/ɪç/音，近似"希"。例：<b>richtig</b>（正确的）= 里希提<b>希</b>，<b>lustig</b>（有趣的）= 卢斯提<b>希</b></div></div>
     <div class="tip-card"><div class="tip-title">规则3：词尾辅音清化</div><div class="tip-body">词尾的b/d/g变清音p/t/k。例：<b>Hund</b>（狗）读作"洪<b>特</b>"，<b>Weg</b>（路）读作"韦<b>克</b>"</div></div>
     <div class="tip-card"><div class="tip-title">规则4：重音基本在第一音节</div><div class="tip-body">德语词重音通常在第一个音节。外来词例外。例：<b>KOM</b>-men，<b>SPRA</b>-che，<b>GU</b>-ten</div></div>
     <div class="tip-card"><div class="tip-title">规则5：v 发"f"音</div><div class="tip-body">德语v通常发"f"音。例：<b>Vater</b>（父亲）= <b>法</b>特尔，<b>viel</b>（多）= <b>菲</b>尔</div></div>
@@ -991,7 +987,7 @@ body.lang-en #homeBoost{display:none!important}
     <table class="pron-table">
       <tr><th>音变</th><th>英语</th><th>德语</th><th>谐音</th></tr>
       <tr><td class="pron-letter">t → s/ss/ß</td><td class="pron-example">water, eat, foot, what</td><td class="pron-example">Wasser, essen, Fuß, was</td><td class="pron-zh">瓦瑟／埃森／福斯／瓦斯</td></tr>
-      <tr><td class="pron-letter">t → z</td><td class="pron-example">ten, to, tongue</td><td class="pron-example">zehn, zu, Zunge</td><td class="pron-zh">岑／楚</td></tr>
+      <tr><td class="pron-letter">t → z</td><td class="pron-example">ten, to, tongue</td><td class="pron-example">zehn, zu, Zunge</td><td class="pron-zh">岑／楚／聪厄</td></tr>
       <tr><td class="pron-letter">p → pf</td><td class="pron-example">pepper, apple</td><td class="pron-example">Pfeffer, Apfel</td><td class="pron-zh">普费弗／阿普费尔</td></tr>
       <tr><td class="pron-letter">d → t</td><td class="pron-example">day, door, deep</td><td class="pron-example">Tag, Tür, tief</td><td class="pron-zh">塔克／提尔／提夫</td></tr>
       <tr><td class="pron-letter">k → ch</td><td class="pron-example">make, book, milk</td><td class="pron-example">machen, Buch, Milch</td><td class="pron-zh">马赫恩／布赫／米尔希</td></tr>
@@ -2701,7 +2697,7 @@ const NUM_POOL=[...nums0,
 const LETTERS = [
   {l:'A a',name:'啊（ah）',sound:'长/短"啊"<br>Alt=啊尔特，ja=雅',say:'A'},
   {l:'B b',name:'贝（beh）',sound:'"b"<br>词尾变清音"p"<br>Brot=布罗特',say:'Beh'},
-  {l:'C c',name:'采（tseh）',sound:'e/i前→"ts采"<br>其他→"k卡"<br>Café=卡菲',say:'Zeh'},
+  {l:'C c',name:'采（tseh）',sound:'e/i前→"ts采"<br>其他→"k卡"<br>Café=卡费',say:'Zeh'},
   {l:'D d',name:'德（deh）',sound:'"d"<br>词尾变清音"t"<br>Danke=当克',say:'Deh'},
   {l:'E e',name:'诶（eh）',sound:'重读→"诶"<br>词尾轻读→"厄"<br>es=埃斯',say:'Eh'},
   {l:'F f',name:'艾夫（ef）',sound:'"f夫"<br>Frau=弗劳',say:'Eff'},
@@ -2717,7 +2713,7 @@ const LETTERS = [
   {l:'P p',name:'配（peh）',sound:'"p配"<br>Pause=泡泽<br>Post=波斯特',say:'Peh'},
   {l:'Q q',name:'库（kuh）',sound:'⚠️ qu→"kv 克瓦"<br>不是"kw"<br>Qualität=克瓦利泰特',say:'Kuh'},
   {l:'R r',name:'艾尔（er）',sound:'⚠️ 喉部颤音<br>词尾→弱化"厄"<br>rot=罗特',say:'Err'},
-  {l:'S s',name:'艾斯（es）',sound:'母音间→"z兹"<br>其余→"s斯"<br>See=泽，das=达斯',say:'Ess'},
+  {l:'S s',name:'艾斯（es）',sound:'元音前→浊音"z兹"<br>词尾/辅音前→"s斯"<br>See=泽，das=达斯',say:'Ess'},
   {l:'T t',name:'特（teh）',sound:'"t特"<br>Tag=塔克<br>Tisch=提什',say:'Tee'},
   {l:'U u',name:'乌（uh）',sound:'长/短"乌"<br>und=温特<br>Uhr=乌尔',say:'U'},
   {l:'V v',name:'法乌（fau）',sound:'⚠️ 发"f夫"音！<br>外来词发"v"<br>Vater=法特尔',say:'Vau'},
@@ -3691,79 +3687,6 @@ function renderPhTool(){
     // 真德语短句的联想来自本地词库（_phSugP），是人工整理的，不受影响。
   },0);
 }
-// ══════════════ 跟读录音对比（shadowing）══════════════
-// 借鉴 LLPlayer / speech-shadowing 一类跟读工具：卡片背面录一句自己的，和朗读原声连着放来对比。
-// 录音只在本机内存里（Blob URL），不上传、不保存 —— 遵守「不做 UGC」。同一时刻只保留最后一条。
-var _sh={rec:null,url:null,row:null,timer:0,left:0,audio:null};
-function _shOk(){return !!(window.MediaRecorder&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);}
-function _shHtml(){
-  if(!_shOk())return '';
-  return '<div class="sh-row" data-sh-row><span>🎙️ 跟读</span><button type="button" data-sh="rec">录我的</button><button type="button" data-sh="me" disabled>▶ 我的</button><button type="button" data-sh="ab" disabled>🔁 原声+我的</button></div>';
-}
-function _shRowBtns(row,on){
-  if(!row)return;
-  var bs=row.querySelectorAll('[data-sh="me"],[data-sh="ab"]'),i;
-  for(i=0;i<bs.length;i++)bs[i].disabled=!on;
-}
-function _shAudio(){
-  if(!_sh.audio){_sh.audio=new Audio();_sh.audio.preload='auto';}
-  return _sh.audio;
-}
-function _shPlay(){
-  if(!_sh.url)return;
-  var a=_shAudio();
-  try{speechSynthesis.cancel();}catch(e){}
-  if(a.src!==_sh.url)a.src=_sh.url;
-  a.muted=false;try{a.currentTime=0;}catch(e){}
-  var pr=a.play();
-  if(pr&&pr.catch)pr.catch(function(){try{_toast('点「▶ 我的」听自己的录音',1800);}catch(e){}});
-}
-function _shStop(){if(_sh.rec&&_sh.rec.state==='recording')_sh.rec.stop();}
-function _shStart(row,btn){
-  try{speechSynthesis.cancel();}catch(e){}
-  if(_sh.audio)try{_sh.audio.pause();}catch(e){}
-  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
-    var chunks=[],rec;
-    try{rec=new MediaRecorder(stream);}catch(e){stream.getTracks().forEach(function(t){t.stop();});_toast('这个浏览器不支持录音',2000);return;}
-    _sh.rec=rec;
-    rec.ondataavailable=function(ev){if(ev.data&&ev.data.size)chunks.push(ev.data);};
-    rec.onstop=function(){
-      clearInterval(_sh.timer);
-      stream.getTracks().forEach(function(t){t.stop();});   // 立刻还麦克风，iPhone 才会切回外放
-      btn.classList.remove('sh-on');btn.textContent='重录';
-      if(!chunks.length)return;
-      if(_sh.url)try{URL.revokeObjectURL(_sh.url);}catch(e){}
-      _sh.url=URL.createObjectURL(new Blob(chunks,{type:rec.mimeType||'audio/webm'}));
-      if(_sh.row&&_sh.row!==row)_shRowBtns(_sh.row,false);   // 只留最后一条录音
-      _sh.row=row;_shRowBtns(row,true);
-      _shPlay();
-    };
-    rec.start();
-    btn.classList.add('sh-on');
-    _sh.left=10;btn.textContent='⏹ 停止（10）';
-    _sh.timer=setInterval(function(){_sh.left--;if(_sh.left<=0){_shStop();return;}btn.textContent='⏹ 停止（'+_sh.left+'）';},1000);
-    try{track('shadow_rec');}catch(e){}
-  },function(){_toast('没拿到麦克风权限：请在浏览器设置里允许本站使用麦克风',2600);});
-}
-// 先放朗读原声，念完再放自己的录音
-function _shCompare(text){
-  var a=_shAudio();
-  // 在点按手势里先静音地播一下，iPhone 才允许 TTS 结束后（非手势时机）再出声
-  if(_sh.url){a.src=_sh.url;a.muted=true;var pr=a.play();if(pr&&pr.then)pr.then(function(){a.pause();},function(){});}
-  if(window.__noTTS||!('speechSynthesis' in window)){_shPlay();return;}
-  speechSynthesis.cancel();
-  var u=_utt(text),done=false;
-  function go(){if(done)return;done=true;setTimeout(_shPlay,350);}
-  u.onend=go;u.onerror=go;
-  setTimeout(go,3000+text.length*160/(_spk.rate||1));     // 有的内核不触发 onend，兜底
-  speechSynthesis.speak(u);
-}
-function _shAct(btn,text){
-  var act=btn.getAttribute('data-sh'),row=btn.closest('[data-sh-row]');
-  if(act==='rec'){if(_sh.rec&&_sh.rec.state==='recording'){_shStop();return;}_shStart(row,btn);}
-  else if(act==='me')_shPlay();
-  else if(act==='ab')_shCompare(text);
-}
 function phTry(w){const el=document.getElementById('phInput');if(el){el.value=w;renderPhTool();speakDE(w);}}
 function makeCard(p,id){
   const d=document.createElement('div');
@@ -3778,15 +3701,13 @@ function makeCard(p,id){
   // 英语外来词（der Job / das Handy / 菜单上的 Fried Rice）额外给一行德语说法，
   // 免得只会说英语借词、听不懂德国人嘴里的 die Arbeit / das Mobiltelefon。
   const synRow=p.syn?`<div class="card-syn"><span class="syn-tag">德语说法</span><b lang="de">${_artHl(p.syn,_searchQ)}</b><button class="speak-btn syn-speak" type="button" title="朗读德语说法" aria-label="朗读 ${p.syn}" style="width:22px;height:22px;font-size:11px">🔊</button></div>`:'';
-  d.innerHTML=`<div class="card-de-row"><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${p.de}">🔊</button><div class="card-de" lang="${lng}">${_artHl(p.de,_searchQ)}</div></div><div class="card-zh">${_hl(p.zh,_searchQ)}</div>${synRow}${_cardMeta(p)}<div class="card-py">${flippedCards[id]?phonFn()+_shHtml():''}</div>`;
+  d.innerHTML=`<div class="card-de-row"><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${p.de}">🔊</button><div class="card-de" lang="${lng}">${_artHl(p.de,_searchQ)}</div></div><div class="card-zh">${_hl(p.zh,_searchQ)}</div>${synRow}${_cardMeta(p)}<div class="card-py">${flippedCards[id]?phonFn():''}</div>`;
   const sb=d.querySelector('.speak-btn');
   sb.addEventListener('click',(e)=>{e.stopPropagation();speakDE(p.de,sb);});
   const yb=d.querySelector('.syn-speak');
   if(yb)yb.addEventListener('click',(e)=>{e.stopPropagation();speakDE(p.syn.replace(/\s*\/\s*/g,', '),yb);});
-  d._back=function(){return phonFn()+_shHtml();};   // 留给 _cardBack 按需生成；背面末尾带跟读录音
+  d._back=phonFn;   // 留给 _cardBack 按需生成
   d.addEventListener('click',(e)=>{
-    var sh=e.target&&e.target.closest&&e.target.closest('[data-sh]');
-    if(sh){e.stopPropagation();_shAct(sh,p.de);return;}
     var cm=e.target&&e.target.closest&&e.target.closest('[data-cm]');
     if(cm){e.stopPropagation();_cardMetaAct(cm,p);return;}
     flippedCards[id]=!flippedCards[id];
