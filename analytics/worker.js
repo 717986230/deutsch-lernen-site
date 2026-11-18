@@ -28,9 +28,9 @@ const PRO_CONTENT = { READINGS: C_READINGS, EN_READINGS: C_EN_READINGS, SERIES: 
   DIALOGUES: C_DIALOGUES, EN_DIALOGUES: C_EN_DIALOGUES, RD_GLOSS: C_RD_GLOSS, RESTO: C_RESTO, KOLLOC: C_KOLLOC, AFFIX: C_AFFIX, WORTSCHATZ: C_WORTSCHATZ };
 // 兑换码字母表：去掉 0/O/1/I/L 这些手抄易混的字符。12 位 ≈ 59 bit，暴力猜不可行（另有频控）
 const CODE_ABC = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-// 2026-11-11 起只卖月卡 / 年卡，不再发永久码；已开通的永久会员（until≈100 年后）权益不变，
-// 库里已发出未用的永久码照样能兑换（兑换读的是码自己的 days）。
-const CODE_DAYS = [30, 365];                 // 月卡 / 年卡
+// 对外只卖月卡 / 年卡；2026-11-18 起站长后台可再手动发永久码（36500 天 ≈ 100 年，proTier 判为永久），
+// 用于赠送 / 活动奖励。兑换读的是码自己的 days。
+const CODE_DAYS = [30, 365, 36500];          // 月卡 / 年卡 / 永久
 const normCode = (c) => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^UUOO/, '');
 async function sha256Hex(t) {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
