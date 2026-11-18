@@ -39,9 +39,10 @@ const DAY = 86400000;
 let r = await call('POST', '/api/admin/codes', { n: 3, days: 365 }, null, { 'X-Admin-Key': 'wrong' });
 if (r.status !== 403) bad(`错误密钥也能发码（${r.status}）`); else ok('错误密钥发码被拒（403）');
 r = await call('POST', '/api/admin/codes', { n: 3, days: 7 }, null, { 'X-Admin-Key': env.STATS_KEY });
-if (r.status !== 400) bad(`非法天数也能发码（${r.status}）`); else ok('天数只认 30/365');
+if (r.status !== 400) bad(`非法天数也能发码（${r.status}）`); else ok('天数只认 30/365/36500');
 r = await call('POST', '/api/admin/codes', { n: 1, days: 36500 }, null, { 'X-Admin-Key': env.STATS_KEY });
-if (r.status !== 400) bad('停售后仍能发永久码'); else ok('永久码已停发（400）');
+const lifeCode = (r.data.codes || [])[0];
+if (r.status !== 200 || r.data.days !== 36500 || !lifeCode) bad(`站长发不了永久码（${r.status}）`); else ok('站长可发永久码（36500 天）');
 r = await call('POST', '/api/admin/codes', { n: 3, days: 365, batch: 'test' }, null, { 'X-Admin-Key': env.STATS_KEY });
 const codes = r.data.codes || [];
 if (codes.length !== 3 || !codes.every((c) => /^UUOO-[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(c))) bad(`发码格式不对：${JSON.stringify(r.data)}`);
@@ -53,6 +54,13 @@ const life = (await call('POST', '/api/admin/codes', { n: 1, days: 30 }, null, {
 // ── 用户 ──
 const reg = async (u) => (await call('POST', '/api/register', { username: u, nickname: u, password: 'pass-' + u + '-123' })).data.token;
 const ta = await reg('alice'), tb = await reg('bob');
+
+// 永久码兑换后应是永久会员（proTier 2，可戴龙框）
+{ const td = (await call('POST', '/api/register', { username: 'dan', nickname: 'dan', password: 'pass-dan-123' }, null, null, '198.51.100.99')).data.token;
+  const rr = await call('POST', '/api/redeem', { code: lifeCode }, td);
+  const me = (await call('GET', '/api/me', undefined, td)).data.user || {};
+  if (rr.status !== 200 || !(me.pro_until > Date.now() + 50 * 365 * DAY) || me.pro_perk !== 2) bad(`永久码兑换后不是永久会员：${rr.status} ${JSON.stringify(me).slice(0, 120)}`);
+  else ok('永久码兑换 → 永久会员（龙框档位 2）'); }
 
 r = await call('POST', '/api/redeem', { code: codes[0] });
 if (r.status !== 401) bad('未登录也能兑换'); else ok('未登录兑换被拒（401）');
