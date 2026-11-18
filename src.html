@@ -798,6 +798,11 @@ body.lang-en #homeBoost{display:none!important}
        不受这里影响。 -->
   <div class="container" style="padding-top:14px">
    <div id="homeDash"></div>
+   <form class="say-box" id="sayBox" onsubmit="sayGo();return false" role="search">
+     <label for="sayInput" class="say-lab">💬 想说什么？直接打中文，查<span class="de-only-block">德语</span><span class="en-only-block">英语</span>地道说法</label>
+     <div class="say-row"><input type="search" id="sayInput" enterkeyhint="search" autocomplete="off" placeholder="例如：想委婉拒绝别人"><button type="submit" class="say-go">查</button></div>
+     <div class="say-chips" id="sayChips"></div>
+   </form>
    <div class="boost-inline" id="homeBoost" style="display:none"><div class="boost-label">每日一句 · Satz des Tages</div><div class="boost-de" id="boostDe" lang="de"></div><div class="boost-zh" id="boostZh"></div><div class="boost-py" id="boostPy"></div><button class="boost-spk" id="boostSpk" type="button" aria-label="朗读这句" title="朗读">🔊</button></div>
    <div class="voice-tip" id="voiceTip" onclick="var g=document.getElementById('voiceGuide');g.style.display=g.style.display==='none'?'block':'none'">
      <span style="font-size:22px;flex-shrink:0">🎧</span>
@@ -3232,12 +3237,18 @@ function filterPhrases(){
     cat.phrases.forEach((p,pi)=>{
       if(_onlyUnknown&&typeof knownHas==='function'&&knownHas(p.de))return; // 藏起已学会的
       if(!q||p.de.toLowerCase().includes(q)||p.zh.includes(q)||p.py.includes(q)||(p.syn&&p.syn.toLowerCase().includes(q))){
-        results.push(Object.assign({},p,{cat:cat.name,icon:cat.icon,id:`${ci}-${pi}`}));
+        results.push(Object.assign({},p,{cat:cat.name,icon:cat.icon,id:`${ci}-${pi}`,lv:cat.level,_meta:!!q}));
       }
     });
   });
   const res=document.getElementById('phraseResults');
-  if(q||activeCat!=='all') res.textContent=`找到 ${results.length} 条结果`;
+  // 中文「我想说…」：字面搜不够时，按意图同义词 + 双字重合补一批「相近说法」
+  var _near=0;
+  if(q&&/[\u4e00-\u9fff]/.test(q)&&results.length<8){
+    var nr=sayNear(q,results,activeCat);_near=nr.length;results=results.concat(nr);
+  }
+  if(q&&_near) res.textContent=`字面命中 ${results.length-_near} 条 · 另有 ${_near} 条相近说法（按意思找的）`;
+  else if(q||activeCat!=='all') res.textContent=`找到 ${results.length} 条结果`;
   else if(_onlyUnknown) res.textContent=`还没学会 ${results.length} 条`;
   else res.textContent='';
   renderSearchResults(results,q||activeCat!=='all'||_onlyUnknown);
@@ -3318,6 +3329,118 @@ function renderPhrases(){
     }
     return makeCard(it.p,it.id);
   });
+}
+
+// ── 「我想说…」中文意图搜索（借鉴“用母语说意思→查地道说法”）──
+// 纯本地：意图同义词把口语问法映射到词库里的中文写法，再按双字重合打分。不联网、不进后端。
+var SAY_SYN=[
+ [['拒绝','不要','不用','不想','婉拒'],['不，谢谢','不用了','不行','不想','恐怕','可惜','算了','下次']],
+ [['听不懂','没听懂','不明白','听不清','没听清'],['再说一遍','慢一点','不明白','不懂','听不']],
+ [['谢谢','感谢','多谢','道谢'],['谢谢','感谢']],
+ [['道歉','对不起','抱歉','不好意思','打扰'],['对不起','抱歉','打扰']],
+ [['安慰','难过','伤心'],['别担心','没关系','遗憾','会好','可惜']],
+ [['鼓励','加油','打气'],['好运','你能','棒','坚持','继续']],
+ [['夸','称赞','表扬','赞美'],['棒','漂亮','厉害','真好','聪明','好看']],
+ [['恭喜','祝贺','生日','祝福'],['祝贺','祝你','快乐','恭喜']],
+ [['买单','结账','付钱','付款','埋单'],['结账','付款','账单','刷卡','现金','买单']],
+ [['多少钱','价格','贵','便宜','砍价'],['多少钱','价格','贵','便宜']],
+ [['问路','怎么走','迷路','在哪'],['在哪','怎么走','多远','附近','哪里']],
+ [['厕所','洗手间','卫生间'],['厕所','洗手间']],
+ [['看病','生病','不舒服','难受','医院'],['医生','疼','生病','不舒服','药店','医院','发烧']],
+ [['预约','约时间','挂号'],['预约','有空','约个']],
+ [['几点','时间','什么时候'],['几点','时间','什么时候']],
+ [['打招呼','问好','见面'],['你好','早上好','晚上好','早安']],
+ [['告别','再见','走了','拜拜'],['再见','回头见','明天见']],
+ [['自我介绍','介绍自己','我是谁'],['我叫','名字','来自','我是']],
+ [['同意','赞成','答应','好的'],['同意','好的','当然','没问题','可以']],
+ [['反对','不同意','不行'],['不同意','不对','不行','不是']],
+ [['帮忙','求助','帮我','救命'],['帮我','救命','帮忙','帮助']],
+ [['点餐','点菜','吃什么','菜单'],['我要','来一','菜单','推荐','我想要','点菜']],
+ [['表白','喜欢你','爱你','想你'],['喜欢你','爱你','想你']],
+ [['累','困了','休息'],['累','困','休息']],
+ [['饿','吃饭','渴','喝'],['饿','渴','吃饭','喝点']],
+ [['天气','下雨','冷','热'],['天气','很冷','很热','下雨','阳光']],
+ [['生气','烦','不满','投诉'],['生气','烦','不满','投诉']],
+ [['不知道','不清楚','不确定'],['不知道','不清楚','也许']],
+ [['认识','交朋友','高兴'],['认识','高兴','朋友']],
+ [['邀请','约你','一起'],['邀请','一起','有空','要不要']],
+ [['迟到','晚了','来晚'],['迟到','来晚','晚了','堵车','抱歉']],
+ [['电话','打电话'],['电话','打给']],
+ [['租房','房子','公寓','房东'],['房租','房间','公寓','租']],
+ [['工作','上班','打工'],['工作','上班','公司','打工']],
+ [['购物','买东西','超市'],['买','超市','商店','试穿']],
+ [['坐车','火车','公交','车票'],['火车','车票','公交','车站','出发']]
+];
+var SAY_FILL=/我想说|想说|怎么说|怎样说|如何说|用德语|德语里|德语|英语|请问|我想|我要|如何|怎么|一下|一句|的话|应该|可以|吗|呢|吧|啊|呀|的|了|，|。|？|！|\s/g;
+function sayNear(q,have,onlyCat){
+  var raw=String(q||''),core=raw.replace(SAY_FILL,'');
+  var terms=[],seen={};
+  SAY_SYN.forEach(function(g){
+    var hit=g[0].some(function(k){return raw.indexOf(k)>=0;});
+    if(hit)g[1].forEach(function(t,ti){if(!seen[t]){seen[t]=ti?1.5:1.9;terms.push(t);}});
+  });
+  var bi=[];for(var i=0;i+1<core.length;i++){var b=core.substr(i,2);if(/^[一-鿿]{2}$/.test(b)&&bi.indexOf(b)<0)bi.push(b);}
+  if(core.length===1&&/[一-鿿]/.test(core))bi.push(core);
+  if(!terms.length&&!bi.length)return [];
+  var skip={};(have||[]).forEach(function(r){skip[r.id]=1;});
+  var out=[];
+  categories.forEach(function(cat,ci){
+    if(onlyCat&&onlyCat!=='all'&&cat.name!==onlyCat)return;
+    cat.phrases.forEach(function(p,pi){
+      var id=ci+'-'+pi;if(skip[id])return;
+      var zh=p.zh||'',sc=0,bh=0;
+      for(var j=0;j<bi.length;j++)if(zh.indexOf(bi[j])>=0)bh++;
+      if(bi.length)sc+=bh/bi.length*2;
+      var tw=0;for(var k=0;k<terms.length;k++)if(zh.indexOf(terms[k])>=0&&seen[terms[k]]>tw)tw=seen[terms[k]];sc+=tw;   // 每组第一个词最贴意思，权重略高
+      if(sc<1)return;
+      if(/[。！？?!]/.test(zh)||/[.!?]$/.test(p.de))sc+=.6;   // 整句优先于单词
+      out.push({sc:sc-zh.length/200,p:Object.assign({},p,{cat:cat.name,icon:cat.icon,id:id,lv:cat.level,_meta:true,_near:true})});
+    });
+  });
+  out.sort(function(a,b){return b.sc-a.sc;});
+  return out.slice(0,30).map(function(x){return x.p;});
+}
+var SAY_EX=['想委婉拒绝别人','没听懂，想让对方再说一遍','想安慰难过的朋友','餐厅里想买单','想问厕所在哪','不舒服想看医生','想夸对方做得好','想跟同事道歉','想约朋友一起出去','想问这个多少钱','想祝朋友生日快乐','迟到了怎么说'];
+function sayChips(){
+  var el=document.getElementById('sayChips');if(!el)return;
+  var a=SAY_EX.slice(),pick=[];while(pick.length<3&&a.length)pick.push(a.splice(Math.floor(Math.random()*a.length),1)[0]);
+  el.textContent='';
+  pick.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='say-chip';b.textContent=t;b.addEventListener('click',function(){sayGo(t);});el.appendChild(b);});
+  var r=document.createElement('button');r.type='button';r.className='say-chip say-more';r.textContent='🔄 换一组';r.addEventListener('click',sayChips);el.appendChild(r);
+}
+function sayGo(q){
+  var inp=document.getElementById('sayInput');q=String(q==null?(inp&&inp.value)||'':q).trim();
+  if(!q){if(inp)inp.focus();return;}
+  showSection('phrases');
+  if(activeCat!=='all'||activeLevel!=='all'){activeCat='all';activeLevel='all';try{buildLevelTabs();showLevelInfo('all');buildCatTabs();}catch(e){}}
+  var si=document.getElementById('searchInput');if(si){si.value=q;}
+  filterPhrases();
+  try{_toAnchor('searchInput');}catch(e){}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sayChips);else setTimeout(sayChips,0);
+function _cardMeta(p){
+  if(!p._meta||!p.de)return '';
+  var lb={'0':'lb-0','a1':'lb-a1','a2':'lb-a2','b1':'lb-b1','b2':'lb-b2'};
+  var n=String(p.de).split(/\s+/).filter(function(w){return /[A-Za-zÄÖÜäöüß]/.test(w);}).length;
+  var len=n<=2?'短 · 好上口':(n<=6?'中等长度':'长句 · 先慢速听');
+  var k=String(p.de).trim().toLowerCase(),on=false;try{on=!!_wbGet()[k];}catch(e){}
+  return '<div class="card-meta">'+(p.lv!=null&&levelName(p.lv)?'<span class="level-badge '+(lb[p.lv]||'')+'" style="margin-left:0">'+levelName(p.lv)+'</span>':'')
+    +'<span class="cm-len">'+n+' 词 · '+len+'</span>'+(p._near?'<span class="cm-near">相近</span>':'')
+    +'<button type="button" class="cm-slow" data-cm="slow" aria-label="慢速朗读">🐢 慢速</button>'
+    +'<button type="button" class="cm-star" data-cm="star" aria-pressed="'+on+'" aria-label="'+(on?'移出生词本':'收进生词本')+'">'+(on?'★ 已收':'☆ 生词本')+'</button></div>';
+}
+function _cardMetaAct(btn,p){
+  var a=btn.getAttribute('data-cm');
+  if(a==='slow'){
+    if(window.__noTTS||!('speechSynthesis' in window)){try{_ttsHint();}catch(e){}return;}
+    try{speechSynthesis.cancel();var u=_utt(p.de,null,Math.min(_spk.rate||.6,.45));u.onerror=_ttsErr;speechSynthesis.speak(u);}catch(e){}
+    return;}
+  if(a==='star'){
+    var o=_wbGet(),k=String(p.de).trim().toLowerCase(),on;
+    if(o[k]){delete o[k];_wbSave(o);on=false;try{_toast('已移出生词本',1200);}catch(e){}}
+    else{on=!!_wbAdd(p.de,p.de,p.zh,null);try{_toast(on?'📒 已收进生词本，到时间会提醒你复习':'没收进去，请稍后再试',1600);}catch(e){}}
+    btn.setAttribute('aria-pressed',String(on));btn.setAttribute('aria-label',on?'移出生词本':'收进生词本');btn.textContent=on?'★ 已收':'☆ 生词本';
+  }
 }
 
 function renderSearchResults(results, isFiltered){
@@ -3626,7 +3749,7 @@ function makeCard(p,id){
   // 英语外来词（der Job / das Handy / 菜单上的 Fried Rice）额外给一行德语说法，
   // 免得只会说英语借词、听不懂德国人嘴里的 die Arbeit / das Mobiltelefon。
   const synRow=p.syn?`<div class="card-syn"><span class="syn-tag">德语说法</span><b lang="de">${_artHl(p.syn,_searchQ)}</b><button class="speak-btn syn-speak" type="button" title="朗读德语说法" aria-label="朗读 ${p.syn}" style="width:22px;height:22px;font-size:11px">🔊</button></div>`:'';
-  d.innerHTML=`<div class="card-de-row"><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${p.de}">🔊</button><div class="card-de" lang="${lng}">${_artHl(p.de,_searchQ)}</div></div><div class="card-zh">${_hl(p.zh,_searchQ)}</div>${synRow}<div class="card-py">${flippedCards[id]?phonFn()+_shHtml():''}</div>`;
+  d.innerHTML=`<div class="card-de-row"><button class="speak-btn" type="button" title="朗读" aria-label="朗读 ${p.de}">🔊</button><div class="card-de" lang="${lng}">${_artHl(p.de,_searchQ)}</div></div><div class="card-zh">${_hl(p.zh,_searchQ)}</div>${synRow}${_cardMeta(p)}<div class="card-py">${flippedCards[id]?phonFn()+_shHtml():''}</div>`;
   const sb=d.querySelector('.speak-btn');
   sb.addEventListener('click',(e)=>{e.stopPropagation();speakDE(p.de,sb);});
   const yb=d.querySelector('.syn-speak');
@@ -3635,6 +3758,8 @@ function makeCard(p,id){
   d.addEventListener('click',(e)=>{
     var sh=e.target&&e.target.closest&&e.target.closest('[data-sh]');
     if(sh){e.stopPropagation();_shAct(sh,p.de);return;}
+    var cm=e.target&&e.target.closest&&e.target.closest('[data-cm]');
+    if(cm){e.stopPropagation();_cardMetaAct(cm,p);return;}
     flippedCards[id]=!flippedCards[id];
     if(flippedCards[id])_cardBack(d);
     d.classList.toggle('flipped');
@@ -7329,6 +7454,23 @@ html body .dash-hi .pro-tag.mini{vertical-align:middle;position:relative;top:-2p
 .voice-tip .chev{margin-left:auto;flex:none;font-size:22px;line-height:1;color:var(--text-faint)}
 /* 「拼读查词」悬浮钮只在学习版块出现，账号/会员/统计等页面不挡内容 */
 body.sec-me .phfab,body.sec-pro .phfab,body.sec-support .phfab,body.sec-stats .phfab,body.sec-rank .phfab,body.sec-account .phfab,body.sec-wordbook .phfab{display:none}
+
+/* 「我想说…」中文意图搜索 + 搜索结果卡片的级别/长度/生词本行 */
+.say-box{margin:12px 0 4px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md,16px);box-shadow:var(--shadow)}
+.say-lab{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px}
+.say-row{display:flex;gap:8px}
+.say-row input{flex:1;min-width:0;min-height:44px;padding:0 14px;border-radius:var(--r-pill,999px);border:1px solid var(--gold-dim);background:var(--bg);color:var(--text);font-size:15px;font-family:inherit;outline:none}
+.say-row input:focus{border-color:var(--gold-text)}
+.say-go{min-height:44px;min-width:56px;padding:0 16px;border:none;border-radius:var(--r-pill,999px);background:var(--gold);color:var(--on-brand);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.say-chips{display:flex;flex-wrap:wrap;gap:6px 6px;margin-top:10px}
+.say-chip{position:relative;display:inline-flex;align-items:center;min-height:44px;padding:0 13px;border-radius:var(--r-pill,999px);border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:12.5px;cursor:pointer;font-family:inherit;line-height:1.4}
+.say-more{color:var(--gold-text);border-style:dashed}
+.card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:8px;font-size:12px;color:var(--text-dim)}
+.cm-near{padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;background:var(--gold-faint);color:var(--gold-text)}
+.cm-slow,.cm-star{position:relative;padding:3px 10px;border-radius:var(--r-pill,999px);border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:12px;cursor:pointer;font-family:inherit}
+.cm-slow{margin-left:auto}
+.cm-star[aria-pressed=true]{color:var(--gold-text);border-color:var(--gold-text)}
+.cm-slow::after,.cm-star::after{content:'';position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
 </style>
 </body>
 </html>
