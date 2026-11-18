@@ -51,6 +51,8 @@ npm run build        # = node build.mjs
 - **不做 UGC**：不接受用户上传的文本/图片/头像。头像只能从预设 emoji + 预设背景色里选。
   （零存储、零外链、零审核负担——这是刻意的产品决策，别"顺手"加上传功能。）
 - **不引外部资源**：无 CDN、无外链字体/图片/脚本。全站离线可用。
+  唯一例外：「🎬 原声例句」(#clips) 和 Vido 一样，视频文件走 jsDelivr（rj-yy 的 media-NN 分支，自由许可片）；
+  索引 `/vido/clips.json` 由 rj-yy `scripts/build_collections.py` 生成、sync-vido 同步，**不要在本仓库手改**。
 - 词库数据在构建时 XOR+Base64 加密，**不要把明文词库写进 `src.html`**。
   自检：`grep -c '"de":"Guten Morgen' index.html` 必须为 `0`。
 - **会员内容锁在后端**（2026-11-11 起免费只留语句）：`data/readings|en_readings|series|en_series|dialogs|en_dialogs|read_gloss|restaurant|kolloc|affix|wortschatz.json`
