@@ -33,6 +33,8 @@ const stat = computed(() => ({
 }));
 const lit = (b) => earned.value.includes(b.id) || (b.m && stat.value[b.m] >= b.n);
 const litCount = computed(() => BADGES.filter(lit).length);
+// 徽章获得条件（一句话）：与线上站 src.html 的 _badgeGoal 共用同一套文案，数字口径不动
+const goalText = (b) => !b.m ? (b.desc || '') : b.m === 'best' ? '连续打卡' : b.m === 'known' ? '掌握词' : b.m === 'quiz' ? '测验题' : '累计学习';
 const provName = computed(() => (u.value.provider === 'github' ? ' · GitHub'
   : u.value.provider === 'google' ? ' · Google' : ''));
 
@@ -98,7 +100,7 @@ function out() { acct.signOut(); router.replace('/login'); }
         <div v-for="b in BADGES" :key="b.id" class="badge" :class="{ locked: !lit(b) }">
           <div class="bemo">{{ b.emo }}</div>
           <div class="bname">{{ b.name }}</div>
-          <div class="bprog">{{ lit(b) ? '已点亮' : (b.m ? stat[b.m] + '/' + b.n : b.desc) }}</div>
+          <div class="bprog">{{ lit(b) ? '已点亮' : (b.m ? stat[b.m] + '/' + b.n + ' · ' + goalText(b) : b.desc) }}</div>
         </div>
       </div>
 
@@ -178,9 +180,11 @@ function out() { acct.signOut(); router.replace('/login'); }
 /* 旧站 11px；抬到 12px 以满足本项目的辅助文字下限 */
 .prof-stat span{font-size:12px;color:var(--text-dim)}
 .badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;margin-top:10px}
-.badge{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+.badge{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:12px;
   padding:12px 6px;text-align:center}
-.badge.locked{opacity:.45}
+.badge:not(.locked){border-color:var(--gold-dim)}
+.badge.locked{opacity:.55}
+.badge.locked::after{content:'🔒';position:absolute;top:6px;right:6px;font-size:12px;line-height:1;opacity:.9}
 .badge.locked .bemo{filter:grayscale(1)}
 .bemo{font-size:30px;line-height:1}
 .bname{font-size:12px;color:var(--text);font-weight:600;margin-top:6px;line-height:1.3}
