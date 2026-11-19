@@ -43,7 +43,7 @@ const env = await getChromium();
 if (!env) { skipNoBrowser('会员内容锁体检'); srv.close(); process.exit(0); }
 const browser = await env.chromium.launch(env.launch);
 
-const LOCKED = 'reading series dialog resto kolloc affix wortschatz'.split(' ');
+const LOCKED = 'reading series dialog resto kolloc affix'.split(' ');
 async function open(pro) {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const page = await ctx.newPage();
@@ -73,6 +73,10 @@ const state = (page, id) => page.evaluate((id) => {
     const st = await state(page, id);
     if (!st.active || !st.locked || !st.panel.includes('会员内容')) bad(`非会员进 ${id} 没看到解锁面板：${JSON.stringify(st)}`);
   }
+  // 高频视图的锁面板是 _lockPanelHtml 直接渲染进 #freqView 的 .tip-card（没有 .lock-panel 包裹层，
+  // 和 _lockGate 的版块门不同），所以按文案查，不按 .lock-panel 查
+  const fq = await page.evaluate(async () => { phrasesFreq(-1); await new Promise((r) => setTimeout(r, 1200)); const fv = document.getElementById('freqView'); return { text: (fv.innerText || '').slice(0, 60) }; });
+  if (!fq.text.includes('会员内容')) bad(`非会员进高频视图没看到解锁面板：${JSON.stringify(fq)}`);
   const home = await page.evaluate(() => { showSection('home'); return getComputedStyle(document.querySelector('.hg-tile[href="#resto"] span'), '::after').content; });
   if (!home.includes('🔒')) bad(`非会员首页入口没有锁标：${home}`);
   const free = await page.evaluate(async () => {
@@ -104,6 +108,8 @@ const state = (page, id) => page.evaluate((id) => {
     got[id] = await state(page, id);
     if (got[id].locked || got[id].text < 200) bad(`会员进 ${id} 没拿到内容：${JSON.stringify(got[id])}`);
   }
+  const fqm = await page.evaluate(async () => { phrasesFreq(-1); await new Promise((r) => setTimeout(r, 1500)); const fv = document.getElementById('freqView'); return { locked: !!fv.querySelector('.lock-panel'), cards: fv.querySelectorAll('.card').length }; });
+  if (fqm.locked || fqm.cards < 20) bad(`会员进高频视图没拿到内容：${JSON.stringify(fqm)}`);
   const en = await page.evaluate(async () => {
     const w = (ms) => new Promise((r) => setTimeout(r, ms));
     setLang('en'); await w(300);
