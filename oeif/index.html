@@ -90,7 +90,7 @@ function ymd(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)
 // 生词本与手册主站共用同一个 localStorage 键（同域），在这里收的词回主站「📒 生词本」复习
 function wb(){try{return JSON.parse(lsGet('wordBook','{}'))||{};}catch(e){return {};}}
 var voice=null;
-function pickVoice(){try{var vs=speechSynthesis.getVoices();voice=vs.filter(function(v){return /^de[-_]AT/i.test(v.lang);})[0]||vs.filter(function(v){return /^de/i.test(v.lang);})[0]||null;}catch(e){}}
+function pickVoice(){try{var vs=speechSynthesis.getVoices(),best=null,bs=-1;for(var i=0;i<vs.length;i++){var v=vs[i],l=(v.lang||'').replace('_','-').toLowerCase(),n=v.name||'',sc=0;if(l.indexOf('de')!==0)continue;if(l==='de-at')sc+=40;else if(l==='de-de')sc+=30;if(/natural|neural|premium|enhanced|erweitert|verbessert/i.test(n))sc+=30;if(/espeak|eloquence|compact|grandma|grandpa|rocko|shelley|sandy|\breed\b|\beddy\b|\bflo\b|bells|bubbles|cellos|organ|whisper|zarvox|trinoids|albert|jester|superstar|wobble|boing|junior|ralph|fred\b|kathy/i.test(n))sc-=80;if(v.localService)sc+=3;if(sc>bs){bs=sc;best=v;}}voice=best;}catch(e){}}
 try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}catch(e){}
 function speak(t,btn){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t.replace(/…/g,''));u.lang=voice?voice.lang:'de-DE';if(voice)u.voice=voice;u.rate=.85;speechSynthesis.speak(u);}catch(e){}}
 function word(de){var m=/^(der|die|das) (.+)$/.exec(de);return m?'<span class="art-'+m[1]+'">'+m[1]+' '+esc(m[2])+'</span>':esc(de);}
