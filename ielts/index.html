@@ -127,7 +127,8 @@ function renderLevels(){
 }
 function setLevel(l){cur=l;lsSet('ieltsLevel',l);queue=null;show=false;listN=60;render();}
 function setTab(t){tab=t;lsSet('ieltsTab',t);show=false;render();}
-function speak(w){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(w);u.lang='en-GB';u.rate=.9;speechSynthesis.speak(u);}catch(e){}}
+var _enV=null;function _pickEn(){try{var vs=speechSynthesis.getVoices(),bs=-1;_enV=null;for(var i=0;i<vs.length;i++){var v=vs[i],l=(v.lang||'').replace('_','-').toLowerCase(),n=v.name||'',sc=0;if(l.indexOf('en')!==0)continue;if(l==='en-gb')sc+=40;else if(l==='en-us')sc+=20;if(/natural|neural|premium|enhanced/i.test(n))sc+=30;if(/espeak|eloquence|compact|grandma|grandpa|rocko|shelley|sandy|\breed\b|\beddy\b|\bflo\b|bells|bubbles|cellos|organ|whisper|zarvox|trinoids|albert|jester|superstar|wobble|boing|junior|ralph|fred\b|kathy/i.test(n))sc-=80;if(v.localService)sc+=3;if(sc>bs){bs=sc;_enV=v;}}}catch(e){}}try{_pickEn();speechSynthesis.onvoiceschanged=_pickEn;}catch(e){}
+function speak(w){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(w);u.lang=_enV?_enV.lang:'en-GB';if(_enV)u.voice=_enV;u.rate=.9;speechSynthesis.speak(u);}catch(e){}}
 function senses(r){return r[2].map(function(s){return '<div><small>'+esc(s[0])+'</small>'+esc(s[1])+'</div>';}).join('');}
 
 // 今日队列：先复习到期的，再补 NEW_PER_DAY 个新词（每天的新词额度按级别记）

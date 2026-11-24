@@ -28,7 +28,7 @@
 {"@type":"ListItem","position":1,"name":"德语学习手册","item":"https://www.uuoo.site/"},
 {"@type":"ListItem","position":2,"name":"德语发音规律"}]}]}</script>
 <!-- 由 tools/gen-seo-pages.mjs 生成，勿手改；内容源自 src.html，改完请重跑 npm run gen:seo -->
-<!-- src-hash:4a928c53df8e -->
+<!-- src-hash:ae3b65548232 -->
 <style>#account{display:block}#account .auth-stage{display:none}
 
 :root{
@@ -386,6 +386,8 @@ mark.sh{background:rgba(181,73,46,.32);color:inherit;border-radius:3px;padding:0
 .pron-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
 .pron-table tr:nth-child(even) td{background:var(--stripe)}
 .pron-table tr:last-child td{border-bottom:none}
+/* 320px 小屏（iPhone SE 一代）：四列表格（格 / der / die / das）最后一列被卡片裁掉，收紧内边距 */
+@media(max-width:350px){.pron-table th,.pron-table td{padding:8px 6px;letter-spacing:0}}
 .pron-table tr:hover td{background:rgba(181,73,46,.05)}
 .pron-letter{font-size:16px;color:var(--text);font-style:italic;font-weight:600}
 .pron-sound{color:var(--gold-text)}
@@ -514,7 +516,10 @@ body:not(.lang-en) .en-only-block{display:none}
 .board-readbar>span{font-size:12px;color:var(--text-dim)}
 .board-readbar>button{margin-left:auto;padding:7px 12px;font-size:12px}
 .pic-emoji{font-size:26px;line-height:1.15}
-.pic-de{font-size:12px;font-weight:600;color:var(--text);margin-top:4px;line-height:1.3;word-break:break-word;overflow-wrap:anywhere}
+/* 德语长复合词（Augenbraue、Achselhöhle…）以前在任意字母处断行，「Augenbra/ue」很难认；
+   先按德语音节加连字符断（hyphens:auto + lang=de），长词再小一号，实在放不下才任意断 */
+.pic-de{font-size:12px;font-weight:600;color:var(--text);margin-top:4px;line-height:1.3;word-break:normal;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto}
+.pic-de.pic-long{font-size:10.5px;letter-spacing:-.1px}
 .pic-zh{font-size:12px;color:var(--text-faint);margin-top:2px;line-height:1.3}
 /* bottom 必须避开固定底栏（58px + 安全区），否则浮条会压在底栏上，
    实测浮条 bottom=828 而底栏 top=790，重叠 38px，同时盖住最后两行共 6 张卡片。 */
@@ -817,7 +822,8 @@ body.lang-en #homeBoost{display:none!important}
 .me-fold>summary::-webkit-details-marker{display:none}
 .me-fold>summary::after{content:'›';margin-left:auto;font-size:20px;color:var(--text-faint);transition:transform .2s}
 .me-fold[open]>summary::after{transform:rotate(90deg)}
-.me-fold>summary small{font-weight:400;font-size:13px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.me-fold>summary .mf-t{white-space:nowrap;flex-shrink:0}   /* 右侧说明太长时「学习统计」被挤成两行 */
+.me-fold>summary small{flex:1;font-weight:400;font-size:13px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .me-fold[open]{padding-bottom:12px}
 .fr-up{display:block;margin:6px 0 12px;padding:12px 14px;min-height:44px;box-sizing:border-box;border-radius:12px;border:1.5px dashed var(--border);color:var(--text-dim);font-size:13px;line-height:1.6;text-decoration:none}
 .fr-up b{color:var(--red-text)}

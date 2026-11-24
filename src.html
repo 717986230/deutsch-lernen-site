@@ -415,6 +415,8 @@ mark.sh{background:rgba(181,73,46,.32);color:inherit;border-radius:3px;padding:0
 .pron-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
 .pron-table tr:nth-child(even) td{background:var(--stripe)}
 .pron-table tr:last-child td{border-bottom:none}
+/* 320px 小屏（iPhone SE 一代）：四列表格（格 / der / die / das）最后一列被卡片裁掉，收紧内边距 */
+@media(max-width:350px){.pron-table th,.pron-table td{padding:8px 6px;letter-spacing:0}}
 .pron-table tr:hover td{background:rgba(181,73,46,.05)}
 .pron-letter{font-size:16px;color:var(--text);font-style:italic;font-weight:600}
 .pron-sound{color:var(--gold-text)}
@@ -543,7 +545,10 @@ body:not(.lang-en) .en-only-block{display:none}
 .board-readbar>span{font-size:12px;color:var(--text-dim)}
 .board-readbar>button{margin-left:auto;padding:7px 12px;font-size:12px}
 .pic-emoji{font-size:26px;line-height:1.15}
-.pic-de{font-size:12px;font-weight:600;color:var(--text);margin-top:4px;line-height:1.3;word-break:break-word;overflow-wrap:anywhere}
+/* 德语长复合词（Augenbraue、Achselhöhle…）以前在任意字母处断行，「Augenbra/ue」很难认；
+   先按德语音节加连字符断（hyphens:auto + lang=de），长词再小一号，实在放不下才任意断 */
+.pic-de{font-size:12px;font-weight:600;color:var(--text);margin-top:4px;line-height:1.3;word-break:normal;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto}
+.pic-de.pic-long{font-size:10.5px;letter-spacing:-.1px}
 .pic-zh{font-size:12px;color:var(--text-faint);margin-top:2px;line-height:1.3}
 /* bottom 必须避开固定底栏（58px + 安全区），否则浮条会压在底栏上，
    实测浮条 bottom=828 而底栏 top=790，重叠 38px，同时盖住最后两行共 6 张卡片。 */
@@ -1974,7 +1979,8 @@ body.lang-en #homeBoost{display:none!important}
 .me-fold>summary::-webkit-details-marker{display:none}
 .me-fold>summary::after{content:'›';margin-left:auto;font-size:20px;color:var(--text-faint);transition:transform .2s}
 .me-fold[open]>summary::after{transform:rotate(90deg)}
-.me-fold>summary small{font-weight:400;font-size:13px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.me-fold>summary .mf-t{white-space:nowrap;flex-shrink:0}   /* 右侧说明太长时「学习统计」被挤成两行 */
+.me-fold>summary small{flex:1;font-weight:400;font-size:13px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .me-fold[open]{padding-bottom:12px}
 .fr-up{display:block;margin:6px 0 12px;padding:12px 14px;min-height:44px;box-sizing:border-box;border-radius:12px;border:1.5px dashed var(--border);color:var(--text-dim);font-size:13px;line-height:1.6;text-decoration:none}
 .fr-up b{color:var(--red-text)}
@@ -2694,7 +2700,7 @@ const nums0 = [
 const numsBig = [
   {n:100,de:'hundert',py:'洪德特'},{n:1000,de:'tausend',py:'套森特'},
   {n:1000000,de:'eine Million',py:'埃内 米利昂'},{n:1000000000,de:'eine Milliarde',py:'埃内 米利阿德'},
-  {n:0.5,de:'ein halb',py:'艾因 哈尔普'},{n:'1.',de:'erste',py:'埃尔斯特'}
+  {n:'½',de:'ein halb',py:'艾因 哈尔普'},{n:'1.',de:'erste',py:'埃尔斯特'}
 ];
 // 数字测验题库（练习测验「数字测验」用）
 const NUM_POOL=[...nums0,
@@ -3545,7 +3551,7 @@ function _cardMetaAct(btn,p){
   var a=btn.getAttribute('data-cm');
   if(a==='slow'){
     if(window.__noTTS||!('speechSynthesis' in window)){try{_ttsHint();}catch(e){}return;}
-    try{speechSynthesis.cancel();var u=_utt(p.de,null,Math.min(_spk.rate||.6,.45));u.onerror=_ttsErr;speechSynthesis.speak(u);}catch(e){}
+    try{_ttsStopAll();speechSynthesis.cancel();var u=_utt(p.de,null,Math.min(_spk.rate||.6,.45));u.onerror=_ttsErr;speechSynthesis.speak(u);}catch(e){}
     return;}
   if(a==='star'){
     var o=_wbGet(),k=String(p.de).trim().toLowerCase(),on;
@@ -4013,34 +4019,44 @@ function _ttsApplyRate(){
   _curUtt=null;
   try{speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}
 }
-function speakDE(text,btn){
+// ── 点单句 🔊 时先把所有「连读」停掉 ──
+// 以前连读（对话播放全部 / 短文循环 / 连载 / 词句循环 / 字母数字全部朗读）进行中再点某一句，
+// cancel 会让连读那句派发 error，连读的回调当成「读完了」接着读下一句，把用户点的这句盖掉：
+// 表现为「点了一句，结果又自顾自往下读」「声音叠在一起」。单句朗读一律先停连读。
+function _ttsStopAll(){
+  var f=['stopAutoPlay','stopReading','stopSeries','dialogStop','rsStop','stopPageNarration'];
+  for(var i=0;i<f.length;i++){try{if(typeof window[f[i]]==='function')window[f[i]]();}catch(e){}}
+}
+// 连读回调里分辨「真出错」和「被 cancel 打断」：后者 Chromium 报 interrupted/canceled，不算错
+function _ttsRealErr(e){var k=e&&e.error;return !!k&&k!=='interrupted'&&k!=='canceled';}
+function speakDE(text,btn){_speakOne(text,null,btn);}
+// 为固定语言内容朗读：避免英语数字/字母因当前页面语言而被错误地按另一种语言发音。
+function speakWithLocale(text,lang,btn){_speakOne(text,lang==='en'?'en':'de',btn);}
+var _oneU=null;
+function _speakOne(text,lang,btn){
   if(window.__noTTS||!('speechSynthesis' in window)){_ttsHint();return;}
+  var busy=false;try{busy=speechSynthesis.speaking||speechSynthesis.pending;}catch(e){}
+  _ttsStopAll();
   speechSynthesis.cancel();
-  const u=_utt(text);             // 按当前语言/嗓子/语速朗读（德/英）
+  // iOS 切后台再回来、或 Chrome 卡在 paused 状态时，speak 只排队不出声：先 resume 一下
+  try{if(speechSynthesis.paused)speechSynthesis.resume();}catch(e){}
+  var u=_utt(text,lang);             // 按语言/嗓子/语速朗读（lang 省略＝跟随站点语言）
+  document.querySelectorAll('.speaking').forEach(function(b){b.classList.remove('speaking');});
   if(btn){
-    document.querySelectorAll('.speak-btn.speaking').forEach(b=>b.classList.remove('speaking'));
-    btn.classList.add('speaking');
-    u.onend=()=>btn.classList.remove('speaking');
-    u.onerror=e=>{btn.classList.remove('speaking');_ttsErr(e);};
+    btn.classList.add('speaking');btn._u=u;
+    // 同一个 🔊 连点两下：上一句被 cancel 的 error 会晚到，别让它把这一句的高亮摘掉
+    var off=function(){if(btn._u===u)btn.classList.remove('speaking');};
+    u.onend=off;
+    u.onerror=function(e){off();_ttsErr(e);};
   }else u.onerror=_ttsErr;
   // 手势路径上先查一次：有语音列表但没有目标语言的嗓子 = 必然静音，提前说清楚
   if(_noTgtVoice())_ttsVoiceHint();
   _ttsProbe(u);
-  speechSynthesis.speak(u);
-}
-
-// 为固定语言内容朗读：避免英语数字/字母因当前页面语言而被错误地按另一种语言发音。
-function speakWithLocale(text,lang,btn){
-  if(window.__noTTS||!('speechSynthesis' in window)){_ttsHint();return;}
-  speechSynthesis.cancel();
-  var u=_utt(text,lang==='en'?'en':'de');
-  if(btn){
-    document.querySelectorAll('.speak-btn.speaking').forEach(function(b){b.classList.remove('speaking');});
-    btn.classList.add('speaking');
-    u.onend=function(){btn.classList.remove('speaking');};
-    u.onerror=function(e){btn.classList.remove('speaking');_ttsErr(e);};
-  }else u.onerror=_ttsErr;
-  _ttsProbe(u);speechSynthesis.speak(u);
+  // 安卓 Chrome 等：正在读的时候 cancel() 紧跟 speak()，新的一句常被一起吞掉（点了没声音，要再点一次）。
+  // 正在读才隔 60ms 再开口；空闲时照旧同步 speak，保住 iOS「必须在点击手势里开口」的要求。
+  _oneU=u;
+  if(busy)setTimeout(function(){try{if(_oneU!==u)return;speechSynthesis.speak(u);}catch(e){}},60);
+  else speechSynthesis.speak(u);
 }
 
 // onItem(i) 可选：每读到一条回调一次，停止时回调 -1。字母/数字表是一行行的文本，
@@ -4122,7 +4138,7 @@ function toggleNumberAll(lang){
 }
 
 // ══════════════ 一键全部循环朗读 ══════════════
-let _auto={on:false,cards:[],i:0,cur:null};
+let _auto={on:false,cards:[],i:0,cur:null},_autoRun=0;
 function clearAutoHighlight(){
   document.querySelectorAll('.card.speaking-now').forEach(c=>c.classList.remove('speaking-now'));
   if(_auto.cur){_auto.cur.classList.remove('flipped');_auto.cur=null;} // 收起上一张自动展开的卡
@@ -4135,7 +4151,7 @@ function toggleAutoPlay(){
   let cards=[...document.querySelectorAll('#phraseContent .card')];
   if(!cards.length)return;
   if(_spk.shuffle)cards=cards.map(c=>[Math.random(),c]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]); // 乱序
-  _auto={on:true,cards,i:0};
+  _auto={on:true,cards,i:0};_autoRun++;
   btn.textContent='⏹ 停止';
   btn.classList.add('playing');
   autoNext();
@@ -4158,32 +4174,38 @@ function autoNext(){
   const text=deEl.textContent;
   const zhEl=card.querySelector('.card-zh');
   const zhText=zhEl?zhEl.textContent:'';
+  // 运行编号：停止后马上再点「循环朗读」，旧一轮被 cancel 的那句会派发 error，
+  // 以前旧回调照样往下走，于是两条接力同时跑 —— 每句都读两遍、中文也读两遍。
+  const run=_autoRun,live=()=>_auto.on&&run===_autoRun;
   let pass=0;                       // 德语读 N 遍（面板可调），可选再读中文
-  const next=()=>{ if(_auto.on){ _auto.i++; setTimeout(autoNext,700); } };
+  const next=()=>{ if(live()){ _auto.i++; setTimeout(autoNext,700); } };
   const speakZh=()=>{
-    if(!_auto.on)return;
+    if(!live())return;
     if(!_spk.zh||!zhText)return next();
     const u=new SpeechSynthesisUtterance(zhText);
     u.lang='zh-CN'; if(_zhVoice)u.voice=_zhVoice;
     u.rate=0.9;
+    _uttHold.push(u);if(_uttHold.length>4)_uttHold.shift();   // 同 _utt：不留引用 Chrome 会回收，onend 不来，循环就卡住
     u.onend=next; u.onerror=next;
     speechSynthesis.speak(u);
   };
   const speakOnce=()=>{
+    if(!live())return;
     const u=_utt(text);             // 语速由面板设定
     u.onend=()=>{
-      if(!_auto.on)return;
+      if(!live())return;
       pass++;
       if(pass<_spk.repeat){ setTimeout(speakOnce,500); } // 遍数由面板设定
       else { setTimeout(speakZh,500); }                  // 之后读中文（可关）
     };
-    u.onerror=u.onend;
+    // 没装德语语音包时每句瞬间 error：别无声地一张张飞快翻过去，先说明原因并停下
+    u.onerror=e=>{if(!live())return;if(_ttsRealErr(e)){_ttsErr(e);if(_noTgtVoice()){stopAutoPlay();return;}}u.onend();};
     speechSynthesis.speak(u);
   };
   speakOnce();
 }
 function stopAutoPlay(){
-  _auto.on=false; speechSynthesis.cancel(); clearAutoHighlight();
+  _auto.on=false; _autoRun++; speechSynthesis.cancel(); clearAutoHighlight();
   const btn=document.getElementById('playAllBtn');
   if(btn){btn.textContent='▶ 循环朗读';btn.classList.remove('playing');}
   const info=document.getElementById('playAllInfo'); if(info)info.textContent='';
@@ -4681,7 +4703,7 @@ const RESTO = __DATA_RESTO__;
 const KOLLOC = __DATA_KOLLOC__;
 const WORTSCHATZ = __DATA_WORTSCHATZ__;
 const AFFIX = __DATA_AFFIX__;
-var _dlgRendered=false,_dlgPlaying=-1;
+var _dlgRendered=false,_dlgPlaying=-1,_dlgRun=0;
 function _getDialogues(){return LANG==='en'?EN_DIALOGUES:DIALOGUES;}
 function renderDialogues(){
   var el=document.getElementById('dialogList');if(!el)return;
@@ -4700,7 +4722,7 @@ function renderDialogues(){
 }
 function dialogSpeak(btn,di,k){var d=_getDialogues()[di];var t=d&&d.turns[k];if(t)speakDE(t.de,btn);}
 function _dlgHi(di,k){var os=document.querySelectorAll('.dlg-turn.on');for(var j=0;j<os.length;j++)os[j].classList.remove('on');var el=document.getElementById('dlg'+di+'_'+k);if(el){el.classList.add('on');try{el.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}}}
-function dialogStop(){var i=_dlgPlaying;_dlgPlaying=-1;try{speechSynthesis.cancel();}catch(e){}if(i>=0){var b=document.getElementById('dlgPlay'+i);if(b)b.textContent='▶ 播放全部';}var os=document.querySelectorAll('.dlg-turn.on');for(var j=0;j<os.length;j++)os[j].classList.remove('on');}
+function dialogStop(){_dlgRun++;var i=_dlgPlaying;_dlgPlaying=-1;try{speechSynthesis.cancel();}catch(e){}if(i>=0){var b=document.getElementById('dlgPlay'+i);if(b)b.textContent='▶ 播放全部';}var os=document.querySelectorAll('.dlg-turn.on');for(var j=0;j<os.length;j++)os[j].classList.remove('on');}
 function dialogPlay(di){
   if(window.__noTTS||!('speechSynthesis' in window)){if(typeof _ttsHint==='function')_ttsHint();return;}
   if(_dlgPlaying===di){dialogStop();return;}
@@ -4708,12 +4730,16 @@ function dialogPlay(di){
   var d=_getDialogues()[di];if(!d)return;
   rdFold('dcard_'+di,true);
   var btn=document.getElementById('dlgPlay'+di);if(btn)btn.textContent='⏹ 停止';
-  var turns=d.turns,k=0;
+  // 运行编号：从对话 A 直接点对话 B 的「播放全部」时，A 被 cancel 的那句会派发 error，
+  // 以前 A 的回调接着跑、发现「正在播的不是 A」就调 dialogStop() —— 把刚开始的 B 也停了。
+  var turns=d.turns,k=0,run=_dlgRun;
   function step(){
+    if(run!==_dlgRun)return;
     if(_dlgPlaying!==di||k>=turns.length){dialogStop();return;}
     _dlgHi(di,k);
     var u=_utt(turns[k].de);
-    u.onend=u.onerror=function(){k++;setTimeout(step,260);};
+    u.onend=function(){if(run!==_dlgRun)return;k++;setTimeout(step,260);};
+    u.onerror=function(e){if(run!==_dlgRun)return;if(_ttsRealErr(e)){_ttsErr(e);if(_noTgtVoice()){dialogStop();return;}}k++;setTimeout(step,260);};
     speechSynthesis.speak(u);
   }
   try{speechSynthesis.cancel();}catch(e){}setTimeout(step,60);
@@ -5475,7 +5501,8 @@ function rsDlgPlay(g){
     if(run!==_rs.run||k>=turns.length){if(run===_rs.run){_rs.playing=null;_rsHi(null);if(btn)btn.textContent='▶ 播放全部';}return;}
     _rsHi('rsd'+g+'_'+k);
     var u=_utt(turns[k].de,'de');
-    u.onend=u.onerror=function(){k++;setTimeout(step,300);};
+    u.onend=function(){if(run!==_rs.run)return;k++;setTimeout(step,300);};
+    u.onerror=function(e){if(run!==_rs.run)return;if(_ttsRealErr(e)){_ttsErr(e);if(_noTgtVoice()){rsStop();_rsHi(null);if(btn)btn.textContent='▶ 播放全部';return;}}k++;setTimeout(step,300);};
     speechSynthesis.speak(u);
   }
   try{speechSynthesis.cancel();}catch(e){}setTimeout(step,60);
@@ -6459,6 +6486,8 @@ function renderBoardTabs(){
     el.appendChild(t);
   });
 }
+// 图解卡片里最长的那个词 ≥10 个字母就缩小一号（卡片只有 ~57px 宽）
+function _picLong(t){var w=String(t||'').split(/\s+/),m=0;for(var i=0;i<w.length;i++)if(w[i].length>m)m=w[i].length;return m>=10?' pic-long':'';}
 function switchBoard(id){
   // 换主题必须先停：词表整个换掉了，旧的连读队列读的是上一个板的词
   if(typeof stopPageNarration==='function')stopPageNarration();
@@ -6474,7 +6503,7 @@ function switchBoard(id){
   var brd=null;for(var i=0;i<PIC_BOARDS.length;i++)if(PIC_BOARDS[i].id===id)brd=PIC_BOARDS[i];
   var g=document.getElementById("boardGrid");
   g.innerHTML=(brd.items||[]).map(function(it,i){
-    return '<div class="pic-cell" data-i="'+i+'"><div class="pic-emoji">'+it[3]+'</div><div class="pic-de" lang="de">'+it[0]+'</div><div class="pic-zh">'+it[1]+'</div></div>';
+    return '<div class="pic-cell" data-i="'+i+'"><div class="pic-emoji">'+it[3]+'</div><div class="pic-de'+_picLong(it[0])+'" lang="de">'+it[0]+'</div><div class="pic-zh">'+it[1]+'</div></div>';
   }).join("");
   g.querySelectorAll(".pic-cell").forEach(function(c){
     c.addEventListener("click",function(){picPick(brd,+c.getAttribute("data-i"),c);});
@@ -6656,7 +6685,7 @@ function renderBody(){
   var chips=document.getElementById('bodyChips');
   if(!chips||chips.childNodes.length)return;
   chips.innerHTML=BODY_PARTS.map(function(p,i){
-    return '<div class="pic-cell" data-i="'+i+'"><div class="pic-emoji">'+p.em+'</div><div class="pic-de" lang="de">'+p.de+'</div><div class="pic-zh">'+p.zh+'</div></div>';
+    return '<div class="pic-cell" data-i="'+i+'"><div class="pic-emoji">'+p.em+'</div><div class="pic-de'+_picLong(p.de)+'" lang="de">'+p.de+'</div><div class="pic-zh">'+p.zh+'</div></div>';
   }).join('');
   chips.querySelectorAll('.pic-cell').forEach(function(c){c.addEventListener('click',function(){bpPick(+c.getAttribute('data-i'));});});
 }
